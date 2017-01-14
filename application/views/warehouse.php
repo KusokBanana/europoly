@@ -60,7 +60,7 @@
                                     <span class="sale-info"> Dealer Price
                                         <i class="fa fa-img-down"></i>
                                     </span>
-                                    <span class="sale-num"> <?= $this->prices['dealer'] ?> 0 €</span>
+                                    <span class="sale-num"> <?= $this->prices['dealer'] ?> €</span>
                                 </li>
                             </ul>
                         </div>
