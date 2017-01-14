@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fe24c410-5d2a-4ad7-aea6-4e59e4e304a8" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/controller_truck.php" afterPath="$PROJECT_DIR$/application/controllers/controller_truck.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/models/model_truck.php" afterPath="$PROJECT_DIR$/application/models/model_truck.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/views/single_truck.php" afterPath="$PROJECT_DIR$/application/views/single_truck.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/core/model.php" afterPath="$PROJECT_DIR$/application/core/model.php" />
     </list>
     <ignored path="europoly.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -74,78 +73,78 @@
       <file leaf-file-name="model_truck.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/application/models/model_truck.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="319">
-              <caret line="513" column="57" lean-forward="false" selection-start-line="513" selection-start-column="57" selection-end-line="513" selection-end-column="57" />
+            <state relative-caret-position="295">
+              <caret line="438" column="35" lean-forward="true" selection-start-line="438" selection-start-column="35" selection-end-line="438" selection-end-column="35" />
               <folding>
-                <marker date="1484420707705" expanded="true" signature="259:817" ph="..." />
-                <marker date="1484420707705" expanded="true" signature="1180:1286" ph="..." />
-                <marker date="1484420707705" expanded="true" signature="1683:1769" ph="..." />
-                <marker date="1484420707705" expanded="true" signature="2398:2511" ph="..." />
-                <marker date="1484420707705" expanded="true" signature="3554:3658" ph="..." />
-                <marker date="1484420707705" expanded="true" signature="3732:4230" ph="..." />
-                <marker date="1484420707705" expanded="true" signature="4634:4738" ph="..." />
-                <marker date="1484420707705" expanded="true" signature="5155:5263" ph="..." />
-                <marker date="1484420707705" expanded="true" signature="5324:5332" ph="..." />
-                <marker date="1484420707705" expanded="true" signature="6015:6119" ph="..." />
-                <marker date="1484420707705" expanded="true" signature="6039:6079" ph="..." />
-                <marker date="1484420707705" expanded="true" signature="8320:8357" ph="SELECT statu... trucks" />
-                <marker date="1484420707705" expanded="true" signature="8580:8661" ph="INSERT INTO trucks... " />
-                <marker date="1484420707705" expanded="true" signature="8877:8936" ph="SELECT * FRO... suppliers_orders_items" />
-                <marker date="1484420707705" expanded="true" signature="9133:9175" ph="SELECT * FRO... products" />
-                <marker date="1484420707705" expanded="true" signature="9300:9584" ph="INSERT INTO trucks_items... " />
-                <marker date="1484420707705" expanded="true" signature="9685:9780" ph="UPDATE order... " />
-                <marker date="1484420707705" expanded="true" signature="9899:9982" ph="UPDATE suppl... " />
-                <marker date="1484420707705" expanded="true" signature="10161:10193" ph="SELECT * FRO... trucks" />
-                <marker date="1484420707705" expanded="true" signature="10304:10403" ph="UPDATE truck... " />
-                <marker date="1484420707705" expanded="true" signature="10580:10601" ph="SELECT id FR... trucks" />
-                <marker date="1484420707705" expanded="true" signature="11329:11373" ph="SELECT * FRO... trucks_items" />
-                <marker date="1484420707705" expanded="true" signature="11717:11766" ph="SELECT * FRO... trucks_items" />
-                <marker date="1484420707705" expanded="true" signature="11814:11856" ph="SELECT * FRO... products" />
-                <marker date="1484420707705" expanded="true" signature="12166:12372" ph="INSERT INTO products_warehouses... " />
-                <marker date="1484420707705" expanded="true" signature="12400:12477" ph="UPDATE truck... " />
-                <marker date="1484420707705" expanded="true" signature="12765:12813" ph="UPDATE truck... " />
-                <marker date="1484420707705" expanded="true" signature="12922:13012" ph="UPDATE truck... " />
-                <marker date="1484420707705" expanded="true" signature="13177:13236" ph="SELECT * FRO... suppliers_orders_items" />
-                <marker date="1484420707705" expanded="true" signature="13413:13659" ph="INSERT INTO trucks_items... " />
-                <marker date="1484420707705" expanded="true" signature="13749:13844" ph="UPDATE order... " />
-                <marker date="1484420707705" expanded="true" signature="13948:14031" ph="UPDATE suppl... " />
-                <marker date="1484420707705" expanded="true" signature="14099:14131" ph="SELECT * FRO... trucks" />
-                <marker date="1484420707705" expanded="true" signature="14255:14356" ph="UPDATE truck... " />
-                <marker date="1484420707705" expanded="true" signature="14533:14582" ph="SELECT * FRO... trucks_items" />
-                <marker date="1484420707705" expanded="true" signature="14647:14717" ph="SELECT * FRO... suppliers_orders_items" />
-                <marker date="1484420707705" expanded="true" signature="14868:14938" ph="UPDATE order... " />
-                <marker date="1484420707705" expanded="true" signature="15003:15098" ph="UPDATE suppl... " />
-                <marker date="1484420707705" expanded="true" signature="15176:15223" ph="DELETE FROM " />
-                <marker date="1484420707705" expanded="true" signature="15276:15308" ph="SELECT * FRO... trucks" />
-                <marker date="1484420707705" expanded="true" signature="15427:15529" ph="UPDATE truck... " />
-                <marker date="1484420707705" expanded="true" signature="15703:15735" ph="SELECT * FRO... trucks" />
-                <marker date="1484420707705" expanded="true" signature="15781:15836" ph="UPDATE `truc... " />
-                <marker date="1484420707705" expanded="true" signature="16027:16076" ph="SELECT * FRO... trucks_items" />
-                <marker date="1484420707705" expanded="true" signature="16137:16207" ph="SELECT * FRO... suppliers_orders_items" />
-                <marker date="1484420707705" expanded="true" signature="16442:16531" ph="UPDATE `orde... " />
-                <marker date="1484420707705" expanded="true" signature="16652:16753" ph="UPDATE `supp... " />
-                <marker date="1484420707705" expanded="true" signature="16983:17055" ph="UPDATE `truc... " />
-                <marker date="1484420707705" expanded="true" signature="17117:17166" ph="SELECT * FRO... trucks_items" />
-                <marker date="1484420707705" expanded="true" signature="17222:17264" ph="SELECT * FRO... products" />
-                <marker date="1484420707705" expanded="true" signature="18075:18291" ph="UPDATE truck... " />
-                <marker date="1484420707705" expanded="true" signature="18393:18425" ph="SELECT * FRO... trucks" />
-                <marker date="1484420707705" expanded="true" signature="18746:18905" ph="UPDATE truck... " />
-                <marker date="1484420707705" expanded="true" signature="19044:19088" ph="SELECT * FRO... trucks_items" />
-                <marker date="1484420707705" expanded="true" signature="19257:19337" ph="SELECT * FRO... suppliers_orders_items" />
-                <marker date="1484420707705" expanded="true" signature="19654:19737" ph="SELECT item_... order_items" />
-                <marker date="1484420707705" expanded="true" signature="20155:20225" ph="UPDATE truck... " />
-                <marker date="1484420707705" expanded="true" signature="20344:20393" ph="SELECT * FRO... trucks_items" />
-                <marker date="1484420707705" expanded="true" signature="20443:20517" ph="SELECT * FRO... suppliers_orders_items" />
-                <marker date="1484420707705" expanded="true" signature="20639:20727" ph="UPDATE order... " />
-                <marker date="1484420707705" expanded="true" signature="20820:20919" ph="UPDATE suppl... " />
-                <marker date="1484420707705" expanded="true" signature="21538:21649" ph="SELECT trans... trucks" />
-                <marker date="1484420707705" expanded="true" signature="21701:21758" ph="SELECT deliv... trucks_items" />
-                <marker date="1484420707705" expanded="true" signature="22066:22140" ph="SELECT trans... transportation_companies" />
-                <marker date="1484420707705" expanded="true" signature="22842:22937" ph="SELECT custo... trucks" />
-                <marker date="1484420707705" expanded="true" signature="22989:23119" ph="SELECT impor... trucks_items" />
-                <marker date="1484420707705" expanded="true" signature="23475:23516" ph="SELECT custo... customs" />
-                <marker date="1484420707705" expanded="true" signature="24075:24101" ph="SELECT * FRO... truck_items" />
-                <marker date="1484420707705" expanded="true" signature="24307:24354" ph="SELECT weigh... products" />
+                <marker date="1484421857019" expanded="true" signature="259:817" ph="..." />
+                <marker date="1484421857019" expanded="true" signature="1180:1286" ph="..." />
+                <marker date="1484421857019" expanded="true" signature="1683:1769" ph="..." />
+                <marker date="1484421857019" expanded="true" signature="2398:2511" ph="..." />
+                <marker date="1484421857019" expanded="true" signature="3554:3658" ph="..." />
+                <marker date="1484421857019" expanded="true" signature="3732:4230" ph="..." />
+                <marker date="1484421857019" expanded="true" signature="4634:4738" ph="..." />
+                <marker date="1484421857019" expanded="true" signature="5155:5263" ph="..." />
+                <marker date="1484421857019" expanded="true" signature="5324:5332" ph="..." />
+                <marker date="1484421857019" expanded="true" signature="6015:6119" ph="..." />
+                <marker date="1484421857019" expanded="true" signature="6039:6079" ph="..." />
+                <marker date="1484421857019" expanded="true" signature="8320:8357" ph="SELECT statu... trucks" />
+                <marker date="1484421857019" expanded="true" signature="8580:8661" ph="INSERT INTO trucks... " />
+                <marker date="1484421857019" expanded="true" signature="8877:8936" ph="SELECT * FRO... suppliers_orders_items" />
+                <marker date="1484421857019" expanded="true" signature="9133:9175" ph="SELECT * FRO... products" />
+                <marker date="1484421857019" expanded="true" signature="9300:9584" ph="INSERT INTO trucks_items... " />
+                <marker date="1484421857019" expanded="true" signature="9685:9780" ph="UPDATE order... " />
+                <marker date="1484421857019" expanded="true" signature="9899:9982" ph="UPDATE suppl... " />
+                <marker date="1484421857019" expanded="true" signature="10161:10193" ph="SELECT * FRO... trucks" />
+                <marker date="1484421857019" expanded="true" signature="10304:10403" ph="UPDATE truck... " />
+                <marker date="1484421857019" expanded="true" signature="10580:10601" ph="SELECT id FR... trucks" />
+                <marker date="1484421857019" expanded="true" signature="11329:11373" ph="SELECT * FRO... trucks_items" />
+                <marker date="1484421857019" expanded="true" signature="11717:11766" ph="SELECT * FRO... trucks_items" />
+                <marker date="1484421857019" expanded="true" signature="11814:11856" ph="SELECT * FRO... products" />
+                <marker date="1484421857019" expanded="true" signature="12166:12372" ph="INSERT INTO products_warehouses... " />
+                <marker date="1484421857019" expanded="true" signature="12400:12477" ph="UPDATE truck... " />
+                <marker date="1484421857019" expanded="true" signature="12765:12813" ph="UPDATE truck... " />
+                <marker date="1484421857019" expanded="true" signature="12922:13012" ph="UPDATE truck... " />
+                <marker date="1484421857019" expanded="true" signature="13177:13236" ph="SELECT * FRO... suppliers_orders_items" />
+                <marker date="1484421857019" expanded="true" signature="13413:13659" ph="INSERT INTO trucks_items... " />
+                <marker date="1484421857019" expanded="true" signature="13749:13844" ph="UPDATE order... " />
+                <marker date="1484421857019" expanded="true" signature="13948:14031" ph="UPDATE suppl... " />
+                <marker date="1484421857019" expanded="true" signature="14099:14131" ph="SELECT * FRO... trucks" />
+                <marker date="1484421857019" expanded="true" signature="14255:14356" ph="UPDATE truck... " />
+                <marker date="1484421857019" expanded="true" signature="14533:14582" ph="SELECT * FRO... trucks_items" />
+                <marker date="1484421857019" expanded="true" signature="14647:14717" ph="SELECT * FRO... suppliers_orders_items" />
+                <marker date="1484421857019" expanded="true" signature="14868:14938" ph="UPDATE order... " />
+                <marker date="1484421857019" expanded="true" signature="15003:15098" ph="UPDATE suppl... " />
+                <marker date="1484421857019" expanded="true" signature="15176:15223" ph="DELETE FROM " />
+                <marker date="1484421857019" expanded="true" signature="15276:15308" ph="SELECT * FRO... trucks" />
+                <marker date="1484421857019" expanded="true" signature="15427:15529" ph="UPDATE truck... " />
+                <marker date="1484421857019" expanded="true" signature="15703:15735" ph="SELECT * FRO... trucks" />
+                <marker date="1484421857019" expanded="true" signature="15781:15836" ph="UPDATE `truc... " />
+                <marker date="1484421857019" expanded="true" signature="16027:16076" ph="SELECT * FRO... trucks_items" />
+                <marker date="1484421857019" expanded="true" signature="16137:16207" ph="SELECT * FRO... suppliers_orders_items" />
+                <marker date="1484421857019" expanded="true" signature="16442:16531" ph="UPDATE `orde... " />
+                <marker date="1484421857019" expanded="true" signature="16652:16753" ph="UPDATE `supp... " />
+                <marker date="1484421857019" expanded="true" signature="16983:17055" ph="UPDATE `truc... " />
+                <marker date="1484421857019" expanded="true" signature="17117:17166" ph="SELECT * FRO... trucks_items" />
+                <marker date="1484421857019" expanded="true" signature="17222:17264" ph="SELECT * FRO... products" />
+                <marker date="1484421857019" expanded="true" signature="18075:18291" ph="UPDATE truck... " />
+                <marker date="1484421857019" expanded="true" signature="18393:18425" ph="SELECT * FRO... trucks" />
+                <marker date="1484421857019" expanded="true" signature="18746:18905" ph="UPDATE truck... " />
+                <marker date="1484421857019" expanded="true" signature="19044:19088" ph="SELECT * FRO... trucks_items" />
+                <marker date="1484421857019" expanded="true" signature="19257:19337" ph="SELECT * FRO... suppliers_orders_items" />
+                <marker date="1484421857019" expanded="true" signature="19654:19737" ph="SELECT item_... order_items" />
+                <marker date="1484421857019" expanded="true" signature="20155:20225" ph="UPDATE truck... " />
+                <marker date="1484421857019" expanded="true" signature="20344:20393" ph="SELECT * FRO... trucks_items" />
+                <marker date="1484421857019" expanded="true" signature="20443:20517" ph="SELECT * FRO... suppliers_orders_items" />
+                <marker date="1484421857019" expanded="true" signature="20639:20727" ph="UPDATE order... " />
+                <marker date="1484421857019" expanded="true" signature="20820:20919" ph="UPDATE suppl... " />
+                <marker date="1484421857019" expanded="true" signature="21538:21649" ph="SELECT trans... trucks" />
+                <marker date="1484421857019" expanded="true" signature="21701:21758" ph="SELECT deliv... trucks_items" />
+                <marker date="1484421857019" expanded="true" signature="22066:22140" ph="SELECT trans... transportation_companies" />
+                <marker date="1484421857019" expanded="true" signature="22842:22937" ph="SELECT custo... trucks" />
+                <marker date="1484421857019" expanded="true" signature="22989:23119" ph="SELECT impor... trucks_items" />
+                <marker date="1484421857019" expanded="true" signature="23475:23516" ph="SELECT custo... customs" />
+                <marker date="1484421857019" expanded="true" signature="24075:24101" ph="SELECT * FRO... truck_items" />
+                <marker date="1484421857019" expanded="true" signature="24307:24354" ph="SELECT weigh... products" />
               </folding>
             </state>
           </provider>
@@ -263,10 +262,10 @@
         <option value="$PROJECT_DIR$/application/views/single_order.php" />
         <option value="$PROJECT_DIR$/application/models/model_order.php" />
         <option value="$PROJECT_DIR$/application/models/model_suppliers_order.php" />
-        <option value="$PROJECT_DIR$/application/core/model.php" />
         <option value="$PROJECT_DIR$/application/models/model_suppliers_orders.php" />
         <option value="$PROJECT_DIR$/application/controllers/controller_truck.php" />
         <option value="$PROJECT_DIR$/application/views/single_truck.php" />
+        <option value="$PROJECT_DIR$/application/core/model.php" />
         <option value="$PROJECT_DIR$/application/models/model_truck.php" />
       </list>
     </option>
@@ -510,15 +509,15 @@
       <workItem from="1483043853506" duration="603000" />
       <workItem from="1483738871737" duration="13008000" />
       <workItem from="1483914117990" duration="12000" />
-      <workItem from="1484412027121" duration="7494000" />
+      <workItem from="1484412027121" duration="8231000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="475787000" />
+    <option name="totallyTimeSpent" value="476524000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="7" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20839694" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -721,13 +720,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="824">
           <caret line="228" column="32" lean-forward="false" selection-start-line="228" selection-start-column="32" selection-end-line="228" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/models/model_warehouse.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="476">
-          <caret line="44" column="68" lean-forward="false" selection-start-line="44" selection-start-column="68" selection-end-line="44" selection-end-column="68" />
         </state>
       </provider>
     </entry>
@@ -958,22 +950,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/application/core/model.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="106" column="34" lean-forward="true" selection-start-line="106" selection-start-column="34" selection-end-line="106" selection-end-column="34" />
-          <folding>
-            <marker date="1484417953618" expanded="true" signature="1684:1735" ph="SELECT * FRO... ${$table_name}" />
-            <marker date="1484417953618" expanded="true" signature="2056:2083" ph="SELECT * FRO... ${$table_name}" />
-            <marker date="1484417953618" expanded="true" signature="6879:6977" ph="SELECT user_... users" />
-            <marker date="1484417953618" expanded="true" signature="7067:7134" ph="SELECT clien... clients" />
-            <marker date="1484417953618" expanded="true" signature="7215:7250" ph="SELECT clien... clients" />
-            <marker date="1484417953618" expanded="true" signature="7346:7425" ph="SELECT count... countries" />
-            <marker date="1484417953618" expanded="true" signature="7532:7626" ph="SELECT regio... regions" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/application/models/model_suppliers_orders.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
@@ -1014,80 +990,116 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/application/core/model.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="311">
+          <caret line="150" column="24" lean-forward="true" selection-start-line="150" selection-start-column="24" selection-end-line="150" selection-end-column="24" />
+          <folding>
+            <marker date="1484421820690" expanded="true" signature="1684:1735" ph="SELECT * FRO... ${$table_name}" />
+            <marker date="1484421820690" expanded="true" signature="2056:2083" ph="SELECT * FRO... ${$table_name}" />
+            <marker date="1484421820690" expanded="true" signature="6904:7002" ph="SELECT user_... users" />
+            <marker date="1484421820690" expanded="true" signature="7092:7159" ph="SELECT clien... clients" />
+            <marker date="1484421820690" expanded="true" signature="7240:7275" ph="SELECT clien... clients" />
+            <marker date="1484421820690" expanded="true" signature="7371:7450" ph="SELECT count... countries" />
+            <marker date="1484421820690" expanded="true" signature="7557:7651" ph="SELECT regio... regions" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/models/model_warehouse.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="833">
+          <caret line="44" column="68" lean-forward="false" selection-start-line="44" selection-start-column="68" selection-end-line="44" selection-end-column="68" />
+          <folding>
+            <marker date="1482960386843" expanded="true" signature="3154:3271" ph="SELECT * FRO... products_warehouses" />
+            <marker date="1482960386843" expanded="true" signature="4016:4293" ph="UPDATE produ... " />
+            <marker date="1482960386843" expanded="true" signature="4443:4728" ph="INSERT INTO `products_warehouses`... " />
+            <marker date="1482960386843" expanded="true" signature="4875:4971" ph="SELECT * FRO... products_warehouses" />
+            <marker date="1482960386843" expanded="true" signature="5031:5160" ph="SELECT * FRO... products_warehouses" />
+            <marker date="1482960386843" expanded="true" signature="5248:5326" ph="DELETE FROM " />
+            <marker date="1482960386843" expanded="true" signature="5450:5563" ph="UPDATE produ... " />
+            <marker date="1482960386843" expanded="true" signature="6386:6663" ph="UPDATE produ... " />
+            <marker date="1482960386843" expanded="true" signature="6744:7095" ph="INSERT INTO products_warehouses... " />
+            <marker date="1482960386843" expanded="true" signature="7388:7422" ph="SELECT * FRO... products_warehouses" />
+            <marker date="1482960386843" expanded="true" signature="7635:7677" ph="SELECT * FRO... products" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/application/models/model_truck.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="319">
-          <caret line="513" column="57" lean-forward="false" selection-start-line="513" selection-start-column="57" selection-end-line="513" selection-end-column="57" />
+        <state relative-caret-position="295">
+          <caret line="438" column="35" lean-forward="true" selection-start-line="438" selection-start-column="35" selection-end-line="438" selection-end-column="35" />
           <folding>
-            <marker date="1484420707705" expanded="true" signature="259:817" ph="..." />
-            <marker date="1484420707705" expanded="true" signature="1180:1286" ph="..." />
-            <marker date="1484420707705" expanded="true" signature="1683:1769" ph="..." />
-            <marker date="1484420707705" expanded="true" signature="2398:2511" ph="..." />
-            <marker date="1484420707705" expanded="true" signature="3554:3658" ph="..." />
-            <marker date="1484420707705" expanded="true" signature="3732:4230" ph="..." />
-            <marker date="1484420707705" expanded="true" signature="4634:4738" ph="..." />
-            <marker date="1484420707705" expanded="true" signature="5155:5263" ph="..." />
-            <marker date="1484420707705" expanded="true" signature="5324:5332" ph="..." />
-            <marker date="1484420707705" expanded="true" signature="6015:6119" ph="..." />
-            <marker date="1484420707705" expanded="true" signature="6039:6079" ph="..." />
-            <marker date="1484420707705" expanded="true" signature="8320:8357" ph="SELECT statu... trucks" />
-            <marker date="1484420707705" expanded="true" signature="8580:8661" ph="INSERT INTO trucks... " />
-            <marker date="1484420707705" expanded="true" signature="8877:8936" ph="SELECT * FRO... suppliers_orders_items" />
-            <marker date="1484420707705" expanded="true" signature="9133:9175" ph="SELECT * FRO... products" />
-            <marker date="1484420707705" expanded="true" signature="9300:9584" ph="INSERT INTO trucks_items... " />
-            <marker date="1484420707705" expanded="true" signature="9685:9780" ph="UPDATE order... " />
-            <marker date="1484420707705" expanded="true" signature="9899:9982" ph="UPDATE suppl... " />
-            <marker date="1484420707705" expanded="true" signature="10161:10193" ph="SELECT * FRO... trucks" />
-            <marker date="1484420707705" expanded="true" signature="10304:10403" ph="UPDATE truck... " />
-            <marker date="1484420707705" expanded="true" signature="10580:10601" ph="SELECT id FR... trucks" />
-            <marker date="1484420707705" expanded="true" signature="11329:11373" ph="SELECT * FRO... trucks_items" />
-            <marker date="1484420707705" expanded="true" signature="11717:11766" ph="SELECT * FRO... trucks_items" />
-            <marker date="1484420707705" expanded="true" signature="11814:11856" ph="SELECT * FRO... products" />
-            <marker date="1484420707705" expanded="true" signature="12166:12372" ph="INSERT INTO products_warehouses... " />
-            <marker date="1484420707705" expanded="true" signature="12400:12477" ph="UPDATE truck... " />
-            <marker date="1484420707705" expanded="true" signature="12765:12813" ph="UPDATE truck... " />
-            <marker date="1484420707705" expanded="true" signature="12922:13012" ph="UPDATE truck... " />
-            <marker date="1484420707705" expanded="true" signature="13177:13236" ph="SELECT * FRO... suppliers_orders_items" />
-            <marker date="1484420707705" expanded="true" signature="13413:13659" ph="INSERT INTO trucks_items... " />
-            <marker date="1484420707705" expanded="true" signature="13749:13844" ph="UPDATE order... " />
-            <marker date="1484420707705" expanded="true" signature="13948:14031" ph="UPDATE suppl... " />
-            <marker date="1484420707705" expanded="true" signature="14099:14131" ph="SELECT * FRO... trucks" />
-            <marker date="1484420707705" expanded="true" signature="14255:14356" ph="UPDATE truck... " />
-            <marker date="1484420707705" expanded="true" signature="14533:14582" ph="SELECT * FRO... trucks_items" />
-            <marker date="1484420707705" expanded="true" signature="14647:14717" ph="SELECT * FRO... suppliers_orders_items" />
-            <marker date="1484420707705" expanded="true" signature="14868:14938" ph="UPDATE order... " />
-            <marker date="1484420707705" expanded="true" signature="15003:15098" ph="UPDATE suppl... " />
-            <marker date="1484420707705" expanded="true" signature="15176:15223" ph="DELETE FROM " />
-            <marker date="1484420707705" expanded="true" signature="15276:15308" ph="SELECT * FRO... trucks" />
-            <marker date="1484420707705" expanded="true" signature="15427:15529" ph="UPDATE truck... " />
-            <marker date="1484420707705" expanded="true" signature="15703:15735" ph="SELECT * FRO... trucks" />
-            <marker date="1484420707705" expanded="true" signature="15781:15836" ph="UPDATE `truc... " />
-            <marker date="1484420707705" expanded="true" signature="16027:16076" ph="SELECT * FRO... trucks_items" />
-            <marker date="1484420707705" expanded="true" signature="16137:16207" ph="SELECT * FRO... suppliers_orders_items" />
-            <marker date="1484420707705" expanded="true" signature="16442:16531" ph="UPDATE `orde... " />
-            <marker date="1484420707705" expanded="true" signature="16652:16753" ph="UPDATE `supp... " />
-            <marker date="1484420707705" expanded="true" signature="16983:17055" ph="UPDATE `truc... " />
-            <marker date="1484420707705" expanded="true" signature="17117:17166" ph="SELECT * FRO... trucks_items" />
-            <marker date="1484420707705" expanded="true" signature="17222:17264" ph="SELECT * FRO... products" />
-            <marker date="1484420707705" expanded="true" signature="18075:18291" ph="UPDATE truck... " />
-            <marker date="1484420707705" expanded="true" signature="18393:18425" ph="SELECT * FRO... trucks" />
-            <marker date="1484420707705" expanded="true" signature="18746:18905" ph="UPDATE truck... " />
-            <marker date="1484420707705" expanded="true" signature="19044:19088" ph="SELECT * FRO... trucks_items" />
-            <marker date="1484420707705" expanded="true" signature="19257:19337" ph="SELECT * FRO... suppliers_orders_items" />
-            <marker date="1484420707705" expanded="true" signature="19654:19737" ph="SELECT item_... order_items" />
-            <marker date="1484420707705" expanded="true" signature="20155:20225" ph="UPDATE truck... " />
-            <marker date="1484420707705" expanded="true" signature="20344:20393" ph="SELECT * FRO... trucks_items" />
-            <marker date="1484420707705" expanded="true" signature="20443:20517" ph="SELECT * FRO... suppliers_orders_items" />
-            <marker date="1484420707705" expanded="true" signature="20639:20727" ph="UPDATE order... " />
-            <marker date="1484420707705" expanded="true" signature="20820:20919" ph="UPDATE suppl... " />
-            <marker date="1484420707705" expanded="true" signature="21538:21649" ph="SELECT trans... trucks" />
-            <marker date="1484420707705" expanded="true" signature="21701:21758" ph="SELECT deliv... trucks_items" />
-            <marker date="1484420707705" expanded="true" signature="22066:22140" ph="SELECT trans... transportation_companies" />
-            <marker date="1484420707705" expanded="true" signature="22842:22937" ph="SELECT custo... trucks" />
-            <marker date="1484420707705" expanded="true" signature="22989:23119" ph="SELECT impor... trucks_items" />
-            <marker date="1484420707705" expanded="true" signature="23475:23516" ph="SELECT custo... customs" />
-            <marker date="1484420707705" expanded="true" signature="24075:24101" ph="SELECT * FRO... truck_items" />
-            <marker date="1484420707705" expanded="true" signature="24307:24354" ph="SELECT weigh... products" />
+            <marker date="1484421857019" expanded="true" signature="259:817" ph="..." />
+            <marker date="1484421857019" expanded="true" signature="1180:1286" ph="..." />
+            <marker date="1484421857019" expanded="true" signature="1683:1769" ph="..." />
+            <marker date="1484421857019" expanded="true" signature="2398:2511" ph="..." />
+            <marker date="1484421857019" expanded="true" signature="3554:3658" ph="..." />
+            <marker date="1484421857019" expanded="true" signature="3732:4230" ph="..." />
+            <marker date="1484421857019" expanded="true" signature="4634:4738" ph="..." />
+            <marker date="1484421857019" expanded="true" signature="5155:5263" ph="..." />
+            <marker date="1484421857019" expanded="true" signature="5324:5332" ph="..." />
+            <marker date="1484421857019" expanded="true" signature="6015:6119" ph="..." />
+            <marker date="1484421857019" expanded="true" signature="6039:6079" ph="..." />
+            <marker date="1484421857019" expanded="true" signature="8320:8357" ph="SELECT statu... trucks" />
+            <marker date="1484421857019" expanded="true" signature="8580:8661" ph="INSERT INTO trucks... " />
+            <marker date="1484421857019" expanded="true" signature="8877:8936" ph="SELECT * FRO... suppliers_orders_items" />
+            <marker date="1484421857019" expanded="true" signature="9133:9175" ph="SELECT * FRO... products" />
+            <marker date="1484421857019" expanded="true" signature="9300:9584" ph="INSERT INTO trucks_items... " />
+            <marker date="1484421857019" expanded="true" signature="9685:9780" ph="UPDATE order... " />
+            <marker date="1484421857019" expanded="true" signature="9899:9982" ph="UPDATE suppl... " />
+            <marker date="1484421857019" expanded="true" signature="10161:10193" ph="SELECT * FRO... trucks" />
+            <marker date="1484421857019" expanded="true" signature="10304:10403" ph="UPDATE truck... " />
+            <marker date="1484421857019" expanded="true" signature="10580:10601" ph="SELECT id FR... trucks" />
+            <marker date="1484421857019" expanded="true" signature="11329:11373" ph="SELECT * FRO... trucks_items" />
+            <marker date="1484421857019" expanded="true" signature="11717:11766" ph="SELECT * FRO... trucks_items" />
+            <marker date="1484421857019" expanded="true" signature="11814:11856" ph="SELECT * FRO... products" />
+            <marker date="1484421857019" expanded="true" signature="12166:12372" ph="INSERT INTO products_warehouses... " />
+            <marker date="1484421857019" expanded="true" signature="12400:12477" ph="UPDATE truck... " />
+            <marker date="1484421857019" expanded="true" signature="12765:12813" ph="UPDATE truck... " />
+            <marker date="1484421857019" expanded="true" signature="12922:13012" ph="UPDATE truck... " />
+            <marker date="1484421857019" expanded="true" signature="13177:13236" ph="SELECT * FRO... suppliers_orders_items" />
+            <marker date="1484421857019" expanded="true" signature="13413:13659" ph="INSERT INTO trucks_items... " />
+            <marker date="1484421857019" expanded="true" signature="13749:13844" ph="UPDATE order... " />
+            <marker date="1484421857019" expanded="true" signature="13948:14031" ph="UPDATE suppl... " />
+            <marker date="1484421857019" expanded="true" signature="14099:14131" ph="SELECT * FRO... trucks" />
+            <marker date="1484421857019" expanded="true" signature="14255:14356" ph="UPDATE truck... " />
+            <marker date="1484421857019" expanded="true" signature="14533:14582" ph="SELECT * FRO... trucks_items" />
+            <marker date="1484421857019" expanded="true" signature="14647:14717" ph="SELECT * FRO... suppliers_orders_items" />
+            <marker date="1484421857019" expanded="true" signature="14868:14938" ph="UPDATE order... " />
+            <marker date="1484421857019" expanded="true" signature="15003:15098" ph="UPDATE suppl... " />
+            <marker date="1484421857019" expanded="true" signature="15176:15223" ph="DELETE FROM " />
+            <marker date="1484421857019" expanded="true" signature="15276:15308" ph="SELECT * FRO... trucks" />
+            <marker date="1484421857019" expanded="true" signature="15427:15529" ph="UPDATE truck... " />
+            <marker date="1484421857019" expanded="true" signature="15703:15735" ph="SELECT * FRO... trucks" />
+            <marker date="1484421857019" expanded="true" signature="15781:15836" ph="UPDATE `truc... " />
+            <marker date="1484421857019" expanded="true" signature="16027:16076" ph="SELECT * FRO... trucks_items" />
+            <marker date="1484421857019" expanded="true" signature="16137:16207" ph="SELECT * FRO... suppliers_orders_items" />
+            <marker date="1484421857019" expanded="true" signature="16442:16531" ph="UPDATE `orde... " />
+            <marker date="1484421857019" expanded="true" signature="16652:16753" ph="UPDATE `supp... " />
+            <marker date="1484421857019" expanded="true" signature="16983:17055" ph="UPDATE `truc... " />
+            <marker date="1484421857019" expanded="true" signature="17117:17166" ph="SELECT * FRO... trucks_items" />
+            <marker date="1484421857019" expanded="true" signature="17222:17264" ph="SELECT * FRO... products" />
+            <marker date="1484421857019" expanded="true" signature="18075:18291" ph="UPDATE truck... " />
+            <marker date="1484421857019" expanded="true" signature="18393:18425" ph="SELECT * FRO... trucks" />
+            <marker date="1484421857019" expanded="true" signature="18746:18905" ph="UPDATE truck... " />
+            <marker date="1484421857019" expanded="true" signature="19044:19088" ph="SELECT * FRO... trucks_items" />
+            <marker date="1484421857019" expanded="true" signature="19257:19337" ph="SELECT * FRO... suppliers_orders_items" />
+            <marker date="1484421857019" expanded="true" signature="19654:19737" ph="SELECT item_... order_items" />
+            <marker date="1484421857019" expanded="true" signature="20155:20225" ph="UPDATE truck... " />
+            <marker date="1484421857019" expanded="true" signature="20344:20393" ph="SELECT * FRO... trucks_items" />
+            <marker date="1484421857019" expanded="true" signature="20443:20517" ph="SELECT * FRO... suppliers_orders_items" />
+            <marker date="1484421857019" expanded="true" signature="20639:20727" ph="UPDATE order... " />
+            <marker date="1484421857019" expanded="true" signature="20820:20919" ph="UPDATE suppl... " />
+            <marker date="1484421857019" expanded="true" signature="21538:21649" ph="SELECT trans... trucks" />
+            <marker date="1484421857019" expanded="true" signature="21701:21758" ph="SELECT deliv... trucks_items" />
+            <marker date="1484421857019" expanded="true" signature="22066:22140" ph="SELECT trans... transportation_companies" />
+            <marker date="1484421857019" expanded="true" signature="22842:22937" ph="SELECT custo... trucks" />
+            <marker date="1484421857019" expanded="true" signature="22989:23119" ph="SELECT impor... trucks_items" />
+            <marker date="1484421857019" expanded="true" signature="23475:23516" ph="SELECT custo... customs" />
+            <marker date="1484421857019" expanded="true" signature="24075:24101" ph="SELECT * FRO... truck_items" />
+            <marker date="1484421857019" expanded="true" signature="24307:24354" ph="SELECT weigh... products" />
           </folding>
         </state>
       </provider>

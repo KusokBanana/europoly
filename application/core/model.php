@@ -148,6 +148,7 @@ abstract class Model extends mysqli
         'Produced',
         'On the way',
         'Arrived',
+        'Expects Issue',
         'Issued'
     ];
 
