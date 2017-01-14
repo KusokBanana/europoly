@@ -243,11 +243,12 @@
                                                     <th> Product</th>
                                                     <th> Quantity</th>
                                                     <th> Number of Packs</th>
-                                                    <th> Price (per Unit)</th>
-                                                    <th> Total Price</th>
+                                                    <th> Purchase Price</th>
+                                                    <th> Purchase Value</th>
                                                     <th> Sell Price</th>
                                                     <th> Discount Rate (%)</th>
                                                     <th> Reduced Price</th>
+                                                    <th> Sell Value</th>
                                                     <th> Manager Bonus Rate (%)</th>
                                                     <th> Manager Bonus</th>
                                                     <th> Status</th>
@@ -395,7 +396,7 @@ require_once 'modals/cancel_order.php';
             },
             dom: '<t>ip',
             columnDefs: [{
-                targets: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+                targets: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
                 searchable: false,
                 orderable: false
             }, {
@@ -405,7 +406,7 @@ require_once 'modals/cancel_order.php';
             }]
         });
         $table_order_items.on('draw.dt', function () {
-            $('.x-amount, .x-number_of_packs, .x-manager_bonus_rate').editable({
+            $('.x-amount, .x-number_of_packs, .x-manager_bonus_rate, .x-sell-price').editable({
                 type: "number",
                 min: 0,
                 step: 0.01,

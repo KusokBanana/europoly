@@ -2,16 +2,25 @@
     <!-- BEGIN SIDEBAR MENU -->
     <ul class="page-sidebar-menu  page-header-fixed " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
         <li id="nav-catalogue" class="nav-item">
-            <a href="/catalogue" class="nav-link nav-toggle">
+            <a href="javascript:;" class="nav-link nav-toggle">
                 <i class="icon-home"></i>
                 <span class="title">Catalogue</span>
+                <span class="arrow"></span>
             </a>
-        </li>
-        <li id="nav-brands" class="nav-item">
-            <a href="/brands" class="nav-link nav-toggle">
-                <i class="icon-briefcase"></i>
-                <span class="title">Brands</span>
-            </a>
+            <ul class="sub-menu">
+				<li id="nav-products" class="nav-item">
+					<a href="/catalogue" class="nav-link nav-toggle">
+						<i class="icon-bar-chart"></i>
+						<span class="title">Products</span>
+					</a>
+				</li>
+				<li id="nav-brands" class="nav-item">
+					<a href="/brands" class="nav-link nav-toggle">
+						<i class="icon-bar-chart"></i>
+						<span class="title">Brands</span>
+					</a>
+				</li>
+            </ul>
         </li>
         <li id="nav-clients" class="nav-item">
             <a href="/clients" class="nav-link nav-toggle">

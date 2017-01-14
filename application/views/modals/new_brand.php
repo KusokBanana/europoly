@@ -13,7 +13,16 @@
                     </div>
                     <div class="form-group">
                         <label>Supplier</label>
-                        <input name="supplier" class="form-control" placeholder="Enter Supplier" required>
+                        <select name="supplier" class="form-control" required>
+                            <option value=""></option>
+                            <?php
+                            if (!empty($this->suppliers)):
+                                foreach ($this->suppliers as $supplier): ?>
+                                    <option value="<?= $supplier['id'] ?>"><?= $supplier['name'] ?></option>
+                            <?php
+                                endforeach;
+                            endif; ?>
+                        </select>
                     </div>
                 </div>
                 <div class="modal-footer">

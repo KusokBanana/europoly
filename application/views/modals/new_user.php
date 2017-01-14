@@ -44,7 +44,7 @@
                 <div class="modal-footer">
                     <div class="form-actions right">
                         <button type="button" class="btn default" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn green">Move</button>
+                        <button type="submit" class="btn green">Create</button>
                     </div>
                 </div>
             </form>

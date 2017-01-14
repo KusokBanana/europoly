@@ -11,6 +11,7 @@ class ControllerBrands extends Controller
     function action_index($action_param = null, $action_data = null)
     {
         $this->view->title = "Brands";
+        $this->view->suppliers = $this->model->getSuppliersIdNames();
         $this->view->build('templates/template.php', 'brands.php');
     }
 

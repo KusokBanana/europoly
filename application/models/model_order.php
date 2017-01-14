@@ -37,9 +37,9 @@ class ModelOrder extends Model
                 '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Number of Packs\">',
                     IFNULL(order_items.number_of_packs, ''),
                 '</a>')"),
-            array('dt' => 4, 'db' => "IFNULL(CAST(products.purchase_price as decimal(64, 2)), '')"),
-            array('dt' => 5, 'db' => "IFNULL(CAST(order_items.total_price as decimal(64, 2)), '')"),
-            array('dt' => 6, 'db' => "IFNULL(CAST(products.sell_price as decimal(64, 2)), '')"),
+            array('dt' => 4, 'db' => "IFNULL(CAST(order_items.purchase_price as decimal(64, 2)), '')"),
+            array('dt' => 5, 'db' => "IFNULL(CAST(order_items.purchase_price * order_items.amount as decimal(64, 2)), '')"),
+            array('dt' => 6, 'db' => "IFNULL(CAST(order_items.sell_price as decimal(64, 2)), '')"),
             array('dt' => 7, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-discount_rate\" data-pk=\"',
                 order_items.order_item_id,
                 '\" data-name=\"discount_rate\" data-value=\"',
@@ -47,23 +47,38 @@ class ModelOrder extends Model
                 '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Discount Rate, %\">',
                     IFNULL(CONCAT(order_items.discount_rate, '%'), ''),
                 '</a>')"),
-            array('dt' => 8, 'db' => "IFNULL(CAST(order_items.reduced_price as decimal(64, 2)), '')"),
-            array('dt' => 9, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-manager_bonus_rate\" data-pk=\"',
+            array('dt' => 8, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-sell-price\" data-pk=\"',
+                order_items.order_item_id,
+                '\" data-name=\"reduced-price\" data-value=\"',
+                IFNULL(CAST(order_items.sell_price * (100 - order_items.discount_rate) as decimal(64, 2)), ''),
+                '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Reduced Price\">',
+                    IFNULL(CAST(order_items.sell_price * (100 - order_items.discount_rate) as decimal(64, 2)), ''),
+                '</a>')"),
+            array('dt' => 9, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-sell-price\" data-pk=\"',
+                order_items.order_item_id,
+                '\" data-name=\"sell-value\" data-value=\"',
+                IFNULL(CAST((order_items.sell_price * 
+                (100 - order_items.discount_rate)) * order_items.amount as decimal(64, 2)), ''),
+                '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Sell Value\">',
+                    IFNULL(CAST((order_items.sell_price * 
+                (100 - order_items.discount_rate)) * order_items.amount as decimal(64, 2)), ''),
+                '</a>')"),
+            array('dt' => 10, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-manager_bonus_rate\" data-pk=\"',
                 order_items.order_item_id,
                 '\" data-name=\"manager_bonus_rate\" data-value=\"',
                 IFNULL(order_items.manager_bonus_rate, ''),
                 '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Manager Bonus Rate, %\">',
                     IFNULL(CONCAT(order_items.manager_bonus_rate, '%'), ''),
                 '</a>')"),
-            array('dt' => 10, 'db' => "IFNULL(order_items.manager_bonus, '')"),
-            array('dt' => 11, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-item_status\" data-pk=\"',
+            array('dt' => 11, 'db' => "IFNULL(order_items.manager_bonus, '')"),
+            array('dt' => 12, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-item_status\" data-pk=\"',
                 order_items.order_item_id,
                 '\" data-name=\"item_status\" data-value=\"',
                 IFNULL(order_items.item_status, ''),
                 '\" data-url=\"/order/change_item_field\" data-original-title=\"Choose Item Status\">',
                     IFNULL(order_items.item_status, ''),
                 '</a>')"),
-            array('dt' => 12, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
+            array('dt' => 13, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
                     IF(order_items.item_status = 'Draft' OR order_items.item_status = 'Hold' OR order_items.item_status = 'Sent to Logist', 
                         CONCAT('<a href=\"/order/delete_order_item?order_id=', order_items.order_id, '&order_item_id=', order_items.order_item_id,
                         '\" onclick=\"return confirm(\'Are you sure to delete the item?\')\"><span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span></a>'), 
@@ -108,13 +123,13 @@ class ModelOrder extends Model
         foreach ($product_ids as $product_id) {
             $product = $this->getFirst("SELECT * FROM products WHERE product_id = $product_id");
             $number_of_packs = $product['amount_in_pack'] != null ? 0 : 1;
-            $this->insert("INSERT INTO order_items (order_id, product_id, purchase_price, amount, number_of_packs, total_price, discount_rate, reduced_price, manager_bonus_rate, manager_bonus, item_status)
-                VALUES ($order_id, $product_id, ${product[$price_field_name]}, 0, $number_of_packs, 0, $discount_rate, 0, 
-                $manager_bonus_rate, 0, 'Draft')");
-            $order = $this->getFirst("SELECT * FROM orders WHERE order_id = $order_id");
+            $totalPrice = $order['total_price'] + $product[$price_field_name];
+            $this->insert("INSERT INTO order_items (order_id, product_id, purchase_price, amount, number_of_packs, total_price, discount_rate, reduced_price, manager_bonus_rate, manager_bonus, item_status, sell_price)
+                VALUES ($order_id, $product_id, ${product[$price_field_name]}, 1, $number_of_packs, 0, $discount_rate, 0, 
+                $manager_bonus_rate, 0, 'Draft', ${product['sell_price']})");
             $order_items_count = $order['order_items_count'] + 1;
             $this->update("UPDATE orders 
-                SET order_items_count = $order_items_count
+                SET order_items_count = $order_items_count, total_price = $totalPrice
                 WHERE order_id = $order_id");
         }
         $this->updateItemsStatus($order_id);
@@ -129,11 +144,12 @@ class ModelOrder extends Model
 
         $order = $this->getFirst("SELECT * FROM orders WHERE order_id = $order_id");
         $order_items_count = $order['order_items_count'] - 1;
-        $total_price = $order['total_price'] - $order_item['reduced_price'];
-        $manager_bonus = $order['manager_bonus_rate'] * $total_price / 100;
-        $total_commission = $order['commission_rate'] * $total_price / 100;
+        $amount = $order_item['amount'] ? $order_item['amount'] : 1;
+        $totalPrice = $order['total_price'] - $order_item['purchase_price'] * $amount;
+        $manager_bonus = $order['manager_bonus_rate'] * $totalPrice / 100;
+        $total_commission = $order['commission_rate'] * $totalPrice / 100;
         $this->update("UPDATE orders 
-                SET order_items_count = $order_items_count, total_price = $total_price, manager_bonus = $manager_bonus, total_commission = $total_commission
+                SET order_items_count = $order_items_count, total_price = $totalPrice, manager_bonus = $manager_bonus, total_commission = $total_commission
                 WHERE order_id = $order_id");
 
     }
@@ -156,6 +172,22 @@ class ModelOrder extends Model
     public function updateItemField($order_item_id, $field, $new_value)
     {
         $old_order_item = $this->getFirst("SELECT * FROM order_items WHERE order_item_id = $order_item_id");
+
+        if ($field == 'reduced-price' || $field == 'sell-value') {
+            switch ($field) {
+                case 'reduced-price':
+                    $discountRate = 100 - $new_value / $old_order_item['sell_price'];
+                    return $this->update("UPDATE `order_items` SET discount_rate = $discountRate 
+                      WHERE order_item_id = $order_item_id");
+                case 'sell-value':
+                    $amount = ($old_order_item['amount'] ? $old_order_item['amount'] : 1);
+                    $discountRate = 100 - $new_value / ($old_order_item['sell_price'] * $amount);
+                    return $this->update("UPDATE `order_items` SET discount_rate = $discountRate 
+                      WHERE order_item_id = $order_item_id");
+            }
+            return false;
+        }
+
         $result = $this->update("UPDATE `order_items` SET `$field` = '$new_value' WHERE order_item_id = $order_item_id");
         $new_order_item = $this->getFirst("SELECT * FROM order_items WHERE order_item_id = $order_item_id");
 

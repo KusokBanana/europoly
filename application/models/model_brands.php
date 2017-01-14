@@ -35,4 +35,8 @@ class ModelBrands extends Model
             INSERT INTO `brands`(`name`, `supplier_id`)
             VALUES ('$name', '$supplier')");
     }
+    function getSuppliersIdNames()
+    {
+        return $this->getAssoc("SELECT supplier_id as id, name FROM suppliers WHERE is_deleted = 0");
+    }
 }

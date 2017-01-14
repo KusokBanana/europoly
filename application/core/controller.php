@@ -49,7 +49,55 @@ abstract class Controller
             echo "Sorry, your file was not uploaded.";
             return false;
         } else {
-            return move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file);
+            // Функция для изменения размеров изображения
+            $this->resizePhoto($_FILES["fileToUpload"]);
+            $file = move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file);
+            return $file;
+        }
+    }
+    private function resizePhoto(&$file)
+    {
+        if ($file['type'] == 'image/jpeg')
+            $source = imagecreatefromjpeg($file['tmp_name']);
+        elseif ($file['type'] == 'image/png')
+            $source = imagecreatefrompng($file['tmp_name']);
+        elseif ($file['type'] == 'image/gif')
+            $source = imagecreatefromgif($file['tmp_name']);
+        else
+            return false;
+
+        $tmp_path = $file["tmp_name"];
+
+        $w_src = imagesx($source);
+        $h_src = imagesy($source);
+
+        $w = 260;
+        // Если ширина больше заданной
+        if ($w_src > $w)
+        {
+            // Вычисление пропорций
+            $ratio = $w_src/$w;
+            $w_dest = round($w_src/$ratio);
+            $h_dest = round($h_src/$ratio);
+            // Создаём пустую картинку
+            $dest = imagecreatetruecolor($w_dest, $h_dest);
+
+            // Копируем старое изображение в новое с изменением параметров
+            imagecopyresampled($dest, $source, 0, 0, 0, 0, $w_dest, $h_dest, $w_src, $h_src);
+
+            // Вывод картинки и очистка памяти
+            imagejpeg($dest, $tmp_path, 100);
+            imagedestroy($dest);
+            imagedestroy($source);
+            return $file['name'];
+        }
+        else
+        {
+            // Вывод картинки и очистка памяти
+            imagejpeg($source, $tmp_path . $file['name'], 100);
+            imagedestroy($source);
+
+            return $file['name'];
         }
     }
 }
