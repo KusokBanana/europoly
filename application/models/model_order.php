@@ -71,14 +71,18 @@ class ModelOrder extends Model
                     IFNULL(CONCAT(order_items.manager_bonus_rate, '%'), ''),
                 '</a>')"),
             array('dt' => 11, 'db' => "IFNULL(order_items.manager_bonus, '')"),
-            array('dt' => 12, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-item_status\" data-pk=\"',
+            array('dt' => 12, 'db' => "CONCAT(IF(products.width = NULL, 'Width undefined', 
+                                        IF(products.length = NULL, 'Length undefined', 
+                                            order_items.amount / (products.width * products.length))
+                                            ), '')"),
+            array('dt' => 13, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-item_status\" data-pk=\"',
                 order_items.order_item_id,
                 '\" data-name=\"item_status\" data-value=\"',
                 IFNULL(order_items.item_status, ''),
                 '\" data-url=\"/order/change_item_field\" data-original-title=\"Choose Item Status\">',
                     IFNULL(order_items.item_status, ''),
                 '</a>')"),
-            array('dt' => 13, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
+            array('dt' => 14, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
                     IF(order_items.item_status = 'Draft' OR order_items.item_status = 'Hold' OR order_items.item_status = 'Sent to Logist', 
                         CONCAT('<a href=\"/order/delete_order_item?order_id=', order_items.order_id, '&order_item_id=', order_items.order_item_id,
                         '\" onclick=\"return confirm(\'Are you sure to delete the item?\')\"><span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span></a>'), 
@@ -196,7 +200,8 @@ class ModelOrder extends Model
 
         if ($product['amount_in_pack'] != null) {
             if ($old_order_item['amount'] != $new_order_item['amount']) {
-                $number_of_packs = ceil($new_order_item['amount'] / $product['amount_in_pack']);
+                $number_of_packs = ($new_order_item['amount'] / $product['amount_in_pack']);
+//                $number_of_packs = ceil($new_order_item['amount'] / $product['amount_in_pack']);
             } else {
                 $number_of_packs = $new_order_item['number_of_packs'];
             }

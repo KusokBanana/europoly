@@ -251,6 +251,7 @@
                                                     <th> Sell Value</th>
                                                     <th> Manager Bonus Rate (%)</th>
                                                     <th> Manager Bonus</th>
+                                                    <th> Number of planks</th>
                                                     <th> Status</th>
                                                     <th> Actions</th>
                                                 </tr>
@@ -396,7 +397,7 @@ require_once 'modals/cancel_order.php';
             },
             dom: '<t>ip',
             columnDefs: [{
-                targets: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+                targets: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
                 searchable: false,
                 orderable: false
             }, {
