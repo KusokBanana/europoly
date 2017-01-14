@@ -118,14 +118,15 @@ class ModelOrder extends Model
         $client = $this->getFirst("SELECT * FROM clients WHERE client_id = ${order['client_id']}");
         $sales_manager = $this->getFirst("SELECT * FROM users WHERE user_id = ${order['sales_manager_id']}");
         $manager_bonus_rate = isset($sales_manager['manager_bonus_rate']) && $sales_manager['manager_bonus_rate'] != "" ? $sales_manager['manager_bonus_rate'] : 0;
-        $price_field_name = $client['client_type'] == 'Dealer' ? 'dealer_price' : 'purchase_price';
-        $discount_rate = $client['client_type'] == 'Dealer' ? 30 : 0;
+        $price_field_name = $client['type'] == 'Dealer' ? 'dealer_price' : 'purchase_price';
+        $discount_rate = $client['type'] == 'Dealer' ? 30 : 0;
         foreach ($product_ids as $product_id) {
             $product = $this->getFirst("SELECT * FROM products WHERE product_id = $product_id");
             $number_of_packs = $product['amount_in_pack'] != null ? 0 : 1;
-            $totalPrice = $order['total_price'] + $product[$price_field_name];
+            $productPrice = $product[$price_field_name] != null ? $product[$price_field_name] : 0;
+            $totalPrice = $order['total_price'] + $productPrice;
             $this->insert("INSERT INTO order_items (order_id, product_id, purchase_price, amount, number_of_packs, total_price, discount_rate, reduced_price, manager_bonus_rate, manager_bonus, item_status, sell_price)
-                VALUES ($order_id, $product_id, ${product[$price_field_name]}, 1, $number_of_packs, 0, $discount_rate, 0, 
+                VALUES ($order_id, $product_id, $productPrice, 1, $number_of_packs, 0, $discount_rate, 0, 
                 $manager_bonus_rate, 0, 'Draft', ${product['sell_price']})");
             $order_items_count = $order['order_items_count'] + 1;
             $this->update("UPDATE orders 
