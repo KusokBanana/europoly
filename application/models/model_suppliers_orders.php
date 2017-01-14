@@ -95,6 +95,7 @@ class ModelSuppliers_orders extends Model
     var $suppliers_orders_table_reduce = 'suppliers_orders';
 
     var $statusesFilter = [
+        'Draft for Supplier',
         'Confirmed by Supplier',
         'Produced'
     ];
@@ -127,7 +128,7 @@ class ModelSuppliers_orders extends Model
                 $order_item = $this->getFirst("SELECT * FROM order_items WHERE order_item_id = $order_item_id");
 
                 $this->update("UPDATE order_items 
-                              SET item_status = 'Confirmed by Supplier' WHERE order_item_id = $order_item_id");
+                              SET item_status = 'Draft for Supplier' WHERE order_item_id = $order_item_id");
 
                 $productId = $order_item['product_id'];
                 $amount = $order_item['amount'];

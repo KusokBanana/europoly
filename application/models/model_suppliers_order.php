@@ -118,7 +118,7 @@ class ModelSuppliers_order extends Model
             else {
                 $this->insert("INSERT INTO suppliers_orders_items (order_id, product_id, total_price, amount, 
                   number_of_packs, item_status)
-                VALUES ($order_id, $product_id, 0, 1, $number_of_packs, 'Confirmed by Supplier')");
+                VALUES ($order_id, $product_id, 0, 1, $number_of_packs, 'Draft for Supplier')");
             }
 
             $order = $this->getFirst("SELECT * FROM suppliers_orders WHERE order_id = $order_id");

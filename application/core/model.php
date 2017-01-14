@@ -143,6 +143,7 @@ abstract class Model extends mysqli
         'Draft',
         'Hold',
         'Sent to Logist',
+        'Draft for Supplier',
         'Confirmed by Supplier',
         'Produced',
         'On the way',

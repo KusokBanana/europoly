@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fe24c410-5d2a-4ad7-aea6-4e59e4e304a8" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/models/model_order.php" afterPath="$PROJECT_DIR$/application/models/model_order.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/views/single_order.php" afterPath="$PROJECT_DIR$/application/views/single_order.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/core/model.php" afterPath="$PROJECT_DIR$/application/core/model.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/models/model_suppliers_order.php" afterPath="$PROJECT_DIR$/application/models/model_suppliers_order.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/models/model_suppliers_orders.php" afterPath="$PROJECT_DIR$/application/models/model_suppliers_orders.php" />
     </list>
     <ignored path="europoly.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -69,88 +71,14 @@
     <favorites_list name="europoly" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="single_order.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/application/views/single_order.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="256" column="53" lean-forward="true" selection-start-line="256" selection-start-column="53" selection-end-line="256" selection-end-column="53" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="controller_order.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/application/controllers/controller_order.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="523">
-              <caret line="45" column="0" lean-forward="false" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="model_order.php" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/application/models/model_order.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="413">
-              <caret line="76" column="44" lean-forward="false" selection-start-line="76" selection-start-column="44" selection-end-line="76" selection-end-column="44" />
-              <folding>
-                <marker date="1484417358377" expanded="true" signature="378:936" ph="..." />
-                <marker date="1484417358377" expanded="true" signature="1301:1406" ph="..." />
-                <marker date="1484417358377" expanded="true" signature="1805:1890" ph="..." />
-                <marker date="1484417358377" expanded="true" signature="2613:2709" ph="..." />
-                <marker date="1484417358377" expanded="true" signature="3154:3271" ph="..." />
-                <marker date="1484417358377" expanded="true" signature="3154:3274" ph="..." />
-                <marker date="1484417358377" expanded="true" signature="3154:3294" ph="..." />
-                <marker date="1484417358377" expanded="true" signature="3773:3953" ph="..." />
-                <marker date="1484417358377" expanded="true" signature="4368:4469" ph="..." />
-                <marker date="1484417358377" expanded="true" signature="5269:5350" ph="..." />
-                <marker date="1484417358377" expanded="true" signature="5415:5423" ph="..." />
-                <marker date="1484417358377" expanded="true" signature="7084:7144" ph="UPDATE order... " />
-                <marker date="1484417358377" expanded="true" signature="7245:7341" ph="UPDATE order... " />
-                <marker date="1484417358377" expanded="true" signature="7436:7567" ph="UPDATE order... " />
-                <marker date="1484417358377" expanded="true" signature="7678:7716" ph="SELECT * FRO... orders" />
-                <marker date="1484417358377" expanded="true" signature="7764:7804" ph="SELECT * FRO... clients" />
-                <marker date="1484417358377" expanded="true" signature="7871:7907" ph="SELECT * FRO... users" />
-                <marker date="1484417358377" expanded="true" signature="8347:8389" ph="SELECT * FRO... products" />
-                <marker date="1484417358377" expanded="true" signature="8670:9042" ph="INSERT INTO order_items... " />
-                <marker date="1484417358377" expanded="true" signature="9139:9273" ph="UPDATE order... " />
-                <marker date="1484417358377" expanded="true" signature="9449:9497" ph="SELECT * FRO... order_items" />
-                <marker date="1484417358377" expanded="true" signature="9538:9584" ph="DELETE FROM " />
-                <marker date="1484417358377" expanded="true" signature="9683:9721" ph="SELECT * FRO... orders" />
-                <marker date="1484417358377" expanded="true" signature="10125:10329" ph="UPDATE order... " />
-                <marker date="1484417358377" expanded="true" signature="10457:10495" ph="SELECT * FRO... orders" />
-                <marker date="1484417358377" expanded="true" signature="10541:10602" ph="UPDATE `orde... " />
-                <marker date="1484417358377" expanded="true" signature="10653:10691" ph="SELECT * FRO... orders" />
-                <marker date="1484417358377" expanded="true" signature="10924:11057" ph="UPDATE order... " />
-                <marker date="1484417358377" expanded="true" signature="11223:11271" ph="SELECT * FRO... order_items" />
-                <marker date="1484417358377" expanded="true" signature="11553:11653" ph="UPDATE `orde... " />
-                <marker date="1484417358377" expanded="true" signature="11937:12037" ph="UPDATE `orde... " />
-                <marker date="1484417358377" expanded="true" signature="12139:12210" ph="UPDATE `orde... " />
-                <marker date="1484417358377" expanded="true" signature="12271:12319" ph="SELECT * FRO... order_items" />
-                <marker date="1484417358377" expanded="true" signature="12374:12416" ph="SELECT * FRO... products" />
-                <marker date="1484417358377" expanded="true" signature="13323:13538" ph="UPDATE order... " />
-                <marker date="1484417358377" expanded="true" signature="13640:13678" ph="SELECT * FRO... orders" />
-                <marker date="1484417358377" expanded="true" signature="13999:14164" ph="UPDATE order... " />
-                <marker date="1484417358377" expanded="true" signature="14402:14445" ph="SELECT * FRO... order_items" />
-                <marker date="1484417358377" expanded="true" signature="14856:14940" ph="UPDATE `orde... " />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>$isNewClient</find>
       <find>warehouse</find>
       <find>form</find>
       <find>select</find>
-      <find>add</find>
       <find>row</find>
-      <find>status</find>
       <find>brands.supplier</find>
       <find>supplier</find>
       <find>customs</find>
@@ -174,6 +102,9 @@
       <find>text</find>
       <find>$src</find>
       <find>Price (per Unit)</find>
+      <find>add</find>
+      <find>confirme</find>
+      <find>status</find>
     </findStrings>
     <replaceStrings>
       <replace>import_tax</replace>
@@ -193,13 +124,11 @@
         <option value="$PROJECT_DIR$/application/views/templates/sidebar.php" />
         <option value="$PROJECT_DIR$/application/views/modals/new_contractor.php" />
         <option value="$PROJECT_DIR$/application/controllers/controller_suppliers_order.php" />
-        <option value="$PROJECT_DIR$/application/models/model_suppliers_order.php" />
         <option value="$PROJECT_DIR$/application/views/single_suppliers_order.php" />
         <option value="$PROJECT_DIR$/application/models/model_contractors.php" />
         <option value="$PROJECT_DIR$/application/controllers/controller_contractors.php" />
         <option value="$PROJECT_DIR$/application/views/contractors.php" />
         <option value="$PROJECT_DIR$/application/models/model_clients.php" />
-        <option value="$PROJECT_DIR$/application/models/model_suppliers_orders.php" />
         <option value="$PROJECT_DIR$/application/models/model_shipment.php" />
         <option value="$PROJECT_DIR$/application/views/modals/new_client.php" />
         <option value="$PROJECT_DIR$/application/controllers/controller_clients.php" />
@@ -208,12 +137,10 @@
         <option value="$PROJECT_DIR$/application/views/single_client.php" />
         <option value="$PROJECT_DIR$/application/views/single_truck.php" />
         <option value="$PROJECT_DIR$/application/controllers/controller_warehouse.php" />
-        <option value="$PROJECT_DIR$/application/models/model_truck.php" />
         <option value="$PROJECT_DIR$/application/views/warehouse.php" />
         <option value="&lt;87574a31-0e24-4e3b-94a8-628c6071d7e3&gt;/www/sex-shop-intim.com/core/smsc_api/smsc_api.php" />
         <option value="$PROJECT_DIR$/application/views/single_manager.php" />
         <option value="$PROJECT_DIR$/application/models/model_sales_manager.php" />
-        <option value="$PROJECT_DIR$/application/core/model.php" />
         <option value="$PROJECT_DIR$/application/views/single_product.php" />
         <option value="$PROJECT_DIR$/application/models/model_product.php" />
         <option value="$PROJECT_DIR$/application/models/model_managers_orders.php" />
@@ -237,6 +164,10 @@
         <option value="$PROJECT_DIR$/application/views/modals/new_brand.php" />
         <option value="$PROJECT_DIR$/application/views/single_order.php" />
         <option value="$PROJECT_DIR$/application/models/model_order.php" />
+        <option value="$PROJECT_DIR$/application/models/model_suppliers_order.php" />
+        <option value="$PROJECT_DIR$/application/models/model_suppliers_orders.php" />
+        <option value="$PROJECT_DIR$/application/core/model.php" />
+        <option value="$PROJECT_DIR$/application/models/model_truck.php" />
       </list>
     </option>
   </component>
@@ -479,19 +410,19 @@
       <workItem from="1483043853506" duration="603000" />
       <workItem from="1483738871737" duration="13008000" />
       <workItem from="1483914117990" duration="12000" />
-      <workItem from="1484412027121" duration="4225000" />
+      <workItem from="1484412027121" duration="5740000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="472518000" />
+    <option name="totallyTimeSpent" value="474033000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="7" />
-    <editor active="true" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <editor active="false" />
     <layout>
-      <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20839694" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24659607" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
+      <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20839694" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24659607" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3289689" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19923665" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -501,13 +432,13 @@
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Database Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3289689" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.13201821" sideWeight="0.5" order="4" side_tool="false" content_ui="combo" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.13201821" sideWeight="0.5" order="3" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3371522" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -532,27 +463,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/application/views/single_manager.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="194">
-          <caret line="637" column="63" lean-forward="false" selection-start-line="637" selection-start-column="63" selection-end-line="637" selection-end-column="63" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/models/model_product.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="12" column="46" lean-forward="false" selection-start-line="12" selection-start-column="46" selection-end-line="12" selection-end-column="46" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/views/single_product.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="461">
-          <caret line="190" column="82" lean-forward="false" selection-start-line="190" selection-start-column="82" selection-end-line="190" selection-end-column="82" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/application/models/model_sales_manager.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="340">
@@ -637,13 +547,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/application/models/model_suppliers_order.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1823">
-          <caret line="57" column="158" lean-forward="false" selection-start-line="57" selection-start-column="158" selection-end-line="57" selection-end-column="158" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/application/models/model_client.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="413">
@@ -718,13 +621,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-68">
           <caret line="32" column="22" lean-forward="false" selection-start-line="32" selection-start-column="22" selection-end-line="32" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/models/model_suppliers_orders.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="183">
-          <caret line="155" column="43" lean-forward="false" selection-start-line="155" selection-start-column="43" selection-end-line="155" selection-end-column="43" />
         </state>
       </provider>
     </entry>
@@ -815,13 +711,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/application/core/model.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3402">
-          <caret line="3" column="15" lean-forward="false" selection-start-line="3" selection-start-column="15" selection-end-line="3" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/application/views/modals/new_brand.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="374">
@@ -854,22 +743,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="7" column="35" lean-forward="false" selection-start-line="7" selection-start-column="35" selection-end-line="7" selection-end-column="35" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/views/single_order.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="256" column="53" lean-forward="true" selection-start-line="256" selection-start-column="53" selection-end-line="256" selection-end-column="53" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/controllers/controller_order.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="523">
-          <caret line="45" column="0" lean-forward="false" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -918,6 +791,197 @@
             <marker date="1484417358377" expanded="true" signature="13999:14164" ph="UPDATE order... " />
             <marker date="1484417358377" expanded="true" signature="14402:14445" ph="SELECT * FRO... order_items" />
             <marker date="1484417358377" expanded="true" signature="14856:14940" ph="UPDATE `orde... " />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/controller_order.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="523">
+          <caret line="45" column="0" lean-forward="false" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/views/single_order.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="256" column="53" lean-forward="true" selection-start-line="256" selection-start-column="53" selection-end-line="256" selection-end-column="53" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/views/single_suppliers_order.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2574">
+          <caret line="17" column="38" lean-forward="true" selection-start-line="17" selection-start-column="38" selection-end-line="17" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/core/model.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="146" column="32" lean-forward="true" selection-start-line="146" selection-start-column="32" selection-end-line="146" selection-end-column="32" />
+          <folding>
+            <marker date="1484417953618" expanded="true" signature="1684:1735" ph="SELECT * FRO... ${$table_name}" />
+            <marker date="1484417953618" expanded="true" signature="2056:2083" ph="SELECT * FRO... ${$table_name}" />
+            <marker date="1484417953618" expanded="true" signature="6879:6977" ph="SELECT user_... users" />
+            <marker date="1484417953618" expanded="true" signature="7067:7134" ph="SELECT clien... clients" />
+            <marker date="1484417953618" expanded="true" signature="7215:7250" ph="SELECT clien... clients" />
+            <marker date="1484417953618" expanded="true" signature="7346:7425" ph="SELECT count... countries" />
+            <marker date="1484417953618" expanded="true" signature="7532:7626" ph="SELECT regio... regions" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/models/model_suppliers_orders.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" column="38" lean-forward="false" selection-start-line="2" selection-start-column="38" selection-end-line="2" selection-end-column="38" />
+          <folding>
+            <marker date="1484417953578" expanded="true" signature="428:548" ph="..." />
+            <marker date="1484417953578" expanded="true" signature="5570:5638" ph="INSERT INTO suppliers_orders... " />
+            <marker date="1484417953578" expanded="true" signature="5868:5916" ph="SELECT * FRO... order_items" />
+            <marker date="1484417953578" expanded="true" signature="5966:6077" ph="UPDATE order... " />
+            <marker date="1484417953578" expanded="true" signature="6299:6341" ph="SELECT * FRO... products" />
+            <marker date="1484417953578" expanded="true" signature="6960:7290" ph="INSERT INTO suppliers_orders_items... " />
+            <marker date="1484417953578" expanded="true" signature="7436:7484" ph="SELECT * FRO... suppliers_orders" />
+            <marker date="1484417953578" expanded="true" signature="7602:7717" ph="UPDATE suppl... " />
+            <marker date="1484417953578" expanded="true" signature="7925:7955" ph="SELECT * FRO... suppliers_orders" />
+            <marker date="1484417953578" expanded="true" signature="8102:8156" ph="SELECT * FRO... suppliers_orders_items" />
+            <marker date="1484417953578" expanded="true" signature="8376:8418" ph="SELECT * FRO... products" />
+            <marker date="1484417953578" expanded="true" signature="8478:8516" ph="SELECT * FRO... brands" />
+            <marker date="1484417953578" expanded="true" signature="9445:9499" ph="SELECT * FRO... suppliers_orders_items" />
+            <marker date="1484417953578" expanded="true" signature="9864:9937" ph="SELECT * FRO... order_items" />
+            <marker date="1484417953578" expanded="true" signature="10348:10434" ph="UPDATE suppl... " />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/models/model_suppliers_order.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="205">
+          <caret line="58" column="52" lean-forward="false" selection-start-line="58" selection-start-column="52" selection-end-line="58" selection-end-column="52" />
+          <folding>
+            <marker date="1484417953476" expanded="true" signature="363:921" ph="..." />
+            <marker date="1484417953476" expanded="true" signature="1314:1430" ph="..." />
+            <marker date="1484417953476" expanded="true" signature="1857:1953" ph="..." />
+            <marker date="1484417953476" expanded="true" signature="2621:2734" ph="..." />
+            <marker date="1484417953476" expanded="false" signature="3245:3253" ph="..." />
+            <marker date="1484417953476" expanded="true" signature="5208:5261" ph="SELECT statu... suppliers_orders" />
+            <marker date="1484417953476" expanded="true" signature="5426:5490" ph="UPDATE suppl... " />
+            <marker date="1484417953476" expanded="true" signature="5591:5697" ph="UPDATE suppl... " />
+            <marker date="1484417953476" expanded="true" signature="5862:5904" ph="SELECT * FRO... products" />
+            <marker date="1484417953476" expanded="true" signature="6039:6154" ph="SELECT * FRO... suppliers_orders_items" />
+            <marker date="1484417953476" expanded="true" signature="6247:6361" ph="UPDATE suppl... " />
+            <marker date="1484417953476" expanded="true" signature="6461:6682" ph="INSERT INTO suppliers_orders_items... " />
+            <marker date="1484417953476" expanded="true" signature="6739:6787" ph="SELECT * FRO... suppliers_orders" />
+            <marker date="1484417953476" expanded="true" signature="6893:7010" ph="UPDATE suppl... " />
+            <marker date="1484417953476" expanded="true" signature="7186:7245" ph="SELECT * FRO... suppliers_orders_items" />
+            <marker date="1484417953476" expanded="true" signature="7363:7441" ph="UPDATE order... " />
+            <marker date="1484417953476" expanded="true" signature="7495:7552" ph="DELETE FROM " />
+            <marker date="1484417953476" expanded="true" signature="7651:7699" ph="SELECT * FRO... suppliers_orders" />
+            <marker date="1484417953476" expanded="true" signature="7818:7936" ph="UPDATE suppl... " />
+            <marker date="1484417953476" expanded="true" signature="8064:8112" ph="SELECT * FRO... suppliers_orders" />
+            <marker date="1484417953476" expanded="true" signature="8158:8229" ph="UPDATE `supp... " />
+            <marker date="1484417953476" expanded="true" signature="8280:8328" ph="SELECT * FRO... suppliers_orders" />
+            <marker date="1484417953476" expanded="true" signature="8561:8704" ph="UPDATE suppl... " />
+            <marker date="1484417953476" expanded="true" signature="8870:8929" ph="SELECT * FRO... suppliers_orders_items" />
+            <marker date="1484417953476" expanded="true" signature="9058:9147" ph="UPDATE `orde... " />
+            <marker date="1484417953476" expanded="true" signature="9254:9351" ph="UPDATE `supp... " />
+            <marker date="1484417953476" expanded="true" signature="9412:9471" ph="SELECT * FRO... suppliers_orders_items" />
+            <marker date="1484417953476" expanded="true" signature="9724:9766" ph="SELECT * FRO... products" />
+            <marker date="1484417953476" expanded="true" signature="10577:10803" ph="UPDATE suppl... " />
+            <marker date="1484417953476" expanded="true" signature="10905:10953" ph="SELECT * FRO... suppliers_orders" />
+            <marker date="1484417953476" expanded="true" signature="11274:11449" ph="UPDATE suppl... " />
+            <marker date="1484417953476" expanded="true" signature="11587:11641" ph="SELECT * FRO... suppliers_orders_items" />
+            <marker date="1484417953476" expanded="true" signature="12006:12079" ph="SELECT * FRO... order_items" />
+            <marker date="1484417953476" expanded="true" signature="12490:12576" ph="UPDATE suppl... " />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/views/single_truck.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1951">
+          <caret line="9" column="29" lean-forward="true" selection-start-line="9" selection-start-column="29" selection-end-line="9" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/models/model_truck.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="137">
+          <caret line="436" column="50" lean-forward="false" selection-start-line="436" selection-start-column="50" selection-end-line="436" selection-end-column="50" />
+          <folding>
+            <marker date="1484418856070" expanded="true" signature="259:817" ph="..." />
+            <marker date="1484418856070" expanded="true" signature="1180:1286" ph="..." />
+            <marker date="1484418856070" expanded="true" signature="1683:1769" ph="..." />
+            <marker date="1484418856070" expanded="true" signature="2398:2511" ph="..." />
+            <marker date="1484418856070" expanded="true" signature="3554:3658" ph="..." />
+            <marker date="1484418856070" expanded="true" signature="3732:4230" ph="..." />
+            <marker date="1484418856070" expanded="true" signature="4634:4738" ph="..." />
+            <marker date="1484418856070" expanded="true" signature="5155:5263" ph="..." />
+            <marker date="1484418856070" expanded="true" signature="5324:5332" ph="..." />
+            <marker date="1484418856070" expanded="true" signature="6015:6119" ph="..." />
+            <marker date="1484418856070" expanded="true" signature="6039:6079" ph="..." />
+            <marker date="1484418856070" expanded="true" signature="8320:8357" ph="SELECT statu... trucks" />
+            <marker date="1484418856070" expanded="true" signature="8580:8661" ph="INSERT INTO trucks... " />
+            <marker date="1484418856070" expanded="true" signature="8877:8936" ph="SELECT * FRO... suppliers_orders_items" />
+            <marker date="1484418856070" expanded="true" signature="9133:9175" ph="SELECT * FRO... products" />
+            <marker date="1484418856070" expanded="true" signature="9300:9584" ph="INSERT INTO trucks_items... " />
+            <marker date="1484418856070" expanded="true" signature="9685:9780" ph="UPDATE order... " />
+            <marker date="1484418856070" expanded="true" signature="9899:9982" ph="UPDATE suppl... " />
+            <marker date="1484418856070" expanded="true" signature="10161:10193" ph="SELECT * FRO... trucks" />
+            <marker date="1484418856070" expanded="true" signature="10304:10403" ph="UPDATE truck... " />
+            <marker date="1484418856070" expanded="true" signature="10580:10601" ph="SELECT id FR... trucks" />
+            <marker date="1484418856070" expanded="true" signature="11329:11373" ph="SELECT * FRO... trucks_items" />
+            <marker date="1484418856070" expanded="true" signature="11717:11766" ph="SELECT * FRO... trucks_items" />
+            <marker date="1484418856070" expanded="true" signature="11814:11856" ph="SELECT * FRO... products" />
+            <marker date="1484418856070" expanded="true" signature="12166:12372" ph="INSERT INTO products_warehouses... " />
+            <marker date="1484418856070" expanded="true" signature="12400:12477" ph="UPDATE truck... " />
+            <marker date="1484418856070" expanded="true" signature="12765:12813" ph="UPDATE truck... " />
+            <marker date="1484418856070" expanded="true" signature="12922:13012" ph="UPDATE truck... " />
+            <marker date="1484418856070" expanded="true" signature="13177:13236" ph="SELECT * FRO... suppliers_orders_items" />
+            <marker date="1484418856070" expanded="true" signature="13413:13659" ph="INSERT INTO trucks_items... " />
+            <marker date="1484418856070" expanded="true" signature="13749:13844" ph="UPDATE order... " />
+            <marker date="1484418856070" expanded="true" signature="13948:14031" ph="UPDATE suppl... " />
+            <marker date="1484418856070" expanded="true" signature="14099:14131" ph="SELECT * FRO... trucks" />
+            <marker date="1484418856070" expanded="true" signature="14255:14356" ph="UPDATE truck... " />
+            <marker date="1484418856070" expanded="true" signature="14533:14582" ph="SELECT * FRO... trucks_items" />
+            <marker date="1484418856070" expanded="true" signature="14647:14717" ph="SELECT * FRO... suppliers_orders_items" />
+            <marker date="1484418856070" expanded="true" signature="14868:14938" ph="UPDATE order... " />
+            <marker date="1484418856070" expanded="true" signature="15003:15098" ph="UPDATE suppl... " />
+            <marker date="1484418856070" expanded="true" signature="15176:15223" ph="DELETE FROM " />
+            <marker date="1484418856070" expanded="true" signature="15276:15308" ph="SELECT * FRO... trucks" />
+            <marker date="1484418856070" expanded="true" signature="15427:15529" ph="UPDATE truck... " />
+            <marker date="1484418856070" expanded="true" signature="15703:15735" ph="SELECT * FRO... trucks" />
+            <marker date="1484418856070" expanded="true" signature="15781:15836" ph="UPDATE `truc... " />
+            <marker date="1484418856070" expanded="true" signature="16027:16076" ph="SELECT * FRO... trucks_items" />
+            <marker date="1484418856070" expanded="true" signature="16137:16207" ph="SELECT * FRO... suppliers_orders_items" />
+            <marker date="1484418856070" expanded="true" signature="16442:16531" ph="UPDATE `orde... " />
+            <marker date="1484418856070" expanded="true" signature="16652:16753" ph="UPDATE `supp... " />
+            <marker date="1484418856070" expanded="true" signature="16983:17055" ph="UPDATE `truc... " />
+            <marker date="1484418856070" expanded="true" signature="17117:17166" ph="SELECT * FRO... trucks_items" />
+            <marker date="1484418856070" expanded="true" signature="17222:17264" ph="SELECT * FRO... products" />
+            <marker date="1484418856070" expanded="true" signature="18075:18291" ph="UPDATE truck... " />
+            <marker date="1484418856070" expanded="true" signature="18393:18425" ph="SELECT * FRO... trucks" />
+            <marker date="1484418856070" expanded="true" signature="18746:18905" ph="UPDATE truck... " />
+            <marker date="1484418856070" expanded="true" signature="19044:19088" ph="SELECT * FRO... trucks_items" />
+            <marker date="1484418856070" expanded="true" signature="19257:19337" ph="SELECT * FRO... suppliers_orders_items" />
+            <marker date="1484418856070" expanded="true" signature="19654:19737" ph="SELECT item_... order_items" />
+            <marker date="1484418856070" expanded="true" signature="20155:20225" ph="UPDATE truck... " />
+            <marker date="1484418856070" expanded="true" signature="20344:20393" ph="SELECT * FRO... trucks_items" />
+            <marker date="1484418856070" expanded="true" signature="20443:20517" ph="SELECT * FRO... suppliers_orders_items" />
+            <marker date="1484418856070" expanded="true" signature="20639:20727" ph="UPDATE order... " />
+            <marker date="1484418856070" expanded="true" signature="20820:20919" ph="UPDATE suppl... " />
+            <marker date="1484418856070" expanded="true" signature="21538:21649" ph="SELECT trans... trucks" />
+            <marker date="1484418856070" expanded="true" signature="21701:21758" ph="SELECT deliv... trucks_items" />
+            <marker date="1484418856070" expanded="true" signature="22066:22140" ph="SELECT trans... transportation_companies" />
+            <marker date="1484418856070" expanded="true" signature="22842:22937" ph="SELECT custo... trucks" />
+            <marker date="1484418856070" expanded="true" signature="22989:23119" ph="SELECT impor... trucks_items" />
+            <marker date="1484418856070" expanded="true" signature="23475:23516" ph="SELECT custo... customs" />
           </folding>
         </state>
       </provider>
