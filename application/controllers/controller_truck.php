@@ -19,6 +19,7 @@ class ControllerTruck extends Controller
         $this->view->statusList = $this->model->getStatusList();
         $this->view->delivery = $this->model->getDelivery($_GET['id']);
         $this->view->customs = $this->model->getCustoms($_GET['id']);
+        $this->view->sums = $this->model->getSums();
         $this->view->build('templates/template.php', 'single_truck.php');
     }
 

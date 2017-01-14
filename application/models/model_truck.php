@@ -502,4 +502,25 @@ class ModelTruck extends Model
 
         return ['price' => $customPrice, 'list' => $customsList, 'name' => $nameOfCurrentCustom];
     }
+    function getSums()
+    {
+        $truckItems = $this->getAssoc("SELECT * FROM trucks_items");
+
+        $weight = 0;
+        $packsNumber = 0;
+        $totalPrice = 0;
+        if (!empty($truckItems)) {
+            foreach ($truckItems as $truckItem) {
+                $product = $this->getFirst("SELECT weight FROM products WHERE product_id = ${truckItem['product_id']}");
+                $weight += $product['weight'] !== null ? $product['weight'] : 0;
+                $packsNumber += $truckItem['number_of_packs'];
+                $totalPrice += $truckItem['total_price'];
+            }
+        }
+        return [
+            'weight' => $weight,
+            'number_of_packs' => $packsNumber,
+            'totalPrice' => $totalPrice
+        ];
+    }
 }

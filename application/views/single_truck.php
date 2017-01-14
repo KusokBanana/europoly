@@ -21,67 +21,84 @@
             <!-- BEGIN PAGE BASE CONTENT -->
             <div class="invoice">
                 <div class="row">
-                    <div class="col-xs-2">
-                        <h3>Truck status:</h3>
-                        <ul class="list-unstyled">
-                            <li> <span class="label label-sm label-success"><?= $this->status ?></span> </li>
-                        </ul>
-                    </div>
-                    <div class="col-xs-3">
-                        <form action="/truck/change_truck_select" id="truck-select-form" method="POST">
-                            <input type="hidden" name="pk" value="<?= $this->order['id'] ?>">
-                            <h3>Delivery</h3>
+                    <form action="/truck/change_truck_select" id="truck-select-form" method="POST">
+                        <div class="col-xs-2">
+                            <h3>Truck status:</h3>
+                            <ul class="list-unstyled">
+                                <li> <span class="label label-sm label-success"><?= $this->status ?></span> </li>
+                            </ul>
+                        </div>
+                        <div class="col-xs-3">
+                                <input type="hidden" name="pk" value="<?= $this->order['id'] ?>">
+                                <h3>Delivery</h3>
+                                <ul class="list-unstyled">
+                                    <li>
+                                                <span class="label label-sm label-success">
+                                                    Price: <?= $this->delivery['price'] ?>
+                                                </span>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void;" class="x-editable x-transportation_company_id"
+                                           data-pk="<?= $this->order['id'] ?>" data-name="transportation_company_id"
+                                           data-value="<?= $this->order['transportation_company_id'] ?>"
+                                           data-url="/truck/change_field"
+                                           data-original-title="Select Transportation Company">
+                                            <?= $this->delivery['name'] ?>
+                                        </a>
+                                    </li>
+                                </ul>
+                        </div>
+                        <div class="col-xs-3">
+                            <h3>Customs</h3>
                             <ul class="list-unstyled">
                                 <li>
-                                            <span class="label label-sm label-success">
-                                                Price: <?= $this->delivery['price'] ?>
-                                            </span>
+                                                <span class="label label-sm label-success">
+                                                    Price: <?= $this->customs['price'] ?>
+                                                </span>
                                 </li>
                                 <li>
-                                    <a href="javascript:void;" class="x-editable x-transportation_company_id"
-                                       data-pk="<?= $this->order['id'] ?>" data-name="transportation_company_id"
-                                       data-value="<?= $this->order['transportation_company_id'] ?>"
+                                    <a href="javascript:void;" class="x-editable x-custom_id"
+                                       data-pk="<?= $this->order['id'] ?>" data-name="custom_id"
+                                       data-value="<?= $this->order['custom_id'] ?>"
                                        data-url="/truck/change_field"
-                                       data-original-title="Select Transportation Company">
-                                        <?= $this->delivery['name'] ?>
+                                       data-original-title="Select Custom">
+                                        <?= $this->customs['name'] ?>
                                     </a>
                                 </li>
                             </ul>
+
+                        </div>
+                        <div class="col-xs-4">
+                            <h3> Items in this Truck
+                            </h3>
+                            <a class="btn btn-md blue margin-15" href="javascript:;"
+                               data-toggle="modal" data-target="#modal_newTruckItem">
+                                <i class="fa fa-plus"></i> Add item
+                            </a>
+                            <a class="btn btn-md blue hidden-print margin-15" onclick="javascript:window.print();">
+                                <i class="fa fa-print"></i> Print
+                            </a>
+                            <a href="truck/put_to_the_warehouse?truck_id=<?= $this->order['id'] ?>"
+                               onclick="return confirm('Are you sure to put to the warehouse?')"
+                               class="btn btn-md blue">Put to the warehouse</a>
+                        </div>
+                    </form>
+                </div>
+                <div class="row">
+                    <div class="col-xs-3">
+                        <span class="label label-sm label-success">
+                            Weight Sum: <?= $this->sums['weight'] ?>
+                        </span>
                     </div>
                     <div class="col-xs-3">
-                        <h3>Customs</h3>
-                        <ul class="list-unstyled">
-                            <li>
-                                            <span class="label label-sm label-success">
-                                                Price: <?= $this->customs['price'] ?>
-                                            </span>
-                            </li>
-                            <li>
-                                <a href="javascript:void;" class="x-editable x-custom_id"
-                                   data-pk="<?= $this->order['id'] ?>" data-name="custom_id"
-                                   data-value="<?= $this->order['custom_id'] ?>"
-                                   data-url="/truck/change_field"
-                                   data-original-title="Select Custom">
-                                    <?= $this->customs['name'] ?>
-                                </a>
-                            </li>
-                        </ul>
-                        </form>
-
+                        <span class="label label-sm label-success">
+                            # of packs Sum: <?= $this->sums['number_of_packs'] ?>
+                        </span>
                     </div>
-                    <div class="col-xs-4">
-                        <h3> Items in this Truck
-                        </h3>
-                        <a class="btn btn-md blue margin-15" href="javascript:;"
-                           data-toggle="modal" data-target="#modal_newTruckItem">
-                            <i class="fa fa-plus"></i> Add item
-                        </a>
-                        <a class="btn btn-md blue hidden-print margin-15" onclick="javascript:window.print();">
-                            <i class="fa fa-print"></i> Print
-                        </a>
-                        <a href="truck/put_to_the_warehouse?truck_id=<?= $this->order['id'] ?>"
-                           onclick="return confirm('Are you sure to put to the warehouse?')"
-                           class="btn btn-md blue">Put to the warehouse</a>
+                    <div class="col-xs-3">
+                        <span class="label label-sm label-success">
+                            Total price Sum: <?= $this->sums['totalPrice'] ?>
+                        </span>
                     </div>
                 </div>
                 <div class="row" >
