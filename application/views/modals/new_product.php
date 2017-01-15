@@ -32,16 +32,17 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Country</label>
-                                <input name="country" class="form-control" placeholder="Enter Country">
+                                <label for="country">Country</label>
+                                <select class="select-editable form-control" name="country" id="country"></select>
                             </div>
                             <div class="form-group">
-                                <label>Collection</label>
-                                <input name="collection" class="form-control" placeholder="Enter Collection">
+                                <label for="collection">Collection</label>
+                                <select class="select-editable form-control" name="collection" id="collection"></select>
                             </div>
                             <div class="form-group">
-                                <label>Wood</label>
-                                <select name="wood_id" class="form-control">
+                                <label for="wood_id_fix_wood">Wood</label>
+                                <select name="wood_id_fix_wood"
+                                        class="select-editable not-load form-control" id="wood_id_fix_wood">
                                     <option selected value></option>
                                     <?php
                                     foreach ($this->wood as $wood) {
@@ -49,18 +50,21 @@
                                     }
                                     ?>
                                 </select>
+                                <label for="collection">Collection</label>
+                                <select class="select-editable form-control" name="collection" id="collection"></select>
                             </div>
                             <div class="form-group">
                                 <label>Name</label>
                                 <input name="name" class="form-control" placeholder="Enter Name" required>
                             </div>
                             <div class="form-group">
-                                <label>Additional characteristics</label>
-                                <input name="additional_info" class="form-control" placeholder="Enter Additional characteristics">
+                                <label for="additional_info">Additional characteristics</label>
+                                <select name="additional_info" class="select-editable form-control" id="additional_info"></select>
                             </div>
                             <div class="form-group">
-                                <label>Color</label>
-                                <select name="color_id" class="form-control">
+                                <label for="color_id_fix_colors">Color</label>
+                                <select name="color_id_fix_colors" id="color_id_fix_colors"
+                                        class="select-editable not-load form-control">
                                     <option selected value></option>
                                     <?php
                                     foreach ($this->colors as $color) {
@@ -70,8 +74,9 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Color 2</label>
-                                <select name="color2_id" class="form-control">
+                                <label for="color2_id_fix_colors">Color 2</label>
+                                <select name="color2_id_fix_colors" id="color2_id_fix_colors"
+                                        class="select-editable not-load form-control">
                                     <option selected value></option>
                                     <?php
                                     foreach ($this->colors as $color) {
@@ -81,8 +86,9 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Grading</label>
-                                <select name="grading_id" class="form-control">
+                                <label for="grading_id_fix_grading">Grading</label>
+                                <select name="grading_id_fix_grading" id="grading_id_fix_grading"
+                                        class="select-editable not-load form-control">
                                     <option selected value></option>
                                     <?php
                                     foreach ($this->grading as $grading) {
@@ -104,8 +110,9 @@
                                 <input name="length" class="form-control" placeholder="Enter Length">
                             </div>
                             <div class="form-group">
-                                <label>Construction</label>
-                                <select name="construction_id" class="form-control">
+                                <label for="construction_id_fix_constructions">Construction</label>
+                                <select name="construction_id_fix_constructions" id="construction_id_fix_constructions"
+                                        class="select-editable not-load form-control">
                                     <option selected value></option>
                                     <?php
                                     foreach ($this->constructions as $construction) {
@@ -117,28 +124,28 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Texture</label>
-                                <input name="texture" class="form-control" placeholder="Enter Texture">
+                                <label for="texture">Texture</label>
+                                <select name="texture" class="select-editable form-control" id="texture"></select>
                             </div>
                             <div class="form-group">
-                                <label>Bottom layer/ Middle layer (for Admonter panels)</label>
-                                <input name="layer" class="form-control" placeholder="Enter Bottom layer/ Middle layer (for Admonter panels)">
+                                <label for="layer">Bottom layer/ Middle layer (for Admonter panels)</label>
+                                <select name="layer" class="select-editable form-control" id="layer"></select>
                             </div>
                             <div class="form-group">
-                                <label>Installation</label>
-                                <input name="installation" class="form-control" placeholder="Enter Installation">
+                                <label for="installation">Installation</label>
+                                <select name="installation" class="select-editable form-control" id="installation"></select>
                             </div>
                             <div class="form-group">
-                                <label>Surface</label>
-                                <input name="surface" class="form-control" placeholder="Enter Surface">
+                                <label for="surface">Surface</label>
+                                <select name="surface" class="select-editable form-control" id="surface"></select>
                             </div>
                             <div class="form-group">
-                                <label>Units</label>
-                                <input name="units" class="form-control" placeholder="Enter Units">
+                                <label for="units">Units</label>
+                                <select name="units" class="select-editable form-control" id="units"></select>
                             </div>
                             <div class="form-group">
-                                <label>Packing Type</label>
-                                <input name="packing_type" class="form-control" placeholder="Enter Packing Type">
+                                <label for="packing_type">Packing Type</label>
+                                <select name="packing_type" class="select-editable form-control" id="packing_type"></select>
                             </div>
                             <div class="form-group">
                                 <label>Weight of 1 unit</label>
@@ -165,8 +172,9 @@
                                 <input name="margin" class="form-control" placeholder="Enter Margin">
                             </div>
                             <div class="form-group">
-                                <label>Pattern</label>
-                                <select name="pattern_id" class="form-control">
+                                <label for="pattern_id_fix_patterns">Pattern</label>
+                                <select name="pattern_id_fix_patterns" id="pattern_id_fix_patterns"
+                                        class="select-editable not-load form-control">
                                     <option selected value></option>
                                     <?php
                                     foreach ($this->patterns as $pattern) {
@@ -190,4 +198,72 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
+
+<!--<script>-->
+<!--    $(document).ready(function() {-->
+<!--        var $field_country = $("#field_country");-->
+<!--        var $field_region = $("#field_region");-->
+<!---->
+<!--        $field_country.select2({-->
+<!--            ajax: {-->
+<!--                url: "/clients/get_countries",-->
+<!--                dataType: 'json',-->
+<!--                delay: 250,-->
+<!--                data: function (params) {-->
+<!--                    return {-->
+<!--                        q: params.term,-->
+<!--                        page: params.page-->
+<!--                    };-->
+<!--                },-->
+<!--                processResults: function (data, params) {-->
+<!--                    $field_region.select2("val", "");-->
+<!--                    params.page = params.page || 1;-->
+<!--                    return {results: data.items, pagination: {more: (params.page * 30) < data.total_count}};-->
+<!--                },-->
+<!--                cache: true-->
+<!--            },-->
+<!--            width: '100%'-->
+<!--        });-->
+<!--        $field_region.select2({-->
+<!--            ajax: {-->
+<!--                url: "/clients/get_regions",-->
+<!--                dataType: 'json',-->
+<!--                delay: 250,-->
+<!--                data: function (params) {-->
+<!--                    return {-->
+<!--                        q: params.term,-->
+<!--                        page: params.page,-->
+<!--                        country_id: $field_country.val()-->
+<!--                    };-->
+<!--                },-->
+<!--                processResults: function (data, params) {-->
+<!--                    params.page = params.page || 1;-->
+<!--                    return {results: data.items, pagination: {more: (params.page * 30) < data.total_count}};-->
+<!--                },-->
+<!--                cache: true-->
+<!--            },-->
+<!--            width: '100%'-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
+<script type="text/javascript">
+    $(document).ready(function() {
+        var $selects = <?= json_encode($this->selects) ?>;
+        var editableSelects = $('.select-editable');
+        $.each(editableSelects, function() {
+            var element = $(this);
+            var elementName = element.attr('name');
+            if (!element.hasClass('not-load')) {
+                $.each($selects[elementName], function() {
+                    element.append('<option value="' + this.id + '">' + this.id + '</option>');
+                });
+            }
+            $(this).editableSelect();
+        });
+        editableSelects.attr('placeholder', 'Did not find the desired item? - Enter new one here');
+    });
+</script>
+<script src="assets/global/plugins/jquery-editable-select-master/dist/jquery-editable-select.min.js"
+        type="text/javascript"></script>
+<link href="assets/global/plugins/jquery-editable-select-master/dist/jquery-editable-select.min.css" rel="stylesheet">
 

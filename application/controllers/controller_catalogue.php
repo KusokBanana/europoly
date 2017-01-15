@@ -21,7 +21,7 @@ class ControllerCatalogue extends Controller
         $this->view->grading = $this->model->getAll("grading");
         $this->view->patterns = $this->model->getAll("patterns");
         $this->view->tabs = $this->model->getCategoryTabs();
-
+        $this->view->selects = $this->model->getSelects();
 
 
         $this->view->build('templates/template.php', 'catalogue.php');
@@ -35,35 +35,11 @@ class ControllerCatalogue extends Controller
 
     function action_add()
     {
-        $this->model->addProduct(
-            $this->escape_and_empty_to_null($_POST['article']),
-            $this->escape_and_empty_to_null($_POST['name']),
-            $this->escape_and_empty_to_null($_POST['brand_id']),
-            $this->escape_and_empty_to_null($_POST['country']),
-            $this->escape_and_empty_to_null($_POST['collection']),
-            $this->escape_and_empty_to_null($_POST['wood_id']),
-            $this->escape_and_empty_to_null($_POST['additional_info']),
-            $this->escape_and_empty_to_null($_POST['color_id']),
-            $this->escape_and_empty_to_null($_POST['color2_id']),
-            $this->escape_and_empty_to_null($_POST['grading_id']),
-            $this->escape_and_empty_to_null($_POST['thickness']),
-            $this->escape_and_empty_to_null($_POST['width']),
-            $this->escape_and_empty_to_null($_POST['length']),
-            $this->escape_and_empty_to_null($_POST['texture']),
-            $this->escape_and_empty_to_null($_POST['layer']),
-            $this->escape_and_empty_to_null($_POST['installation']),
-            $this->escape_and_empty_to_null($_POST['surface']),
-            $this->escape_and_empty_to_null($_POST['construction_id']),
-            $this->escape_and_empty_to_null($_POST['units']),
-            $this->escape_and_empty_to_null($_POST['packing_type']),
-            $this->escape_and_empty_to_null($_POST['weight']),
-            $this->escape_and_empty_to_null($_POST['amount']),
-            $this->escape_and_empty_to_null($_POST['purchase_price']),
-            $this->escape_and_empty_to_null($_POST['currency']),
-            $this->escape_and_empty_to_null($_POST['suppliers_discount']),
-            $this->escape_and_empty_to_null($_POST['margin']),
-            $this->escape_and_empty_to_null($_POST['pattern_id']),
-            $this->escape_and_empty_to_null(0));
+        $postArray = [];
+        foreach ($_POST as $key => $post) {
+            $postArray[$key] = $this->escape_and_empty_to_null($post);
+        }
+        $this->model->addProduct($postArray);
         header("Location: /catalogue");
     }
 }
