@@ -14,7 +14,7 @@ class ModelCatalogue extends Model
         $this->sspComplex($this->full_products_table, "product_id", $this->full_product_columns, $input, null, $where);
     }
 
-    public function addProduct($postArray)
+    public function addProduct($postArray, $rusArray = [])
     {
         $names = '';
         $values = '';
@@ -27,15 +27,42 @@ class ModelCatalogue extends Model
                 $tableName = $arr[1];
                 $found = $this->getFirst("SELECT * FROM $tableName WHERE name = '$value'");
                 if ($found && !empty($found)) {
+                    $id = 0;
                     // For every table it's primary key named not same, so need to find the primary
                     foreach ($found as $rowKey => $rowName) {
                         if (strpos($rowKey, '_id') !== -1 && strpos($rowKey, substr($tableName, 3))  !== -1) {
                             $value = $rowName;
+                            $id = $rowName;
                             break;
                         }
                     }
+                    if ($id) {
+                        $resource_id = intval($found['nls_resource_id']);
+                        if (isset($rusArray[$name]) && $rusArray[$name] && $rusArray[$name] !== 'null') {
+                            $rusName = $rusArray[$name];
+                            if ($resource_id) {
+                                $this->update("UPDATE nls_resources SET value = '$rusName' WHERE resource_id = $resource_id");
+                            } else {
+                                $maxId = $this->getMax("SELECT MAX(resource_id) FROM nls_resources");
+                                $maxId++;
+                                $this->insert("INSERT INTO nls_resources (`nls_resource_id`, `language_id`, `value`) 
+                                            VALUES ($maxId, 2, '$rusName')");
+                            }
+                            unset($rusArray[$name]);
+                        }
+                    }
                 } else {
-                    $id = $this->insert("INSERT INTO $tableName (`name`) VALUES ('$value')");
+                    $maxId = 0;
+                    if (isset($rusArray[$name]) && $rusArray[$name] && $rusArray[$name] !== 'null') {
+                        $maxId = $this->getMax("SELECT MAX(resource_id) FROM nls_resources") + 1;
+                    }
+                    $id = $this->insert("INSERT INTO $tableName (`name`, `nls_resource_id`) VALUES ('$value', $maxId)");
+                    if ($id && $maxId) {
+                        $rusName = $rusArray[$name];
+                        $this->insert("INSERT INTO nls_resources (`nls_resource_id`, `language_id`, `value`) 
+                                            VALUES ($maxId, 2, '$rusName')");
+                        unset($rusArray[$name]);
+                    }
                     $value = $id;
                 }
             }
@@ -54,8 +81,25 @@ class ModelCatalogue extends Model
         if (substr($values, -1) == ',')
             $values = substr($values, 0, -1);
 
-        $this->insert("INSERT INTO products ($names)
+        $productId = $this->insert("INSERT INTO products ($names)
                           VALUES ($values)");
+        $rusNames = '';
+        $rusValues = '';
+        if (!empty($rusArray)) {
+            foreach ($rusArray as $rusKey => $rusValue) {
+                if (!$rusValue || $rusValue === 'null')
+                    continue;
+                $rusNames .= $rusKey . ', ';
+                $rusValues .= "'$rusValue', ";
+            }
+        }
+        if ($productId && $rusNames && $rusValues) {
+            $rusNames = trim($rusNames);
+            $rusValues = trim($rusValues);
+
+            $this->insert("INSERT INTO nls_products ($rusNames language_id, product_id) 
+                                            VALUES ($rusValues 2, $productId)");
+        }
 
     }
 

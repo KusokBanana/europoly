@@ -36,8 +36,16 @@
                                 <select class="select-editable form-control" name="country" id="country"></select>
                             </div>
                             <div class="form-group">
+                                <label for="country_rus">Country RUS</label>
+                                <input class="form-control" name="RUS[country]" id="country_rus">
+                            </div>
+                            <div class="form-group">
                                 <label for="collection">Collection</label>
                                 <select class="select-editable form-control" name="collection" id="collection"></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="collection_rus">Collection RUS</label>
+                                <input class="form-control" name="RUS[collection]" id="collection_rus">
                             </div>
                             <div class="form-group">
                                 <label for="wood_id_fix_wood">Wood</label>
@@ -50,8 +58,10 @@
                                     }
                                     ?>
                                 </select>
-                                <label for="collection">Collection</label>
-                                <select class="select-editable form-control" name="collection" id="collection"></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="wood_id_fix_wood_rus">Wood RUS</label>
+                                <input class="form-control" name="RUS[wood_id]" id="wood_id_fix_wood_rus">
                             </div>
                             <div class="form-group">
                                 <label>Name</label>
@@ -60,6 +70,10 @@
                             <div class="form-group">
                                 <label for="additional_info">Additional characteristics</label>
                                 <select name="additional_info" class="select-editable form-control" id="additional_info"></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="additional_info_rus">Additional characteristics RUS</label>
+                                <input class="form-control" name="RUS[additional_info]" id="additional_info_rus">
                             </div>
                             <div class="form-group">
                                 <label for="color_id_fix_colors">Color</label>
@@ -74,6 +88,10 @@
                                 </select>
                             </div>
                             <div class="form-group">
+                                <label for="color_id_fix_colors_rus">Color RUS</label>
+                                <input class="form-control" name="RUS[color_id]" id="color_id_fix_colors_rus">
+                            </div>
+                            <div class="form-group">
                                 <label for="color2_id_fix_colors">Color 2</label>
                                 <select name="color2_id_fix_colors" id="color2_id_fix_colors"
                                         class="select-editable not-load form-control">
@@ -86,6 +104,10 @@
                                 </select>
                             </div>
                             <div class="form-group">
+                                <label for="color2_id_fix_colors_rus">Color 2 RUS</label>
+                                <input class="form-control" name="RUS[color2_id]" id="color2_id_fix_colors_rus">
+                            </div>
+                            <div class="form-group">
                                 <label for="grading_id_fix_grading">Grading</label>
                                 <select name="grading_id_fix_grading" id="grading_id_fix_grading"
                                         class="select-editable not-load form-control">
@@ -96,6 +118,10 @@
                                     }
                                     ?>
                                 </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="grading_id_fix_grading_rus">Grading RUS</label>
+                                <input class="form-control" name="RUS[grading_id]" id="grading_id_fix_grading_rus">
                             </div>
                             <div class="form-group">
                                 <label>Thickness</label>
@@ -121,6 +147,10 @@
                                     ?>
                                 </select>
                             </div>
+                            <div class="form-group">
+                                <label for="construction_id_fix_constructions_rus">Construction RUS</label>
+                                <input class="form-control" name="RUS[construction_id]" id="construction_id_fix_constructions_rus">
+                            </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
@@ -128,24 +158,48 @@
                                 <select name="texture" class="select-editable form-control" id="texture"></select>
                             </div>
                             <div class="form-group">
+                                <label for="texture_rus">Texture RUS</label>
+                                <input class="form-control" name="RUS[texture]" id="texture_rus">
+                            </div>
+                            <div class="form-group">
                                 <label for="layer">Bottom layer/ Middle layer (for Admonter panels)</label>
                                 <select name="layer" class="select-editable form-control" id="layer"></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="layer_rus">Bottom layer/ Middle layer (for Admonter panels) RUS</label>
+                                <input class="form-control" name="RUS[layer]" id="layer_rus">
                             </div>
                             <div class="form-group">
                                 <label for="installation">Installation</label>
                                 <select name="installation" class="select-editable form-control" id="installation"></select>
                             </div>
                             <div class="form-group">
+                                <label for="installation_rus">Installation RUS</label>
+                                <input class="form-control" name="RUS[installation]" id="installation_rus">
+                            </div>
+                            <div class="form-group">
                                 <label for="surface">Surface</label>
                                 <select name="surface" class="select-editable form-control" id="surface"></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="surface_rus">Surface RUS</label>
+                                <input class="form-control" name="RUS[surface]" id="surface_rus">
                             </div>
                             <div class="form-group">
                                 <label for="units">Units</label>
                                 <select name="units" class="select-editable form-control" id="units"></select>
                             </div>
                             <div class="form-group">
+                                <label for="units_rus">Units RUS</label>
+                                <input class="form-control" name="RUS[units]" id="units_rus">
+                            </div>
+                            <div class="form-group">
                                 <label for="packing_type">Packing Type</label>
                                 <select name="packing_type" class="select-editable form-control" id="packing_type"></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="packing_type_rus">Packing Type RUS</label>
+                                <input class="form-control" name="RUS[packing_type]" id="packing_type_rus">
                             </div>
                             <div class="form-group">
                                 <label>Weight of 1 unit</label>
@@ -153,7 +207,8 @@
                             </div>
                             <div class="form-group">
                                 <label>Quantity of product in 1 pack (in units)</label>
-                                <input name="amount" class="form-control" placeholder="Enter Amount of product in 1 pack (in units)">
+                                <input name="amount_in_pack" class="form-control"
+                                       placeholder="Enter Amount of product in 1 pack (in units)">
                             </div>
                             <div class="form-group">
                                 <label>Purchase Price</label>
@@ -183,6 +238,10 @@
                                     ?>
                                 </select>
                             </div>
+                            <div class="form-group">
+                                <label for="pattern_id_fix_patterns_rus">Packing Type RUS</label>
+                                <input class="form-control" name="RUS[pattern_id]" id="pattern_id_fix_patterns_rus">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -199,53 +258,6 @@
     <!-- /.modal-dialog -->
 </div>
 
-<!--<script>-->
-<!--    $(document).ready(function() {-->
-<!--        var $field_country = $("#field_country");-->
-<!--        var $field_region = $("#field_region");-->
-<!---->
-<!--        $field_country.select2({-->
-<!--            ajax: {-->
-<!--                url: "/clients/get_countries",-->
-<!--                dataType: 'json',-->
-<!--                delay: 250,-->
-<!--                data: function (params) {-->
-<!--                    return {-->
-<!--                        q: params.term,-->
-<!--                        page: params.page-->
-<!--                    };-->
-<!--                },-->
-<!--                processResults: function (data, params) {-->
-<!--                    $field_region.select2("val", "");-->
-<!--                    params.page = params.page || 1;-->
-<!--                    return {results: data.items, pagination: {more: (params.page * 30) < data.total_count}};-->
-<!--                },-->
-<!--                cache: true-->
-<!--            },-->
-<!--            width: '100%'-->
-<!--        });-->
-<!--        $field_region.select2({-->
-<!--            ajax: {-->
-<!--                url: "/clients/get_regions",-->
-<!--                dataType: 'json',-->
-<!--                delay: 250,-->
-<!--                data: function (params) {-->
-<!--                    return {-->
-<!--                        q: params.term,-->
-<!--                        page: params.page,-->
-<!--                        country_id: $field_country.val()-->
-<!--                    };-->
-<!--                },-->
-<!--                processResults: function (data, params) {-->
-<!--                    params.page = params.page || 1;-->
-<!--                    return {results: data.items, pagination: {more: (params.page * 30) < data.total_count}};-->
-<!--                },-->
-<!--                cache: true-->
-<!--            },-->
-<!--            width: '100%'-->
-<!--        });-->
-<!--    });-->
-<!--</script>-->
 <script type="text/javascript">
     $(document).ready(function() {
         var $selects = <?= json_encode($this->selects) ?>;

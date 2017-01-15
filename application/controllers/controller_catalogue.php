@@ -36,10 +36,17 @@ class ControllerCatalogue extends Controller
     function action_add()
     {
         $postArray = [];
+        $rusArray = [];
         foreach ($_POST as $key => $post) {
+            if ($key == 'RUS' && !empty($post)) {
+                foreach ($post as $rusKey=>$rusValue) {
+                    $rusArray[$rusKey] = $this->escape_and_empty_to_null($rusValue);
+                }
+                unset($_POST['RUS']);
+            }
             $postArray[$key] = $this->escape_and_empty_to_null($post);
         }
-        $this->model->addProduct($postArray);
+        $this->model->addProduct($postArray, $rusArray);
         header("Location: /catalogue");
     }
 }

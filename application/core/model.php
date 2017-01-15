@@ -42,6 +42,19 @@ abstract class Model extends mysqli
         return $this->affected_rows > 0;
     }
 
+    public function getMax($query)
+    {
+        $result = $this->query($query);
+        if ($result) {
+            $row = mysqli_fetch_row($result);
+            if (!empty($row) && isset($row[0]) && $maxId = $row[0]) {
+                return $maxId;
+            }
+        }
+        echo mysqli_error($this);
+        die("Mysqli: error while select max");
+    }
+
     public function delete($query)
     {
 //        if ($_SESSION["user_role"] != 'admin') {
