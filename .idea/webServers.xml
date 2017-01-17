@@ -26,6 +26,14 @@
           <option name="port" value="21" />
         </fileTransfer>
       </webServer>
+      <webServer id="270bfacd-48ef-4e68-8f4a-b0fea5d52857" name="ubuntu" url="http://192.168.137.103/">
+        <fileTransfer host="192.168.137.103" port="22">
+          <advancedOptions>
+            <advancedOptions compatibilityMode="true" dataProtectionLevel="Private" passiveMode="true" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
     </option>
   </component>
 </project>

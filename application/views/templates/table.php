@@ -7,6 +7,8 @@
     $hidden_by_default = $table_data['hidden_by_default'];
     $click_url = $table_data['click_url'];
     $mustHidden = 0;
+    $selectSearchColumns = isset($table_data['selectSearchColumns']) ?
+        (empty($table_data['selectSearchColumns']) ? $table_data['selectSearchColumns'] : []) : false;
     ?>
     <div id="<?= $table_id ?>_left_buttons" class="btn-group">
         <?php
@@ -69,9 +71,13 @@
         white-space: nowrap;
         overflow: hidden;
     }
+    table .es-list {
+        width: auto !important;
+    }
 </style>
 
 <script>
+    var tableFilter;
     $(document).ready(function () {
         var $table = $('#<?= $table_id ?>');
         var hiddenByDefault = <?= $hidden_by_default ?>;
@@ -88,6 +94,10 @@
                               };";
         } else {
             echo "var ajax = '" . $ajax['url'] . "';";
+        }
+        echo 'var $selectSearchColumns = false;';
+        if ($selectSearchColumns) {
+            echo '$selectSearchColumns = ' . json_encode($selectSearchColumns) . ';';
         }
         ?>
         // DataTable
@@ -132,7 +142,7 @@
 
         table.columns().every(function () {
             var that = this;
-            $('input', this.header()).on('keyup change', {column: that}, keyUpChangeHandler);
+            $(this.header()).on('keyup change', 'input', {column: that}, keyUpChangeHandler);
         });
 
         function keyUpChangeHandler(event) {
@@ -222,32 +232,113 @@
 
             categoryTabsBlock.on('click', 'a[data-toggle="tab"]', function() {
                 var categoryId = $(this).attr('data-category-id');
-                console.log(categoryId);
                 if (categoryId == '0') {
                     location.reload();
                 }
                 table.columns(33).search(categoryId).draw()
             })
-
         }
 
+        // add filter selects for all not numeric columns
+        var data = {};
+        var url = ajax;
+        if (ajax instanceof Object && ajax['data'] !== "undefined") {
+            data = ajax['data'];
+            url = ajax['url'];
+        }
+        $.ajax({
+            url: url,
+            type: "GET",
+            data: data,
+            success: function (data) {
+                if (data) {
+                    var ajaxReq = JSON.parse(data);
+                    var dataAr = ajaxReq['data'];
+                    if (!dataAr.length)
+                        return;
+                    var cols = [];
+                    var numberCols = [];
+                    $.each(dataAr, function (rowId, row) {
+                        $.each(row, function (colId, value) {
+                            if (!colId)
+                                return;
+
+                            if (!$selectSearchColumns) {
+                                if ($selectSearchColumns.length) {
+                                    if ($selectSearchColumns.indexOf(colId) !== -1)
+                                        return;
+                                }
+                            }
+
+                            if (numberCols.length) {
+                                if (numberCols.indexOf(colId) !== -1)
+                                    return;
+                            }
+
+                            if (!value)
+                                return;
+
+                            //delete spaces
+                            value = value.replace(/\s+/g, ' ');
+
+                            var tagExp = /<.+\s*>.*?<\/.+>/gi;
+                            var isTag = (value.search(tagExp) !== -1);
+                            if (isTag) {
+                                if (value[0] == '<') {
+                                    value = $(value).text();
+                                }
+                                else {
+                                    value = value.replace(tagExp, '');
+                                }
+                            }
+
+                            var isNumber = !isNaN(parseFloat(value)) && isFinite(value);
+                            if (isNumber) {
+                                numberCols.push(colId);
+                                if (cols[colId] !== undefined)
+                                    delete cols[colId];
+                                return;
+                            }
+
+                            if (cols[colId] === undefined) {
+                                cols[colId] = [value];
+                                return;
+                            }
+                            if (cols[colId].indexOf(value) === -1 && cols[colId].length < 50)
+                                cols[colId].push(value);
+                        });
+                    });
+                    if (cols.length) {
+                        $.each(cols, function (colId, valuesArray) {
+                            if (valuesArray !== undefined && valuesArray.length) {
+                                var input = $(table.column(colId).header()).find('input');
+                                var select = $(document.createElement('select'));
+                                select.attr('class', input.attr('class'));
+                                select.attr('style', input.attr('style'));
+                                select.attr('onclick', input.attr('onclick'));
+                                select.attr('data-col-id', colId);
+                                var options = '';
+                                $.each(valuesArray, function (id, val) {
+                                    options += '<option value="' + val + '">' + val + '</option>';
+                                });
+                                if (options) {
+                                    input.parent().append(select);
+                                    input.remove();
+                                    select.append(options);
+                                    select.editableSelect();
+                                    select.on('select.editable-select', function (e, li) {
+                                        var value = li.text();
+                                        if (table.column($(this).attr('data-col-id')).search() !== value) {
+                                            table.column($(this).attr('data-col-id')).search(value).draw();
+                                        }
+                                    })
+                                }
+                            }
+                        })
+                    }
+                }
+            }
+        })
     });
 
-
-
-//    $.fn.dataTable.ext.search.push(
-//        function( settings, data, dataIndex ) {
-//            var category = 1;
-//            var age = parseFloat( data[3] ) || 0; // use data for the age column
-//
-//            if ( ( isNaN( min ) && isNaN( max ) ) ||
-//                ( isNaN( min ) && age <= max ) ||
-//                ( min <= age   && isNaN( max ) ) ||
-//                ( min <= age   && age <= max ) )
-//            {
-//                return true;
-//            }
-//            return false;
-//        }
-//    );
 </script>

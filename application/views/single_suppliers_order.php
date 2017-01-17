@@ -209,7 +209,7 @@
                             location.reload();
                         }
                     });
-                    <?php if ($this->client['type'] != 'Dealer' || $_SESSION["user_role"] == 'admin'): ?>
+<!--                    --><?php //if ($this->client['type'] != 'Dealer' || $_SESSION["user_role"] == 'admin'): ?>
                     $('.x-discount_rate').editable({
                         type: "number",
                         min: 0,
@@ -222,7 +222,7 @@
                             location.reload();
                         }
                     });
-                    <?php endif ?>
+<!--                    --><?php //endif ?>
                     $('.x-item_status').editable({
                         type: "select",
                         inputclass: 'form-control input-medium',

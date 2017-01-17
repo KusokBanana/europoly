@@ -12,7 +12,7 @@ class ControllerSuppliers_order extends Controller
     {
         $this->view->title = "Suppliers Order";
         $this->view->order = $this->model->getOrder($_GET['id']);
-        $this->view->client = $this->model->getClient($this->view->order['client_id']);
+//        $this->view->client = $this->model->getClient($this->view->order['client_id']);
         $this->view->title = "Evropoly Order #".$this->view->order['order_id']." " .
             $this->view->order['supplier_date_of_order'];
         $this->view->full_product_column_names = $this->model->full_product_column_names;

@@ -16,14 +16,21 @@
           </mappings>
         </serverdata>
       </paths>
-      <paths name="vape">
+      <paths name="silex">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>
-      <paths name="yadirect">
+      <paths name="ubuntu">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="vape">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />

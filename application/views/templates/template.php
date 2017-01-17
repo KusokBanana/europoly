@@ -41,6 +41,8 @@
     <link href="assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css"/>
     <link href="assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css"/>
     <link href="assets/pages/css/profile-2.min.css" rel="stylesheet" type="text/css"/>
+    <link href="assets/global/plugins/jquery-editable-select-master/dist/jquery-editable-select.min.css" rel="stylesheet">
+
     <!-- END THEME LAYOUT STYLES -->
     <link rel="shortcut icon" href="favicon.ico"/>
 
@@ -139,6 +141,8 @@
 <!-- BEGIN THEME LAYOUT SCRIPTS -->
 <script src="assets/layouts/layout6/scripts/layout.min.js" type="text/javascript"></script>
 <script src="assets/layouts/global/scripts/quick-sidebar.min.js" type="text/javascript"></script>
+<script src="assets/global/plugins/jquery-editable-select-master/dist/jquery-editable-select.min.js"
+        type="text/javascript"></script>
 <!-- END THEME LAYOUT SCRIPTS -->
 
 <script>

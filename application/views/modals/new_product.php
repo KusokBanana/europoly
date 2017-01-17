@@ -275,7 +275,5 @@
         editableSelects.attr('placeholder', 'Did not find the desired item? - Enter new one here');
     });
 </script>
-<script src="assets/global/plugins/jquery-editable-select-master/dist/jquery-editable-select.min.js"
-        type="text/javascript"></script>
-<link href="assets/global/plugins/jquery-editable-select-master/dist/jquery-editable-select.min.css" rel="stylesheet">
+
 

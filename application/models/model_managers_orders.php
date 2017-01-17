@@ -5,11 +5,11 @@ class ModelManagers_orders extends Model
     var $managers_orders_columns = [
         array('dt' => 0, 'db' => "order_items.order_item_id"),
         array('dt' => 1, 'db' => "CONCAT('<a href=\"/order?id=', order_items.order_id, '\">', order_items.order_id, '</a>')"),
-        array('dt' => 2, 'db' => "CONCAT(managers.first_name, ' ', managers.last_name, '<a href=\"/sales_manager?id=', 
+        array('dt' => 2, 'db' => "CONCAT(managers.first_name, ' ', managers.last_name, '<a href=\"/sales_manager?id=',
             orders.sales_manager_id, '\"><i class=\"glyphicon glyphicon-link\"></i></a></a>')"),
-        array('dt' => 3, 'db' => "CONCAT('<a href=\"/product?id=', order_items.product_id, '\" 
-                                 target=\"_blank\" data-id=\"', order_items.order_item_id, '\" 
-                                 class=\"order-item-product\">', products.name, '</a>')"),
+        array('dt' => 3, 'db' => "CONCAT('<a href=\"/product?id=', order_items.product_id, '\"',
+                                 'target=\"_blank\" data-id=\"', order_items.order_item_id, '\"',
+                                 'class=\"order-item-product\">', products.name, '</a>')"),
         array('dt' => 4, 'db' => "CONCAT('<span class=\"brand-cell', '\">', brands.name, '</span>')"),
         array('dt' => 5, 'db' => "orders.start_date"),
         array('dt' => 6, 'db' => "order_items.item_status"),
