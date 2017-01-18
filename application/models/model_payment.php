@@ -88,6 +88,35 @@ class ModelPayment extends Model
         }
     }
 
+    public function getExpenses()
+    {
+        $expenses = [];
+        $expenseCategories = $this->getAssoc("SELECT category_id as id, name FROM category_of_expense");
+        $expenseArticles = $this->getAssoc("SELECT article_id as id, name, category_id FROM article_of_expense");
+        if (!empty($expenseCategories)) {
+            foreach ($expenseCategories as $expenseCategory) {
+                $id = $expenseCategory['id'];
+                $name = $expenseCategory['name'];
+                $values = [];
+                foreach ($expenseArticles as $key => $expenseArticle) {
+                    $articleId = $expenseArticle['id'];
+                    if ($id == $expenseArticle['category_id']) {
+                        $values[$articleId] = $expenseArticle['name'];
+                        unset($expenseArticles[$key]);
+                    }
+                }
+
+                $expenses[$id] = [
+                    'name' => $name,
+                    'values' => $values
+                ];
+
+            }
+        }
+
+        return $expenses;
+    }
+
     public function savePayment($form, $paymentId)
     {
         if ($paymentId == 'new') {

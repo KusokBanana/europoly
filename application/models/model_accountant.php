@@ -24,9 +24,12 @@ class ModelAccountant extends Model
         array('dt' => 12, 'db' => "payments.currency_rate"),
         array('dt' => 13, 'db' => "payments.purpose_of_payment"),
         array('dt' => 14, 'db' => "CONCAT(users.first_name, ' ', users.last_name)"),
-        array('dt' => 15, 'db' => "CONCAT('<span class=\"label label-', IF(payments.status = 'Executed', 
+        array('dt' => 15, 'db' => "article_of_expense.name"),
+        array('dt' => 16, 'db' => "category_of_expense.name"),
+        array('dt' => 17, 'db' => "category_of_expense.expense_keyfigure"),
+        array('dt' => 18, 'db' => "CONCAT('<span class=\"label label-', IF(payments.status = 'Executed', 
             'success', 'default'), '\">', payments.status, '</span>')"),
-        array('dt' => 16, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
+        array('dt' => 19, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
                         CONCAT('<a href=\"/accountant/delete?payment_id=', payments.payment_id,
                         '\" onclick=\"return confirm(\'Are you sure to delete the payment?\')\"><span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span></a>'),
                 '</div>')")
@@ -48,6 +51,9 @@ class ModelAccountant extends Model
         'Sum in EURO',
         'Purpose of payment',
         'Responsible Person',
+        'Article of expense',
+        'Category of expense',
+        'Expense keyfigures',
         'Status',
         'Actions'
     ];
@@ -55,7 +61,9 @@ class ModelAccountant extends Model
     var $payments_table = 'payments
                             left join legal_entities as entities on entities.legal_entity_id = payments.legal_entity_id
                             left join transfers on transfers.transfer_id = payments.transfer_type_id
-                            left join users on users.user_id = payments.responsible_person_id';
+                            left join users on users.user_id = payments.responsible_person_id
+                            left join article_of_expense on payments.expense_article_id = article_of_expense.article_id
+                            left join category_of_expense on article_of_expense.category_id = category_of_expense.category_id';
 
     public function __construct()
     {
@@ -170,19 +178,37 @@ class ModelAccountant extends Model
 
     }
 
-//    function initParser($array)
-//    {
+    // parser fo expenses
+    function initParser($rows)
+    {
 //
-//        echo '<pre>';
-//        print_r($array);
-//        echo '</pre>';
+//        $expense = [];
+//        foreach ($rows as $key => $value) {
 //
-//        foreach ($array as $key => $value) {
-//            $categoryEn = htmlspecialchars($value[1], ENT_QUOTES);
-//            $categoryRus = htmlspecialchars($value[0], ENT_QUOTES);
-//            $articleEn = htmlspecialchars($value[3], ENT_QUOTES);
-//            $articleRus = htmlspecialchars($value[2], ENT_QUOTES);
-//            $keyfigure = htmlspecialchars($value[4], ENT_QUOTES);
+//            $articleEn = mysql_real_escape_string($value[1]);
+//            $articleRus = mysql_real_escape_string($value[0]);
+//            $categoryEn = mysql_real_escape_string($value[3]);
+//            $categoryRus = mysql_real_escape_string($value[2]);
+//            $keyfigure = mysql_real_escape_string($value[4]);
+//
+//            $item = ['value' => $articleEn, 'rus' => $articleRus];
+//
+//            if (isset($expense[$categoryEn])) {
+//                $expense[$categoryEn]['values'][] = $item;
+//            } else {
+//                $expense[$categoryEn] = [
+//                    'rus' => $categoryRus,
+//                    'keyfigure' => $keyfigure,
+//                    'values' => [$item]
+//                ];
+//            }
+//        }
+//
+//        foreach ($expense as $categoryName => $categoryArr) {
+//            $categoryEn = $categoryName;
+//            $categoryRus = $categoryArr['rus'];
+//            $articleAr = $categoryArr['values'];
+//            $keyfigure = $categoryArr['keyfigure'];
 //
 //            $categoryId = $this->insert("INSERT INTO category_of_expense (name, expense_keyfigure)
 //                                            VALUES ('$categoryEn', '$keyfigure')");
@@ -195,20 +221,25 @@ class ModelAccountant extends Model
 //                    $this->update("UPDATE category_of_expense SET `nls_resource_id` = $nlsId WHERE category_id = $categoryId");
 //                }
 //
-//                $articleId = $this->insert("INSERT INTO article_of_expense (name, category_id, nls_resource_id)
+//                foreach ($articleAr as $key => $valueItem) {
+//                    $articleEn = $valueItem['value'];
+//                    $articleRus = $valueItem['rus'];
+//
+//                    $articleId = $this->insert("INSERT INTO article_of_expense (name, category_id, nls_resource_id)
 //                                            VALUES ('$articleEn', $categoryId, 0)");
-//                if ($articleId) {
-//                    $maxNls = $this->getMax("SELECT MAX(resource_id) FROM nls_resources") + 1;
-//                    $nlsId = $this->insert("INSERT INTO nls_resources (nls_resource_id, language_id, value)
+//                    if ($articleId) {
+//                        $maxNls = $this->getMax("SELECT MAX(resource_id) FROM nls_resources") + 1;
+//                        $nlsId = $this->insert("INSERT INTO nls_resources (nls_resource_id, language_id, value)
 //                                            VALUES ($maxNls, 2, '$articleRus')");
-//                    if ($nlsId) {
-//                        $this->update("UPDATE article_of_expense SET `nls_resource_id` = $nlsId WHERE article_id = $articleId");
+//                        if ($nlsId) {
+//                            $this->update("UPDATE article_of_expense SET `nls_resource_id` = $nlsId WHERE article_id = $articleId");
+//                        }
 //                    }
 //                }
 //            }
 //
 //        }
-//
-//    }
+
+    }
 
 }

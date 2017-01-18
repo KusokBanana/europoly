@@ -2,12 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fe24c410-5d2a-4ad7-aea6-4e59e4e304a8" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/assets/phpExcel/Examples/expenses.xlsx" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/assets/phpExcel/expenses.xlsx" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/assets/phpExcel/Examples/expenses_parser.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/controller_accountant.php" afterPath="$PROJECT_DIR$/application/controllers/controller_accountant.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/controller_payment.php" afterPath="$PROJECT_DIR$/application/controllers/controller_payment.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/models/model_accountant.php" afterPath="$PROJECT_DIR$/application/models/model_accountant.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/models/model_payment.php" afterPath="$PROJECT_DIR$/application/models/model_payment.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/views/payment.php" afterPath="$PROJECT_DIR$/application/views/payment.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/phpExcel/Examples/expenses_parser.php" afterPath="$PROJECT_DIR$/assets/phpExcel/Examples/expenses_parser.php" />
     </list>
     <ignored path="europoly.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -73,67 +73,7 @@
     <favorites_list name="europoly" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="parser.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/assets/phpExcel/Examples/parser.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="5" column="47" lean-forward="true" selection-start-line="5" selection-start-column="47" selection-end-line="5" selection-end-column="47" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="expenses_parser.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/assets/phpExcel/Examples/expenses_parser.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="510">
-              <caret line="30" column="26" lean-forward="true" selection-start-line="30" selection-start-column="26" selection-end-line="30" selection-end-column="26" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="controller_accountant.php" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/application/controllers/controller_accountant.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="357">
-              <caret line="24" column="0" lean-forward="true" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="model_accountant.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/application/models/model_accountant.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="440">
-              <caret line="212" column="0" lean-forward="false" selection-start-line="212" selection-start-column="0" selection-end-line="212" selection-end-column="0" />
-              <folding>
-                <element signature="n#initCatalogueParser#0;n#ModelAccountant#0;n#!!top" expanded="false" />
-                <element signature="e#6882#6915#0#PHP" expanded="false" />
-                <marker date="1484745387479" expanded="true" signature="1774:1782" ph="..." />
-                <marker date="1484745387479" expanded="true" signature="4754:4842" ph="UPDATE `paym... " />
-                <marker date="1484745387479" expanded="true" signature="5027:5047" ph="SELECT * FRO... brands" />
-                <marker date="1484745387479" expanded="true" signature="5327:5348" ph="SELECT * FRO... grading" />
-                <marker date="1484745387479" expanded="true" signature="6775:6860" ph="INSERT INTO new_products... " />
-                <marker date="1484745387479" expanded="true" signature="7443:7583" ph="INSERT INTO category_of_expense... " />
-                <marker date="1484745387479" expanded="true" signature="7666:7708" ph="SELECT MAX(r... nls_resources" />
-                <marker date="1484745387479" expanded="true" signature="7758:7903" ph="INSERT INTO nls_resources... " />
-                <marker date="1484745387479" expanded="true" signature="7976:8027" ph="UPDATE categ... " />
-                <marker date="1484745387479" expanded="true" signature="7976:8028" ph="UPDATE categ... " />
-                <marker date="1484745387479" expanded="true" signature="7976:8054" ph="UPDATE categ... " />
-                <marker date="1484745387479" expanded="true" signature="7976:8055" ph="UPDATE categ... " />
-                <marker date="1484745387479" expanded="true" signature="8138:8289" ph="INSERT INTO article_of_expense... " />
-                <marker date="1484745387479" expanded="true" signature="8376:8418" ph="SELECT MAX(r... nls_resources" />
-                <marker date="1484745387479" expanded="true" signature="8472:8616" ph="INSERT INTO nls_resources... " />
-                <marker date="1484745387479" expanded="true" signature="8697:8773" ph="UPDATE artic... " />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf />
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
@@ -179,7 +119,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/application/models/model_shipment.php" />
         <option value="$PROJECT_DIR$/application/views/modals/new_client.php" />
         <option value="$PROJECT_DIR$/application/controllers/controller_clients.php" />
         <option value="$PROJECT_DIR$/application/controllers/controller_client.php" />
@@ -191,8 +130,6 @@
         <option value="$PROJECT_DIR$/application/models/model_sales_manager.php" />
         <option value="$PROJECT_DIR$/application/views/single_product.php" />
         <option value="$PROJECT_DIR$/application/models/model_product.php" />
-        <option value="$PROJECT_DIR$/application/views/payment.php" />
-        <option value="$PROJECT_DIR$/application/models/model_payment.php" />
         <option value="&lt;de3f9ad8-18ed-418c-ad4b-d8cda8d00b01&gt;/www/sex-shop-intim.ru/include/smsc/smsc_api.php" />
         <option value="&lt;de3f9ad8-18ed-418c-ad4b-d8cda8d00b01&gt;/www/sex-shop-intim.ru/bitrix/php_interface/init.php" />
         <option value="$PROJECT_DIR$/.htaccess" />
@@ -227,9 +164,12 @@
         <option value="$PROJECT_DIR$/application/controllers/controller_catalogue.php" />
         <option value="$PROJECT_DIR$/application/models/model_catalogue.php" />
         <option value="$PROJECT_DIR$/application/views/templates/table.php" />
+        <option value="$PROJECT_DIR$/application/controllers/controller_payment.php" />
         <option value="$PROJECT_DIR$/assets/phpExcel/Examples/expenses_parser.php" />
-        <option value="$PROJECT_DIR$/application/models/model_accountant.php" />
         <option value="$PROJECT_DIR$/application/controllers/controller_accountant.php" />
+        <option value="$PROJECT_DIR$/application/models/model_payment.php" />
+        <option value="$PROJECT_DIR$/application/views/payment.php" />
+        <option value="$PROJECT_DIR$/application/models/model_accountant.php" />
       </list>
     </option>
   </component>
@@ -353,6 +293,42 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="application" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="europoly" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="europoly" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="application" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="views" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="europoly" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="europoly" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="application" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="models" />
               <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
             </PATH_ELEMENT>
           </PATH>
@@ -509,19 +485,19 @@
       <workItem from="1484518434031" duration="14000" />
       <workItem from="1484636993604" duration="2782000" />
       <workItem from="1484656616712" duration="26927000" />
-      <workItem from="1484745296975" duration="3496000" />
+      <workItem from="1484745296975" duration="10781000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="537495000" />
+    <option name="totallyTimeSpent" value="544780000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1370" height="744" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20763358" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2038168" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2038168" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3289689" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19894099" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -562,33 +538,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/application/controllers1/controller_brand.php" />
-    <entry file="file://$PROJECT_DIR$/application/views/staff.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="141">
-          <caret line="282" column="34" lean-forward="true" selection-start-line="282" selection-start-column="34" selection-end-line="282" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/views/modals/new_user.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="371">
-          <caret line="46" column="70" lean-forward="false" selection-start-line="46" selection-start-column="70" selection-end-line="46" selection-end-column="70" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/avatars/b0d1d519add68802a6e3178cf7f200a9.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/controllers/controller_sales_manager.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="56" column="42" lean-forward="false" selection-start-line="56" selection-start-column="42" selection-end-line="56" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/application/core/controller.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
@@ -873,21 +822,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/application/models/model_contractors.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="14" column="21" lean-forward="true" selection-start-line="14" selection-start-column="21" selection-end-line="14" selection-end-column="21" />
-          <folding>
-            <marker date="1482136413621" expanded="true" signature="572:580" ph="..." />
-            <marker date="1482136413621" expanded="true" signature="1383:1391" ph="..." />
-            <marker date="1482136413621" expanded="true" signature="2118:2126" ph="..." />
-            <marker date="1482136413621" expanded="true" signature="2946:2954" ph="..." />
-            <marker date="1482136413621" expanded="true" signature="3535:3580" ph="INSERT INTO `${$type}`... " />
-            <marker date="1482136413621" expanded="true" signature="4262:4347" ph="UPDATE `${$t... " />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/application/views/single_suppliers_order.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="586">
@@ -972,14 +906,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/assets/phpExcel/Examples/parser.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="47" lean-forward="true" selection-start-line="5" selection-start-column="47" selection-end-line="5" selection-end-column="47" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/application/models/model_staff.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-72">
@@ -1017,46 +943,128 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/application/models/model_accountant.php">
+    <entry file="file://$PROJECT_DIR$/application/models/model_contractors.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="440">
-          <caret line="212" column="0" lean-forward="false" selection-start-line="212" selection-start-column="0" selection-end-line="212" selection-end-column="0" />
+        <state relative-caret-position="238">
+          <caret line="14" column="21" lean-forward="true" selection-start-line="14" selection-start-column="21" selection-end-line="14" selection-end-column="21" />
           <folding>
-            <element signature="n#initCatalogueParser#0;n#ModelAccountant#0;n#!!top" expanded="false" />
-            <element signature="e#6882#6915#0#PHP" expanded="false" />
-            <marker date="1484745387479" expanded="true" signature="1774:1782" ph="..." />
-            <marker date="1484745387479" expanded="true" signature="4754:4842" ph="UPDATE `paym... " />
-            <marker date="1484745387479" expanded="true" signature="5027:5047" ph="SELECT * FRO... brands" />
-            <marker date="1484745387479" expanded="true" signature="5327:5348" ph="SELECT * FRO... grading" />
-            <marker date="1484745387479" expanded="true" signature="6775:6860" ph="INSERT INTO new_products... " />
-            <marker date="1484745387479" expanded="true" signature="7443:7583" ph="INSERT INTO category_of_expense... " />
-            <marker date="1484745387479" expanded="true" signature="7666:7708" ph="SELECT MAX(r... nls_resources" />
-            <marker date="1484745387479" expanded="true" signature="7758:7903" ph="INSERT INTO nls_resources... " />
-            <marker date="1484745387479" expanded="true" signature="7976:8027" ph="UPDATE categ... " />
-            <marker date="1484745387479" expanded="true" signature="7976:8028" ph="UPDATE categ... " />
-            <marker date="1484745387479" expanded="true" signature="7976:8054" ph="UPDATE categ... " />
-            <marker date="1484745387479" expanded="true" signature="7976:8055" ph="UPDATE categ... " />
-            <marker date="1484745387479" expanded="true" signature="8138:8289" ph="INSERT INTO article_of_expense... " />
-            <marker date="1484745387479" expanded="true" signature="8376:8418" ph="SELECT MAX(r... nls_resources" />
-            <marker date="1484745387479" expanded="true" signature="8472:8616" ph="INSERT INTO nls_resources... " />
-            <marker date="1484745387479" expanded="true" signature="8697:8773" ph="UPDATE artic... " />
+            <marker date="1482136413621" expanded="true" signature="572:580" ph="..." />
+            <marker date="1482136413621" expanded="true" signature="1383:1391" ph="..." />
+            <marker date="1482136413621" expanded="true" signature="2118:2126" ph="..." />
+            <marker date="1482136413621" expanded="true" signature="2946:2954" ph="..." />
+            <marker date="1482136413621" expanded="true" signature="3535:3580" ph="INSERT INTO `${$type}`... " />
+            <marker date="1482136413621" expanded="true" signature="4262:4347" ph="UPDATE `${$t... " />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/assets/phpExcel/Examples/expenses_parser.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="30" column="26" lean-forward="true" selection-start-line="30" selection-start-column="26" selection-end-line="30" selection-end-column="26" />
+        <state relative-caret-position="544">
+          <caret line="32" column="13" lean-forward="true" selection-start-line="32" selection-start-column="13" selection-end-line="32" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/views/payment.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="365">
+          <caret line="400" column="82" lean-forward="true" selection-start-line="400" selection-start-column="82" selection-end-line="400" selection-end-column="82" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/models/model_payment.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="91" column="5" lean-forward="false" selection-start-line="91" selection-start-column="5" selection-end-line="91" selection-end-column="5" />
+          <folding>
+            <marker date="1484746147598" expanded="true" signature="196:245" ph="SELECT legal... legal_entities" />
+            <marker date="1484746147598" expanded="true" signature="331:370" ph="SELECT trans... transfers" />
+            <marker date="1484746147598" expanded="true" signature="1713:1761" ph="SELECT clien... clients" />
+            <marker date="1484746147598" expanded="true" signature="1848:1914" ph="SELECT suppl... suppliers" />
+            <marker date="1484746147598" expanded="true" signature="1996:2058" ph="SELECT custo... customs" />
+            <marker date="1484746147598" expanded="true" signature="2142:2274" ph="SELECT trans... transportation_companies" />
+            <marker date="1484746147598" expanded="true" signature="2537:2652" ph="SELECT order... ${$ordersTable}" />
+            <marker date="1484746147598" expanded="true" signature="3083:3138" ph="SELECT categ... category_of_expense" />
+            <marker date="1484746147598" expanded="true" signature="3186:3252" ph="SELECT artic... article_of_expense" />
+            <marker date="1484746147598" expanded="true" signature="4553:4606" ph="INSERT INTO payments... " />
+            <marker date="1484746147598" expanded="true" signature="5078:5149" ph="UPDATE payme... " />
+            <marker date="1484746147598" expanded="true" signature="5321:5425" ph="SELECT order... payments" />
+            <marker date="1484746147598" expanded="true" signature="5560:5676" ph="SELECT sum_i... payments" />
+            <marker date="1484746147598" expanded="true" signature="5737:5785" ph="SELECT total... orders" />
+            <marker date="1484746147598" expanded="true" signature="6251:6377" ph="UPDATE order... " />
+            <marker date="1484746147598" expanded="true" signature="6462:6567" ph="UPDATE suppl... " />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/controller_payment.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="29" column="64" lean-forward="true" selection-start-line="29" selection-start-column="64" selection-end-line="29" selection-end-column="64" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/phpExcel/Examples/parser.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="47" lean-forward="true" selection-start-line="5" selection-start-column="47" selection-end-line="5" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/controller_contractors.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/application/controllers/controller_accountant.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="24" column="0" lean-forward="true" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+        <state relative-caret-position="-51">
+          <caret line="18" column="0" lean-forward="true" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/models/model_accountant.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="69" column="28" lean-forward="true" selection-start-line="69" selection-start-column="28" selection-end-line="69" selection-end-column="28" />
+          <folding>
+            <element signature="n#initCatalogueParser#0;n#ModelAccountant#0;n#!!top" expanded="false" />
+            <element signature="n#initParser#0;n#ModelAccountant#0;n#!!top" expanded="false" />
+            <marker date="1484775321498" expanded="true" signature="1975:1983" ph="..." />
+            <marker date="1484775321498" expanded="true" signature="5292:5380" ph="UPDATE `paym... " />
+            <marker date="1484775321498" expanded="true" signature="5565:5585" ph="SELECT * FRO... brands" />
+            <marker date="1484775321498" expanded="true" signature="5865:5886" ph="SELECT * FRO... grading" />
+            <marker date="1484775321498" expanded="true" signature="7313:7398" ph="INSERT INTO new_products... " />
+            <marker date="1484775321498" expanded="true" signature="8633:8773" ph="INSERT INTO category_of_expense... " />
+            <marker date="1484775321498" expanded="true" signature="8856:8898" ph="SELECT MAX(r... nls_resources" />
+            <marker date="1484775321498" expanded="true" signature="8948:9093" ph="INSERT INTO nls_resources... " />
+            <marker date="1484775321498" expanded="true" signature="9166:9217" ph="UPDATE categ... " />
+            <marker date="1484775321498" expanded="true" signature="9166:9218" ph="UPDATE categ... " />
+            <marker date="1484775321498" expanded="true" signature="9166:9244" ph="UPDATE categ... " />
+            <marker date="1484775321498" expanded="true" signature="9166:9245" ph="UPDATE categ... " />
+            <marker date="1484775321498" expanded="true" signature="9509:9660" ph="INSERT INTO article_of_expense... " />
+            <marker date="1484775321498" expanded="true" signature="9755:9797" ph="SELECT MAX(r... nls_resources" />
+            <marker date="1484775321498" expanded="true" signature="9855:9999" ph="INSERT INTO nls_resources... " />
+            <marker date="1484775321498" expanded="true" signature="10088:10164" ph="UPDATE artic... " />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/views/accountant.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-612">
+          <caret line="6" column="45" lean-forward="true" selection-start-line="6" selection-start-column="45" selection-end-line="6" selection-end-column="45" />
+          <folding>
+            <marker date="1482061682137" expanded="true" signature="1656:1911" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>

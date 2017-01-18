@@ -27,6 +27,7 @@ class ControllerPayment extends Controller
             $this->view->transfers = $this->model->getTransferTypesIdName();
             $this->view->managers = $this->model->getSalesManagersIdName();
             $this->view->clients = $this->model->getClientsIdName();
+            $this->view->expenses = $this->model->getExpenses();
             $this->view->currentUser = $this->model->getUser($_SESSION["user_id"]);
             $this->view->build('templates/template.php', 'payment.php');
         }

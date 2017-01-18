@@ -389,17 +389,17 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-md-3 control-label" for="expense_items">Expense items</label>
+                                        <label class="col-md-3 control-label" for="expense_item_id">Expense items</label>
                                         <div class="col-md-9">
-                                            <select name="" id="expense_items" class="form-control" required>
+                                            <select name="expense_item_id" id="expense_item_id" class="form-control" required>
                                                 <option> </option>
-                                                <?php $directions = ['Element1', 'Element2'] ?>
-                                                <?php foreach ($directions as $direction): ?>
-                                                    <option value="<?= $direction ?>"
-                                                        <?= (isset($this->payment['']) &&
-                                                            $this->payment[''] == $direction)
+                                                <?php $expense_items = ['Element1', 'Element2'] ?>
+                                                <?php foreach ($expense_items as $key => $expense_item): ?>
+                                                    <option value="<?= $key ?>"
+                                                        <?= (isset($this->payment['expense_item_id']) &&
+                                                            $this->payment['expense_item_id'] == $key)
                                                             ? ' selected ' : ''?>>
-                                                        <?= $direction ?>
+                                                        <?= $expense_item ?>
                                                     </option>
                                                 <?php endforeach; ?>
                                             </select>
@@ -433,6 +433,71 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                             </select>
                                         </div>
                                     </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label" for="expense_category">Category of expense</label>
+                                        <div class="col-md-9">
+                                            <select id="expense_category" class="form-control">
+                                                <option> </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label" for="expense_article_id">Article of expense</label>
+                                        <div class="col-md-9">
+                                            <select name="expense_article_id" id="expense_article_id"
+                                                    data-value="<?= isset($this->payment['expense_article_id']) ?
+                                                                    $this->payment['expense_article_id'] : '' ?>"
+                                                    class="form-control" required>
+                                                <option> </option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <script>
+                                        $(document).ready(function() {
+                                            var $expenses = <?= json_encode($this->expenses); ?>;
+                                            var categoryOptions = '<option></option>';
+                                            var expenseCategorySelect = $('#expense_category');
+                                            var expenseArticleSelect = $('#expense_article_id');
+                                            var currentExpenseArticleValue = parseInt(expenseArticleSelect.attr('data-value'));
+                                            var currentCategoryId = 0;
+                                            var currentArticleOptions = '<option></option>';
+
+                                            $.each($expenses, function(id) {
+                                                var currentCategory = '';
+                                                if (currentExpenseArticleValue) {
+                                                    if (this.values[currentExpenseArticleValue] !== undefined) {
+                                                        currentCategoryId = id;
+                                                        currentCategory = 'selected';
+                                                        $.each(this.values, function(id, name) {
+                                                            var currentArticle = (currentExpenseArticleValue == id) ? 'selected' : '';
+                                                            currentArticleOptions += '<option value="' + id + '" ' +
+                                                                currentArticle + '>' + name + '</option>'
+                                                        })
+                                                    }
+                                                }
+                                                categoryOptions += '<option value="' + id + '" ' + currentCategory + '>' +
+                                                    this.name + '</option>';
+                                            });
+
+                                            if (currentArticleOptions) {
+                                                expenseArticleSelect.empty().append(currentArticleOptions);
+                                            }
+
+                                            expenseCategorySelect.empty().append(categoryOptions);
+
+                                            expenseCategorySelect.on('change', function() {
+                                                var categoryId = $(this).val();
+                                                var articleOptions = '<option> </option>';
+                                                if ($expenses[categoryId] !== undefined) {
+                                                    $.each($expenses[categoryId]['values'], function(id, name) {
+                                                        articleOptions += '<option value="' + id + '">' + name + '</option>'
+                                                    });
+                                                }
+                                                expenseArticleSelect.empty().append(articleOptions);
+                                            })
+                                        })
+                                    </script>
 
                                     <div class="form-actions">
                                         <div class="row">

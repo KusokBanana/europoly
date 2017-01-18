@@ -31,6 +31,7 @@ function getXLS($xls){
             if (!$value) {
                 continue;
             }
+
             $item[$key] = $value;
         }
 
