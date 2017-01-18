@@ -8,7 +8,7 @@
     $click_url = $table_data['click_url'];
     $mustHidden = 0;
     $selectSearchColumns = isset($table_data['selectSearchColumns']) ?
-        (empty($table_data['selectSearchColumns']) ? $table_data['selectSearchColumns'] : []) : false;
+        (!empty($table_data['selectSearchColumns']) ? $table_data['selectSearchColumns'] : []) : false;
     ?>
     <div id="<?= $table_id ?>_left_buttons" class="btn-group">
         <?php
@@ -246,86 +246,55 @@
             data = ajax['data'];
             url = ajax['url'];
         }
-        $.ajax({
-            url: url,
-            type: "GET",
-            data: data,
-            success: function (data) {
-                if (data) {
-                    var ajaxReq = JSON.parse(data);
-                    var dataAr = ajaxReq['data'];
-                    if (!dataAr.length)
-                        return;
-                    var cols = [];
-                    var numberCols = [];
-                    $.each(dataAr, function (rowId, row) {
-                        $.each(row, function (colId, value) {
-                            if (!colId)
-                                return;
 
-                            if (!$selectSearchColumns) {
-                                if ($selectSearchColumns.length) {
-                                    if ($selectSearchColumns.indexOf(colId) !== -1)
-                                        return;
+        if ($selectSearchColumns && $selectSearchColumns.length) {
+            $.each($selectSearchColumns, function(key, colId) {
+                var input = $('table thead th[data-column-index="' + colId + '"]').find('input');
+                input.addClass('es-input not-built');
+                input.on('focus', function() {
+                    var colId = $(this).closest('th').attr('data-column-index');
+                    $.ajax({
+                        url: '/catalogue/dt_ajax_filter/',
+                        type: "GET",
+                        data: {
+                            columns: [{
+                                data: 2,
+                                name: '',
+                                searchable: false,
+                                orderable: false,
+                                search: {
+                                    value: false,
+                                    regex: false
                                 }
-                            }
-
-                            if (numberCols.length) {
-                                if (numberCols.indexOf(colId) !== -1)
+                            }],
+                            start: 0,
+                            length: -1,
+                            id: colId
+                        },
+                        success: function (data) {
+                            if (data) {
+                                data = JSON.parse(data);
+                                if (!data.length)
                                     return;
-                            }
 
-                            if (!value)
-                                return;
-
-                            //delete spaces
-                            value = value.replace(/\s+/g, ' ');
-
-                            var tagExp = /<.+\s*>.*?<\/.+>/gi;
-                            var isTag = (value.search(tagExp) !== -1);
-                            if (isTag) {
-                                if (value[0] == '<') {
-                                    value = $(value).text();
-                                }
-                                else {
-                                    value = value.replace(tagExp, '');
-                                }
-                            }
-
-                            var isNumber = !isNaN(parseFloat(value)) && isFinite(value);
-                            if (isNumber) {
-                                numberCols.push(colId);
-                                if (cols[colId] !== undefined)
-                                    delete cols[colId];
-                                return;
-                            }
-
-                            if (cols[colId] === undefined) {
-                                cols[colId] = [value];
-                                return;
-                            }
-                            if (cols[colId].indexOf(value) === -1 && cols[colId].length < 50)
-                                cols[colId].push(value);
-                        });
-                    });
-                    if (cols.length) {
-                        $.each(cols, function (colId, valuesArray) {
-                            if (valuesArray !== undefined && valuesArray.length) {
-                                var input = $(table.column(colId).header()).find('input');
                                 var select = $(document.createElement('select'));
                                 select.attr('class', input.attr('class'));
+                                select.removeClass('not-built').addClass('built');
                                 select.attr('style', input.attr('style'));
                                 select.attr('onclick', input.attr('onclick'));
                                 select.attr('data-col-id', colId);
-                                var options = '';
-                                $.each(valuesArray, function (id, val) {
-                                    options += '<option value="' + val + '">' + val + '</option>';
+
+                                var option = '';
+                                $.each(data, function (id, val) {
+                                    option += '<option value="' + val + '">' + val + '</option>';
                                 });
-                                if (options) {
+
+                                if (option) {
                                     input.parent().append(select);
                                     input.remove();
-                                    select.append(options);
-                                    select.editableSelect();
+                                    select.append(option);
+                                    select.editableSelect('show');
+
                                     select.on('select.editable-select', function (e, li) {
                                         var value = li.text();
                                         if (table.column($(this).attr('data-col-id')).search() !== value) {
@@ -333,12 +302,129 @@
                                         }
                                     })
                                 }
+
                             }
-                        })
+                        }
+                    })
+                })
+            })
+        } else {
+            $.ajax({
+                url: url,
+                type: "GET",
+                data: data,
+                success: function (data) {
+                    if (data) {
+                        var ajaxReq = JSON.parse(data);
+                        var dataAr = ajaxReq['data'];
+                        if (!dataAr.length)
+                            return;
+                        fuckingFunctionRows(dataAr);
                     }
                 }
+            });
+        }
+
+        function fuckingFunctionRows(rows, columnId) {
+
+            var cols = [];
+            var numberCols = [];
+            $.each(rows, function (rowId, row) {
+                $.each(row, function (colId, value) {
+                    if (!colId)
+                        return;
+
+                    if (columnId !== undefined && columnId)
+                        if (colId != columnId)
+                            return;
+
+                    if (!$selectSearchColumns) {
+                        if ($selectSearchColumns.length) {
+                            if ($selectSearchColumns.indexOf(colId) !== -1)
+                                return;
+                        }
+                    }
+
+                    if (numberCols.length) {
+                        if (numberCols.indexOf(colId) !== -1)
+                            return;
+                    }
+
+                    if (!value)
+                        return;
+
+                    //delete spaces
+                    value = value.replace(/\s+/g, ' ');
+
+                    var tagExp = /<.+\s*>.*?<\/.+>/gi;
+                    var isTag = (value.search(tagExp) !== -1);
+                    if (isTag) {
+                        if (value[0] == '<') {
+                            value = $(value).text();
+                        }
+                        else {
+                            value = value.replace(tagExp, '');
+                        }
+                    }
+
+                    var isNumber = !isNaN(parseFloat(value)) && isFinite(value);
+                    if (isNumber) {
+                        numberCols.push(colId);
+                        if (cols[colId] !== undefined)
+                            delete cols[colId];
+                        return;
+                    }
+
+                    if (cols[colId] === undefined) {
+                        cols[colId] = [value];
+                        return;
+                    }
+                    if (cols[colId].indexOf(value) === -1 && cols[colId].length < 50)
+                        cols[colId].push(value);
+                });
+            });
+            if (cols.length) {
+                $.each(cols, function (colId, valuesArray) {
+                    if (valuesArray !== undefined && valuesArray.length) {
+                        var input = $(table.column(colId).header()).find('input');
+                        input.addClass('es-input not-built');
+                    }
+                })
             }
-        })
+            $('body').on('focus', 'input.es-input.not-built', function() {
+                var input = $(this);
+                var colId = input.closest('th').attr('data-column-index');
+                var valuesArray = cols[colId];
+                delete cols[colId];
+                var select = $(document.createElement('select'));
+                select.attr('class', input.attr('class'));
+                select.removeClass('not-built').addClass('built');
+                select.attr('style', input.attr('style'));
+                select.attr('onclick', input.attr('onclick'));
+                select.attr('data-col-id', colId);
+                var options = '';
+                $.each(valuesArray, function (id, val) {
+                    options += '<option value="' + val + '">' + val + '</option>';
+                });
+                if (options) {
+                    input.parent().append(select);
+                    input.remove();
+                    select.append(options);
+                    select.editableSelect('show');
+
+
+                    select.on('select.editable-select', function (e, li) {
+                        var value = li.text();
+                        if (table.column($(this).attr('data-col-id')).search() !== value) {
+                            table.column($(this).attr('data-col-id')).search(value).draw();
+                        }
+                    })
+                }
+            })
+
+        }
+
+
     });
 
 </script>

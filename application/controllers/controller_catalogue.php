@@ -23,7 +23,6 @@ class ControllerCatalogue extends Controller
         $this->view->tabs = $this->model->getCategoryTabs();
         $this->view->selects = $this->model->getSelects();
 
-
         $this->view->build('templates/template.php', 'catalogue.php');
     }
 
@@ -31,6 +30,12 @@ class ControllerCatalogue extends Controller
     {
         $id = isset($_GET['products']['id']) ? $_GET['products']['id'] : false;
         $this->model->getDTProducts($_GET, $id);
+    }
+
+    function action_dt_ajax_filter()
+    {
+        $id = isset($_GET['id']) ? $_GET['id'] : false;
+        echo $this->model->getAjaxColumn($id);
     }
 
     function action_add()

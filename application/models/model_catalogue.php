@@ -10,8 +10,39 @@ class ModelCatalogue extends Model
     function getDTProducts($input, $id)
     {
         $where = '';
-
         $this->sspComplex($this->full_products_table, "product_id", $this->full_product_columns, $input, null, $where);
+
+    }
+
+    public function getAjaxColumn($colId)
+    {
+
+        $columns = $this->full_product_columns;
+
+        if (isset($columns[$colId])) {
+            $string = htmlspecialchars($columns[$colId]['db']);
+            $return = [];
+
+            if (($pos = strpos($string, 'IFNULL')) !== -1) {
+                $string = substr($string, $pos);
+            }
+
+            if (preg_match("/\\w+\\.\\w+/", $string, $match)) {
+                $arr = explode('.', $match[0]);
+                $tableName = $arr[0];
+                $name = $arr[1];
+
+                $gets = $this->getAssoc("SELECT DISTINCT `$name` FROM `$tableName`");
+                foreach ($gets as $get) {
+                    if (count($return) < 40)
+                        $return[] = $get[$name];
+                }
+            }
+            return json_encode($return);
+        }
+
+        return false;
+
     }
 
     public function addProduct($postArray, $rusArray = [])
