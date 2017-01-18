@@ -103,7 +103,7 @@ class ModelAccountant extends Model
 //        $this->delete("DELETE FROM payments WHERE payment_id = $payment_id");
     }
 
-    function initParser($array)
+    function initCatalogueParser($array)
     {
 
         $brands = $this->getAssoc("SELECT * FROM brands");
@@ -169,5 +169,46 @@ class ModelAccountant extends Model
         }
 
     }
+
+//    function initParser($array)
+//    {
+//
+//        echo '<pre>';
+//        print_r($array);
+//        echo '</pre>';
+//
+//        foreach ($array as $key => $value) {
+//            $categoryEn = htmlspecialchars($value[1], ENT_QUOTES);
+//            $categoryRus = htmlspecialchars($value[0], ENT_QUOTES);
+//            $articleEn = htmlspecialchars($value[3], ENT_QUOTES);
+//            $articleRus = htmlspecialchars($value[2], ENT_QUOTES);
+//            $keyfigure = htmlspecialchars($value[4], ENT_QUOTES);
+//
+//            $categoryId = $this->insert("INSERT INTO category_of_expense (name, expense_keyfigure)
+//                                            VALUES ('$categoryEn', '$keyfigure')");
+//
+//            if ($categoryId) {
+//                $maxNls = $this->getMax("SELECT MAX(resource_id) FROM nls_resources") + 1;
+//                $nlsId = $this->insert("INSERT INTO nls_resources (nls_resource_id, language_id, value)
+//                                            VALUES ($maxNls, 2, '$categoryRus')");
+//                if ($nlsId) {
+//                    $this->update("UPDATE category_of_expense SET `nls_resource_id` = $nlsId WHERE category_id = $categoryId");
+//                }
+//
+//                $articleId = $this->insert("INSERT INTO article_of_expense (name, category_id, nls_resource_id)
+//                                            VALUES ('$articleEn', $categoryId, 0)");
+//                if ($articleId) {
+//                    $maxNls = $this->getMax("SELECT MAX(resource_id) FROM nls_resources") + 1;
+//                    $nlsId = $this->insert("INSERT INTO nls_resources (nls_resource_id, language_id, value)
+//                                            VALUES ($maxNls, 2, '$articleRus')");
+//                    if ($nlsId) {
+//                        $this->update("UPDATE article_of_expense SET `nls_resource_id` = $nlsId WHERE article_id = $articleId");
+//                    }
+//                }
+//            }
+//
+//        }
+//
+//    }
 
 }

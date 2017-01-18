@@ -21,6 +21,10 @@ class ControllerAccountant extends Controller
 
 //        require dirname(__FILE__) . "/../../assets/phpExcel/Examples/parser.php";
 
+//        require dirname(__FILE__) . "/../../assets/phpExcel/Examples/expenses_parser.php";
+
+//        $this->model->initCatalogueParser($parser);
+
 //        $this->model->initParser($parser);
 
     }
