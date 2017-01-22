@@ -74,10 +74,12 @@
     table .es-list {
         width: auto !important;
     }
+    table .es-input {
+        background-color: #fff;
+    }
 </style>
 
 <script>
-    var tableFilter;
     $(document).ready(function () {
         var $table = $('#<?= $table_id ?>');
         var hiddenByDefault = <?= $hidden_by_default ?>;
@@ -130,6 +132,7 @@
                 blurable: true
             },
             colReorder: true
+
         });
 
         $table.find('tbody').on('click', 'tr td:not(:first-child)', function (e) {
@@ -140,14 +143,17 @@
             window.location.href = "<?= $click_url ?>" + data[0];
         });
 
-        table.columns().every(function () {
-            var that = this;
-            $(this.header()).on('keyup change', 'input', {column: that}, keyUpChangeHandler);
-        });
+        tableSearch(table);
+        function tableSearch(tableVariable) {
+            tableVariable.columns().every(function () {
+                var that = this;
+                $(this.header()).on('keyup change', 'input', {column: that}, keyUpChangeHandler);
+            });
 
-        function keyUpChangeHandler(event) {
-            if (event.data.column.search() !== this.value) {
-                event.data.column.search(this.value).draw();
+            function keyUpChangeHandler(event) {
+                if (event.data.column.search() !== this.value) {
+                    event.data.column.search(this.value).draw();
+                }
             }
         }
 
@@ -226,6 +232,7 @@
             });
             return returnValue;
         }
+
         //    If category tabs exist on page
         var categoryTabsBlock = $('.category-tabs');
         if (categoryTabsBlock.length) {
@@ -240,89 +247,106 @@
         }
 
         // add filter selects for all not numeric columns
-        var data = {};
-        var url = ajax;
-        if (ajax instanceof Object && ajax['data'] !== "undefined") {
-            data = ajax['data'];
-            url = ajax['url'];
-        }
+        addFilterSelects();
+        function addFilterSelects() {
+            var data = {};
+            var url = ajax;
+            if (ajax instanceof Object && ajax['data'] !== "undefined") {
+                data = ajax['data'];
+                url = ajax['url'];
+            }
 
-        if ($selectSearchColumns && $selectSearchColumns.length) {
-            $.each($selectSearchColumns, function(key, colId) {
-                var input = $('table thead th[data-column-index="' + colId + '"]').find('input');
-                input.addClass('es-input not-built');
-                input.on('focus', function() {
-                    var colId = $(this).closest('th').attr('data-column-index');
-                    $.ajax({
-                        url: '/catalogue/dt_ajax_filter/',
-                        type: "GET",
-                        data: {
-                            columns: [{
-                                data: 2,
-                                name: '',
-                                searchable: false,
-                                orderable: false,
-                                search: {
-                                    value: false,
-                                    regex: false
-                                }
-                            }],
-                            start: 0,
-                            length: -1,
-                            id: colId
-                        },
-                        success: function (data) {
-                            if (data) {
-                                data = JSON.parse(data);
-                                if (!data.length)
-                                    return;
+            if ($selectSearchColumns && $selectSearchColumns.length) {
+                $.each($selectSearchColumns, function(key, colId) {
+                    var selector = 'table thead th[data-column-index="' + colId + '"] input';
+                    var input = $(selector);
 
-                                var select = $(document.createElement('select'));
-                                select.attr('class', input.attr('class'));
-                                select.removeClass('not-built').addClass('built');
-                                select.attr('style', input.attr('style'));
-                                select.attr('onclick', input.attr('onclick'));
-                                select.attr('data-col-id', colId);
+                    if (input.hasClass('es-input'))
+                        return;
 
-                                var option = '';
-                                $.each(data, function (id, val) {
-                                    option += '<option value="' + val + '">' + val + '</option>';
-                                });
-
-                                if (option) {
-                                    input.parent().append(select);
-                                    input.remove();
-                                    select.append(option);
-                                    select.editableSelect('show');
-
-                                    select.on('select.editable-select', function (e, li) {
-                                        var value = li.text();
-                                        if (table.column($(this).attr('data-col-id')).search() !== value) {
-                                            table.column($(this).attr('data-col-id')).search(value).draw();
-                                        }
-                                    })
-                                }
-
-                            }
-                        }
-                    })
+                    input.addClass('es-input not-built');
+                    $('body').on('focus', selector, {selector: selector}, notBuiltFocusHandler)
                 })
-            })
-        } else {
-            $.ajax({
-                url: url,
-                type: "GET",
-                data: data,
-                success: function (data) {
-                    if (data) {
-                        var ajaxReq = JSON.parse(data);
-                        var dataAr = ajaxReq['data'];
-                        if (!dataAr.length)
-                            return;
-                        fuckingFunctionRows(dataAr);
+            } else {
+                $.ajax({
+                    url: url,
+                    type: "GET",
+                    data: data,
+                    success: function (data) {
+                        if (data) {
+                            var ajaxReq = JSON.parse(data);
+                            var dataAr = ajaxReq['data'];
+                            if (!dataAr.length)
+                                return;
+                            fuckingFunctionRows(dataAr);
+                        }
                     }
-                }
-            });
+                });
+            }
+
+            function notBuiltFocusHandler(data) {
+                var selector = data.data.selector;
+                var input = $(selector);
+                var colId = $(this).closest('th').attr('data-column-index');
+
+                $.ajax({
+                    url: '/catalogue/dt_ajax_filter/',
+                    type: "GET",
+                    data: {
+                        columns: [{
+                            data: 2,
+                            name: '',
+                            searchable: false,
+                            orderable: false,
+                            search: {
+                                value: false,
+                                regex: false
+                            }
+                        }],
+                        start: 0,
+                        length: -1,
+                        id: colId
+                    },
+                    success: function (data) {
+                        if (data) {
+                            data = JSON.parse(data);
+                            if (!data.length)
+                                return;
+
+                            var select = $(document.createElement('select'));
+                            select.attr('class', input.attr('class'));
+                            select.removeClass('not-built').addClass('built');
+                            select.attr('style', input.attr('style'));
+                            select.attr('onclick', input.attr('onclick'));
+                            select.attr('data-col-id', colId);
+
+                            var option = '';
+                            $.each(data, function (id, val) {
+                                option += '<option value="' + val + '">' + val + '</option>';
+                            });
+
+                            if (option) {
+                                input.parent().append(select);
+                                input.remove();
+                                select.append(option);
+                                select.editableSelect('show');
+                                // remove current listener from new object and focus after click
+                                $('body').off('focus', selector, notBuiltFocusHandler);
+                                $(selector).focus();
+
+                                select.on('select.editable-select', function (e, li) {
+                                    var value = li.text();
+                                    if (table.column($(this).attr('data-col-id')).search() !== value) {
+                                        table.column($(this).attr('data-col-id')).search(value).draw();
+                                    }
+                                })
+                            }
+
+                        }
+                    }
+                })
+            }
+
         }
 
         function fuckingFunctionRows(rows, columnId) {
@@ -338,6 +362,7 @@
                         if (colId != columnId)
                             return;
 
+                    // TODO fix it
                     if (!$selectSearchColumns) {
                         if ($selectSearchColumns.length) {
                             if ($selectSearchColumns.indexOf(colId) !== -1)
@@ -391,8 +416,12 @@
                     }
                 })
             }
-            $('body').on('focus', 'input.es-input.not-built', function() {
+            table.on('focus', 'input.es-input.not-built', {cols: cols}, notBuiltFocusHandler);
+
+            function notBuiltFocusHandler(data) {
+                var cols = data.data.cols;
                 var input = $(this);
+
                 var colId = input.closest('th').attr('data-column-index');
                 var valuesArray = cols[colId];
                 delete cols[colId];
@@ -403,6 +432,7 @@
                 select.attr('onclick', input.attr('onclick'));
                 select.attr('data-col-id', colId);
                 var options = '';
+
                 $.each(valuesArray, function (id, val) {
                     options += '<option value="' + val + '">' + val + '</option>';
                 });
@@ -411,7 +441,10 @@
                     input.remove();
                     select.append(options);
                     select.editableSelect('show');
-
+                    // remove current listener from new object and focus after click
+                    var selector = 'table thead th[data-column-index="' + colId + '"] input';
+                    $('body').off('focus', selector, notBuiltFocusHandler);
+                    $(selector).focus();
 
                     select.on('select.editable-select', function (e, li) {
                         var value = li.text();
@@ -420,9 +453,63 @@
                         }
                     })
                 }
-            })
-
+            }
         }
+
+        // fixed header of table
+        function fixedHeader() {
+            scrollHandler();
+            $(document).on('scroll', scrollHandler);
+
+            function scrollHandler() {
+                var top = $table[0].getBoundingClientRect().top;
+                var fixedTable = $('.fixed-table');
+                var tableDad = $table.closest('#table_catalogue_wrapper');
+
+                if (top <= 3) {
+                    if (!fixedTable.length) {
+                        fixedTable = $table.clone();
+                        fixedTable.find('tbody').remove();
+                        tableDad.css('position', 'relative').css('overflow', 'hidden');
+                        fixedTable.css('position', 'absolute').css('top', '20px')
+                            .css('background-color', '#ebeaff').addClass('fixed-table');
+                        tableDad.children(':first-child').before(fixedTable);
+
+                        var tds = $table.find('thead th');
+                        $.each(tds, function() {
+                            var index = $(this).index(),
+                                width = $(this).css('width');
+
+                            fixedTable.find('th').eq(index).css('min-width', width);
+                            fixedTable.find('input').attr('disabled', '')
+                        });
+//                        addFilterSelects();
+//                        tableSearch(fixedTable.dataTable()); TODO сделать поиск по столбцам у фиксированного хедера
+
+                    } else {
+                        var topMax = tableDad.find('.table-scrollable').offset().top,
+                            bottomMax = topMax + +tableDad.find('.table-scrollable').css('height').slice(0,-2),
+                            currentWindowOffset = $(window).scrollTop(),
+                            fixedTableHeight = +fixedTable.css('height').slice(0,-2);
+
+                        if (currentWindowOffset <= bottomMax) {
+
+                            var needOffset = (currentWindowOffset + 30 + fixedTableHeight <= bottomMax) ?
+                                currentWindowOffset + 30 : bottomMax - fixedTableHeight + 10;
+
+                            fixedTable.css('top', (needOffset - topMax) + 'px');
+                        }
+
+                    }
+                } else {
+                    if (fixedTable.length) {
+                        fixedTable.remove();
+                    }
+                }
+            }
+        }
+        fixedHeader();
+
 
 
     });

@@ -32,10 +32,13 @@ class ModelCatalogue extends Model
                 $tableName = $arr[0];
                 $name = $arr[1];
 
-                $gets = $this->getAssoc("SELECT DISTINCT `$name` FROM `$tableName`");
+                $gets = $this->getAssoc("SELECT DISTINCT `$name` FROM `$tableName` ORDER BY `$name` ASC");
                 foreach ($gets as $get) {
-                    if (count($return) < 40)
+                    if (count($return) < 100)
                         $return[] = $get[$name];
+                }
+                foreach ($return as $item) {
+
                 }
             }
             return json_encode($return);
