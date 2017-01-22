@@ -299,4 +299,34 @@ abstract class Model extends mysqli
         return [$all, $floors, $windows, $interior, $other];
     }
 
+    public function updateOrderPayment($payment_id)
+    {
+        $payment = $this->getFirst("SELECT order_id, category FROM payments 
+              WHERE payment_id = $payment_id AND is_deleted = 0");
+        $orderId = $payment['order_id'];
+        $category = $payment['category'];
+        $allPaymentsForOrder = $this->getAssoc("SELECT * FROM payments 
+          WHERE (order_id = $orderId AND category = '$category' AND is_deleted = 0)");
+        $totalSum = 0;
+        $order = $this->getFirst("SELECT total_price FROM orders WHERE order_id = $orderId");
+        if (!empty($allPaymentsForOrder))
+            foreach ($allPaymentsForOrder as $onePaymentForOrder) {
+//                $totalSum += $this->turnToEuro($onePaymentForOrder['currency'], $onePaymentForOrder['sum']);
+                if ($onePaymentForOrder['status'] == 'Executed' && $onePaymentForOrder['category'] == 'Client') {
+                    $sumInEur = $onePaymentForOrder['sum_in_eur'];
+                    $sumInEur = ($onePaymentForOrder['direction'] == 'Income') ? $sumInEur : -$sumInEur;
+                    $totalSum += $sumInEur;
+                }
+            }
+        $rate = $totalSum / $order['total_price'] * 100;
+        if ($category == 'Client' || $category == 'Comission Agent') {
+            $this->update("UPDATE orders SET total_downpayment = $totalSum, downpayment_rate = $rate 
+                                  WHERE order_id = $orderId");
+        } else if ($category == 'Supplier') {
+            $this->update("UPDATE suppliers_orders SET total_downpayment = $totalSum  
+                            WHERE order_id = $orderId");
+            // TODO add here downpayment_rate too
+        }
+    }
+
 }

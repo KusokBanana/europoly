@@ -104,13 +104,6 @@
                                             </div>
                                         </div>
                                         <div class="row static-info">
-                                            <div class="col-md-5 name"> Special Expenses:</div>
-                                            <div class="col-md-7 value">
-                                                <a href="javascript:;" id="editable-special_expenses" class='x-editable' data-pk="<?= $this->order['order_id'] ?>" data-name="special_expenses" data-value="<?= $this->order['special_expenses'] ?>"
-                                                   data-url='/order/change_field' data-original-title='Enter Special Expenses'> <?= $this->order['special_expenses'] ?> € </a>
-                                            </div>
-                                        </div>
-                                        <div class="row static-info">
                                             <div class="col-md-5 name"> Total Price:</div>
                                             <div class="col-md-7 value"><?= $this->order['total_price'] ?> €</div>
                                         </div>
@@ -168,6 +161,12 @@
                                             </div>
                                         </div>
                                         <div class="row static-info">
+                                            <div class="col-md-5 name"> Customer Type:</div>
+                                            <div class="col-md-7 value">
+                                                <span><?= $this->client['type'] ?></span>
+                                            </div>
+                                        </div>
+                                        <div class="row static-info">
                                             <div class="col-md-5 name"> Email:</div>
                                             <div class="col-md-7 value">
                                                 <a href="javascript:;" id="editable-email" class='x-editable' data-pk="<?= $this->order['order_id'] ?>" data-name="email" data-value="<?= $this->order['email'] ?>"
@@ -197,10 +196,6 @@
                                                     <?= $this->commission_agent['name'] != null ? $this->commission_agent['name'] . '<a href="/order/delete_commission_agent?order_id=' . $this->order["order_id"] . '"><span class="glyphicon glyphicon-trash"></span></a>' : '' ?>
                                                 </a>
                                             </div>
-                                        </div>
-                                        <div class="row static-info">
-                                            <div class="col-md-5 name"> Status:</div>
-                                            <div class="col-md-7 value"><span class="label label-success"><?= $this->order['commission_status'] ?></span></div>
                                         </div>
                                     </div>
                                 </div>
@@ -237,6 +232,7 @@
                                                     <th> Manager Bonus Rate (%)</th>
                                                     <th> Manager Bonus</th>
                                                     <th> Commission Rate</th>
+                                                    <th> Commission Agent Bonus</th>
                                                     <th> Status</th>
                                                     <th> Actions</th>
                                                 </tr>
@@ -290,6 +286,8 @@
                                                     <th>Currency Rate</th>
                                                     <th>Sum in EURO</th>
                                                     <th>Purpose of Payment</th>
+                                                    <th>Article of Expense</th>
+                                                    <th>Category of Expense</th>
                                                     <th>Responsible Person</th>
                                                     <th>Status</th>
                                                 </tr>
@@ -326,12 +324,12 @@
                                         <div class="col-md-3 value"> €1100.00</div>
                                     </div>
                                     <div class="row static-info align-reverse">
-                                        <div class="col-md-8 name"> Manager Salary:</div>
-                                        <div class="col-md-3 value"> €120.00</div>
+                                        <div class="col-md-8 name"> Manager Bonus:</div>
+                                        <div class="col-md-3 value"> €<?= $this->order['manager_bonus'] ?> </div>
                                     </div>
                                     <div class="row static-info align-reverse">
                                         <div class="col-md-8 name"> Downpayment:</div>
-                                        <div class="col-md-3 value"> €<?= $this->order['total_downpayment'] != null ? $this->order['total_downpayment'] . ' &euro;' : '' ?></div>
+                                        <div class="col-md-3 value"> €<?= $this->order['total_downpayment'] != null ? $this->order['total_downpayment']  : '' ?></div>
                                     </div>
                                     <div class="row static-info align-reverse">
                                         <div class="col-md-8 name"> Downpayment rate:</div>
@@ -383,7 +381,7 @@ require_once 'modals/cancel_order.php';
             },
             dom: '<t>ip',
             columnDefs: [{
-                targets: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+                targets: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
                 searchable: false,
                 orderable: false
             }, {
@@ -393,7 +391,8 @@ require_once 'modals/cancel_order.php';
             }]
         });
         $table_order_items.on('draw.dt', function () {
-            $('.x-amount, .x-number_of_packs, .x-manager_bonus_rate, .x-sell-price, .x-commission_rate').editable({
+            $('.x-amount, .x-number_of_packs, .x-manager_bonus_rate, .x-sell-price, ' +
+                '.x-commission_rate, .x-commission_agent_bonus').editable({
                 type: "number",
                 min: 0,
                 step: 0.01,
@@ -426,7 +425,7 @@ require_once 'modals/cancel_order.php';
             });
         });
 
-        $('#editable-special_expenses, #editable-downpayment_rate, #editable-manager_bonus_rate').editable({
+        $('#editable-downpayment_rate, #editable-manager_bonus_rate').editable({
             type: "number",
             min: 0,
             step: 0.01,
@@ -495,7 +494,7 @@ require_once 'modals/cancel_order.php';
 
 
         var $table_payments = $("#table-payments");
-        $table_payments.DataTable({
+        var tablePay = $table_payments.DataTable({
             processing: true,
             serverSide: true,
             ajax: {
@@ -507,7 +506,7 @@ require_once 'modals/cancel_order.php';
             },
             dom: '<t>ip',
             columnDefs: [{
-                targets: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                targets: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
                 searchable: false,
                 orderable: false
             }, {
@@ -527,7 +526,29 @@ require_once 'modals/cancel_order.php';
                 var left = +popover.css('left').slice(0,-2);
                 popover.css('left', (left + difference) + 'px');
             }
-        })
+        });
+
+        tablePay.on('draw', function() {
+            var contractors = $('table').find('.change-me-contractor');
+            $.each(contractors, function() {
+                if ($(this).attr('data-type') && $(this).text()) {
+                    var string = $(this).attr('data-type') + '.' + $(this).text();
+                    var that = $(this);
+                    $.ajax({
+                        url: '/order/change_contractor_id_to_name',
+                        data: {
+                            tableAndId: string
+                        },
+                        type: "GET",
+                        success: function(data) {
+                            if (data) {
+                                that.text(data);
+                            }
+                        }
+                    })
+                }
+            })
+        });
 
     });
 </script>

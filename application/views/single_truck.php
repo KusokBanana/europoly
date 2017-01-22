@@ -86,19 +86,17 @@
                 </div>
                 <div class="row">
                     <div class="col-xs-3">
-                        <span class="label label-sm label-success">
+                        <div>
                             Weight Sum: <?= $this->sums['weight'] ?>
-                        </span>
-                    </div>
-                    <div class="col-xs-3">
-                        <span class="label label-sm label-success">
+                        </div>
+                        <br>
+                        <div>
                             # of packs Sum: <?= $this->sums['number_of_packs'] ?>
-                        </span>
-                    </div>
-                    <div class="col-xs-3">
-                        <span class="label label-sm label-success">
+                        </div>
+                        <br>
+                        <div>
                             Total price Sum: <?= $this->sums['totalPrice'] ?>
-                        </span>
+                        </div>
                     </div>
                 </div>
                 <div class="row" >

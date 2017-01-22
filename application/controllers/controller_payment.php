@@ -68,8 +68,9 @@ class ControllerPayment extends Controller
             return false;
 
         $paymentId = $this->model->savePayment($form, $payment_id);
-        if ($paymentId && $payment_id == 'new') {
-            header("Location: " . '/payment?id='.$paymentId);
+//        if ($paymentId && $payment_id == 'new') {
+        if ($paymentId) {
+            header("Location: " . '/accountant');
         }
         else {
             header("Location: " . $_SERVER['HTTP_REFERER']);

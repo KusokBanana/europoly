@@ -18,8 +18,10 @@ class ControllerOrder extends Controller
         $this->view->full_product_column_names = $this->model->full_product_column_names;
         $this->view->full_product_hidden_columns = $this->model->full_product_hidden_columns;
         $this->view->managers = $this->model->getSalesManagersIdName();
-        $this->view->commission_agents = $this->model->getCommissionAgentsIdName();
-        $this->view->clients = $this->model->getClientsIdName();
+//        $this->view->commission_agents = $this->model->getCommissionAgentsIdName();
+//        $this->view->clients = $this->model->getClientsIdName();
+        $this->view->clients = $this->model->getClientsOfManager($this->view->order["sales_manager_id"]);
+        $this->view->commission_agents = $this->model->getCommissionAgentsOfManager($this->view->order["commission_agent_id"]);
         $this->view->statusList = $this->model->getStatusList();
         $this->view->build('templates/template.php', 'single_order.php');
     }
@@ -103,4 +105,19 @@ class ControllerOrder extends Controller
             http_response_code(400);
         }
     }
+
+    function action_change_contractor_id_to_name()
+    {
+        $tableAndId = (isset($_GET["tableAndId"]) && $_GET["tableAndId"]) ? $_GET["tableAndId"] : false;
+        if ($tableAndId) {
+            $arr = explode('.', $tableAndId);
+            $table = $arr[0];
+            $idName = $arr[1];
+            $id = $arr[2];
+            $contractor = $this->model->getFirst("SELECT `name` FROM $table WHERE `$idName` = $id");
+            echo $contractor['name'];
+            return;
+        }
+    }
+
 }

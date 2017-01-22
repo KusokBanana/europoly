@@ -63,7 +63,13 @@ class ModelAccountant extends Model
                             left join transfers on transfers.transfer_id = payments.transfer_type_id
                             left join users on users.user_id = payments.responsible_person_id
                             left join article_of_expense on payments.expense_article_id = article_of_expense.article_id
-                            left join category_of_expense on article_of_expense.category_id = category_of_expense.category_id';
+                            left join category_of_expense on article_of_expense.category_id = category_of_expense.category_id
+                            left join clients on payments.contractor_id = clients.client_id
+                            left join suppliers on payments.contractor_id = suppliers.supplier_id
+                            left join customs on payments.contractor_id = customs.custom_id
+                            left join transportation_companies as transport on 
+                                payments.contractor_id = transport.transportation_company_id
+                            ';
 
     public function __construct()
     {
@@ -84,17 +90,29 @@ class ModelAccountant extends Model
             array('dt' => 2, 'db' => "payments.date"),
             array('dt' => 3, 'db' => "entities.name"),
             array('dt' => 4, 'db' => "payments.category"),
-            array('dt' => 5, 'db' => "payments.contractor_id"),
+            array('dt' => 5, 'db' => "CONCAT( 
+            IF(payments.category = 'Client' OR payments.category = 'Comission Agent', 
+                '<a class=\"change-me-contractor\" data-type=\"clients.client_id\" href=\"/client?id=', 
+            IF(payments.category = 'Supplier', 
+                '<a class=\"change-me-contractor\" data-type=\"suppliers.supplier_id\" href=\"/supplier?id=', 
+            IF(payments.category = 'Customs', 
+                '<a class=\"change-me-contractor\" data-type=\"customs.custom_id\" href=\"/custom?id=', 
+            IF(payments.category = 'Delivery', 
+            '<a class=\"change-me-contractor\" data-type=\"transportation_companies.transportation_company_id\" 
+            href=\"/transportation?id=', '')))), payments.contractor_id, '\"\">', 
+            payments.contractor_id, '</a>')"),
             array('dt' => 6, 'db' => "payments.order_id"),
             array('dt' => 7, 'db' => "transfers.name"),
-            array('dt' => 8, 'db' => "payments.	currency"),
+            array('dt' => 8, 'db' => "payments.currency"),
             array('dt' => 9, 'db' => "payments.sum"),
             array('dt' => 10, 'db' => "payments.direction"),
             array('dt' => 11, 'db' => "payments.currency_rate"),
             array('dt' => 12, 'db' => "payments.sum_in_eur"),
             array('dt' => 13, 'db' => "payments.purpose_of_payment"),
-            array('dt' => 14, 'db' => "CONCAT(users.first_name, ' ', users.last_name)"),
-            array('dt' => 15, 'db' => "CONCAT('<span class=\"label label-', IF(payments.status = 'Executed', 
+            array('dt' => 14, 'db' => "article_of_expense.name"),
+            array('dt' => 15, 'db' => "category_of_expense.name"),
+            array('dt' => 16, 'db' => "CONCAT(users.first_name, ' ', users.last_name)"),
+            array('dt' => 17, 'db' => "CONCAT('<span class=\"label label-', IF(payments.status = 'Executed', 
             'success', 'default'), '\">', payments.status, '</span>')"),
         ];
 
@@ -109,6 +127,8 @@ class ModelAccountant extends Model
         $this->update("UPDATE `payments`
                               SET `is_deleted` = 1 WHERE payment_id = $payment_id");
 //        $this->delete("DELETE FROM payments WHERE payment_id = $payment_id");
+        $this->updateOrderPayment($payment_id);
+
     }
 
     function initCatalogueParser($array)

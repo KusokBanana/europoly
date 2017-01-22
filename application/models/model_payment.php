@@ -119,6 +119,7 @@ class ModelPayment extends Model
 
     public function savePayment($form, $paymentId)
     {
+        $result = false;
         if ($paymentId == 'new') {
             $valuesArray = [];
             $fieldsArray = [];
@@ -139,40 +140,14 @@ class ModelPayment extends Model
                 if (!$value)
                     continue;
                 $value = $value != "" ? $this->escape_string($value) : '';
-                $setArray[] = "$name = '$value'";
+                $setArray[] = "`$name` = '$value'";
             }
             $set = join(', ', $setArray);
-            $this->update("UPDATE payments 
+            $result = $this->update("UPDATE payments 
                           SET $set WHERE payment_id = $paymentId");
         }
         $this->updateOrderPayment($paymentId);
-    }
-
-    public function updateOrderPayment($payment_id)
-    {
-        $payment = $this->getFirst("SELECT order_id, category FROM payments 
-              WHERE payment_id = $payment_id AND is_deleted = 0");
-        $orderId = $payment['order_id'];
-        $category = $payment['category'];
-        $allPaymentsForOrder = $this->getAssoc("SELECT sum_in_eur FROM payments 
-          WHERE (order_id = $orderId AND category = '$category' AND is_deleted = 0)");
-        $totalSum = 0;
-        $order = $this->getFirst("SELECT total_price FROM orders WHERE order_id = $orderId");
-        if (!empty($allPaymentsForOrder))
-            foreach ($allPaymentsForOrder as $onePaymentForOrder) {
-//                $totalSum += $this->turnToEuro($onePaymentForOrder['currency'], $onePaymentForOrder['sum']);
-                $totalSum += $onePaymentForOrder['sum_in_eur'];
-            }
-        $rate = $totalSum / $order['total_price'] * 100;
-        if ($category == 'Client' || $category == 'Comission Agent') {
-            $this->update("UPDATE orders SET total_downpayment = $totalSum, downpayment_rate = $rate 
-                                  WHERE order_id = $orderId");
-        } else if ($category == 'Supplier') {
-            $this->update("UPDATE suppliers_orders SET total_downpayment = $totalSum  
-                            WHERE order_id = $orderId");
-            // TODO add here downpayment_rate too
-        }
-
+        return $result;
     }
 
     public function turnToEuro($currency, $money)

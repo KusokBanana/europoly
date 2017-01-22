@@ -363,7 +363,7 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                         <div class="col-md-9">
                                             <select name="direction" id="direction" class="form-control" required>
                                                 <option> </option>
-                                                <?php $directions = ['Income', 'Outcome'] ?>
+                                                <?php $directions = ['Income', 'Expense'] ?>
                                                 <?php foreach ($directions as $direction): ?>
                                                     <option value="<?= $direction ?>"
                                                         <?= (isset($this->payment['direction']) &&
@@ -386,23 +386,6 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                                       id="purpose_of_payment"
                                                       rows="3"><?= isset($this->payment['purpose_of_payment']) ?
                                                     $this->payment['purpose_of_payment'] : '' ?></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-3 control-label" for="expense_item_id">Expense items</label>
-                                        <div class="col-md-9">
-                                            <select name="expense_item_id" id="expense_item_id" class="form-control" required>
-                                                <option> </option>
-                                                <?php $expense_items = ['Element1', 'Element2'] ?>
-                                                <?php foreach ($expense_items as $key => $expense_item): ?>
-                                                    <option value="<?= $key ?>"
-                                                        <?= (isset($this->payment['expense_item_id']) &&
-                                                            $this->payment['expense_item_id'] == $key)
-                                                            ? ' selected ' : ''?>>
-                                                        <?= $expense_item ?>
-                                                    </option>
-                                                <?php endforeach; ?>
-                                            </select>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -516,15 +499,6 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
             <!-- END PAGE BASE CONTENT -->
         </div>
         <!-- BEGIN FOOTER -->
-        <!-- BEGIN QUICK SIDEBAR TOGGLER -->
-        <button type="button" class="quick-sidebar-toggler" data-toggle="collapse">
-            <span class="sr-only">Toggle Quick Sidebar</span>
-            <i class="icon-logout"></i>
-            <div class="quick-sidebar-notification">
-                <span class="badge badge-danger">7</span>
-            </div>
-        </button>
-        <!-- END QUICK SIDEBAR TOGGLER -->
         <a href="#index" class="go2top">
             <i class="icon-arrow-up"></i>
         </a>
