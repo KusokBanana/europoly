@@ -2,17 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fe24c410-5d2a-4ad7-aea6-4e59e4e304a8" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/controller_catalogue.php" afterPath="$PROJECT_DIR$/application/controllers/controller_catalogue.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/controller_product.php" afterPath="$PROJECT_DIR$/application/controllers/controller_product.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/core/model.php" afterPath="$PROJECT_DIR$/application/core/model.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/models/model_catalogue.php" afterPath="$PROJECT_DIR$/application/models/model_catalogue.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/models/model_order.php" afterPath="$PROJECT_DIR$/application/models/model_order.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/models/model_product.php" afterPath="$PROJECT_DIR$/application/models/model_product.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/views/catalogue.php" afterPath="$PROJECT_DIR$/application/views/catalogue.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/views/single_order.php" afterPath="$PROJECT_DIR$/application/views/single_order.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/views/single_product.php" afterPath="$PROJECT_DIR$/application/views/single_product.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/views/templates/table.php" afterPath="$PROJECT_DIR$/application/views/templates/table.php" />
     </list>
     <ignored path="europoly.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -136,7 +126,7 @@
         <entry file="file://$PROJECT_DIR$/application/views/single_order.php">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="148">
-              <caret line="200" column="0" lean-forward="false" selection-start-line="200" selection-start-column="0" selection-end-line="210" selection-end-column="53" />
+              <caret line="200" column="0" lean-forward="false" selection-start-line="200" selection-start-column="0" selection-end-line="200" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -603,12 +593,12 @@
       <workItem from="1484940783136" duration="365000" />
       <workItem from="1484940228661" duration="338000" />
       <workItem from="1485076234814" duration="47368000" />
-      <workItem from="1485123066647" duration="7523000" />
+      <workItem from="1485123066647" duration="7550000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="611057000" />
+    <option name="totallyTimeSpent" value="611084000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1370" height="744" extended-state="0" />
@@ -1118,7 +1108,7 @@
     <entry file="file://$PROJECT_DIR$/application/views/single_order.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="148">
-          <caret line="200" column="0" lean-forward="false" selection-start-line="200" selection-start-column="0" selection-end-line="210" selection-end-column="53" />
+          <caret line="200" column="0" lean-forward="false" selection-start-line="200" selection-start-column="0" selection-end-line="200" selection-end-column="0" />
           <folding />
         </state>
       </provider>

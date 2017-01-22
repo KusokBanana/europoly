@@ -198,17 +198,6 @@
                                                 </a>
                                             </div>
                                         </div>
-<!--                                        <div class="row static-info">-->
-<!--                                            <div class="col-md-5 name"> Commission Rate:</div>-->
-<!--                                            <div class="col-md-7 value">-->
-<!--                                                <a href="javascript:;" id="editable-commission_rate" class='x-editable' data-pk="--><?//= $this->order['order_id'] ?><!--" data-name="commission_rate" data-value="--><?//= $this->order['commission_rate'] ?><!--"-->
-<!--                                                   data-url='/order/change_field' data-original-title='Enter Commission Rate'> --><?//= $this->order['commission_rate'] != null ? $this->order['commission_rate'] . '%' : '' ?><!--</a>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                        <div class="row static-info">-->
-<!--                                            <div class="col-md-5 name"> Total Commission:</div>-->
-<!--                                            <div class="col-md-7 value">--><?//= $this->order['total_commission'] ?><!-- €</div>-->
-<!--                                        </div>-->
                                         <div class="row static-info">
                                             <div class="col-md-5 name"> Status:</div>
                                             <div class="col-md-7 value"><span class="label label-success"><?= $this->order['commission_status'] ?></span></div>
