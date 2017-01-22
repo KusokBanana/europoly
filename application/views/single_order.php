@@ -50,11 +50,6 @@
                                 </a>
 
                                 <div class="btn-group ">
-                                    <a class="btn green  " href="javascript:;" data-toggle="dropdown">
-                                        <i class="fa fa-share"></i>
-                                        <span class="hidden-xs"> Change Status </span>
-                                        <i class="fa fa-angle-down"></i>
-                                    </a>
                                     <ul class="dropdown-menu pull-right">
                                         <li>
                                             <a href="/order/change_status?order_id=<?= $this->order['order_id'] ?>&status=Draft"> Draft </a>
@@ -151,7 +146,7 @@
                                             <div class="col-md-5 name"> Comment:</div>
                                             <div class="col-md-7 value">
                                                 <a href="javascript:;" id="editable-comment" class='x-editable' data-pk="<?= $this->order['order_id'] ?>" data-name="comment" data-value="<?= $this->order['comment'] ?>"
-                                                   data-url='/order/change_field' data-original-title='Enter Expected Date of Issue'> <?= $this->order['comment'] ?> </a>
+                                                   data-url='/order/change_field' data-original-title='Enter Comment'> <?= $this->order['comment'] ?> </a>
                                             </div>
                                         </div>
                                     </div>
@@ -203,17 +198,17 @@
                                                 </a>
                                             </div>
                                         </div>
-                                        <div class="row static-info">
-                                            <div class="col-md-5 name"> Commission Rate:</div>
-                                            <div class="col-md-7 value">
-                                                <a href="javascript:;" id="editable-commission_rate" class='x-editable' data-pk="<?= $this->order['order_id'] ?>" data-name="commission_rate" data-value="<?= $this->order['commission_rate'] ?>"
-                                                   data-url='/order/change_field' data-original-title='Enter Commission Rate'> <?= $this->order['commission_rate'] != null ? $this->order['commission_rate'] . '%' : '' ?></a>
-                                            </div>
-                                        </div>
-                                        <div class="row static-info">
-                                            <div class="col-md-5 name"> Total Commission:</div>
-                                            <div class="col-md-7 value"><?= $this->order['total_commission'] ?> €</div>
-                                        </div>
+<!--                                        <div class="row static-info">-->
+<!--                                            <div class="col-md-5 name"> Commission Rate:</div>-->
+<!--                                            <div class="col-md-7 value">-->
+<!--                                                <a href="javascript:;" id="editable-commission_rate" class='x-editable' data-pk="--><?//= $this->order['order_id'] ?><!--" data-name="commission_rate" data-value="--><?//= $this->order['commission_rate'] ?><!--"-->
+<!--                                                   data-url='/order/change_field' data-original-title='Enter Commission Rate'> --><?//= $this->order['commission_rate'] != null ? $this->order['commission_rate'] . '%' : '' ?><!--</a>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        <div class="row static-info">-->
+<!--                                            <div class="col-md-5 name"> Total Commission:</div>-->
+<!--                                            <div class="col-md-7 value">--><?//= $this->order['total_commission'] ?><!-- €</div>-->
+<!--                                        </div>-->
                                         <div class="row static-info">
                                             <div class="col-md-5 name"> Status:</div>
                                             <div class="col-md-7 value"><span class="label label-success"><?= $this->order['commission_status'] ?></span></div>
@@ -242,7 +237,8 @@
                                                     <th> Id</th>
                                                     <th> Product</th>
                                                     <th> Quantity</th>
-                                                    <th> Number of Packs</th>
+                                                    <th> # of Packs</th>
+                                                    <th> # of planks</th>
                                                     <th> Purchase Price</th>
                                                     <th> Purchase Value</th>
                                                     <th> Sell Price</th>
@@ -251,7 +247,7 @@
                                                     <th> Sell Value</th>
                                                     <th> Manager Bonus Rate (%)</th>
                                                     <th> Manager Bonus</th>
-                                                    <th> Number of planks</th>
+                                                    <th> Commission Rate</th>
                                                     <th> Status</th>
                                                     <th> Actions</th>
                                                 </tr>
@@ -360,15 +356,16 @@
                 </div>
             </div>
         </div>
+        <!-- BEGIN FOOTER -->
+        <p class="copyright-v2">2016 © Evropoly.
+        </p>
+        <a href="#index" class="go2top">
+            <i class="icon-arrow-up"></i>
+        </a>
+        <!-- END FOOTER -->
     </div>
     <!-- END PAGE BASE CONTENT -->
-    <!-- BEGIN FOOTER -->
-    <p class="copyright-v2">2016 © Evropoly.
-    </p>
-    <a href="#index" class="go2top">
-        <i class="icon-arrow-up"></i>
-    </a>
-    <!-- END FOOTER -->
+
 </div>
 
 <?php
@@ -407,7 +404,7 @@ require_once 'modals/cancel_order.php';
             }]
         });
         $table_order_items.on('draw.dt', function () {
-            $('.x-amount, .x-number_of_packs, .x-manager_bonus_rate, .x-sell-price').editable({
+            $('.x-amount, .x-number_of_packs, .x-manager_bonus_rate, .x-sell-price, .x-commission_rate').editable({
                 type: "number",
                 min: 0,
                 step: 0.01,
@@ -531,5 +528,22 @@ require_once 'modals/cancel_order.php';
             }]
         });
 
+        $('table').on('click', '.x-editable.editable-click', function() {
+            var popover = $(this).next('.popover.editable-container.editable-popup');
+            var maxLeft = popover.closest('.table-responsive').offset().left,
+                currentLeft = popover.offset().left,
+                difference = maxLeft - currentLeft;
+
+            if (difference > 0) {
+                var left = +popover.css('left').slice(0,-2);
+                popover.css('left', (left + difference) + 'px');
+            }
+        })
+
     });
 </script>
+<style>
+    .table-responsive {
+        overflow-y: hidden;
+    }
+</style>

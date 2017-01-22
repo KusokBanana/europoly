@@ -54,4 +54,12 @@ class ControllerCatalogue extends Controller
         $this->model->addProduct($postArray, $rusArray);
         header("Location: /catalogue");
     }
+
+    function action_similar_product()
+    {
+        $productId = (isset($_GET['product_id']) && $_GET['product_id']) ? intval($_GET['product_id']) : 0;
+        if ($productId) {
+            echo $this->model->getProductValuesForSimilar($productId);
+        }
+    }
 }

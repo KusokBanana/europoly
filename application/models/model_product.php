@@ -10,9 +10,9 @@ class ModelProduct extends Model
     public function getFullProductEntity($product_id)
     {
         return $this->getFirst("
-            SELECT `product_id`, `sell_price`, `article`, suppliers.`name` as `supplier`, brands.`name` as 'brand', `country`, `collection`, wood.`name` as 'wood', 
-                products.`name` as 'name', `additional_info`, colors.`name` as 'color', colors2.name as 'color2', grading.name as 'grading',
-                `thickness`, `width`, `length`, `texture`, `layer`, `installation`, `surface`, constructions.name as 'construction',
+            SELECT `product_id`, `sell_price`, `article`, suppliers.`name` as `supplier`, brands.`name` as 'brand', `country`, `collection`, wood.`name` as 'wood', `color`, `construction`,
+                products.`name` as 'name', `additional_info`, colors.`name` as 'color_id', colors2.name as 'color2', grading.name as 'grading',
+                `thickness`, `width`, `length`, `texture`, `layer`, `installation`, `surface`, constructions.name as 'construction_id',
                 `units`, `packing_type`, `weight`, `amount_in_pack`, `purchase_price`, `currency`, `suppliers_discount`, `margin`,
                 patterns.name as 'pattern', `sheet`, products.status as 'status'
             FROM products
@@ -29,7 +29,13 @@ class ModelProduct extends Model
 
     public function updateField($product_id, $field, $new_value)
     {
-        return $this->update("UPDATE `products` SET `$field` = '$new_value' WHERE product_id = $product_id");
+        $tableName = 'products';
+        if (strpos($field, '_rus')) {
+            $tableName = 'nls_products';
+            $field = str_replace('_rus', '', $field);
+        }
+
+        return $this->update("UPDATE `$tableName` SET `$field` = '$new_value' WHERE product_id = $product_id");
     }
 
     public function deleteProduct($product_id)
@@ -69,5 +75,10 @@ class ModelProduct extends Model
                 FROM `products_warehouses` pw JOIN `products` p ON pw.product_id = p.product_id
                 WHERE p.product_id = $product_id
                 GROUP BY pw.product_id");
+    }
+
+    public function getRus($product_id)
+    {
+        return $this->getFirst("SELECT * FROM nls_products WHERE product_id = $product_id");
     }
 }

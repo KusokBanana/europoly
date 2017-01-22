@@ -161,47 +161,68 @@ END;
                                 "article" => "Article",
                                 "name" => "Name",
                                 "brand" => "Brand",
-                                "supplier" => '',
                                 "country" => "Country",
+                                "country_rus" => "Country RUS",
                                 "collection" => "Collection",
+                                "collection_rus" => "Collection RUS",
                                 "wood" => "Wood",
                                 "additional_info" => "Additional characteristics",
-                                "color" => "Color",
-                                "color2" => "Color 2",
-                                "color_id" => '',
+                                "additional_info_rus" => "Additional characteristics RUS",
+                                "color_id" => "Color1",
+                                "color2" => "Color2",
+                                "color" => 'Color',
                                 "grading" => "Grading",
                                 "thickness" => "Thickness",
                                 "width" => "Width",
                                 "length" => "Length",
-                                "construction" => "Construction",
-                                "construction_id" => '',
+                                "construction_id" => "Construction1",
+                                "construction" => 'Construction2',
                                 "texture" => "Texture",
+                                "texture_rus" => "Texture RUS",
                                 "layer" => "Bottom layer/ Middle layer (for Admonter panels)",
+                                "layer_rus" => "Bottom layer/ Middle layer (for Admonter panels) RUS",
                                 "installation" => "Installation",
+                                "installation_rus" => "Installation RUS",
                                 "surface" => "Surface",
+                                "surface_rus" => "Surface RUS",
                                 "units" => "Units",
+                                "units_rus" => "Units RUS",
                                 "sell_price" => "Sell Price",
-                                "packing_type" => "Packing Type",
-                                "weight" => "Weight of 1 unit",
-                                "amount_in_pack" => "Quantity of product in 1 pack (in units)",
                                 "purchase_price" => "Purchase Price",
                                 "currency" => "Currency",
+                                "packing_type" => "Packing Type",
+                                "packing_type_rus" => "Packing Type RUS",
+                                "weight" => "Weight of 1 unit",
+                                "amount_in_pack" => "Quantity of product in 1 pack (in units)",
                                 "suppliers_discount" => "Supplier's Discount",
                                 "margin" => "Margin",
                                 "pattern" => "Pattern"
                             );
                             $string_columns = array("article", "name", "country", "collection", "additional_info", "thickness",
-                                "width", "length", "texture", "layer", "sell_price", "installation", "surface", "units", "packing_type", "weight",
+                                "width", "length", "texture", "layer", "sell_price", "installation", "surface", "units",
+                                "packing_type", "weight", "color", "construction",
                                 "amount_in_pack", "purchase_price", "currency", "suppliers_discount", "margin");
                             foreach ($columns as $column => $visible_name) {
                                 $column_name = in_array($column, $string_columns) ? $column : $column . "_id";
-                                $value = $this->orEmpty($this->product[$column_name]);
-                                $text = $this->orEmpty($this->full_product[$column]);
+                                if ($column == 'color_id' || $column == 'construction_id')
+                                    $column_name = $column;
+
+                                if (strpos($column, '_rus') !== false) {
+                                    $column_name_rus = str_replace('_rus', '', $column);
+                                    $column_name = $column;
+                                    $value = $this->orEmpty($this->rus[$column_name_rus]);
+                                    $text = $value;
+                                    array_push($string_columns, $column);
+                                } else {
+                                    $value = $this->orEmpty($this->product[$column_name]);
+                                    $text = $this->orEmpty($this->full_product[$column]);
+                                }
                                 echo <<<END
                             <div class="row static-info">
                                 <div class="col-md-5 name"> $visible_name:</div>
                                 <div class="col-md-7 value">
                                     <a href="javascript:;" id="editable-$column" class='x-editable' data-pk="{$this->product["product_id"]}" data-name="$column_name" data-value="$value" data-url='/product/change_field' data-original-title='Enter $visible_name' > $text </a>
+
                                 </div>
                             </div>
 END;
@@ -423,17 +444,17 @@ END;
         inputclass: 'form-control input-medium',
         source: brands
     });
-    $('#editable-color').editable({
-        type: "select",
-        inputclass: 'form-control input-medium',
-        source: colors
-    });
     $('#editable-color2').editable({
         type: "select",
         inputclass: 'form-control input-medium',
         source: colors
     });
-    $('#editable-construction').editable({
+    $('#editable-color_id').editable({
+        type: "select",
+        inputclass: 'form-control input-medium',
+        source: colors
+    });
+    $('#editable-construction_id').editable({
         type: "select",
         inputclass: 'form-control input-medium',
         source: constructions

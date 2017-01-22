@@ -78,7 +78,10 @@
                                     <?php
                                     $table_data = [
                                         'buttons' => [
-                                            '<button class="btn sbold green" data-toggle="modal" data-target="#modal_newProduct">Add New Product <i class="fa fa-plus"></i></button>'
+                                            '<button class="btn sbold green" data-toggle="modal" 
+data-target="#modal_newProduct">Add New Product <i class="fa fa-plus"></i></button>',
+                                            '<button class="btn sbold blue new-similar-product-btn" data-toggle="modal" 
+data-target="#modal_newProduct">Add Similar Product <i class="fa fa-plus"></i></button>'
                                         ],
                                         'table_id' => "table_catalogue",
                                         'ajax' => [
@@ -106,6 +109,92 @@
     </div>
 </div>
 
+<script>
+    $(document).ready(function() {
+        $('body').on('click', '.new-similar-product-btn', function() {
+            var table = $('table').DataTable();
+            var errorMessage = '',
+                selected = table.rows('.selected').data(),
+                selectedCount = selected.length;
+            if (selectedCount) {
+                if (selectedCount == 1) {
+                    var productId = selected[0];
+                    $.ajax({
+                        url: '/catalogue/similar_product?product_id='+productId,
+                        success: function(data) {
+                            if (data) {
+                                var product = JSON.parse(data);
+
+                                var inputs = $('#modal_newProduct').find('.form-group input');
+                                $.each(inputs, function() {
+                                    var name = $(this).attr('name');
+                                    if (name.indexOf('RUS') !== -1) {
+                                        name = name.slice(4, -1) + '_rus';
+                                    } else if (name.indexOf('_fix_') !== -1) {
+                                        name = name.replace(/_fix_.+/g, '');
+                                    }
+
+                                    if (product[name] !== undefined) {
+                                        var value = product[name];
+                                        if (value == 'NULL')
+                                            return;
+                                        if ($(this).hasClass('select-editable')) {
+                                            var valueOption = $(this).next('ul').find('li[value="' + value + '"]');
+                                            $(this).editableSelect('select', valueOption).editableSelect('hide');
+                                        } else {
+                                            $(this).val(product[name]);
+                                        }
+                                    }
+                                })
+                            }
+                        }
+                    })
+
+                } else {
+                   errorMessage = 'Select only one of the items!'
+                }
+            } else {
+                errorMessage = 'Select one of the items!'
+            }
+            if (errorMessage) {
+                $('#modal_similar_error').modal('show').find('.modal-body h4').text(errorMessage);
+                return false;
+            }
+        });
+        $('#modal_newProduct').on('hide.bs.modal', function(){
+            var inputs = $('#modal_newProduct').find('.form-group input');
+            $.each(inputs, function() {
+                if ($(this).hasClass('select-editable')) {
+                    var parent = $(this).parent();
+                    $(this).editableSelect('destroy');
+                    parent.find('select').editableSelect().attr('placeholder', 'Did not find the desired item? - Enter new one here');
+                } else {
+                    $(this).val('');
+                }
+            })
+        })
+
+    })
+</script>
+
 <?php
 require_once 'modals/new_product.php';
+
 ?>
+<div class="modal fade" id="modal_similar_error" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">New Similar Product</h4>
+            </div>
+            <div class="modal-body">
+                <h4 class="modal-title text-danger text-center">Select one of the items!</h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>

@@ -15,6 +15,7 @@ class ControllerProduct extends Controller
             $this->view->product = $this->model->getById("products", "product_id", $id);
             if ($this->view->product != NULL) {
                 $this->view->full_product = $this->model->getFullProductEntity($id);
+                $this->view->rus = $this->model->getRus($id);
                 $this->view->brand = $this->model->getById("brands", "brand_id", $this->view->product["brand_id"]);
                 $this->view->title = $this->view->product["name"];
                 $this->view->photos = $this->model->getPhotos($this->view->product["product_id"]);

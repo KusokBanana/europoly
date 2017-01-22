@@ -144,7 +144,7 @@ abstract class Model extends mysqli
         array('dt' => 27, 'db' => 'products.suppliers_discount'),
         array('dt' => 28, 'db' => 'products.margin'),
         array('dt' => 29, 'db' => 'patterns.name'),
-        array('dt' => 30, 'db' => 'products.status'),
+        array('dt' => 30, 'db' => 'CONCAT(IF(products.status=0, "Active", IF(products.status=1, "Limited Edition", IF(products.status=2, "Out Of Production", ""))))'),
         array('dt' => 31, 'db' => 'products.sell_price'),
         array('dt' => 32, 'db' => '"N/A"'),
         array('dt' => 33, 'db' => 'products.category_id')

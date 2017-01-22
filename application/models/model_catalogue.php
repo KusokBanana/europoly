@@ -146,7 +146,7 @@ class ModelCatalogue extends Model
                 if (!$value || $value == null)
                     continue;
                 if (in_array($key, ['product_id', 'article', 'name', 'width', 'length', 'weight',
-                    'amount_in_pack', 'purchase_price', '	dealer_price', 'currency', 'suppliers_discount', 'margin',
+                    'amount_in_pack', 'purchase_price', 'dealer_price', 'currency', 'suppliers_discount', 'margin',
                     'status', 'sell_price', 'thickness']))
                     continue;
                 $selects[$key][] = $value;
@@ -163,6 +163,17 @@ class ModelCatalogue extends Model
         }
 
         return $selects;
+    }
+
+    public function getProductValuesForSimilar($product_id)
+    {
+        $product = $this->getFirst("SELECT * FROM products WHERE product_id = $product_id");
+        $rusProduct = $this->getFirst("SELECT * FROM nls_products WHERE product_id = $product_id");
+        foreach ($rusProduct as $name => $value) {
+            $newName = $name . '_rus';
+            $product[$newName] = $value;
+        }
+        return json_encode($product);
     }
 
 }

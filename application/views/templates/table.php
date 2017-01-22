@@ -171,6 +171,7 @@
         // Save hidden columns in cookies
         var tableId = $table.attr('id');
         var columnChoose = $('#'+tableId+'_columns_choose');
+        columnChoose.css('height', '405px').css('overflow-y', 'auto');
         var tableCheckboxes = columnChoose.find('label').not(':first-child');
         tableCheckboxes.on('change', 'input', function() {
             var columnsId = [];
@@ -458,13 +459,16 @@
 
         // fixed header of table
         function fixedHeader() {
+
             scrollHandler();
             $(document).on('scroll', scrollHandler);
 
             function scrollHandler() {
                 var top = $table[0].getBoundingClientRect().top;
-                var fixedTable = $('.fixed-table');
-                var tableDad = $table.closest('#table_catalogue_wrapper');
+                var tableMainDiv = $table.closest('.portlet-body');
+                var tableId = $table.attr('id');
+                var fixedTable = tableMainDiv.find('.fixed-table');
+                var tableDad = $table.closest('#'+tableId+'_wrapper');
 
                 if (top <= 3) {
                     if (!fixedTable.length) {
@@ -508,7 +512,9 @@
                 }
             }
         }
-        fixedHeader();
+        if (!$table.closest('.modal-content').length) {
+            fixedHeader();
+        }
 
 
 
