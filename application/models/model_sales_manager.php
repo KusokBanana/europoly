@@ -82,9 +82,10 @@ class ModelSales_manager extends Model
     function addOrder($sales_manager_id, $client_id)
     {
         $client = $this->getFirst("SELECT * FROM clients WHERE client_id = " . $client_id);
+        $manager = $this->getFirst("SELECT * FROM users WHERE user_id = " . $sales_manager_id);
         $commission_agent_id = $client['commission_agent_id'] != '' ? $client['commission_agent_id'] : 'null';
         $time = date("Y-m-d H:i:s");
-        return $this->insert("INSERT INTO orders (start_date, order_status, expected_date_of_issue, special_expenses, total_price, total_downpayment, downpayment_rate, sales_manager_id, manager_bonus, comment, commission_agent_id, commission_rate, total_commission, commission_status, client_id, email, city, mobile_number, order_items_count, cancel_reason)
-                VALUES ('$time', 'Draft', null, 0, 0, 0, 0, $sales_manager_id, 0, '', $commission_agent_id, 0, 0, 'Not Payed', $client_id, '${client['email']}', '${client['city']}', '${client['mobile_number']}', 0, null)");
+        return $this->insert("INSERT INTO orders (start_date, order_status, expected_date_of_issue, special_expenses, total_price, total_downpayment, downpayment_rate, sales_manager_id, manager_bonus, manager_bonus_rate, comment, commission_agent_id, commission_rate, total_commission, commission_status, client_id, email, city, mobile_number, order_items_count, cancel_reason)
+                VALUES ('$time', 'Draft', null, 0, 0, 0, 0, $sales_manager_id, 0, {$manager['salary_bonus_rate']}, '', $commission_agent_id, 0, 0, 'Not Payed', $client_id, '${client['email']}', '${client['city']}', '${client['mobile_number']}', 0, null)");
     }
 }

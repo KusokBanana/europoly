@@ -461,7 +461,7 @@
         function fixedHeader() {
 
             scrollHandler();
-            $(document).on('scroll', scrollHandler);
+            $(window).on('scroll', scrollHandler);
 
             function scrollHandler() {
                 var top = $table[0].getBoundingClientRect().top;

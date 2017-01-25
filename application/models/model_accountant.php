@@ -156,44 +156,60 @@ class ModelAccountant extends Model
 
         foreach ($array as $item) {
 
-        $brand = $item['brand']['val'];
-        $item['brand_id'] = [
-            'val' => getBrandId($brand, $brands),
-            'type' => 'int'
-        ];
-        unset($item['brand']);
-        $grading = $item['grading']['val'];
-        $item['grading_id'] = [
-            'val' => getGradingId($grading, $gradings),
-            'type' => 'int'
-        ];
-        unset($item['grading']);
+            $brand = $item['brand']['val'];
+            $item['brand_id'] = [
+                'val' => getBrandId($brand, $brands),
+                'type' => 'int'
+            ];
+            unset($item['brand']);
+            $grading = $item['grading']['val'];
+            $item['grading_id'] = [
+                'val' => getGradingId($grading, $gradings),
+                'type' => 'int'
+            ];
+            unset($item['grading']);
 
-        $names = '';
-        $values = '';
+            $names = '';
+            $rusNames = '';
+            $values = '';
+            $rusValues = '';
 
-        foreach ($item as $name => $valsArray) {
-            $value = trim($valsArray['val']);
-            $type = $valsArray['type'];
-            if (!$value)
-                continue;
-            $value = mysql_real_escape_string($value);
-            $names .= $name . ', ';
-            if ($type == 'string')
-                $values .= "'$value', ";
-            else {
-                if ($type == 'float' || $type == 'double') {
-                    $value = floatval($value);
+            foreach ($item as $name => $valsArray) {
+                $value = trim($valsArray['val']);
+                $type = $valsArray['type'];
+                if (!$value)
+                    continue;
+                $value = mysql_real_escape_string($value);
+
+                if (strpos($name, '_rus') !== false) {
+                    $name = str_replace('_rus', '', $name);
+                    $rusNames .= $name . ', ';
+                    $rusValues .= "'$value', ";
+                    continue;
                 }
-                if ($type == 'int') {
-                    $value = intval($value);
+
+                $names .= $name . ', ';
+                if ($type == 'string')
+                    $values .= "'$value', ";
+                else {
+                    if ($type == 'float' || $type == 'double') {
+                        $value = floatval($value);
+                    }
+                    if ($type == 'int') {
+                        $value = intval($value);
+                    }
+                    $values .= "$value, ";
                 }
-                $values .= "$value, ";
             }
-        }
 
-            $this->insert("INSERT INTO new_products ($names status)
+            $productId = $this->insert("INSERT INTO products ($names status)
                           VALUES ($values 0)");
+
+            if ($productId && $rusNames && $rusValues) {
+                $this->insert("INSERT INTO nls_products ($rusNames product_id, language_id)
+                          VALUES ($rusValues $productId, 2)");
+            }
+
         }
 
     }

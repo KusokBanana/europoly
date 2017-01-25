@@ -15,7 +15,7 @@ class ControllerAccountant extends Controller
         ini_set('display_startup_errors', TRUE);
         define('EOL',(PHP_SAPI == 'cli') ? PHP_EOL : '<br />');
         date_default_timezone_set('Europe/London');
-        set_time_limit(99999999999);
+        set_time_limit(-1);
 
         $parser = [];
 

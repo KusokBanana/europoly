@@ -37,7 +37,9 @@ class ModelOrder extends Model
                 '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Number of Packs\">',
                     IFNULL(order_items.number_of_packs, ''),
                 '</a>')"),
-            array('dt' => 4, 'db' => "CONCAT(IF(products.units = 'm2', IF(products.width = NULL, 'Width undefined', 
+            array('dt' => 4, 'db' => "CONCAT(IF(products.units = 'm2' AND products.length NOT LIKE '%-%' 
+                                                                        AND products.width NOT LIKE '%-%',
+                                        IF(products.width = NULL, 'Width undefined', 
                                         IF(products.length = NULL, 'Length undefined', 
                                             (order_items.amount * 1000 * 1000) / (products.width * products.length))
                                             ), 'n/a'), '')"), // TODO проверка на число, не интервал!
@@ -73,27 +75,33 @@ class ModelOrder extends Model
                     IFNULL(CAST((order_items.sell_price * 
                 (100 - order_items.discount_rate)) * order_items.amount as decimal(64, 2)), ''),
                 '</a>')"),
-            array('dt' => 11, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-manager_bonus_rate\" data-pk=\"',
-                order_items.order_item_id,
-                '\" data-name=\"manager_bonus_rate\" data-value=\"',
-                IFNULL(order_items.manager_bonus_rate, ''),
-                '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Manager Bonus Rate, %\">',
-                    IFNULL(CONCAT(order_items.manager_bonus_rate, '%'), ''),
-                '</a>')"),
-            array('dt' => 12, 'db' => "IFNULL(order_items.manager_bonus, '')"),
-            array('dt' => 13, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-commission_rate\" data-pk=\"',
+            array('dt' => 11, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-commission_rate\" data-pk=\"',
                 order_items.order_item_id,
                 '\" data-name=\"commission_rate\" data-value=\"',
                 IFNULL(order_items.commission_rate, ''),
                 '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Commission Rate\">',
                     IFNULL(order_items.commission_rate, ''),
                 '</a>')"),
-            array('dt' => 14, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-commission_agent_bonus\" data-pk=\"',
+            array('dt' => 12, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-commission_agent_bonus\" data-pk=\"',
                 order_items.order_item_id,
                 '\" data-name=\"commission_agent_bonus\" data-value=\"',
                 IFNULL(order_items.commission_agent_bonus, ''),
                 '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Commission Agent Bonus\">',
                     IFNULL(order_items.commission_agent_bonus, ''),
+                '</a>')"),
+            array('dt' => 13, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-manager_bonus_rate\" data-pk=\"',
+                order_items.order_item_id,
+                '\" data-name=\"manager_bonus_rate\" data-value=\"',
+                IFNULL(order_items.manager_bonus_rate, ''),
+                '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Manager Bonus Rate, %\">',
+                    IFNULL(CONCAT(order_items.manager_bonus_rate, '%'), ''),
+                '</a>')"),
+            array('dt' => 14, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-manager_bonus\" data-pk=\"',
+                order_items.order_item_id,
+                '\" data-name=\"manager_bonus\" data-value=\"',
+                IFNULL(order_items.manager_bonus, ''),
+                '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Manager Bonus\">',
+                    IFNULL(order_items.manager_bonus, ''),
                 '</a>')"),
             array('dt' => 15, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-item_status\" data-pk=\"',
                 order_items.order_item_id,
@@ -200,47 +208,88 @@ class ModelOrder extends Model
     {
         $old_order_item = $this->getFirst("SELECT * FROM order_items WHERE order_item_id = $order_item_id");
         $orderId = $old_order_item['order_id'];
-        $update = true;
-// TO DO fix it
+
         if ($field == 'reduced-price' || $field == 'sell-value') {
-            $update = false;
             switch ($field) {
                 case 'reduced-price':
                     $discountRate = 100 - $new_value / $old_order_item['sell_price'];
-                    $this->update("UPDATE `order_items` SET discount_rate = $discountRate 
-                      WHERE order_item_id = $order_item_id");
                     break;
                 case 'sell-value':
                     $amount = ($old_order_item['amount'] ? $old_order_item['amount'] : 1);
                     $discountRate = 100 - $new_value / ($old_order_item['sell_price'] * $amount);
-                    $this->update("UPDATE `order_items` SET discount_rate = $discountRate 
-                      WHERE order_item_id = $order_item_id");
                     break;
             }
+            $sellValue = ($old_order_item['sell_price'] * (100 - $discountRate)) * $old_order_item['amount'];
+            $commission_agent_bonus = $old_order_item['commission_rate'] * $sellValue;
+            $manager_bonus = ($sellValue - $commission_agent_bonus) * $old_order_item['manager_bonus_rate'];
+
+            $this->update("UPDATE `order_items` SET discount_rate = $discountRate, 
+                commission_agent_bonus = $commission_agent_bonus, manager_bonus = $manager_bonus
+                      WHERE order_item_id = $order_item_id");
+            $this->updateOrderPrice($orderId);
+            return true;
         }
         if ($field == 'commission_agent_bonus' || $field == 'commission_rate') {
-            $update = false;
-            $sellValue = ($old_order_item['sell_price'] * (100 - $old_order_item['discount_rate'])) * $old_order_item['amount'];
             switch ($field) {
                 case 'commission_agent_bonus':
-                    $commission_rate = $new_value / $sellValue;
-                    $this->update("UPDATE `order_items` SET commission_rate = $commission_rate 
-                      WHERE order_item_id = $order_item_id");
+                    // Update Sell Price
+                    $sellPrice = $new_value / ($old_order_item['amount'] * $old_order_item['commission_rate'] * (100 - $old_order_item['discount_rate']));
+//                    $sellValue = ($sellPrice * (100 - $old_order_item['discount_rate'])) * $old_order_item['amount'];
+                    $this->update("UPDATE `order_items` SET sell_price = $sellPrice
+                          WHERE order_item_id = $order_item_id");
                     break;
                 case 'commission_rate':
+                    $sellValue = ($old_order_item['sell_price'] * (100 - $old_order_item['discount_rate'])) *
+                        $old_order_item['amount'];
                     $commission_agent_bonus = $sellValue * $new_value;
                     $this->update("UPDATE `order_items` SET commission_agent_bonus = $commission_agent_bonus 
                       WHERE order_item_id = $order_item_id");
                     break;
             }
         }
+        if ($field == 'manager_bonus' || $field == 'manager_bonus_rate') {
+            $sellValue = ($old_order_item['sell_price'] * (100 - $old_order_item['discount_rate'])) * $old_order_item['amount'];
+            switch ($field) {
+                case 'manager_bonus': // TODO not correct
+                    $commission_agent_bonus =  $sellValue - $new_value / $old_order_item['manager_bonus_rate'];
+                    $this->update("UPDATE `order_items` SET manager_bonus = $new_value
+                      WHERE order_item_id = $order_item_id");
+                    $this->updateItemField($order_item_id, 'commission_agent_bonus', $commission_agent_bonus);
+                    $this->updateOrderPrice($order_item_id);
+                    return true;
+//                    break;
+                case 'manager_bonus_rate':
+                    $manager_bonus = ($sellValue - $old_order_item['commission_agent_bonus']) * $new_value;
+                    $this->update("UPDATE `order_items` SET manager_bonus = $manager_bonus 
+                      WHERE order_item_id = $order_item_id");
+                    break;
+            }
+        }
+//        if ($field == 'amount' || $field == 'sell_price') {
+//            $amount = ($field == 'amount') ? $new_value : $old_order_item['amount'];
+//            $sellPrice = ($field == 'sell_price') ? $new_value : $old_order_item['sell_price'];
+//
+//            $sellValue = ($sellPrice * (100 - $old_order_item['discount_rate'])) * $amount;
+//            $commission_agent_bonus = $old_order_item['commission_rate'] * $sellValue;
+//            $manager_bonus = ($sellValue - $commission_agent_bonus) * $old_order_item['manager_bonus_rate'];
+//            $this->update("UPDATE `order_items` SET manager_bonus = $manager_bonus,
+//                      commission_agent_bonus = $commission_agent_bonus
+//                      WHERE order_item_id = $order_item_id");
+//        }
 
-        $result = $this->update("UPDATE `order_items` SET `$field` = '$new_value' WHERE order_item_id = $order_item_id");
-
+        $this->update("UPDATE `order_items` SET `$field` = '$new_value' WHERE order_item_id = $order_item_id");
 
         $new_order_item = $this->getFirst("SELECT * FROM order_items WHERE order_item_id = $order_item_id");
 
-        $product = $this->getFirst("SELECT * FROM products WHERE product_id = ${new_order_item['product_id']}");
+        $sellValue = ($new_order_item['sell_price'] * (100 - $new_order_item['discount_rate'])) * $new_order_item['amount'];
+        $commission_agent_bonus = $new_order_item['commission_rate'] * $sellValue;
+        $manager_bonus = ($sellValue - $commission_agent_bonus) * $new_order_item['manager_bonus_rate'];
+
+        $this->update("UPDATE `order_items` SET manager_bonus = $manager_bonus,
+                      commission_agent_bonus = $commission_agent_bonus
+                      WHERE order_item_id = $order_item_id");
+
+//        $product = $this->getFirst("SELECT * FROM products WHERE product_id = ${new_order_item['product_id']}");
 
 //        if ($product['amount_in_pack'] != null) {
 //            if ($old_order_item['amount'] != $new_order_item['amount']) {
@@ -268,20 +317,7 @@ class ModelOrder extends Model
 //        $total_price = $order['total_price'] - $old_order_item['reduced_price'] + $reduced_price;
 //        $manager_bonus = $order['manager_bonus'] - $old_order_item['manager_bonus'] + $manager_bonus;
 
-        $orderItems = $this->getAssoc("SELECT * FROM order_items WHERE order_id = $orderId");
-        $totalPrice = 0;
-        if (!empty($orderItems)) {
-            foreach ($orderItems as $orderItem) {
-                $sellValue = ($orderItem['sell_price'] * (100 - $orderItem['discount_rate'])) * $orderItem['amount'];
-                $totalPrice += $sellValue;
-            }
-        }
-//        $total_commission = $order['commission_rate'] / 100 * $order['total_price'];
-//        $this->update("UPDATE orders
-//                SET total_price = $total_price, manager_bonus = $manager_bonus, total_commission = $total_commission
-//                WHERE order_id = $order_id");
-        $this->update("UPDATE orders 
-                SET total_price = $totalPrice WHERE order_id = $orderId");
+        $this->updateOrderPrice($orderId);
 
         if ($field == 'item_status') {
             $this->updateItemsStatus($orderId);
@@ -303,6 +339,30 @@ class ModelOrder extends Model
         $orderStatus = isset($this->statuses[$status]) ? $this->statuses[$status] : '';
         $this->update("UPDATE `orders` 
                 SET order_status = '$orderStatus' WHERE order_id = $orderId");
+    }
+
+    public function updateOrderPrice($orderId)
+    {
+
+        $orderItems = $this->getAssoc("SELECT * FROM order_items WHERE order_id = $orderId");
+        $totalPrice = 0;
+        $totalCommission = 0;
+        $managerBonus = 0;
+        if (!empty($orderItems)) {
+            foreach ($orderItems as $orderItem) {
+                $sellValue = ($orderItem['sell_price'] * (100 - $orderItem['discount_rate'])) * $orderItem['amount'];
+                $totalPrice += $sellValue;
+                $totalCommission += $orderItem['commission_agent_bonus'];
+                $managerBonus += $orderItem['manager_bonus'];
+            }
+        }
+//        $total_commission = $order['commission_rate'] / 100 * $order['total_price'];
+//        $this->update("UPDATE orders
+//                SET total_price = $total_price, manager_bonus = $manager_bonus, total_commission = $total_commission
+//                WHERE order_id = $order_id");
+        $this->update("UPDATE orders 
+                SET total_price = $totalPrice, total_commission = $totalCommission,
+                 manager_bonus = $managerBonus WHERE order_id = $orderId");
     }
 
     public function getStatusList()

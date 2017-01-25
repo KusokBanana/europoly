@@ -189,6 +189,13 @@
                                         </div>
                                         <br/>
                                         <div class="row static-info">
+                                            <div class="col-md-5 name"> Total Commission:</div>
+                                            <div class="col-md-7 value">
+                                                <span> <?= $this->order['total_commission'] . ' &euro;' ?> </span>
+                                            </div>
+                                        </div>
+                                        <br/>
+                                        <div class="row static-info">
                                             <div class="col-md-5 name"> Commission Agent:</div>
                                             <div class="col-md-7 value">
                                                 <a href="javascript:;" id="editable-commission_agent" class='x-editable' data-pk="<?= $this->order['order_id'] ?>" data-name="commission_agent_id" data-value="<?= $this->order['commission_agent_id'] ?>"
@@ -229,10 +236,10 @@
                                                     <th> Discount Rate (%)</th>
                                                     <th> Reduced Price</th>
                                                     <th> Sell Value</th>
-                                                    <th> Manager Bonus Rate (%)</th>
-                                                    <th> Manager Bonus</th>
                                                     <th> Commission Rate</th>
                                                     <th> Commission Agent Bonus</th>
+                                                    <th> Manager Bonus Rate (%)</th>
+                                                    <th> Manager Bonus</th>
                                                     <th> Status</th>
                                                     <th> Actions</th>
                                                 </tr>
@@ -321,7 +328,7 @@
                                     </div>
                                     <div class="row static-info align-reverse">
                                         <div class="col-md-8 name"> Total Comission:</div>
-                                        <div class="col-md-3 value"> €1100.00</div>
+                                        <div class="col-md-3 value"> €<?= $this->order['total_commission'] ?></div>
                                     </div>
                                     <div class="row static-info align-reverse">
                                         <div class="col-md-8 name"> Manager Bonus:</div>
@@ -333,7 +340,7 @@
                                     </div>
                                     <div class="row static-info align-reverse">
                                         <div class="col-md-8 name"> Downpayment rate:</div>
-                                        <div class="col-md-3 value"> <?= $this->order['downpayment_rate'] != null ? $this->order['downpayment_rate'] . ' %' : '' ?> %</div>
+                                        <div class="col-md-3 value"> <?= $this->order['downpayment_rate'] != null ? $this->order['downpayment_rate'] . ' %' : '' ?> </div>
                                     </div>
                                 </div>
                             </div>
@@ -392,7 +399,7 @@ require_once 'modals/cancel_order.php';
         });
         $table_order_items.on('draw.dt', function () {
             $('.x-amount, .x-number_of_packs, .x-manager_bonus_rate, .x-sell-price, ' +
-                '.x-commission_rate, .x-commission_agent_bonus').editable({
+                '.x-commission_rate, .x-commission_agent_bonus, .x-manager_bonus').editable({
                 type: "number",
                 min: 0,
                 step: 0.01,

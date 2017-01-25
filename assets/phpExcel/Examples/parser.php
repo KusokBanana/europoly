@@ -24,8 +24,6 @@ function getXLS($xls){
             $item = array();
             $cellIterator->setIterateOnlyExistingCells(false);
 
-
-
             foreach ($cellIterator as $cell) {
                 //заносим значения ячеек одной строки в отдельный массив
                 $value = $cell->getFormattedValue();
@@ -34,11 +32,12 @@ function getXLS($xls){
                     setHeader($header, $value, $colNumber);
                 } else {
                     if (isset($header[$colNumber]) && $headerName = $header[$colNumber]) {
+                        if ($headerName == 'construction_id' && !is_numeric($value))
+                            continue;
                         $item[$headerName] = $value;
                     }
                 }
             }
-
 
             $baseArrayItem = [
                 'article' => ['val' => isset($item['article']) ? $item['article'] : '', 'type' => 'string'],
@@ -73,18 +72,28 @@ function getXLS($xls){
                 'margin' => ['val' => isset($item['margin']) ? $item['margin'] : '', 'type' => 'int'],
                 'pattern_id' => ['val' => isset($item['pattern_id']) ? $item['pattern_id'] : '', 'type' => 'int'],
                 'sheet' => ['val' => $aSheet->getTitle(), 'type' => 'string'],
+
+                'country_rus' => ['val' => isset($item['country_rus']) ? $item['country_rus'] : '', 'type' => 'string'],
+                'collection_rus' => ['val' => isset($item['collection_rus']) ? $item['collection_rus'] : '', 'type' => 'string'],
+                'additional_info_rus' => ['val' => isset($item['additional_info_rus']) ? $item['additional_info_rus'] : '', 'type' => 'string'],
+                'texture_rus' => ['val' => isset($item['texture_rus']) ? $item['texture_rus'] : '', 'type' => 'string'],
+                'layer_rus' => ['val' => isset($item['layer_rus']) ? $item['layer_rus'] : '', 'type' => 'string'],
+                'installation_rus' => ['val' => isset($item['installation_rus']) ? $item['installation_rus'] : '', 'type' => 'string'],
+                'surface_rus' => ['val' => isset($item['surface_rus']) ? $item['surface_rus'] : '', 'type' => 'string'],
+                'units_rus' => ['val' => isset($item['units_rus']) ? $item['units_rus'] : '', 'type' => 'string'],
+                'packing_type_rus' => ['val' => isset($item['packing_type_rus']) ? $item['packing_type_rus'] : '', 'type' => 'string'],
             ];
 
             //заносим массив со значениями ячеек отдельной строки в "общий массв строк"
             if ($rowIndex >= 3)
                 array_push($array, $baseArrayItem);
+
         }
     }
     return $array;
 }
 global $parser;
 $parser = getXLS(dirname(__FILE__) . '/../base.xlsx'); //извлеаем данные из XLS
-
 
 function setHeader(&$header, $value, $cellNumber) {
     switch($value) {
@@ -177,6 +186,33 @@ function setHeader(&$header, $value, $cellNumber) {
             break;
         case 'Паттерн':
             $header[$cellNumber] = 'pattern_id';
+            break;
+        case 'Страна':
+            $header[$cellNumber] = 'country_rus';
+            break;
+        case 'Коллекция':
+            $header[$cellNumber] = 'collection_rus';
+            break;
+        case 'Дополнительные характеристики':
+            $header[$cellNumber] = 'additional_info_rus';
+            break;
+        case 'Текстура поверхности':
+            $header[$cellNumber] = 'texture_rus';
+            break;
+        case 'Нижний слой/ Средний слой (для панелей Admonter)':
+            $header[$cellNumber] = 'layer_rus';
+            break;
+        case 'Способ укладки':
+            $header[$cellNumber] = 'installation_rus';
+            break;
+        case 'Покрытие поверхности':
+            $header[$cellNumber] = 'surface_rus';
+            break;
+        case 'Единица измерения':
+            $header[$cellNumber] = 'units_rus';
+            break;
+        case 'Тип упаковки':
+            $header[$cellNumber] = 'packing_type_rus';
             break;
     }
 }
