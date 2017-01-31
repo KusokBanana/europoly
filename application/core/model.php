@@ -160,7 +160,7 @@ abstract class Model extends mysqli
         'Confirmed by Supplier',
         'Produced',
         'On the way',
-        'Arrived',
+        'On Stock',
         'Expects Issue',
         'Issued'
     ];

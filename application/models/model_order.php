@@ -111,20 +111,37 @@ class ModelOrder extends Model
                     IFNULL(order_items.item_status, ''),
                 '</a>')"),
             array('dt' => 16, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
-                    IF(order_items.item_status = 'Draft' OR order_items.item_status = 'Hold' OR order_items.item_status = 'Sent to Logist', 
-                        CONCAT('<a href=\"/order/delete_order_item?order_id=', order_items.order_id, '&order_item_id=', order_items.order_item_id,
-                        '\" onclick=\"return confirm(\'Are you sure to delete the item?\')\"><span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span></a>'), 
+                    IF(order_items.item_status = 'Draft',
+                    CONCAT('<a href=\"/order/hold?order_item_id=', order_items.order_item_id,
+                            '\" onclick=\"return confirm(\'Are you sure to hold the item?\')\">
+                                <span class=\'glyphicon glyphicon-star\' title=\'Hold Item\'></span>
+                            </a>'), 
+                    ''),
+                    IF(order_items.item_status = 'Draft' OR order_items.item_status = 'Hold', 
+                        CONCAT('<a href=\"/order/reserve?order_item_id=', order_items.order_item_id,
+                                '\" onclick=\"return confirm(\'Are you sure to reserve the item?\')\"
+                                class=\"reserve-product-btn\">
+                                    <span class=\'glyphicon glyphicon-heart\' title=\'Reserve Item\'></span>
+                                </a>',
+                                '<a href=\"/order/send_to_logist?order_item_id=', order_items.order_item_id,
+                                '\" onclick=\"return confirm(\'Are you sure to send to logist the item?\')\">
+                                    <span class=\'glyphicon glyphicon-download-alt\' title=\'Send to Logist\'></span>
+                                </a>',
+                                '<a href=\"/order/delete_order_item?order_id=', order_items.order_id, 
+                                '&order_item_id=', order_items.order_item_id,
+                                '\" onclick=\"return confirm(\'Are you sure to delete the item?\')\">
+                                    <span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span>
+                                </a>'), 
                         ''),
-                    IF(order_items.item_status = 'Hold',
-                        CONCAT('<a href=\"/order/send_to_logist?order_item_id=', order_items.order_item_id,
-                        '\" onclick=\"return confirm(\'Are you sure to send to logist the item?\')\"><span class=\'glyphicon glyphicon-download-alt\' title=\'Send to Logist\'></span></a>'),
-                        ''),
-                    IF(order_items.item_status = 'Expects Issue',
-                        CONCAT('<a href=\"/order/issue?order_id=', order_items.order_id, '&order_item_id=', order_items.order_item_id,
-                        '\" onclick=\"return confirm(\'Are you sure to create issue for the item?\')\"><span class=\'fa fa-share\' title=\'Issue\'></span></a>'),
+                    IF(order_items.item_status = 'On Stock',
+                        CONCAT('<a href=\"/order/issue?order_item_id=', order_items.order_item_id,
+                                '\" onclick=\"return confirm(\'Are you sure to create issue for the item?\')\">
+                                    <span class=\'fa fa-share\' title=\'Issue\'></span>
+                                </a>'),
                         ''),
                 '</div>')"),
         ];
+
         $table = $this->full_products_table . ' join order_items on products.product_id = order_items.product_id';
         return $this->sspComplex($table, "order_items.order_item_id", $columns, $input, null, "order_items.order_id = $order_id");
     }

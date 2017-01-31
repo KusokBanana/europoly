@@ -120,4 +120,33 @@ class ControllerOrder extends Controller
         }
     }
 
+    function action_hold()
+    {
+        $itemId = (isset($_GET["order_item_id"]) && $_GET["order_item_id"]) ? intval($_GET["order_item_id"]) : false;
+        if (!$itemId)
+            return;
+        $this->model->updateItemField($itemId, 'item_status', 'Hold');
+        header("Location: " . $_SERVER['HTTP_REFERER']);
+    }
+
+    function action_issue()
+    {
+        $itemId = (isset($_GET["order_item_id"]) && $_GET["order_item_id"]) ? intval($_GET["order_item_id"]) : false;
+        if (!$itemId)
+            return;
+        $this->model->updateItemField($itemId, 'item_status', 'Expects Issue');
+        header("Location: " . $_SERVER['HTTP_REFERER']);
+    }
+
+    function action_reserve()
+    {
+        $itemId = (isset($_GET["order_item_id"]) && $_GET["order_item_id"]) ? intval($_GET["order_item_id"]) : false;
+        $action = (isset($_GET["action"]) && $_GET["action"]) ? intval($_GET["action"]) : false;
+        if (!$itemId || !$action)
+            return false;
+        if ($action == 'get_info') {
+            
+        }
+    }
+
 }

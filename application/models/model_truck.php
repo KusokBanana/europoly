@@ -246,7 +246,7 @@ class ModelTruck extends Model
 
         $this->update("UPDATE trucks_items SET warehouse_arrival_date = NOW() WHERE truck_item_id = $itemId");
 
-        $this->changeItemStatus($itemId, 'Arrived');
+        $this->changeItemStatus($itemId, 'On Stock');
 
         return $warehouseId;
     }

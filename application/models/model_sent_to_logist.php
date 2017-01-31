@@ -66,7 +66,7 @@ class ModelSent_to_logist extends Model
         2 => 'Confirmed by Supplier',
         3 => 'Produced',
         4 => 'On the way',
-        5 => 'Arrived',
+        5 => 'On Stock',
     ];
 
     public function __construct()

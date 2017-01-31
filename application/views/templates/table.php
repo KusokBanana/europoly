@@ -470,6 +470,10 @@
                 var fixedTable = tableMainDiv.find('.fixed-table');
                 var tableDad = $table.closest('#'+tableId+'_wrapper');
 
+                // not appear on click tabs
+                if (tableDad.closest('.tab-pane').length && !tableDad.closest('.tab-pane').hasClass('active'))
+                    return;
+
                 if (top <= 3) {
                     if (!fixedTable.length) {
                         fixedTable = $table.clone();
@@ -512,6 +516,7 @@
                 }
             }
         }
+        // not appear in modal windows
         if (!$table.closest('.modal-content').length) {
             fixedHeader();
         }
