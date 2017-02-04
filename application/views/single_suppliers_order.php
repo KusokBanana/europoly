@@ -174,10 +174,10 @@
         <?php require_once 'modals/new_supplier_order_item.php'; ?>
         <!-- END CONTAINER -->
         <script>
-            var clients = <?= $this->toJsList($this->clients, "client_id") ?>;
-            var item_statuses = <?= json_encode($this->statusList); ?>;
-            var suppliers = <?= json_encode($this->supplier['list']); ?>;
             $(document).ready(function () {
+                var clients = <?= $this->toJsList($this->clients, "client_id") ?>;
+                var item_statuses = <?= json_encode($this->statusList); ?>;
+                var suppliers = <?= json_encode($this->supplier['list']); ?>;
                 var $table_order_items = $("#table_order_items");
                 $table_order_items.DataTable({
                     processing: true,

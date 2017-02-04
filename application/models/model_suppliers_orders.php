@@ -91,12 +91,6 @@ class ModelSuppliers_orders extends ModelManagers_orders
     var $suppliers_orders_table_reduce = 'suppliers_orders ' .
         'left join items_status as status on (suppliers_orders.status_id = status.status_id)';
 
-    var $statusesFilter = [
-        'Draft for Supplier',
-        'Confirmed by Supplier',
-        'Produced'
-    ];
-
     var $suppliersFilterWhere = "suppliers_orders_items.supplier_order_id IS NOT NULL";
 
     function getDTSuppliersOrders($input)
@@ -120,16 +114,29 @@ class ModelSuppliers_orders extends ModelManagers_orders
         }
         if ($suppliers_order) {
             $order_items_count = 0;
+            $productId = 0;
             foreach ($products as $order_item_id) {
                 $order_items_count++;
                 $this->update("UPDATE order_items SET supplier_order_id = $suppliers_order,
                               status_id = 4 WHERE item_id = $order_item_id");
+                $productId = $this->getFirst("SELECT product_id FROM order_items WHERE item_id = $order_item_id");
+                $productId = $productId ? $productId['product_id'] : 0;
+            }
+            $supplier = $this->getFirst("SELECT supplier_id FROM suppliers_orders WHERE order_id = $suppliers_order");
+            $supplier_id = ($supplier && $supplier['supplier_id'] !== null) ? $supplier['supplier_id'] : null;
+            if ($productId) {
+                $brand = $this->getFirst("SELECT brand_id FROM products WHERE product_id = $productId");
+                $brand = $brand ? $brand['brand_id'] : 0;
+                if ($brand) {
+                    $supplier_id = $this->getFirst("SELECT supplier_id FROM brands WHERE brand_id = $brand");
+                    $supplier_id = $supplier_id ? $supplier_id['supplier_id'] : null;
+                }
             }
             // Обновим количество товаров
             $order = $this->getFirst("SELECT * FROM suppliers_orders WHERE order_id = $suppliers_order");
             $order_items_count += intval($order['order_items_count']);
-            $this->update("UPDATE suppliers_orders 
-                              SET order_items_count = $order_items_count WHERE order_id = $suppliers_order");
+            $this->update("UPDATE suppliers_orders SET supplier_id = $supplier_id,
+                              order_items_count = $order_items_count WHERE order_id = $suppliers_order");
 
             $this->updateItemsStatus($suppliers_order);
         }

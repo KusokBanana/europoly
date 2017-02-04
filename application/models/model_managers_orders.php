@@ -117,8 +117,9 @@ class ModelManagers_orders extends Model
 
     function getDTManagersOrders($input)
     {
+        $where = "order_items.manager_order_id IS NOT NULL";
         $this->sspComplex($this->managers_orders_table, "order_items.item_id",
-            $this->managers_orders_columns, $input, null, null);
+            $this->managers_orders_columns, $input, null, $where);
     }
 
     function getDTManagersOrdersReduced($input)

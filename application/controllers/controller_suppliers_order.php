@@ -37,13 +37,6 @@ class ControllerSuppliers_order extends Controller
 
     }
 
-    function action_cancel_order()
-    {
-        $this->model->cancelOrder($this->escape_and_empty_to_null($_POST['order_id']),
-            $this->escape_and_empty_to_null($_POST['cancel_reason']));
-        header("Location: " . $_SERVER['HTTP_REFERER']);
-    }
-
     function action_delete_commission_agent()
     {
         $this->model->deleteCommissionAgent($this->escape_and_empty_to_null($_GET['order_id']));
