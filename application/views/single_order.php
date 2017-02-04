@@ -40,7 +40,7 @@
                             <div class="caption">
                                 <i class="icon-settings font-dark"></i>
                                 <span class="caption-subject font-dark sbold uppercase"><?= $this->title ?>
-                                    <span class="hidden-xs">| <?= $this->order['start_date'] ?> <span class="label label-warning" style="white-space: normal;"> <?= $this->order['order_status'] ?> </span> </span>
+                                    <span class="hidden-xs">| <?= $this->order['start_date'] ?> <span class="label label-warning" style="white-space: normal;"> <?= $this->order_status ?> </span> </span>
                                 </span>
                             </div>
                             <div class="actions">
@@ -48,30 +48,6 @@
                                     <i class="fa fa-print"></i>
                                     <span class="hidden-xs"> Print </span>
                                 </a>
-
-                                <div class="btn-group ">
-                                    <ul class="dropdown-menu pull-right">
-                                        <li>
-                                            <a href="/order/change_status?order_id=<?= $this->order['order_id'] ?>&status=Draft"> Draft </a>
-                                        </li>
-                                        <li>
-                                            <a href="/order/change_status?order_id=<?= $this->order['order_id'] ?>&status=Prepayed"> Prepayed </a>
-                                        </li>
-                                        <li>
-                                            <a href="/order/change_status?order_id=<?= $this->order['order_id'] ?>&status=Ordered"> Ordered </a>
-                                        </li>
-                                        <li>
-                                            <a href="/order/change_status?order_id=<?= $this->order['order_id'] ?>&status=Issued"> Delivered </a>
-                                        </li>
-                                        <li>
-                                            <a href="/order/change_status?order_id=<?= $this->order['order_id'] ?>&status=Issued"> Issued </a>
-                                        </li>
-                                        <li class="divider"></li>
-                                        <li>
-                                            <a data-toggle="modal" data-target="#modal_cancelOrder"> Cancelled </a>
-                                        </li>
-                                    </ul>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -92,7 +68,7 @@
                                         <div class="row static-info">
                                             <div class="col-md-5 name"> Order Status:</div>
                                             <div class="col-md-7 value">
-                                                <span class="label label-warning"><?= $this->order['order_status'] ?></span>
+                                                <span class="label label-warning"><?= $this->order_status ?></span>
                                             </div>
                                         </div>
                                         <div class="row static-info">
@@ -368,14 +344,14 @@ require_once 'modals/cancel_order.php';
 ?>
 
 <script>
-    var managers = <?= $this->toJsList($this->managers, "user_id") ?>;
-    var commission_agents = <?= $this->toJsList($this->commission_agents, "client_id") ?>;
-    var clients = <?= $this->toJsList($this->clients, "client_id") ?>;
-    var item_statuses = <?= json_encode($this->statusList); ?>;
-    <?php if ($this->order['downpayment_rate'] != 100): ?>
-    item_statuses.splice(6, 0, {'value': 'Expects Payment', 'text': 'Expects Payment'});
-    <?php endif ?>
     $(document).ready(function () {
+        var managers = <?= $this->toJsList($this->managers, "user_id") ?>;
+        var commission_agents = <?= $this->toJsList($this->commission_agents, "client_id") ?>;
+        var clients = <?= $this->toJsList($this->clients, "client_id") ?>;
+        var item_statuses = <?= json_encode($this->statusList); ?>;
+        <?php if ($this->order['downpayment_rate'] == 100): ?>
+        item_statuses[6] = undefined;
+        <?php endif; ?>
         var $table_order_items = $("#table_order_items");
         $table_order_items.DataTable({
             processing: true,

@@ -212,6 +212,15 @@ abstract class Model extends mysqli
             left join grading on products.grading_id = grading.grading_id
             left join patterns on products.pattern_id = patterns.pattern_id';
 
+    var $full_products_table_addition = 'left join brands on products.brand_id = brands.brand_id
+                                        left join suppliers on (brands.supplier_id = suppliers.supplier_id)
+                                        left join colors on products.color_id = colors.color_id
+                                        left join colors as colors2 on products.color2_id = colors2.color_id
+                                        left join constructions on products.construction_id = constructions.construction_id
+                                        left join wood on products.wood_id = wood.wood_id
+                                        left join grading on products.grading_id = grading.grading_id
+                                        left join patterns on products.pattern_id = patterns.pattern_id';
+
     function getSalesManagersIdName()
     {
         return $this->getAssoc("SELECT user_id, CONCAT(first_name, ' ', last_name) AS name FROM users WHERE role = 'Sales Manager'");
@@ -255,6 +264,12 @@ abstract class Model extends mysqli
     function getUser($user_id)
     {
         return $this->getById('users', 'user_id', $user_id);
+    }
+
+    function getItemStatusName($status_id)
+    {
+        $status = $this->getFirst("SELECT name FROM items_status WHERE status_id = $status_id");
+        return ($status) ? $status['name'] : '';
     }
 
     function getCategoryTabs()

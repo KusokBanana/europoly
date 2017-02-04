@@ -11,6 +11,7 @@ class ControllerOrder extends Controller
     function action_index($action_param = null, $action_data = null)
     {
         $this->view->order = $this->model->getOrder($_GET['id']);
+        $this->view->order_status = $this->model->getItemStatusName($this->view->order['order_status_id']);
         $this->view->client = $this->model->getClient($this->view->order['client_id']);
         $this->view->sales_manager = $this->model->getUser($this->view->order["sales_manager_id"]);
         $this->view->commission_agent = $this->model->getClient($this->view->order["commission_agent_id"]);
@@ -21,12 +22,8 @@ class ControllerOrder extends Controller
 //        $this->view->commission_agents = $this->model->getCommissionAgentsIdName();
 //        $this->view->clients = $this->model->getClientsIdName();
         $this->view->clients = $this->model->getClientsOfManager($this->view->order["sales_manager_id"]);
-        $this->view->commission_agents = $this->model->getCommissionAgentsOfManager($this->view->order["commission_agent_id"]);
+        $this->view->commission_agents = $this->model->getCommissionAgentsOfManager($this->view->order["sales_manager_id"]);
         $this->view->statusList = $this->model->getStatusList();
-
-
-
-
         $this->view->build('templates/template.php', 'single_order.php');
     }
 
@@ -35,19 +32,12 @@ class ControllerOrder extends Controller
         $this->model->getDTOrderItems($_GET['order_id'], $_GET);
     }
 
-    function action_change_status()
-    {
-        $this->model->changeStatus($this->escape_and_empty_to_null($_GET['order_id']),
-            $this->escape_and_empty_to_null($_GET['status']));
-        header("Location: " . $_SERVER['HTTP_REFERER']);
-    }
-
     function action_send_to_logist()
     {
         $order_item_id = isset($_GET['order_item_id']) ? intval($_GET['order_item_id']) : 0;
         if (!$order_item_id)
             return false;
-        $this->model->updateItemField($order_item_id, 'item_status', 'Sent to Logist');
+        $this->model->updateItemField($order_item_id, 'status_id', 3);
         header("Location: " . $_SERVER['HTTP_REFERER']);
     }
 
@@ -129,7 +119,7 @@ class ControllerOrder extends Controller
         $itemId = (isset($_GET["order_item_id"]) && $_GET["order_item_id"]) ? intval($_GET["order_item_id"]) : false;
         if (!$itemId)
             return;
-        $this->model->updateItemField($itemId, 'item_status', 'Hold');
+        $this->model->updateItemField($itemId, 'status_id', 2);
         header("Location: " . $_SERVER['HTTP_REFERER']);
     }
 
@@ -138,7 +128,7 @@ class ControllerOrder extends Controller
         $itemId = (isset($_GET["order_item_id"]) && $_GET["order_item_id"]) ? intval($_GET["order_item_id"]) : false;
         if (!$itemId)
             return;
-        $this->model->updateItemField($itemId, 'item_status', 'Expects Issue');
+        $this->model->updateItemField($itemId, 'status_id', 10);
         header("Location: " . $_SERVER['HTTP_REFERER']);
     }
 

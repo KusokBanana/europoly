@@ -24,13 +24,14 @@ class ModelSales_manager extends Model
     {
         $db = "orders 
                 left join clients client on (orders.commission_agent_id = client.client_id) 
-                left join clients commission on (orders.client_id = commission.client_id)";
+                left join clients commission on (orders.client_id = commission.client_id)
+                left join items_status status on (orders.order_status_id = status.status_id)";
 
         $columns = [
             array('dt' => 0, 'db' => "orders.order_id"),
             array('dt' => 1, 'db' => "CONCAT('<a href=\"\order?id=', orders.order_id, '\">Order #', orders.order_id, '</a>')"),
             array('dt' => 2, 'db' => "orders.start_date"),
-            array('dt' => 3, 'db' => "orders.order_status"),
+            array('dt' => 3, 'db' => "status.name"),
             array('dt' => 4, 'db' => "orders.special_expenses"),
             array('dt' => 5, 'db' => "orders.total_price"),
             array('dt' => 6, 'db' => "orders.downpayment_rate"),
@@ -85,7 +86,7 @@ class ModelSales_manager extends Model
         $manager = $this->getFirst("SELECT * FROM users WHERE user_id = " . $sales_manager_id);
         $commission_agent_id = $client['commission_agent_id'] != '' ? $client['commission_agent_id'] : 'null';
         $time = date("Y-m-d H:i:s");
-        return $this->insert("INSERT INTO orders (start_date, order_status, expected_date_of_issue, special_expenses, total_price, total_downpayment, downpayment_rate, sales_manager_id, manager_bonus, manager_bonus_rate, comment, commission_agent_id, commission_rate, total_commission, commission_status, client_id, email, city, mobile_number, order_items_count, cancel_reason)
-                VALUES ('$time', 'Draft', null, 0, 0, 0, 0, $sales_manager_id, 0, {$manager['salary_bonus_rate']}, '', $commission_agent_id, 0, 0, 'Not Payed', $client_id, '${client['email']}', '${client['city']}', '${client['mobile_number']}', 0, null)");
+        return $this->insert("INSERT INTO orders (start_date, expected_date_of_issue, special_expenses, total_price, total_downpayment, downpayment_rate, sales_manager_id, manager_bonus, manager_bonus_rate, comment, commission_agent_id, commission_rate, total_commission, commission_status, client_id, email, city, mobile_number, order_items_count, cancel_reason)
+                VALUES ('$time', null, 0, 0, 0, 0, $sales_manager_id, 0, {$manager['salary_bonus_rate']}, '', $commission_agent_id, 0, 0, 'Not Payed', $client_id, '${client['email']}', '${client['city']}', '${client['mobile_number']}', 0, null)");
     }
 }
