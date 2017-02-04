@@ -1,25 +1,26 @@
 <?php
+include_once 'model_managers_orders.php';
 
-class ModelSuppliers_orders extends Model
+class ModelSuppliers_orders extends ModelManagers_orders
 {
     var $suppliers_orders_columns = [
-        array('dt' => 0, 'db' => "suppliers_orders_items.order_item_id"),
+        array('dt' => 0, 'db' => "suppliers_orders_items.item_id"),
         array('dt' => 1, 'db' => "CONCAT('<a href=\"/brand?id=', brands.brand_id, '\">', IFNULL(brands.name, 'no name'), '</a>')"),
         array('dt' => 2, 'db' => "CONCAT('<a href=\"/suppliers_order?id=', 
             suppliers_orders.order_id,'\">', suppliers_orders.order_id, '</a>')"),
         array('dt' => 3, 'db' => "CONCAT('<a href=\"/product?id=', suppliers_orders_items.product_id,  '\"',
-            'class=\"order-item-product\" data-id=\"', suppliers_orders_items.order_item_id ,'\">', products.name, '</a>')"),
+            'class=\"order-item-product\" data-id=\"', suppliers_orders_items.supplier_order_id ,'\">', products.name, '</a>')"),
         array('dt' => 4, 'db' => "suppliers_orders.supplier_date_of_order"),
         array('dt' => 5, 'db' => "suppliers_orders.release_date"),
         array('dt' => 6, 'db' => "CONCAT('<a href=\"/truck?id=', 
-            trucks_items.truck_id,'\">', trucks_items.truck_id, '</a>')"),
+            suppliers_orders_items.truck_id,'\">', suppliers_orders_items.truck_id, '</a>')"),
         array('dt' => 7, 'db' => "suppliers_orders.departure_date"),
-        array('dt' => 8, 'db' => "trucks_items.warehouse_arrival_date"),
+        array('dt' => 8, 'db' => "suppliers_orders_items.warehouse_arrival_date"),
         array('dt' => 9, 'db' => "CONCAT('<a href=\"/order?id=', 
-            order_items.order_id,'\">', order_items.order_id, '</a>')"),
+            suppliers_orders_items.manager_order_id,'\">', suppliers_orders_items.manager_order_id, '</a>')"),
         array('dt' => 10, 'db' => "CONCAT(managers.first_name, ' ', managers.last_name, '<a href=\"/sales_manager?id=', orders.sales_manager_id, '\"><i class=\"glyphicon glyphicon-link\"></i></a></a>')"),
         array('dt' => 11, 'db' => "orders.start_date"),
-        array('dt' => 12, 'db' => "IFNULL(order_items.item_status, suppliers_orders_items.item_status)"),
+        array('dt' => 12, 'db' => "status.name"),
         array('dt' => 13, 'db' => "suppliers_orders_items.amount"),
         array('dt' => 14, 'db' => "suppliers_orders_items.number_of_packs"),
         array('dt' => 15, 'db' => "products.weight * suppliers_orders_items.number_of_packs"),
@@ -64,7 +65,7 @@ class ModelSuppliers_orders extends Model
         array('dt' => 1, 'db' => "CONCAT('<a href=\"/suppliers_order?id=', 
             suppliers_orders.order_id,'\">', suppliers_orders.order_id, '</a>')"),
         array('dt' => 2, 'db' => "suppliers_orders.supplier_date_of_order"),
-        array('dt' => 3, 'db' => "suppliers_orders.status"),
+        array('dt' => 3, 'db' => "status.name"),
         array('dt' => 4, 'db' => "suppliers_orders.release_date"),
         array('dt' => 5, 'db' => "suppliers_orders.total_price"),
     ];
@@ -78,21 +79,17 @@ class ModelSuppliers_orders extends Model
         'Total Purchase Price',
     ];
 
-    public function __construct()
-    {
-        $this->connect_db();
-    }
-
-    var $suppliers_orders_table = 'suppliers_orders
-            left join suppliers_orders_items as suppliers_orders_items on suppliers_orders.order_id = suppliers_orders_items.order_id
-            left join order_items as order_items on (suppliers_orders_items.managers_order_item_id = order_items.order_item_id)
-            left join orders as orders on (order_items.order_id = orders.order_id) 
-            left join trucks_items as trucks_items on trucks_items.suppliers_order_item_id = suppliers_orders_items.order_item_id
+    var $suppliers_orders_table = '
+            order_items as suppliers_orders_items
+            left join suppliers_orders on suppliers_orders.order_id = suppliers_orders_items.supplier_order_id
+            left join orders on (suppliers_orders_items.manager_order_id = orders.order_id) 
             left join users as managers on orders.sales_manager_id = managers.user_id
             left join products as products on suppliers_orders_items.product_id = products.product_id
+            left join items_status as status on suppliers_orders_items.status_id = status.status_id
             left join brands as brands on products.brand_id = brands.brand_id';
 
-    var $suppliers_orders_table_reduce = 'suppliers_orders';
+    var $suppliers_orders_table_reduce = 'suppliers_orders ' .
+        'left join items_status as status on (suppliers_orders.status_id = status.status_id)';
 
     var $statusesFilter = [
         'Draft for Supplier',
@@ -100,13 +97,12 @@ class ModelSuppliers_orders extends Model
         'Produced'
     ];
 
+    var $suppliersFilterWhere = "suppliers_orders_items.supplier_order_id IS NOT NULL";
+
     function getDTSuppliersOrders($input)
     {
-//        $statuses = join("', '", $this->statusesFilter);
-//        $where = "suppliers_orders_items.item_status IN ('$statuses') OR
-//                    order_items.item_status IN ('$statuses')";
-        $this->sspComplex($this->suppliers_orders_table, "suppliers_orders.order_id", $this->suppliers_orders_columns,
-            $input, null, null);
+        $this->sspComplex($this->suppliers_orders_table, "suppliers_orders_items.item_id", $this->suppliers_orders_columns,
+            $input, null, $this->suppliersFilterWhere);
     }
 
     function getDTSuppliersOrdersReduce($input)
@@ -125,36 +121,9 @@ class ModelSuppliers_orders extends Model
         if ($suppliers_order) {
             $order_items_count = 0;
             foreach ($products as $order_item_id) {
-                $order_item = $this->getFirst("SELECT * FROM order_items WHERE order_item_id = $order_item_id");
-
-                $this->update("UPDATE order_items 
-                              SET item_status = 'Draft for Supplier' WHERE order_item_id = $order_item_id");
-
-                $productId = $order_item['product_id'];
-                $amount = $order_item['amount'];
-                $order_id = $order_item['order_id'];
-
-                $product = $this->getFirst("SELECT * FROM products WHERE product_id = $productId");
-
-                $number_of_packs = $product['amount_in_pack'] != null ? 0 : 1;
-
-                if ($product['amount_in_pack'] != null) {
-                    $number_of_packs = ceil($order_item['amount'] / $product['amount_in_pack']);
-                    $amount = $number_of_packs * $product['amount_in_pack'];
-                } else {
-                    $number_of_packs = 1;
-                    $amount = $order_item['amount'];
-                }
-                $amount = $amount ? $amount : 1;
-
-                $total_price = $order_item['purchase_price'] * $amount;
-
-                $this->insert("INSERT INTO suppliers_orders_items (order_id, product_id, amount,
-                                number_of_packs, total_price, item_status, managers_order_item_id)
-                                VALUES ($suppliers_order, $productId, $amount, 
-                                $number_of_packs, $total_price, null, $order_item_id)");
-
-                $order_items_count += $amount;
+                $order_items_count++;
+                $this->update("UPDATE order_items SET supplier_order_id = $suppliers_order,
+                              status_id = 4 WHERE item_id = $order_item_id");
             }
             // Обновим количество товаров
             $order = $this->getFirst("SELECT * FROM suppliers_orders WHERE order_id = $suppliers_order");
@@ -173,7 +142,7 @@ class ModelSuppliers_orders extends Model
         $orderIds = [];
         if (!empty($orders)) {
             foreach ($orders as $order) {
-                $orderItem = $this->getFirst("SELECT * FROM suppliers_orders_items WHERE order_id = ${order['order_id']}");
+                $orderItem = $this->getFirst("SELECT * FROM order_items WHERE supplier_order_id = ${order['order_id']}");
                 $brandName = '';
                 if ($orderItem && !empty($orderItem)) {
                     $productId = $orderItem['product_id'];
@@ -209,27 +178,11 @@ class ModelSuppliers_orders extends Model
 
     public function updateItemsStatus($orderId)
     {
-        $orderItems = $this->getAssoc("SELECT * FROM suppliers_orders_items WHERE order_id = $orderId");
-        $status=10;
-
-        if (!empty($orderItems))
-            foreach ($orderItems as $orderItem) {
-                if ($orderItem['item_status'] && !$orderItem['managers_order_item_id']) {
-                    $itemStatus = $orderItem['item_status'];
-                }
-                else {
-                    $managerOrderItem = $this->getFirst("SELECT * FROM order_items 
-                        WHERE order_item_id = ${orderItem['managers_order_item_id']}");
-                    $itemStatus = $managerOrderItem['item_status'];
-                }
-                $newStatus = array_search($itemStatus, $this->statuses);
-
-                if ($newStatus < $status)
-                    $status = $newStatus;
-            }
-        $orderStatus = isset($this->statuses[$status]) ? $this->statuses[$status] : '';
+        $status = $this->getFirst("SELECT status_id FROM order_items WHERE supplier_order_id = $orderId AND 
+                                    status_id = (SELECT MIN(status_id) FROM order_items)");
+        $orderStatus = $status ? $status['status_id'] : 4;
         $this->update("UPDATE suppliers_orders 
-                SET status = '$orderStatus' WHERE order_id = $orderId");
+                SET status_id = $orderStatus WHERE order_id = $orderId");
     }
 
 }

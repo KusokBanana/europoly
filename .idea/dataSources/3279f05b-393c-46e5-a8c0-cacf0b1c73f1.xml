@@ -922,6 +922,8 @@
     <column id="238" parent="30" name="order_status_id">
       <Position>3</Position>
       <DataType>int(11)|0</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>&apos;1&apos;</DefaultExpression>
     </column>
     <index id="239" parent="30" name="orders_order_id_uindex">
       <ColNames>order_id</ColNames>
@@ -1532,25 +1534,26 @@
       <DataType>datetime|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="378" parent="40" name="status">
-      <Position>7</Position>
-      <DataType>varchar(100)|0</DataType>
-      <NotNull>1</NotNull>
-    </column>
-    <column id="379" parent="40" name="order_items_count">
+    <column id="378" parent="40" name="order_items_count">
       <Position>8</Position>
       <DataType>int(11)|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="380" parent="40" name="supplier_id">
+    <column id="379" parent="40" name="supplier_id">
       <Position>9</Position>
       <DataType>int(11)|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="381" parent="40" name="total_downpayment">
+    <column id="380" parent="40" name="total_downpayment">
       <Position>10</Position>
       <DataType>float|0</DataType>
       <NotNull>1</NotNull>
+    </column>
+    <column id="381" parent="40" name="status_id">
+      <Position>7</Position>
+      <DataType>int(11)|0</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>&apos;4&apos;</DefaultExpression>
     </column>
     <key id="382" parent="40" name="PRIMARY">
       <ColNames>order_id</ColNames>

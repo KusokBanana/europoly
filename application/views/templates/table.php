@@ -143,6 +143,15 @@
             window.location.href = "<?= $click_url ?>" + data[0];
         });
 
+        $table.find('tbody').on('click', 'tr td:first-child', function (e) {
+            var selectedRows = table.rows('.selected').data(),
+                ids = [];
+            $.each(selectedRows, function() {
+                ids.push(this[0][0])
+            });
+            $table.attr('data-selected', ids.concat())
+        });
+
         tableSearch(table);
         function tableSearch(tableVariable) {
             tableVariable.columns().every(function () {

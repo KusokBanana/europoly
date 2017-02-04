@@ -43,20 +43,25 @@
 							</div>
 							<script>
 								$('body').on('click', '.modal-new-suppliers-order-btn', function() {
-									var products = $('#table_managers_orders').find('tr.selected .order-item-product');
-									var productIds = [];
+								    var table = $('#table_managers_orders');
+									var products = table.find('tr.selected .order-item-product').length ?
+                                        table.find('tr.selected .order-item-product') : [];
 									var brandStr = '';
 									var error = '';
+									var ids = {};
+									if (table.attr('data-selected') !== undefined)
+									    ids = table.attr('data-selected').split();
+
 									var brandError = false;
-									products.each(function(i, elem) {
-										var id = $(elem).attr('data-id');
-										productIds.push(id);
-										var brand = $(elem).closest('tr').find('.brand-cell').text();
-										if (i>0 && brandStr != brand) {
-											brandError = true;
-										}
-										brandStr = brand;
-									});
+									if (products.length) {
+                                        products.each(function(i, elem) {
+                                            var brand = $(elem).closest('tr').find('.brand-cell').text();
+                                            if (i>0 && brandStr != brand) {
+                                                brandError = true;
+                                            }
+                                            brandStr = brand;
+                                        });
+                                    }
 									if (brandError)
 										error = 'Items must have the same brands';
 									$.ajax({
@@ -65,7 +70,7 @@
 									data: {
 										table_data: {
 											column_names: <?php echo json_encode($this->column_names) ?>,
-											products: productIds,
+											products: ids,
 											error: error
 										}
 									},

@@ -3,7 +3,7 @@ $products = [];
 $columnNames = [];
 if (isset($_POST['table_data']) && $post = $_POST['table_data']) {
     $columnNames = $post['column_names'];
-    $products = $post['products'];
+    $products = isset($post['products']) ? $post['products'] : [];
     $error = $post['error'];
     $isError = false;
     $errorMessage = '';
@@ -83,7 +83,6 @@ else {
             var options = '<option selected value="0">New Order</option>';
             ids.forEach(function(item) {
                 if (item) {
-                    console.log(item);
                     options += '<option value="' + item['id'] +'">'+item['brand'] + ', ' + item['date'] + ', №' +
                         item['id'] + '</option>'
                 }
