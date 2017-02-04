@@ -19,7 +19,7 @@ class ControllerTruck extends Controller
         $this->view->statusList = $this->model->getStatusList();
         $this->view->delivery = $this->model->getDelivery($_GET['id']);
         $this->view->customs = $this->model->getCustoms($_GET['id']);
-        $this->view->sums = $this->model->getSums();
+        $this->view->sums = $this->model->getSums($_GET['id']);
         $this->view->build('templates/template.php', 'single_truck.php');
     }
 
@@ -49,8 +49,6 @@ class ControllerTruck extends Controller
         header("Location: " . $_SERVER['HTTP_REFERER']);
     }
 
-
-
     function action_get_active_trucks()
     {
         $orders = $this->model->getActiveTrucks();
@@ -69,13 +67,6 @@ class ControllerTruck extends Controller
             $this->escape_and_empty_to_null($_GET['status']));
         header("Location: " . $_SERVER['HTTP_REFERER']);
 
-    }
-
-    function action_cancel_order()
-    {
-        $this->model->cancelOrder($this->escape_and_empty_to_null($_POST['order_id']),
-            $this->escape_and_empty_to_null($_POST['cancel_reason']));
-        header("Location: " . $_SERVER['HTTP_REFERER']);
     }
 
     function action_add_order_item()

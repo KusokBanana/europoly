@@ -148,12 +148,10 @@
 <?php require_once 'modals/new_truck_item.php'; ?>
 <!-- END CONTAINER -->
 <script>
-
-    var item_statuses = <?= json_encode($this->statusList); ?>;
-    var transports = <?= json_encode($this->delivery['list']) ?>;
-    var customs = <?= json_encode($this->customs['list']) ?>;
-
     $(document).ready(function () {
+        var item_statuses = <?= json_encode($this->statusList); ?>;
+        var transports = <?= json_encode($this->delivery['list']) ?>;
+        var customs = <?= json_encode($this->customs['list']) ?>;
         var $table_order_items = $("#table_truck_items");
         $table_order_items.DataTable({
             processing: true,

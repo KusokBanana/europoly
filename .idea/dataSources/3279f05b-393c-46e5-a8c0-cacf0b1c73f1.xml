@@ -692,7 +692,6 @@
     <column id="183" parent="28" name="manager_order_id">
       <Position>2</Position>
       <DataType>int(11)|0</DataType>
-      <NotNull>1</NotNull>
     </column>
     <column id="184" parent="28" name="status_id">
       <Position>12</Position>
@@ -1542,7 +1541,6 @@
     <column id="379" parent="40" name="supplier_id">
       <Position>9</Position>
       <DataType>int(11)|0</DataType>
-      <NotNull>1</NotNull>
     </column>
     <column id="380" parent="40" name="total_downpayment">
       <Position>10</Position>
@@ -1701,20 +1699,21 @@
       <DataType>float|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="413" parent="44" name="status">
-      <Position>6</Position>
-      <DataType>varchar(65)|0</DataType>
-      <NotNull>1</NotNull>
-    </column>
-    <column id="414" parent="44" name="transportation_company_id">
+    <column id="413" parent="44" name="transportation_company_id">
       <Position>7</Position>
       <DataType>int(11)|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="415" parent="44" name="custom_id">
+    <column id="414" parent="44" name="custom_id">
       <Position>8</Position>
       <DataType>int(11)|0</DataType>
       <NotNull>1</NotNull>
+    </column>
+    <column id="415" parent="44" name="status_id">
+      <Position>6</Position>
+      <DataType>int(11)|0</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>&apos;8&apos;</DefaultExpression>
     </column>
     <key id="416" parent="44" name="PRIMARY">
       <ColNames>id</ColNames>

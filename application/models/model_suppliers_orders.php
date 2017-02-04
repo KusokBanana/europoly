@@ -174,12 +174,13 @@ class ModelSuppliers_orders extends ModelManagers_orders
         $count = count($products);
 
         foreach ($products as $key => $product) {
-            $where .= "(suppliers_orders_items.order_item_id=". $product .")";
+            $where .= "(suppliers_orders_items.item_id=". $product .")";
             $where .= ($count-$key > 1) ? ' OR ' : '';
         }
+        $where2 = 'suppliers_orders_items.supplier_order_id IS NOT NULL AND suppliers_orders_items.truck_id IS NULL';
 
-        $this->sspComplex($this->suppliers_orders_table, "suppliers_orders.order_id",
-            $this->suppliers_orders_columns, $input, $where, null);
+        $this->sspComplex($this->suppliers_orders_table, "suppliers_orders_items.item_id",
+            $this->suppliers_orders_columns, $input, $where2, $where);
     }
 
 
