@@ -248,7 +248,7 @@
         }
 
         // add filter selects for all not numeric columns
-        addFilterSelects();
+        //addFilterSelects();
         function addFilterSelects() {
             var data = {};
             var url = ajax;

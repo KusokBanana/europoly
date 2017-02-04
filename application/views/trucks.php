@@ -36,11 +36,6 @@
 								<i class="icon-social-dribbble font-dark"></i>
 								<span class="caption-subject bold uppercase font-dark">Shipment</span>
 							</div>
- 							<div class="actions">
-								<a class="btn btn-default" href="#">
-									+ Add new Truck
-								</a>
-							</div>
 						</div>
 						<div class="portlet-body">
 							<div class="tabbable-custom nav-justified">

@@ -42,6 +42,9 @@
           <option name="port" value="21" />
         </fileTransfer>
       </webServer>
+      <webServer id="e50b3108-8b1b-4f4f-9a94-8f92af030bac" name="europoly" url="http://europoly/">
+        <fileTransfer port="0" accessType="LOCAL" />
+      </webServer>
     </option>
   </component>
 </project>

@@ -108,7 +108,6 @@ class ModelSuppliers_order extends Model
     {
         foreach ($product_ids as $product_id) {
             $product = $this->getFirst("SELECT * FROM products WHERE product_id = $product_id");
-            $number_of_packs = $product['amount_in_pack'] != null ? 0 : 1;
             $existProduct = $this->getFirst("SELECT * FROM suppliers_orders_items WHERE (product_id = $product_id AND 
               managers_order_item_id = 0)");
             if ($existProduct && !empty($existProduct)) {
@@ -118,7 +117,7 @@ class ModelSuppliers_order extends Model
             else {
                 $this->insert("INSERT INTO suppliers_orders_items (order_id, product_id, total_price, amount, 
                   number_of_packs, item_status)
-                VALUES ($order_id, $product_id, 0, 1, $number_of_packs, 'Draft for Supplier')");
+                VALUES ($order_id, $product_id, 0, 0, 0, 'Draft for Supplier')");
             }
 
             $order = $this->getFirst("SELECT * FROM suppliers_orders WHERE order_id = $order_id");

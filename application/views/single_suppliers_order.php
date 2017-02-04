@@ -51,10 +51,10 @@
                                 </ul>
                             </div>
                             <div class="col-xs-4">
-                                <h3>Ready date:</h3>
+                                <h3>Production Date:</h3>
                                 <ul class="list-unstyled">
                                     <li>
-                                        <strong>01.07.2017</strong></li>
+                                        <strong>01.07.2017</strong></li> <?php // TODO Max (prod date) ?>
                                 </ul>
                             </div>
                             <div class="col-xs-4 invoice-block">

@@ -23,6 +23,10 @@ class ControllerOrder extends Controller
         $this->view->clients = $this->model->getClientsOfManager($this->view->order["sales_manager_id"]);
         $this->view->commission_agents = $this->model->getCommissionAgentsOfManager($this->view->order["commission_agent_id"]);
         $this->view->statusList = $this->model->getStatusList();
+
+
+
+
         $this->view->build('templates/template.php', 'single_order.php');
     }
 
@@ -141,11 +145,24 @@ class ControllerOrder extends Controller
     function action_reserve()
     {
         $itemId = (isset($_GET["order_item_id"]) && $_GET["order_item_id"]) ? intval($_GET["order_item_id"]) : false;
-        $action = (isset($_GET["action"]) && $_GET["action"]) ? intval($_GET["action"]) : false;
+        $action = (isset($_GET["action"]) && $_GET["action"]) ? $_GET["action"] : false;
         if (!$itemId || !$action)
             return false;
         if ($action == 'get_info') {
-            
+            $reserveInfo = $this->model->getReserveInformation($itemId);
+            if ($reserveInfo)
+                echo $reserveInfo;
+            else
+                return false;
+        }
+        if ($action == 'reserve') {
+
+            $reserved_item_id = (isset($_GET["reserved_item_id"]) && $_GET["reserved_item_id"]) ?
+                intval($_GET["reserved_item_id"]) : false;
+            $type = (isset($_GET["type"]) && $_GET["type"]) ? $_GET["type"] : false;
+            $this->model->reserve($itemId, $reserved_item_id, $type);
+            header("Location: " . $_SERVER['HTTP_REFERER']);
+
         }
     }
 

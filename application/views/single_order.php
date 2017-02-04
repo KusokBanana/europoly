@@ -236,7 +236,7 @@
                                                     <th> Discount Rate (%)</th>
                                                     <th> Reduced Price</th>
                                                     <th> Sell Value</th>
-                                                    <th> Commission Rate</th>
+                                                    <th> Commission Rate (%)</th>
                                                     <th> Commission Agent Bonus</th>
                                                     <th> Manager Bonus Rate (%)</th>
                                                     <th> Manager Bonus</th>
@@ -556,7 +556,8 @@ require_once 'modals/cancel_order.php';
                 }
             })
         });
-
+        if ($('.reserved_row_table').length)
+            $('.reserved_row_table').closest('tr').attr('title', 'Reserved');
     });
 </script>
 <style>
@@ -564,3 +565,6 @@ require_once 'modals/cancel_order.php';
         overflow-y: hidden;
     }
 </style>
+<?php
+include_once 'application/views/modals/reserve.php';
+?>
