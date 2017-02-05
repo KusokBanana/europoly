@@ -20,7 +20,7 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <th colspan="5">Пусто</th>
+                            <th colspan="6" class="text-center">No available sources</th>
                         </tr>
                     </tbody>
                 </table>

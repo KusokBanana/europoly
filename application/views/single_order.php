@@ -498,19 +498,6 @@ require_once 'modals/cancel_order.php';
                 searchable: false
             }]
         });
-
-        $('table').on('click', '.x-editable.editable-click', function() {
-            var popover = $(this).next('.popover.editable-container.editable-popup');
-            var maxLeft = popover.closest('.table-responsive').offset().left,
-                currentLeft = popover.offset().left,
-                difference = maxLeft - currentLeft;
-
-            if (difference > 0) {
-                var left = +popover.css('left').slice(0,-2);
-                popover.css('left', (left + difference) + 'px');
-            }
-        });
-
         tablePay.on('draw', function() {
             var contractors = $('table').find('.change-me-contractor');
             $.each(contractors, function() {

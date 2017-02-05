@@ -4,7 +4,8 @@ class ModelManagers_orders extends Model
 {
     var $managers_orders_columns = [
         array('dt' => 0, 'db' => "order_items.item_id"),
-        array('dt' => 1, 'db' => "CONCAT('<a href=\"/order?id=', order_items.manager_order_id, '\">', order_items.manager_order_id, '</a>')"),
+        array('dt' => 1, 'db' => "CONCAT('<a href=\"/order?id=', order_items.manager_order_id, '\">', order_items.manager_order_id,
+            IF(order_items.reserve_since_date IS NULL, '', ' (reserved)'), '</a>')"),
         array('dt' => 2, 'db' => "CONCAT(managers.first_name, ' ', managers.last_name, '<a href=\"/sales_manager?id=',
             orders.sales_manager_id, '\"><i class=\"glyphicon glyphicon-link\"></i></a></a>')"),
         array('dt' => 3, 'db' => "CONCAT('<a href=\"/product?id=', order_items.product_id, '\"',

@@ -143,11 +143,24 @@
             window.location.href = "<?= $click_url ?>" + data[0];
         });
 
+        // Позволяет не убегать за левый хидден x-editable окну
+        $('table').on('click', '.x-editable.editable-click', function() {
+            var popover = $(this).next('.popover.editable-container.editable-popup');
+            var maxLeft = popover.closest('table').offset().left,
+                currentLeft = popover.offset().left,
+                difference = maxLeft - currentLeft;
+
+            if (difference > 0) {
+                var left = +popover.css('left').slice(0,-2);
+                popover.css('left', (left + difference) + 'px');
+            }
+        });
+
         $table.find('tbody').on('click', 'tr td:first-child', function (e) {
             var selectedRows = table.rows('.selected').data(),
                 ids = [];
             $.each(selectedRows, function() {
-                ids.push(this[0][0])
+                ids.push(this[0]);
             });
             $table.attr('data-selected', ids.concat())
         });

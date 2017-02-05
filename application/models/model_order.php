@@ -148,7 +148,8 @@ class ModelOrder extends Model
                     $this->full_products_table_addition .
                     ' left join items_status as status on order_items.status_id = status.status_id';
 
-        return $this->sspComplex($table, "order_items.item_id", $columns, $input, null, "order_items.manager_order_id = $order_id");
+        $where = "order_items.manager_order_id = $order_id AND order_items.reserve_since_date IS NULL";
+        return $this->sspComplex($table, "order_items.item_id", $columns, $input, null, $where);
     }
 
     function cancelOrder($order_id, $cancel_reason)
@@ -390,209 +391,146 @@ class ModelOrder extends Model
     public function getReserveInformation($item_id)
     {
 
-        $order_item = $this->getFirst("SELECT * FROM order_items WHERE order_item_id = $item_id");
+        $order_item = $this->getFirst("SELECT * FROM order_items WHERE item_id = $item_id");
         $amount = intval($order_item['amount']);
         $productId = $order_item['product_id'];
 
         $tableData = [];
+        $sourceItems = $this->getAssoc("SELECT * FROM order_items 
+                    WHERE (ISNULL(manager_order_id) AND ISNULL(reserve_since_date) AND product_id = $productId)");
+        if (!empty($sourceItems)) {
+            foreach ($sourceItems as $sourceItem) {
 
-//        $row = ['ordered' => $amount];
+                $sourceParams = [];
+                if ($id = $sourceItem['warehouse_id']) {
+                    $sourceParams = ['warehouse', 'Warehouse', $id];
+                } elseif ($id = $sourceItem['truck_id']) {
+                    $sourceParams = ['truck', 'Truck', $id];
+                } elseif ($id = $sourceItem['supplier_order_id']) {
+                    $sourceParams = ['suppliers_order', 'Supplier Order', $id];
+                }
+                if (!empty($sourceParams)) {
 
-        // supplier
-        $items = $this->getAssoc("SELECT * FROM suppliers_orders_items 
-                    WHERE (ISNULL(reserved_manager_id) AND ISNULL(reserved_item_id) AND product_id = $productId)");
-        $available = 0;
-        $row = [];
-        foreach ($items as $item) {
-            $available = $item['amount'];
-            $id = $item['order_id'];
-            $row[$item['order_item_id']] = [
-                'ordered' => $amount,
-                'status' => $item['item_status'],
-                'available' => $available,
-                'source' => 'Supplier Order (<a href="/suppliers_order?id=' . $id . '">#'.$id.'</a>)'
-            ];
+                    $available = $sourceItem['amount'];
+                    $item_id = $sourceItem['item_id'];
+                    $tableData[$sourceParams[0]][$item_id] = [
+                        'ordered' => $amount,
+                        'status' => $this->getItemStatusName($sourceItem['status_id']),
+                        'available' => $available,
+                        'source' => "$sourceParams[1] (<a href=\"$sourceParams[0]?id=$sourceParams[2]\">#$sourceParams[2]</a>)"
+                    ];
+
+                }
+            }
         }
-        unset($items);
-//        $tableData['supplier'] = array_merge($row, ['available' => $available, 'source' => 'Supplier Order']);
-        $tableData['supplier'] = $row;
-
-        // truck
-        $items = $this->getAssoc("SELECT * FROM trucks_items 
-                    WHERE (ISNULL(reserved_manager_id) AND ISNULL(reserved_item_id) AND product_id = $productId)");
-        $available = 0;
-        $row = [];
-        foreach ($items as $item) {
-            $available = $item['amount'];
-            $truckId = $item['truck_id'];
-            $truckItemId = $item['truck_item_id'];
-            $row[$truckItemId] = [
-                'ordered' => $amount,
-                'status' => $this->getItemStatus('truck', $truckItemId),
-                'available' => $available,
-                'source' => 'Truck (<a href="/truck?id=' . $truckId . '">#'.$truckId.'</a>)'
-            ];
-        }
-        unset($items);
-        $tableData['truck'] = $row;
-//        $tableData['truck'] = array_merge($row, ['available' => $available, 'source' => 'Truck']);
-
-        // supplier
-        $items = $this->getAssoc("SELECT * FROM products_warehouses 
-                    WHERE (ISNULL(reserved_manager_id) AND ISNULL(reserved_item_id) AND product_id = $productId)");
-        $available = 0;
-        $row = [];
-        foreach ($items as $item) {
-            $available = $item['amount'];
-            $warehouseItemId = $item['product_warehouse_id'];
-            $warehouseId = $item['warehouse_id'];
-            $row[$warehouseItemId] = [
-                'ordered' => $amount,
-                'status' => $this->getItemStatus('truck', $warehouseItemId),
-                'available' => $available,
-                'source' => 'Warehouse (<a href="/warehouse?id=' . $warehouseId . '">#'.$warehouseId.'</a>)'
-            ];
-        }
-        $tableData['warehouse'] = $row;
-//        $tableData['warehouse'] = array_merge($row, ['available' => $available, 'source' => 'Warehouse']);
-
-        return json_encode($tableData);
-
+        return !empty($tableData) ? json_encode($tableData) : false;
     }
 
     public function reserve($itemId, $reserved_item_id, $type)
     {
+        $currentOrderItem = $this->getFirst("SELECT * FROM order_items WHERE item_id = $itemId");
+        $reserved = $this->getFirst("SELECT * FROM order_items WHERE item_id = $reserved_item_id");
+        if ($reserved && !empty($reserved)) {
 
-        $table = '';
-        $idName = '';
-        switch ($type) {
-            case 'supplier':
-                $table = 'suppliers_orders_items';
-                $idName = 'order_item_id';
-                break;
-            case 'truck':
-                $table = 'trucks_items';
-                $idName = 'truck_item_id';
-                break;
-            case 'warehouse':
-                $table = 'products_warehouses';
-                $idName = 'product_warehouse_id';
-                break;
-        }
-        if ($table) {
-            $currentOrderItem = $this->getFirst("SELECT * FROM order_items WHERE order_item_id = $itemId");
-            $productId = $currentOrderItem['product_id'];
-//            $items = $this->getAssoc("SELECT amount, `$idName` as id FROM $table
-//                        WHERE (ISNULL(reserved_manager_id) AND ISNULL(reserved_item_id) AND product_id = $productId)");
-            $reserved = $this->getFirst("SELECT * FROM $table WHERE $idName = $reserved_item_id");
-            if ($reserved && !empty($reserved)) {
+            $ordered = ($currentOrderItem['amount'] && $currentOrderItem['amount'] !== null) ?
+                floatval($currentOrderItem['amount']) : 0;
 
-                $ordered = ($currentOrderItem['amount'] && $currentOrderItem['amount'] !== null) ?
-                    floatval($currentOrderItem['amount']) : 0;
+            $available = floatval($reserved['amount']);
 
-                $available = floatval($reserved['amount']);
+            $order_id = $currentOrderItem['manager_order_id'];
+            $order = $this->getFirst("SELECT sales_manager_id FROM orders WHERE order_id = $order_id");
 
+            // ordered > available
+            if ($ordered > $available) {
 
-                $order_id = $currentOrderItem['order_id'];
-                $order = $this->getFirst("SELECT sales_manager_id FROM orders WHERE order_id = $order_id");
-                $managerId = $order['sales_manager_id'];
+                $insertNames = '';
+                $insertValues = '';
+                $updateSellPrice = 0;
+                foreach ($currentOrderItem as $name => $value) {
+                    if ($name != 'item_id') {
 
-                // ordered > available
-                if ($ordered > $available) {
+                        if ($name == 'amount')
+                            $value = $available;
+                        if ($name == 'status_id') {
+                            $value = $reserved['status_id'];
+                        }
+                        if ($name == 'sell_price') {
+                            $updateSellPrice = floatval($value);
+                        }
 
-                    $insertNames = '';
-                    $insertValues = '';
-                    $updateSellPrice = 0;
-                    foreach ($currentOrderItem as $name => $value) {
-                        if ($name != 'order_item_id') {
-
-                            if ($name == 'amount')
-                                $value = $available;
-                            if ($name == 'item_status') {
-                                $value = (string) $this->getItemStatus($type, $reserved_item_id);
-                            }
-                            if ($name == 'sell_price') {
-                                $updateSellPrice = floatval($value);
-                            }
-
-                            if (!$value || $value == null)
-                                continue;
-                            $insertNames .= $name . ', ';
-                            if (is_numeric($value)) {
-                                $value = floatval($value);
-                                $insertValues .= "$value, ";
-                            } else {
-                                $insertValues .= "'$value', ";
-                            }
+                        if (!$value || $value == null)
+                            continue;
+                        $insertNames .= $name . ', ';
+                        if (is_numeric($value)) {
+                            $value = floatval($value);
+                            $insertValues .= "$value, ";
+                        } else {
+                            $insertValues .= "'$value', ";
                         }
                     }
+                }
 
-                    $amount = $ordered - $available;
-                    // Insert new reservation in Order
-                    if ($insertNames && $insertValues) {
-                        $insertNames = substr($insertNames, 0, -2);
-                        $insertValues = substr($insertValues, 0, -2);
-                        $newOrderItemId = $this->insert("INSERT INTO order_items ($insertNames)
-                          VALUES ($insertValues)");
-                    }
+                $amount = $ordered - $available;
+                // Insert new reservation in Order
+                if ($insertNames && $insertValues) {
+                    $insertNames = substr($insertNames, 0, -2);
+                    $insertValues = substr($insertValues, 0, -2);
+                    $newOrderItemId = $this->insert("INSERT INTO order_items ($insertNames)
+                      VALUES ($insertValues)");
 
                     // recalc parameters for current and new items (replace by updating amount instead)
-                    $this->updateItemField($newOrderItemId, 'sell_price', $updateSellPrice);
                     $this->updateItemField($itemId, 'sell_price', $updateSellPrice);
+                    $this->updateItemField($newOrderItemId, 'sell_price', $updateSellPrice);
+                }
 
-                    // Update reserved item in Source
-                    $this->update("UPDATE $table SET reserved_item_id = $itemId,
-                                    reserved_manager_id = $managerId WHERE $idName = $reserved_item_id");
+                // Update reserved item in Source
+                $this->update("UPDATE order_items SET reserve_since_date = NOW(), reserve_till_date = ADDDATE(NOW(), 7),
+                        manager_order_id = $order_id WHERE item_id = $reserved_item_id");
+                // update current item
+                $this->update("UPDATE order_items SET `amount` = $amount WHERE item_id = $itemId");
 
-                    $this->update("UPDATE order_items SET `amount` = $amount WHERE order_item_id = $itemId");
+            } elseif ($ordered == $available) {
 
-                } elseif ($ordered == $available) {
+                $this->update("UPDATE order_items SET reserve_since_date = NOW(), manager_order_id = $order_id,
+                                reserve_till_date = ADDDATE(NOW(), 7) 
+                                WHERE item_id = $reserved_item_id");
+                $this->update("UPDATE order_items SET status_id = ${reserved['status_id']} WHERE item_id = $itemId");
 
-                    $this->update("UPDATE $table SET reserved_item_id = $itemId,
-                                    reserved_manager_id = $managerId WHERE $idName = $reserved_item_id");
-                    $status = $this->getItemStatus($type, $reserved_item_id);
-                    $this->update("UPDATE order_items SET item_status = '$status' WHERE order_item_id = $itemId");
+            } elseif ($ordered < $available) {
 
-                } elseif ($ordered < $available) {
+                $newAmount = $available - $ordered;
+                $this->update("UPDATE order_items SET amount = $newAmount WHERE item_id = $reserved_item_id");
+                $this->update("UPDATE order_items SET status_id = ${reserved['status_id']} WHERE item_id = $itemId");
+                $currentReservedSourceItem = $this->getFirst("SELECT * FROM order_items WHERE item_id = $reserved_item_id");
+                $insertNames = '';
+                $insertValues = '';
+                foreach ($currentReservedSourceItem as $name => $value) {
+                    if ($name != 'item_id') {
 
-                    $newAmount = $available - $ordered;
-                    $this->update("UPDATE $table SET amount = $newAmount WHERE $idName = $reserved_item_id");
-                    $newStatus = $this->getItemStatus($type, $reserved_item_id);
-                    $this->update("UPDATE order_items SET item_status = '$newStatus' WHERE order_item_id = $itemId");
-                    $currentReservedSourceItem = $this->getFirst("SELECT * FROM $table WHERE $idName = $reserved_item_id");
-                    $insertNames = '';
-                    $insertValues = '';
-                    foreach ($currentReservedSourceItem as $name => $value) {
-                        if ($name != $idName) {
+                        if ($name == 'amount')
+                            $value = $ordered;
 
-                            if ($name == 'amount')
-                                $value = $ordered;
-                            if ($name == 'reserved_manager_id')
-                                $value = (string) $managerId;
-                            if ($name == 'reserved_item_id')
-                                $value = (string) $itemId;
+                        if ($name == 'manager_order_id')
+                            $value = (string) $order_id;
 
-                            if (!$value || $value == null)
-                                continue;
-                            $insertNames .= $name . ', ';
-                            if (is_numeric($value)) {
-                                $value = floatval($value);
-                                $insertValues .= "$value, ";
-                            } else {
-                                $insertValues .= "'$value', ";
-                            }
+                        if (!$value || $value == null)
+                            continue;
+                        $insertNames .= $name . ', ';
+                        if (is_numeric($value)) {
+                            $value = floatval($value);
+                            $insertValues .= "$value, ";
+                        } else {
+                            $insertValues .= "'$value', ";
                         }
                     }
-                    if ($insertNames && $insertValues) {
-                        $insertNames = substr($insertNames, 0, -2);
-                        $insertValues = substr($insertValues, 0, -2);
-                        $newSourceItemId = $this->insert("INSERT INTO $table ($insertNames)
-                          VALUES ($insertValues)");
-                    }
-
                 }
-                // Update current item in Order
+                if ($insertNames && $insertValues) {
+                    $newSourceItemId = $this->insert("INSERT INTO order_items ($insertNames reserve_since_date, reserve_till_date)
+                      VALUES ($insertValues NOW(), ADDDATE(NOW(), 7))");
+                }
+
             }
+                // Update current item in Order
 //            if (!empty($items)) {
 ////                $ordered = ($currentOrderItem['amount'] && $currentOrderItem['amount'] !== null) ? $currentOrderItem['amount'] : 0;
 ///*                $availableItems = [];
@@ -651,22 +589,10 @@ class ModelOrder extends Model
         }
     }
 
-    public function getItemStatus($type, $item_id)
+    public function getItemStatusName($status_id)
     {
-        $status = [];
-        if ($type == 'supplier') {
-            $status = $this->getFirst("SELECT item_status FROM suppliers_orders_items WHERE order_item_id = $item_id");
-        } elseif ($type == 'truck') {
-            $supplierItem = $this->getFirst("SELECT suppliers_order_item_id FROM trucks_items WHERE truck_item_id = $item_id");
-            $sup_item_id = $supplierItem['suppliers_order_item_id'];
-            $status = $this->getFirst("SELECT item_status FROM suppliers_orders_items WHERE order_item_id = $sup_item_id");
-        } elseif ($type == 'warehouse') {
-            $status['item_status'] = 'Not done yet'; // TODO fix it
-        }
-
-        if ($status && !empty($status)) {
-            return $status['item_status'];
-        }
+        $status = $this->getFirst("SELECT name FROM items_status WHERE status_id = $status_id");
+        return $status ? $status['name'] : 'WTF?!?';
 
     }
 }
