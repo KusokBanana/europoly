@@ -37,10 +37,9 @@ class ControllerWarehouse extends Controller
 
     function action_dt()
     {
-        if (isset($_GET['products'])) {
-            $data = json_decode($_GET['products'], true);
-            $warehouse_id = intval($data["warehouse_id"]);
-            if ($warehouse_id == 0) {
+        if (isset($_GET['warehouse_id'])) {
+            $warehouse_id = intval($_GET['warehouse_id']);
+            if ($warehouse_id === 0) {
                 $this->model->getDTProductsForAllWarehouses($_GET);
             } else {
                 $this->model->getDTProductsForWarehouse($warehouse_id, $_GET);
@@ -53,14 +52,10 @@ class ControllerWarehouse extends Controller
     function action_add_product()
     {
         $this->model->addProductsWarehouse(
-            $this->escape_and_empty_to_null($_POST['product_id']),
+            $this->escape_and_empty_to_null($_POST['product_ids']),
             $this->escape_and_empty_to_null($_POST['warehouse_id']),
             $this->escape_and_empty_to_null($_POST['amount']),
-            $this->escape_and_empty_to_null($_POST['buy_price']),
-            $this->escape_and_empty_to_null($_POST['buy_and_taxes']),
-            $this->escape_and_empty_to_null($_POST['sell_price']),
-            $this->escape_and_empty_to_null($_POST['dealer_price']),
-            $this->escape_and_empty_to_null($_POST['total_price']));
+            $this->escape_and_empty_to_null($_POST['buy_price']));
         header("Location: /warehouse?id=" . $_POST['warehouse_id']);
     }
 

@@ -74,7 +74,7 @@ class ModelShipment extends ModelManagers_orders
 
     function getDTSuppliersOrders($input)
     {
-        $where = "trucks_items.truck_id IS NOT NULL";
+        $where = "trucks_items.truck_id IS NOT NULL AND trucks_items.warehouse_id IS NULL";
         $this->sspComplex($this->suppliers_orders_table, "trucks_items.item_id", $this->suppliers_orders_columns,
             $input, null, $where);
     }

@@ -36,51 +36,6 @@
 								<i class="icon-social-dribbble font-dark"></i>
 								<span class="caption-subject bold uppercase font-dark">Managers' Orders</span>
 							</div>
-							<div class="actions">
-								<a class="btn btn-default modal-new-suppliers-order-btn">
-									+ Add to Supplier's Order
-								</a>
-							</div>
-							<script>
-								$('body').on('click', '.modal-new-suppliers-order-btn', function() {
-								    var table = $('#table_managers_orders');
-									var products = table.find('tr.selected .order-item-product').length ?
-                                        table.find('tr.selected .order-item-product') : [];
-									var brandStr = '';
-									var error = '';
-									var ids = {};
-									if (table.attr('data-selected') !== undefined)
-									    ids = table.attr('data-selected').split();
-
-									var brandError = false;
-									if (products.length) {
-                                        products.each(function(i, elem) {
-                                            var brand = $(elem).closest('tr').find('.brand-cell').text();
-                                            if (i>0 && brandStr != brand) {
-                                                brandError = true;
-                                            }
-                                            brandStr = brand;
-                                        });
-                                    }
-									if (brandError)
-										error = 'Items must have the same brands';
-									$.ajax({
-									type: "POST",
-									url: "application/views/modals/new_supplier_order.php",
-									data: {
-										table_data: {
-											column_names: <?php echo json_encode($this->column_names) ?>,
-											products: ids,
-											error: error
-										}
-									},
-									success: function(data) {
-										$('#modal_newSupplierOrder').append(data).modal('show');
-
-									}
-									})
-								});
-							</script>
 						</div>
 						<div class="portlet-body">
 							<div class="tabbable-custom nav-justified">
@@ -144,11 +99,3 @@
 		<!-- END FOOTER -->
 	</div>
 </div>
-
-<div class="modal fade" id="modal_newSupplierOrder" role="dialog" aria-hidden="true">
-</div>
-<script>
-	$('#modal_newSupplierOrder').on('hidden.bs.modal', function() {
-		$(this).empty();
-	})
-</script>

@@ -12,25 +12,23 @@ class ModelSuppliers_orders extends ModelManagers_orders
             'class=\"order-item-product\" data-id=\"', suppliers_orders_items.supplier_order_id ,'\">', products.name, '</a>')"),
         array('dt' => 4, 'db' => "suppliers_orders.supplier_date_of_order"),
         array('dt' => 5, 'db' => "suppliers_orders.release_date"),
-        array('dt' => 6, 'db' => "CONCAT('<a href=\"/truck?id=', 
-            suppliers_orders_items.truck_id,'\">', suppliers_orders_items.truck_id, '</a>')"),
-        array('dt' => 7, 'db' => "suppliers_orders.departure_date"),
-        array('dt' => 8, 'db' => "suppliers_orders_items.warehouse_arrival_date"),
-        array('dt' => 9, 'db' => "CONCAT('<a href=\"/order?id=', 
+        array('dt' => 6, 'db' => "suppliers_orders.departure_date"),
+        array('dt' => 7, 'db' => "suppliers_orders_items.warehouse_arrival_date"),
+        array('dt' => 8, 'db' => "CONCAT('<a href=\"/order?id=', 
             suppliers_orders_items.manager_order_id,'\">', suppliers_orders_items.manager_order_id, '</a>')"),
-        array('dt' => 10, 'db' => "CONCAT(managers.first_name, ' ', managers.last_name, '<a href=\"/sales_manager?id=', orders.sales_manager_id, '\"><i class=\"glyphicon glyphicon-link\"></i></a></a>')"),
-        array('dt' => 11, 'db' => "orders.start_date"),
-        array('dt' => 12, 'db' => "status.name"),
-        array('dt' => 13, 'db' => "suppliers_orders_items.amount"),
-        array('dt' => 14, 'db' => "suppliers_orders_items.number_of_packs"),
-        array('dt' => 15, 'db' => "products.weight * suppliers_orders_items.number_of_packs"),
-        array('dt' => 16, 'db' => "products.purchase_price"),
-        array('dt' => 17, 'db' => "products.purchase_price * suppliers_orders_items.number_of_packs"),
-        array('dt' => 18, 'db' => "'unknown'"),
-        array('dt' => 19, 'db' => "suppliers_orders.total_price"),
-        array('dt' => 20, 'db' => "suppliers_orders.total_downpayment"),
-        array('dt' => 21, 'db' => "orders.downpayment_rate"),
-        array('dt' => 22, 'db' => "orders.expected_date_of_issue"),
+        array('dt' => 9, 'db' => "CONCAT(managers.first_name, ' ', managers.last_name, '<a href=\"/sales_manager?id=', orders.sales_manager_id, '\"><i class=\"glyphicon glyphicon-link\"></i></a></a>')"),
+        array('dt' => 10, 'db' => "orders.start_date"),
+        array('dt' => 11, 'db' => "status.name"),
+        array('dt' => 12, 'db' => "suppliers_orders_items.amount"),
+        array('dt' => 13, 'db' => "suppliers_orders_items.number_of_packs"),
+        array('dt' => 14, 'db' => "products.weight * suppliers_orders_items.number_of_packs"),
+        array('dt' => 15, 'db' => "products.purchase_price"),
+        array('dt' => 16, 'db' => "products.purchase_price * suppliers_orders_items.number_of_packs"),
+        array('dt' => 17, 'db' => "'unknown'"),
+        array('dt' => 18, 'db' => "suppliers_orders.total_price"),
+        array('dt' => 19, 'db' => "suppliers_orders.total_downpayment"),
+        array('dt' => 20, 'db' => "orders.downpayment_rate"),
+        array('dt' => 21, 'db' => "orders.expected_date_of_issue"),
 
     ];
 
@@ -41,7 +39,6 @@ class ModelSuppliers_orders extends ModelManagers_orders
         'Product',
         'Date of Order (Supplier)',
         'Supplier Release Date',
-        'Truck ID',
         'Supplier Departure Date',
         'Warehouse Arrival Date',
         'Manager Order ID',
@@ -91,7 +88,8 @@ class ModelSuppliers_orders extends ModelManagers_orders
     var $suppliers_orders_table_reduce = 'suppliers_orders ' .
         'left join items_status as status on (suppliers_orders.status_id = status.status_id)';
 
-    var $suppliersFilterWhere = "suppliers_orders_items.supplier_order_id IS NOT NULL";
+    var $suppliersFilterWhere = "suppliers_orders_items.supplier_order_id IS NOT NULL 
+                                    AND suppliers_orders_items.truck_id IS NULL";
 
     function getDTSuppliersOrders($input)
     {

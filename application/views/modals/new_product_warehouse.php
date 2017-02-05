@@ -12,7 +12,7 @@
                         'buttons' => [
                             'Select product in the table above:'
                         ],
-                        'table_id' => "table_product_warehouse",
+                        'table_id' => "table_product_warehouse_modal",
                         'ajax' => [
                             'url' => "/catalogue/dt"
                         ],
@@ -28,30 +28,14 @@
                                 <label>Quantity</label>
                                 <input name="amount" class="form-control" type="number" step="0.01">
                             </div>
+                        </div>
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label>Buy price</label>
                                 <input name="buy_price" class="form-control" type="number" step="0.01">
                             </div>
-                            <div class="form-group">
-                                <label>Buy + Transport + Taxes</label>
-                                <input name="buy_and_taxes" class="form-control" type="number" step="0.01">
-                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Sell price</label>
-                                <input name="sell_price" class="form-control" type="number" step="0.01">
-                            </div>
-                            <div class="form-group">
-                                <label>Dealer price</label>
-                                <input name="dealer_price" class="form-control" type="number" step="0.01">
-                            </div>
-                            <div class="form-group">
-                                <label>Total price</label>
-                                <input name="total_price" class="form-control" type="number" step="0.01">
-                            </div>
-                        </div>
-                        <input id="field_product_id" type="hidden" name="product_id">
+                        <input id="field_product_id" type="hidden" name="product_ids">
                         <input type="hidden" name="warehouse_id" value="<?= $this->warehouse['warehouse_id'] ?>">
                     </div>
                 </div>
@@ -69,12 +53,16 @@
 </div>
 
 <script>
-    $table_product_warehouse = $('#table_product_warehouse');
+    $table_product_warehouse = $('#table_product_warehouse_modal');
     $table_product_warehouse.find('tbody').on('click', 'tr', function () {
-        console.log("click!");
-        if ($table_product_warehouse.find(".selected").length == 1) {
-            var pwid = $table_product_warehouse.DataTable().rows('.selected').data()[0][0];
-            $("#field_product_id").val(pwid);
+        if ($table_product_warehouse.find(".selected").length) {
+            var selectedRows = $table_product_warehouse.DataTable().rows('.selected').data(),
+                ids = [];
+            $.each(selectedRows, function() {
+                ids.push(this[0])
+            });
+
+            $("#field_product_id").val(ids.concat());
             $("#modal_pw_create").removeAttr('disabled');
         } else {
             $("#modal_pw_create").attr('disabled', 'disabled');

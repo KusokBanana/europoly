@@ -84,7 +84,7 @@ class ModelTruck extends ModelOrder
         array('dt' => 18, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
                         CONCAT('<a href=\"/truck/delete_order_item?order_id=', trucks_items.truck_id, '&order_item_id=', trucks_items.item_id,
                         '\" onclick=\"return confirm(\'Are you sure to delete the item?\')\"><span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span></a>'),
-                        IF(trucks_items.status_id != 9 OR trucks_items.status_id != 10 OR trucks_items.status_id != 11,
+                        IF(trucks_items.status_id < 9,
                         CONCAT('<a href=\"/truck/put_item_to_warehouse?truck_item_id=', trucks_items.item_id, 
                         '\" onclick=\"return confirm(\'Are you sure to put to warehouse the item?\')\"><span class=\'glyphicon
                          glyphicon-home\' title=\'Put to Warehouse\'></span></a>'),
@@ -186,7 +186,6 @@ class ModelTruck extends ModelOrder
 
     function putToTheWarehouse($truckId)
     {
-//        $this->update("UPDATE trucks SET warehouse_arrival_date = NOW() WHERE id = $truckId");
         $truckItems = $this->getAssoc("SELECT * FROM order_items WHERE truck_id = $truckId");
         foreach ($truckItems as $truckItem) {
             if ($truckItem['warehouse_arrival_date'] == null)
@@ -211,7 +210,7 @@ class ModelTruck extends ModelOrder
         $buyAndExpenses *= $truckItem['amount'];
 
         $warehouseId = $this->insert("UPDATE order_items SET warehouse_id = 1, total_price = $totalPrice,
- 	      buy_and_taxes = $buyAndExpenses, warehouse_arrival_date = NOW(), status_id = 9");
+ 	      buy_and_taxes = $buyAndExpenses, warehouse_arrival_date = NOW(), status_id = 9 WHERE item_id = $itemId");
 
         $this->updateItemsStatus($truckItem['truck_id']);
 

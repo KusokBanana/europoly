@@ -43,19 +43,18 @@
 							</div>
 							<script>
 								$('body').on('click', '.load-into-truck-modal-btn', function() {
-									var products = $('#table_suppliers_orders').find('tr.selected .order-item-product');
-									var productIds = [];
-									products.each(function(i, elem) {
-										var id = $(elem).attr('data-id');
-										productIds.push(id);
-									});
+                                    var table = $('#table_suppliers_orders');
+                                    var ids = [];
+                                    if (table.attr('data-selected') !== undefined)
+                                        ids = table.attr('data-selected').split(',');
+
 									$.ajax({
 										type: "POST",
 										url: "application/views/modals/load_into_truck.php",
 										data: {
 											table_data: {
 												column_names: <?php echo json_encode($this->column_names) ?>,
-												products: productIds
+												products: ids
 											}
 										},
 										success: function(data) {
@@ -93,11 +92,6 @@
 											include 'application/views/templates/table.php'
 											?>
 										</div>
-										<p> Здесь - общий список всех Позиций из всех Заказаов Поставщикам (Suppliers Orders). </p>
-										<p> Это должна быть таблица из templates/table.php со следующими столбцами: <del>Supplier Order ID, Date of Order (Supplier), Supplier Release Date, Truck ID, Supplier Departure Date, Warehouse Arrival Date, Manager Order ID</del>, Manager, Product, Brand, <del>Date of Order (Client), Status, Amount, Number of Packs</del>, Total Weight, Purchase Price / Unit, Total Purchase Price, Sell Price / Unit, Total Sell Price, Downpayment, Downpayment rate, Client's expected date of issue</p>
-										<p> 1. Пользователь выбирает галочками строки в этой таблице и нажимает кнопку "Load into Truck"<br/>
-											2. Открывается модальное окно, в которое должна подгружаться таблица выбранных строк, как в примере
-										</p>
 									</div>
 									<div class="tab-pane fade" id="tab_1_2">
 										<div class="portlet-body">
@@ -115,8 +109,6 @@
 											include 'application/views/templates/table.php'
 											?>
 										</div>
-										<p> Здесь - общий список всех Заказаов Поставщикам. </p>
-										<p> Это должна быть таблица из templates/table.php со следующими столбцами: Supplier Order ID, Date of Order, Status, Total Purchase Price, Release Date</p>
 									</div>
 								</div>
 							</div>

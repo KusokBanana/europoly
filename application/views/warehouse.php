@@ -54,7 +54,7 @@
                                     <span class="sale-info"> Sell Price
                                         <i class="fa fa-img-down"></i>
                                     </span>
-                                    <span class="sale-num"> 0 €</span>
+                                    <span class="sale-num"> <?= $this->prices['sellPrice'] ?> €</span>
                                 </li>
                                 <li>
                                     <span class="sale-info"> Dealer Price
@@ -126,7 +126,7 @@
                                 <div class="tab-pane active" id="tab_1_11">
                                     <div class="portlet-body">
                                         <?php
-                                        if ($this->title != "All") {
+                                        if ($this->id) {
                                             $table_data = [
                                                 'buttons' => [
                                                     '<button class="btn sbold green" data-toggle="modal" data-target="#modal_newProductWarehouse">Add New <i class="fa fa-plus"></i></button>',
@@ -134,8 +134,7 @@
                                                 ],
                                                 'table_id' => "table_warehouses_products",
                                                 'ajax' => [
-                                                    'url' => "/warehouse/dt",
-                                                    'data' => "{'warehouse_id': " . $this->warehouse["warehouse_id"] . "}"
+                                                    'url' => "/warehouse/dt?warehouse_id=".$this->warehouse['warehouse_id'],
                                                 ],
                                                 'column_names' => [
                                                     "Id",
@@ -158,8 +157,7 @@
                                                 'buttons' => [],
                                                 'table_id' => "table_warehouses_products",
                                                 'ajax' => [
-                                                    'url' => "/warehouse/dt",
-                                                    'data' => "{'warehouse_id': 0}"
+                                                    'url' => "/warehouse/dt?warehouse_id=0",
                                                 ],
                                                 'column_names' => [
                                                     "Id",
@@ -405,18 +403,18 @@ if ($this->id != 0) {
 }
 ?>
 
-<script>
-    var $table_warehouses_products = $('#table_warehouses_products');
-    $table_warehouses_products.find('tbody').on('click', 'tr', function () {
-        console.log("click!");
-        if ($table_warehouses_products.find(".selected").length == 1) {
-            var pw_data = $table_warehouse_product.DataTable().rows('.selected').data()[0];
-            $("#modal_transfer_product_warehouse_id").val(pw_data[0]);
-            $("#modal_transfer_product_name").val($(pw_data[2]).text());
-            $("#modal_transfer_amount").attr('max', pw_data[4]);
-            $("#sample_1_transfer_button").removeAttr('disabled');
-        } else {
-            $("#sample_1_transfer_button").attr('disabled', 'disabled');
-        }
-    });
-</script>
+<!--<script>-->
+<!--    var $table_warehouses_products = $('#table_warehouses_products');-->
+<!--    $table_warehouses_products.find('tbody').on('click', 'tr', function () {-->
+<!--        console.log("click!");-->
+<!--        if ($table_warehouses_products.find(".selected").length == 1) {-->
+<!--            var pw_data = $table_warehouse_product.DataTable().rows('.selected').data()[0];-->
+<!--            $("#modal_transfer_product_warehouse_id").val(pw_data[0]);-->
+<!--            $("#modal_transfer_product_name").val($(pw_data[2]).text());-->
+<!--            $("#modal_transfer_amount").attr('max', pw_data[4]);-->
+<!--            $("#sample_1_transfer_button").removeAttr('disabled');-->
+<!--        } else {-->
+<!--            $("#sample_1_transfer_button").attr('disabled', 'disabled');-->
+<!--        }-->
+<!--    });-->
+<!--</script>-->

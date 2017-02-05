@@ -138,7 +138,7 @@ class ModelManagers_orders extends Model
             $where .= ($count-$key > 1) ? ' OR ' : '';
         }
 
-        $this->sspComplex($this->managers_orders_table, "DISTINCT order_items.item_id",
+        $this->sspComplex($this->managers_orders_table, "order_items.item_id",
             $this->managers_orders_columns, $input, null, $where);
     }
 
