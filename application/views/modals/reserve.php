@@ -66,10 +66,13 @@
                             tbody += '</tr>';
                         });
                     });
-                    $('.table-reserve').find('tbody').empty().append(tbody);
+                } else {
+                    tbody = '<tr><th colspan="6" class="text-center">No available sources</th></tr>';
                 }
+                $('.table-reserve').find('tbody').empty().append(tbody);
             }
         });
         $('#modal_reserve').modal('show');
     })
+
 </script>

@@ -11,6 +11,7 @@ class ControllerClients extends Controller
     function action_index($action_param = null, $action_data = null)
     {
         $this->view->title = "Clients";
+
         $this->view->column_names = $this->model->client_column_names;
         $this->view->managers = $this->model->getSalesManagersIdName();
         $this->view->commission_agents = $this->model->getCommissionAgentsIdName();

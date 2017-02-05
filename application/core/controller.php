@@ -1,4 +1,5 @@
 <?php
+include_once 'cache.php';
 
 abstract class Controller
 {

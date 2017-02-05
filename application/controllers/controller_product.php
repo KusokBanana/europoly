@@ -14,21 +14,35 @@ class ControllerProduct extends Controller
             $id = intval($_GET["id"]);
             $this->view->product = $this->model->getById("products", "product_id", $id);
             if ($this->view->product != NULL) {
-                $this->view->full_product = $this->model->getFullProductEntity($id);
+//                $this->view->full_product = $this->model->getFullProductEntity($id);
+//                $this->view->full_product = $this->model->getById('products', 'product_id', $id);
                 $this->view->rus = $this->model->getRus($id);
                 $this->view->brand = $this->model->getById("brands", "brand_id", $this->view->product["brand_id"]);
                 $this->view->title = $this->view->product["name"];
                 $this->view->photos = $this->model->getPhotos($this->view->product["product_id"]);
 
-                $this->view->brands = $this->model->getAll("brands");
-                $this->view->colors = $this->model->getAll("colors");
-                $this->view->constructions = $this->model->getAll("constructions");
-                $this->view->wood = $this->model->getAll("wood");
-                $this->view->grading = $this->model->getAll("grading");
-                $this->view->patterns = $this->model->getAll("patterns");
+//                $this->view->brands = $this->model->getAll("brands");
+//                $this->view->colors = $this->model->getAll("colors");
+//                $this->view->constructions = $this->model->getAll("constructions");
+//                $this->view->wood = $this->model->getAll("wood");
+//                $this->view->grading = $this->model->getAll("grading");
+//                $this->view->patterns = $this->model->getAll("patterns");
 
                 $this->view->balances = $this->model->getBalances($id);
                 $this->view->all_warehouces_balance = $this->model->getAllWarehousesBalance($id);
+
+                // try to read cache
+                $cache = new Cache();
+                $selectsCache = $cache->read('product_selects');
+                if (!empty($selectsCache)) {
+                    $selects = $selectsCache;
+                } else {
+                    $selects = $this->model->getSelects();
+                    $cache->write('product_selects', $selects);
+                }
+                $this->view->selects = $selects;
+
+                $this->view->columns = $this->model->columns;
 
                 $this->view->build('templates/template.php', 'single_product.php');
             } else {
@@ -81,6 +95,7 @@ class ControllerProduct extends Controller
                 http_response_code(500);
             } else {
                 echo $value;
+                header("Location: /product?id=$product_id");
             }
         } else {
             http_response_code(400);

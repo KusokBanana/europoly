@@ -157,71 +157,40 @@ END;
                         </div>
                         <div class="portlet-body">
                             <?php
-                            $columns = array(
-                                "article" => "Article",
-                                "name" => "Name",
-                                "brand" => "Brand",
-                                "country" => "Country",
-                                "country_rus" => "Country RUS",
-                                "collection" => "Collection",
-                                "collection_rus" => "Collection RUS",
-                                "wood" => "Wood",
-                                "additional_info" => "Additional characteristics",
-                                "additional_info_rus" => "Additional characteristics RUS",
-                                "color_id" => "Color1",
-                                "color2" => "Color2",
-                                "color" => 'Color',
-                                "grading" => "Grading",
-                                "thickness" => "Thickness",
-                                "width" => "Width",
-                                "length" => "Length",
-                                "construction_id" => "Construction1",
-                                "construction" => 'Construction2',
-                                "texture" => "Texture",
-                                "texture_rus" => "Texture RUS",
-                                "layer" => "Bottom layer/ Middle layer (for Admonter panels)",
-                                "layer_rus" => "Bottom layer/ Middle layer (for Admonter panels) RUS",
-                                "installation" => "Installation",
-                                "installation_rus" => "Installation RUS",
-                                "surface" => "Surface",
-                                "surface_rus" => "Surface RUS",
-                                "units" => "Units",
-                                "units_rus" => "Units RUS",
-                                "sell_price" => "Sell Price",
-                                "purchase_price" => "Purchase Price",
-                                "currency" => "Currency",
-                                "packing_type" => "Packing Type",
-                                "packing_type_rus" => "Packing Type RUS",
-                                "weight" => "Weight of 1 unit",
-                                "amount_in_pack" => "Quantity of product in 1 pack (in units)",
-                                "suppliers_discount" => "Supplier's Discount",
-                                "margin" => "Margin",
-                                "pattern" => "Pattern"
-                            );
-                            $string_columns = array("article", "name", "country", "collection", "additional_info", "thickness",
-                                "width", "length", "texture", "layer", "sell_price", "installation", "surface", "units",
-                                "packing_type", "weight", "color", "construction",
-                                "amount_in_pack", "purchase_price", "currency", "suppliers_discount", "margin");
-                            foreach ($columns as $column => $visible_name) {
-                                $column_name = in_array($column, $string_columns) ? $column : $column . "_id";
-                                if ($column == 'color_id' || $column == 'construction_id')
-                                    $column_name = $column;
+                            foreach ($this->columns as $name => $column) {
 
-                                if (strpos($column, '_rus') !== false) {
-                                    $column_name_rus = str_replace('_rus', '', $column);
-                                    $column_name = $column;
+                                $label = $column['label'];
+                                $isSelect = $column['isSelect'] ? 1 : '';
+                                $formName = $column['table'];
+                                if (strpos($name, '_rus') !== false) {
+                                    $column_name_rus = str_replace('_rus', '', $name);
                                     $value = $this->orEmpty($this->rus[$column_name_rus]);
                                     $text = $value;
-                                    array_push($string_columns, $column);
+                                    $formName .= '.' . $column_name_rus;
                                 } else {
-                                    $value = $this->orEmpty($this->product[$column_name]);
-                                    $text = $this->orEmpty($this->full_product[$column]);
+                                    $value = $text = $this->orEmpty($this->product[$name]);
+//                                    $text = $this->orEmpty($this->full_product[$name]);
+                                    if ($column['type'] == 'id') {
+                                        // TODO remove please
+                                        if (isset($this->selects[$name]))
+                                            foreach ($this->selects[$name] as $select) {
+                                                if (intval($select['id']) == intval($value)) {
+                                                    $text = $select['text'];
+                                                    break;
+                                                }
+                                            }
+                                    }
+                                    $formName .= '.' . $name;
                                 }
+                                $formName .= '.' . $column['type'];
                                 echo <<<END
                             <div class="row static-info">
-                                <div class="col-md-5 name"> $visible_name:</div>
+                                <div class="col-md-5 name"> $label:</div>
                                 <div class="col-md-7 value">
-                                    <a href="javascript:;" id="editable-$column" class='x-editable' data-pk="{$this->product["product_id"]}" data-name="$column_name" data-value="$value" data-url='/product/change_field' data-original-title='Enter $visible_name' > $text </a>
+                                    <a href="javascript:;" id="editable-$name" class='x-editable' data-pk="{$this->product["product_id"]}" data-name="$formName" 
+                                    data-value="$value" data-sourceName="$name" data-isSelect="$isSelect" data-url='/product/change_field' data-original-title='Enter $label'>
+                                        $text 
+                                    </a>
 
                                 </div>
                             </div>
@@ -421,60 +390,6 @@ require_once "modals/upload_image.php"
         });
     }
 
-    var brands = <?= $this->toJsList($this->brands, "brand_id") ?>;
-    var colors = <?= $this->toJsList($this->colors, "color_id") ?>;
-    var constructions = <?= $this->toJsList($this->constructions, "construction_id") ?>;
-    var wood = <?= $this->toJsList($this->wood, "wood_id") ?>;
-    var grading = <?= $this->toJsList($this->grading, "grading_id") ?>;
-    var patterns = <?= $this->toJsList($this->patterns, "pattern_id") ?>;
-
-    <?php
-    foreach ($string_columns as $column) {
-        $visible_name = strtoupper($column);
-        echo <<<END
-    $('#editable-$column').editable({
-        type: 'text',
-        inputclass: 'form-control input-medium'
-    });
-END;
-    }
-    ?>
-    $('#editable-brand').editable({
-        type: "select",
-        inputclass: 'form-control input-medium',
-        source: brands
-    });
-    $('#editable-color2').editable({
-        type: "select",
-        inputclass: 'form-control input-medium',
-        source: colors
-    });
-    $('#editable-color_id').editable({
-        type: "select",
-        inputclass: 'form-control input-medium',
-        source: colors
-    });
-    $('#editable-construction_id').editable({
-        type: "select",
-        inputclass: 'form-control input-medium',
-        source: constructions
-    });
-    $('#editable-wood').editable({
-        type: "select",
-        inputclass: 'form-control input-medium',
-        source: wood
-    });
-    $('#editable-grading').editable({
-        type: "select",
-        inputclass: 'form-control input-medium',
-        source: grading
-    });
-    $('#editable-pattern').editable({
-        type: "select",
-        inputclass: 'form-control input-medium',
-        source: patterns
-    });
-
     $(document).ready(function () {
         $(".fancybox-button").fancybox();
     });
@@ -485,4 +400,48 @@ END;
     }
     ?>
 
+</script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        var $selects = <?= json_encode($this->selects) ?>;
+
+        var editableSelects = $('.x-editable');
+        $.each(editableSelects, function() {
+            var sourceName = $(this).attr('data-sourceName');
+            var source = ($selects[sourceName] !== undefined) ? $selects[sourceName] : false;
+            var isSelect = $(this).attr('data-isSelect');
+            if (source && source.length && isSelect) {
+                $(this).editable({
+                    type: "select",
+                    inputclass: 'form-control input-medium',
+                    source: source
+                });
+                $(this).on('shown', function(e, editable) {
+                    var parent = editable.input.$input.parent();
+                    var hidden = editable.input.$input;
+                    var clone = editable.input.$input.clone();
+                    editable.input.$input.after(clone);
+                    editable.input.$input.hide();
+                    var link;
+                    clone.editableSelect();
+                    var editableSelect = parent.find('.es-input');
+                    var selectValue;
+                    editableSelect.on('select.editable-select', function (e) {
+                        selectValue = $(e.target).val();
+                        link = $(e.target).closest('.editable-popup').prev();
+                        link.attr('data-value', selectValue);
+                        hidden.val(selectValue);
+                    });
+                    editableSelect.closest('form').on('submit', function() {
+                        window.location.href = '';
+                    })
+                });
+            } else {
+                $(this).editable({
+                    type: 'text',
+                    inputclass: 'form-control input-medium'
+                });
+            }
+        });
+    });
 </script>
