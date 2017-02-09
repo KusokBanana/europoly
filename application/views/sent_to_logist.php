@@ -101,7 +101,9 @@
 												],
 												'column_names' => $this->column_names,
 												'hidden_by_default' => "[]",
-												'click_url' => "javascript:;"
+												'click_url' => "javascript:;",
+                                                'selectSearch' => $this->selects,
+                                                'filterSearchValues' => $this->rows
 											];
 											include 'application/views/templates/table.php'
 											?>

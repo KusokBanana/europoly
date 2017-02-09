@@ -13,6 +13,21 @@ class ControllerSuppliers_orders extends Controller
         $this->view->title = "Suppliers' Orders";
         $this->view->column_names = $this->model->suppliers_orders_column_names;
         $this->view->column_names_reduce = $this->model->suppliers_orders_column_names_reduce;
+//        $cache = new Cache();
+//        $selectsCache = $cache->read('suppliers_orders_selects');
+//        if (!empty($selectsCache)) {
+//            $array = $selectsCache;
+//            $selects = $array['selects'];
+//            $rows = $array['rows'];
+//        } else {
+            $array = $this->model->getSelects();
+            $selects = $array['selects'];
+            $rows = $array['rows'];
+//            $cache->write('suppliers_orders_selects', $array);
+//        }
+        $this->view->selects = $selects;
+        $this->view->rows = $rows;
+
         $this->view->build('templates/template.php', 'suppliers_orders.php');
     }
 

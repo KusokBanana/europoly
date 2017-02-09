@@ -11,42 +11,101 @@ class ModelCatalogue extends Model
     {
         $where = '';
         $this->sspComplex($this->full_products_table, "product_id", $this->full_product_columns, $input, null, $where);
-
     }
 
-    public function getAjaxColumn($colId)
+    public function newProductSelects()
     {
-
-        $columns = $this->full_product_columns;
-
-        if (isset($columns[$colId])) {
-            $string = htmlspecialchars($columns[$colId]['db']);
-            $return = [];
-
-            if (($pos = strpos($string, 'IFNULL')) !== -1) {
-                $string = substr($string, $pos);
+        $products = $this->getAssoc("SELECT * FROM products");
+        $selects = [];
+        foreach ($products as $product) {
+            foreach ($product as $key => $value) {
+                if (!$value || $value == null)
+                    continue;
+                if (in_array($key, ['product_id', 'article', 'name', 'width', 'length', 'weight',
+                    'amount_in_pack', 'purchase_price', 'dealer_price', 'currency', 'suppliers_discount', 'margin',
+                    'status', 'sell_price', 'thickness']))
+                    continue;
+                $selects[$key][] = $value;
             }
+        }
+        foreach ($selects as $key1 => $select) {
+            $selects[$key1] = array_unique($select);
 
-            if (preg_match("/\\w+\\.\\w+/", $string, $match)) {
-                $arr = explode('.', $match[0]);
-                $tableName = $arr[0];
-                $name = $arr[1];
-
-                $gets = $this->getAssoc("SELECT DISTINCT `$name` FROM `$tableName` ORDER BY `$name` ASC");
-                foreach ($gets as $get) {
-                    if (count($return) < 100)
-                        $return[] = $get[$name];
-                }
-                foreach ($return as $item) {
-
-                }
+            $selectItem = [];
+            foreach ($selects[$key1] as $key2 => $value) {
+                $selectItem[] = ['id' => $value, 'text' => $value];
             }
-            return json_encode($return);
+            $selects[$key1] = $selectItem;
         }
 
-        return false;
-
+        return $selects;
     }
+
+    function getSelects()
+    {
+        $ssp = $this->getSspComplexJson($this->full_products_table, "product_id", $this->full_product_columns, null);
+        $columns = $this->full_product_column_names;
+        $rowValues = json_decode($ssp, true)['data'];
+        $ignoreArray = ['_product_id', 'Article', 'Thickness', 'Width', 'Length',
+            'Weight', 'Quantity in 1 Pack', 'Purchase price', 'Supplier\'s discount',
+            'Margin', 'Sell'];
+
+        if (!empty($rowValues)) {
+            $selects = [];
+            foreach ($rowValues as $product) {
+                foreach ($product as $key => $value) {
+                    if (!$value || $value == null)
+                        continue;
+                    $name = $columns[$key];
+                    if (in_array($name, $ignoreArray))
+                        continue;
+
+                    preg_match('/<\w+[^>]+?[^>]+>(.*?)<\/\w+>/i', $value, $match);
+                    if (!empty($match) && isset($match[1])) {
+                        $value = $match[1];
+                    }
+
+                    if ((isset($selects[$name]) && !in_array($value, $selects[$name])) || !isset($selects[$name]))
+                        $selects[$name][] = $value;
+                }
+            }
+            return ['selects' => $selects, 'rows' => $rowValues];
+        }
+    }
+
+//    public function getAjaxColumn($colId)
+//    {
+//
+//        $columns = $this->full_product_columns;
+//
+//        if (isset($columns[$colId])) {
+//            $string = htmlspecialchars($columns[$colId]['db']);
+//            $return = [];
+//
+//            if (($pos = strpos($string, 'IFNULL')) !== -1) {
+//                $string = substr($string, $pos);
+//            }
+//
+//            if (preg_match("/\\w+\\.\\w+/", $string, $match)) {
+//                $arr = explode('.', $match[0]);
+//                $tableName = $arr[0];
+//                $name = $arr[1];
+//
+//                $gets = $this->getAssoc("SELECT DISTINCT `$name` FROM `$tableName` ORDER BY `$name` ASC");
+//                foreach ($gets as $get) {
+//                    if (count($return) < 100)
+//                        $return[] = $get[$name];
+//                }
+//                foreach ($return as $item) {
+//
+//                }
+//            }
+//            return json_encode($return);
+//        }
+//
+//        return false;
+//
+//    }
 
     public function addProduct($postArray, $rusArray = [])
     {
@@ -135,34 +194,6 @@ class ModelCatalogue extends Model
                                             VALUES ($rusValues 2, $productId)");
         }
 
-    }
-
-    public function getSelects()
-    {
-        $products = $this->getAssoc("SELECT * FROM products");
-        $selects = [];
-        foreach ($products as $product) {
-            foreach ($product as $key => $value) {
-                if (!$value || $value == null)
-                    continue;
-                if (in_array($key, ['product_id', 'article', 'name', 'width', 'length', 'weight',
-                    'amount_in_pack', 'purchase_price', 'dealer_price', 'currency', 'suppliers_discount', 'margin',
-                    'status', 'sell_price', 'thickness']))
-                    continue;
-                $selects[$key][] = $value;
-            }
-        }
-        foreach ($selects as $key1 => $select) {
-            $selects[$key1] = array_unique($select);
-
-            $selectItem = [];
-            foreach ($selects[$key1] as $key2 => $value) {
-                $selectItem[] = ['id' => $value, 'text' => $value];
-            }
-            $selects[$key1] = $selectItem;
-        }
-
-        return $selects;
     }
 
     public function getProductValuesForSimilar($product_id)

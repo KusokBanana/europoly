@@ -25,4 +25,5 @@ class Cache {
         $fileName = __DIR__ . '/../../cache/' . $fileName;
         @unlink($fileName);
     }
+
 }

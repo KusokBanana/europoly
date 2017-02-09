@@ -90,7 +90,8 @@ data-target="#modal_newProduct">Add Similar Product <i class="fa fa-plus"></i></
                                         'column_names' => $this->full_product_column_names,
                                         'hidden_by_default' => $this->full_product_hidden_columns,
                                         'click_url' => "/product?id=",
-                                        'selectSearchColumns' => [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 15, 16, 17, 18, 19, 20, 21, 22, 26, 30]
+                                        'selectSearch' => $this->selects,
+                                        'filterSearchValues' => $this->rows
                                     ];
                                     include 'application/views/templates/table.php'
                                     ?>

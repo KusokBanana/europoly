@@ -136,21 +136,11 @@
                                                 'ajax' => [
                                                     'url' => "/warehouse/dt?warehouse_id=".$this->warehouse['warehouse_id'],
                                                 ],
-                                                'column_names' => [
-                                                    "Id",
-                                                    "Article",
-                                                    "Product",
-                                                    "Brand",
-                                                    "Quantity",
-                                                    "Units",
-                                                    "Buy Price",
-                                                    "Buy + Transport + Taxes",
-                                                    "Sell Price",
-                                                    "Dealer Price (-30%)",
-                                                    "Total Price"
-                                                ],
+                                                'column_names' => $this->column_names,
                                                 'hidden_by_default' => "[]",
-                                                'click_url' => "javascript:;"
+                                                'click_url' => "javascript:;",
+                                                'selectSearch' => $this->selects,
+                                                'filterSearchValues' => $this->rows
                                             ];
                                         } else {
                                             $table_data = [
@@ -159,22 +149,11 @@
                                                 'ajax' => [
                                                     'url' => "/warehouse/dt?warehouse_id=0",
                                                 ],
-                                                'column_names' => [
-                                                    "Id",
-                                                    "Article",
-                                                    "Product",
-                                                    "Brand",
-                                                    "Warehouse",
-                                                    "Quantity",
-                                                    "Units",
-                                                    "Buy Price",
-                                                    "Buy + Transport + Taxes",
-                                                    "Sell Price",
-                                                    "Dealer Price (-30%)",
-                                                    "Total Price"
-                                                ],
+                                                'column_names' => $this->column_names,
                                                 'hidden_by_default' => "[]",
-                                                'click_url' => "javascript:;"
+                                                'click_url' => "javascript:;",
+                                                'selectSearch' => $this->selects,
+                                                'filterSearchValues' => $this->rows
                                             ];
                                         }
                                         include 'application/views/templates/table.php'

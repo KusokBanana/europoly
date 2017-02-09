@@ -100,16 +100,25 @@ abstract class Model extends mysqli
 
     protected function sspSimple($table, $primaryKey, $columns, $input)
     {
-        include_once('ssp.class.php');
-        echo json_encode(SSP::simple($input, $this->sql_details, $table, $primaryKey, $columns));
+        echo  $this->getSspSimpleJson($table, $primaryKey, $columns, $input);
     }
 
     protected function sspComplex($table, $primaryKey, $columns, $input, $whereResult = null, $whereAll = null)
     {
-        include_once('ssp.class.php');
-        echo json_encode(SSP::complex($input, $this->sql_details, $table, $primaryKey, $columns, $whereResult, $whereAll));
+        echo $this->getSspComplexJson($table, $primaryKey, $columns, $input, $whereResult, $whereAll);
     }
 
+    protected function getSspComplexJson($table, $primaryKey, $columns, $input, $whereResult = null, $whereAll = null)
+    {
+        include_once('ssp.class.php');
+        return json_encode(SSP::complex($input, $this->sql_details, $table, $primaryKey, $columns, $whereResult, $whereAll));
+    }
+
+    protected function getSspSimpleJson($table, $primaryKey, $columns, $input)
+    {
+        include_once('ssp.class.php');
+        return json_encode(SSP::simple($input, $this->sql_details, $table, $primaryKey, $columns));
+    }
     // SPECIFIC PROJECT STUFF
     //
 
@@ -151,19 +160,6 @@ abstract class Model extends mysqli
     );
 
     var $full_product_hidden_columns = "[4, 5, 6, 10, 12, 14, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 32, 33]";
-
-    var $statuses = [
-        'Draft',
-        'Hold',
-        'Sent to Logist',
-        'Draft for Supplier',
-        'Confirmed by Supplier',
-        'Produced',
-        'On the way',
-        'On Stock',
-        'Expects Issue',
-        'Issued'
-    ];
 
     var $full_product_column_names = array(
         '_product_id',

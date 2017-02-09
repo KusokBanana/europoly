@@ -21,7 +21,31 @@ class ControllerCatalogue extends Controller
         $this->view->grading = $this->model->getAll("grading");
         $this->view->patterns = $this->model->getAll("patterns");
         $this->view->tabs = $this->model->getCategoryTabs();
-        $this->view->selects = $this->model->getSelects();
+
+        $cache = new Cache();
+        $selectsCache = $cache->read('catalogue_selects');
+        if (!empty($selectsCache)) {
+            $array = $selectsCache;
+            $selects = $array['selects'];
+            $rows = $array['rows'];
+        } else {
+            $array = $this->model->getSelects();
+            $selects = $array['selects'];
+            $rows = $array['rows'];
+            $cache->write('catalogue_selects', $array);
+        }
+        $this->view->selects = $selects;
+        $this->view->rows = $rows;
+
+        // try to read cache
+        $selectsCache = $cache->read('new_product_selects');
+        if (!empty($selectsCache)) {
+            $new_product_selects = $selectsCache;
+        } else {
+            $new_product_selects = $this->model->newProductSelects();
+            $cache->write('new_product_selects', $new_product_selects);
+        }
+        $this->view->new_product_selects = $new_product_selects;
 
         $this->view->build('templates/template.php', 'catalogue.php');
     }

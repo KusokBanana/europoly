@@ -60,6 +60,43 @@ class ModelShipment extends ModelManagers_orders
         'Client\'s expected date of issue',
     ];
 
+    function getSelects()
+    {
+        $ssp = $this->getSspComplexJson($this->suppliers_orders_table, "trucks_items.item_id", $this->suppliers_orders_columns,
+            null, null, $this->filterWhere);
+        $columns = $this->suppliers_orders_column_names;
+        $rowValues = json_decode($ssp, true)['data'];
+        $ignoreArray = ['Supplier Order ID', 'Truck ID', 'Quantity', 'Number of Packs', 'Total weight',
+            'Purchase Price / Unit', 'Total Purchase Price', 'Sell Price / Unit', 'Total Sell Price', 'Downpayment',
+            'Downpayment rate', 'Manager Order ID'];
+
+        if (!empty($rowValues)) {
+            $selects = [];
+            foreach ($rowValues as $product) {
+                foreach ($product as $key => $value) {
+                    if (!$value || $value == null)
+                        continue;
+                    $name = $columns[$key];
+                    if (in_array($name, $ignoreArray))
+                        continue;
+
+                    if (strpos($value, 'glyphicon') !== false) {
+                        $value = preg_replace('/<a \w+[^>]+?[^>]+>(.*?)<\/a>/i', '', $value);
+                    } else {
+                        preg_match('/<\w+[^>]+?[^>]+>(.*?)<\/\w+>/i', $value, $match);
+                        if (!empty($match) && isset($match[1])) {
+                            $value = $match[1];
+                        }
+                    }
+
+                    if ((isset($selects[$name]) && !in_array($value, $selects[$name])) || !isset($selects[$name]))
+                        $selects[$name][] = $value;
+                }
+            }
+            return ['selects' => $selects, 'rows' => $rowValues];
+        }
+    }
+
     var $suppliers_orders_table = 'order_items as trucks_items
         left join trucks on trucks.id = trucks_items.truck_id
         left join orders on orders.order_id = trucks_items.manager_order_id
@@ -73,11 +110,12 @@ class ModelShipment extends ModelManagers_orders
     var $suppliers_orders_table_reduce = 'trucks 
                                           left join items_status as status on trucks.status_id = status.status_id';
 
+    var $filterWhere = "trucks_items.truck_id IS NOT NULL AND trucks_items.warehouse_id IS NULL";
+
     function getDTSuppliersOrders($input)
     {
-        $where = "trucks_items.truck_id IS NOT NULL AND trucks_items.warehouse_id IS NULL";
         $this->sspComplex($this->suppliers_orders_table, "trucks_items.item_id", $this->suppliers_orders_columns,
-            $input, null, $where);
+            $input, null, $this->filterWhere);
     }
 
     var $suppliers_orders_columns_reduce = [

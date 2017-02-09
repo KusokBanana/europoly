@@ -59,13 +59,13 @@
 												],
 												'column_names' => $this->column_names,
 												'hidden_by_default' => "[]",
-												'click_url' => "javascript:;"
+												'click_url' => "javascript:;",
+                                                'selectSearch' => $this->selects,
+                                                'filterSearchValues' => $this->rows
 											];
 											include 'application/views/templates/table.php'
 											?>
 										</div>
-										<p> Здесь - общий список всех Позиций из всех Машин (Trucks). </p>
-										<p> Это должна быть таблица из templates/table.php со следующими столбцами: Truck ID, Supplier Departure Date, Warehouse Arrival Date, Supplier Order ID, Date of Order (Supplier), Supplier Release Date, Manager Order ID, Manager, Product, Brand, Date of Order (Client), Status, Amount, Number of Packs, Total Weight, Purchase Price / Unit, Total Purchase Price, Sell Price / Unit, Total Sell Price, Downpayment, Downpayment rate, Client's expected date of issue</p>
 									</div>
 									<div class="tab-pane fade" id="tab_1_2">
 										<div class="portlet-body">
@@ -83,8 +83,6 @@
 											include 'application/views/templates/table.php'
 											?>
 										</div>
-										<p> Здесь - общий список всех Машин. </p>
-										<p> Это должна быть таблица из templates/table.php со следующими столбцами:  Truck ID, Supplier Departure Date, Warehouse Arrival Date, Shipment Price, Status</p>
 									</div>
 								</div>
 							</div>

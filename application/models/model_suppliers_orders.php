@@ -104,6 +104,45 @@ class ModelSuppliers_orders extends ModelManagers_orders
             $input, null, null);
     }
 
+
+    function getSelects()
+    {
+        $ssp = $this->getSspComplexJson($this->suppliers_orders_table, "suppliers_orders_items.item_id",
+            $this->suppliers_orders_columns, null, null, $this->suppliersFilterWhere);
+        $columns = $this->suppliers_orders_column_names;
+        $rowValues = json_decode($ssp, true)['data'];
+        $ignoreArray = ['Supplier Order ID', 'Manager Order ID', 'Quantity', 'Number of Packs', 'Total weight',
+            'Purchase Price / Unit', 'Total Purchase Price', 'Sell Price / Unit', 'Total Sell Price', 'Downpayment',
+            'Downpayment rate'];
+
+        if (!empty($rowValues)) {
+            $selects = [];
+            foreach ($rowValues as $product) {
+                foreach ($product as $key => $value) {
+                    if (!$value || $value == null)
+                        continue;
+                    $name = $columns[$key];
+                    if (in_array($name, $ignoreArray))
+                        continue;
+
+                    if (strpos($value, 'glyphicon') !== false) {
+                        $value = preg_replace('/<a \w+[^>]+?[^>]+>(.*?)<\/a>/i', '', $value);
+                    } else {
+                        preg_match('/<\w+[^>]+?[^>]+>(.*?)<\/\w+>/i', $value, $match);
+                        if (!empty($match) && isset($match[1])) {
+                            $value = $match[1];
+                        }
+                    }
+
+                    if ((isset($selects[$name]) && !in_array($value, $selects[$name])) || !isset($selects[$name]))
+                        $selects[$name][] = $value;
+                }
+            }
+            return ['selects' => $selects, 'rows' => $rowValues];
+        }
+    }
+
+
     function addOrderItem($products, $suppliers_order = 0)
     {
         // Если заказ новый

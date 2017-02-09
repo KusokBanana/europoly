@@ -95752,6 +95752,26 @@ $.fn.dataTableExt.oApi.fnColReorder = function ( oSettings, iFrom, iTo, drop )
 		iTo: iTo,
 		aiInvertMapping: aiInvertMapping
 	} ] );
+
+    var datatable = $('#table_catalogue').dataTable();
+    ResetDropdownFilters(datatable);
+
+// This is the function referenced above:
+    function ResetDropdownFilters(oTable)
+    {
+        $("thead select").unbind('change');
+
+        $(".drop-down-filter").each(function (i)
+        {
+            var column = $(this);
+            var index = column.parent("tr").children().index(column);
+            $('select', this).change(function ()
+            {
+                oTable.fnFilter($(this).val(), index);
+            });
+        });
+    }
+
 };
 
 

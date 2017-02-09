@@ -9,42 +9,118 @@ class ModelWarehouse extends ModelManagers_orders
             left join brands on products.brand_id = brands.brand_id
             left join warehouses on products_warehouses.warehouse_id = warehouses.warehouse_id";
 
+    var $product_warehouses_columns_all = array(
+        array('dt' => 0, 'db' => 'products_warehouses.item_id'),
+        array('dt' => 1, 'db' => 'products.article'),
+        array('dt' => 2, 'db' => 'CONCAT(\'<a href="/product?id=\', products.product_id, \'">\', IFNULL(products.name, \'no name\'), \'</a>\')'),
+        array('dt' => 3, 'db' => 'CONCAT(\'<a href="/brand?id=\', brands.brand_id, \'">\', IFNULL(brands.name, \'no name\'), \'</a>\')'),
+        array('dt' => 4, 'db' => 'CONCAT(\'<a href="/warehouse?id=\', warehouses.warehouse_id, \'">\', IFNULL(warehouses.name, \'no name\'), \'</a>\')'),
+        array('dt' => 5, 'db' => 'products_warehouses.amount'),
+        array('dt' => 6, 'db' => 'products.units'),
+        array('dt' => 7, 'db' => 'products_warehouses.buy_price'),
+        array('dt' => 8, 'db' => 'products_warehouses.buy_and_taxes'),
+        array('dt' => 9, 'db' => 'products_warehouses.sell_price'),
+        array('dt' => 10, 'db' => 'products_warehouses.dealer_price'),
+        array('dt' => 11, 'db' => 'products_warehouses.total_price')
+    );
+
+    var $product_warehouses_column_names = [
+        "Id",
+        "Article",
+        "Product",
+        "Brand",
+        "Quantity",
+        "Units",
+        "Buy Price",
+        "Buy + Transport + Taxes",
+        "Sell Price",
+        "Dealer Price (-30%)",
+        "Total Price"
+    ];
+
+    var $product_warehouses_column_names_all = [
+        "Id",
+        "Article",
+        "Product",
+        "Brand",
+        "Warehouse",
+        "Quantity",
+        "Units",
+        "Buy Price",
+        "Buy + Transport + Taxes",
+        "Sell Price",
+        "Dealer Price (-30%)",
+        "Total Price"
+    ];
+
     function getDTProductsForAllWarehouses($input)
     {
-        $product_warehouses_columns = array(
-            array('dt' => 0, 'db' => 'products_warehouses.item_id'),
-            array('dt' => 1, 'db' => 'products.article'),
-            array('dt' => 2, 'db' => 'CONCAT(\'<a href="/product?id=\', products.product_id, \'">\', IFNULL(products.name, \'no name\'), \'</a>\')'),
-            array('dt' => 3, 'db' => 'CONCAT(\'<a href="/brand?id=\', brands.brand_id, \'">\', IFNULL(brands.name, \'no name\'), \'</a>\')'),
-            array('dt' => 4, 'db' => 'CONCAT(\'<a href="/warehouse?id=\', warehouses.warehouse_id, \'">\', IFNULL(warehouses.name, \'no name\'), \'</a>\')'),
-            array('dt' => 5, 'db' => 'products_warehouses.amount'),
-            array('dt' => 6, 'db' => 'products.units'),
-            array('dt' => 7, 'db' => 'products_warehouses.buy_price'),
-            array('dt' => 8, 'db' => 'products_warehouses.buy_and_taxes'),
-            array('dt' => 9, 'db' => 'products_warehouses.sell_price'),
-            array('dt' => 10, 'db' => 'products_warehouses.dealer_price'),
-            array('dt' => 11, 'db' => 'products_warehouses.total_price')
-        );
         $where = 'products_warehouses.warehouse_id IS NOT NULL';
-        $this->sspComplex($this->products_warehouses_table, "products_warehouses.item_id", $product_warehouses_columns, $input, null, $where);
+        $this->sspComplex($this->products_warehouses_table, "products_warehouses.item_id", $this->product_warehouses_columns_all,
+            $input, null, $where);
     }
+
+    var $product_warehouses_columns = array(
+        array('dt' => 0, 'db' => 'products_warehouses.item_id'),
+        array('dt' => 1, 'db' => 'products.article'),
+        array('dt' => 2, 'db' => 'CONCAT(\'<a href="/product?id=\', products.product_id, \'">\', IFNULL(products.name, \'no name\'), \'</a>\')'),
+        array('dt' => 3, 'db' => 'CONCAT(\'<a href="/brand?id=\', brands.brand_id, \'">\', IFNULL(brands.name, \'no name\'), \'</a>\')'),
+        array('dt' => 4, 'db' => 'products_warehouses.amount'),
+        array('dt' => 5, 'db' => 'products.units'),
+        array('dt' => 6, 'db' => 'products_warehouses.buy_price'),
+        array('dt' => 7, 'db' => 'products_warehouses.buy_and_taxes'),
+        array('dt' => 8, 'db' => 'products_warehouses.sell_price'),
+        array('dt' => 9, 'db' => 'products_warehouses.dealer_price'),
+        array('dt' => 10, 'db' => 'products_warehouses.total_price')
+    );
 
     function getDTProductsForWarehouse($warehouse_id, $input)
     {
-        $product_warehouses_columns = array(
-            array('dt' => 0, 'db' => 'products_warehouses.item_id'),
-            array('dt' => 1, 'db' => 'products.article'),
-            array('dt' => 2, 'db' => 'CONCAT(\'<a href="/product?id=\', products.product_id, \'">\', IFNULL(products.name, \'no name\'), \'</a>\')'),
-            array('dt' => 3, 'db' => 'CONCAT(\'<a href="/brand?id=\', brands.brand_id, \'">\', IFNULL(brands.name, \'no name\'), \'</a>\')'),
-            array('dt' => 4, 'db' => 'products_warehouses.amount'),
-            array('dt' => 5, 'db' => 'products.units'),
-            array('dt' => 6, 'db' => 'products_warehouses.buy_price'),
-            array('dt' => 7, 'db' => 'products_warehouses.buy_and_taxes'),
-            array('dt' => 8, 'db' => 'products_warehouses.sell_price'),
-            array('dt' => 9, 'db' => 'products_warehouses.dealer_price'),
-            array('dt' => 10, 'db' => 'products_warehouses.total_price')
-        );
-        $this->sspComplex($this->products_warehouses_table, "products_warehouses.item_id", $product_warehouses_columns, $input, null, "products_warehouses.warehouse_id = $warehouse_id");
+        $this->sspComplex($this->products_warehouses_table, "products_warehouses.item_id", $this->product_warehouses_columns,
+            $input, null, "products_warehouses.warehouse_id = $warehouse_id");
+    }
+
+    function getSelects($warehouse_id = 0)
+    {
+        if (!$warehouse_id) {
+            $where = 'products_warehouses.warehouse_id IS NOT NULL';
+            $ssp = $this->getSspComplexJson($this->products_warehouses_table, "products_warehouses.item_id",
+                $this->product_warehouses_columns_all, null, null, $where);
+            $columns = $this->product_warehouses_column_names_all;
+        } else {
+            $ssp = $this->getSspComplexJson($this->products_warehouses_table, "products_warehouses.item_id",
+                $this->product_warehouses_columns, null, null, "products_warehouses.warehouse_id = $warehouse_id");
+            $columns = $this->product_warehouses_column_names;
+        }
+        $rowValues = json_decode($ssp, true)['data'];
+        $ignoreArray = ['Id', 'Quantity', 'Buy Price', 'Buy + Transport + Taxes', 'Sell Price',
+            'Dealer Price (-30%)', 'Total Price'];
+
+        if (!empty($rowValues)) {
+            $selects = [];
+            foreach ($rowValues as $product) {
+                foreach ($product as $key => $value) {
+                    if (!$value || $value == null)
+                        continue;
+                    $name = $columns[$key];
+                    if (in_array($name, $ignoreArray))
+                        continue;
+
+                    if (strpos($value, 'glyphicon') !== false) {
+                        $value = preg_replace('/<a \w+[^>]+?[^>]+>(.*?)<\/a>/i', '', $value);
+                    } else {
+                        preg_match('/<\w+[^>]+?[^>]+>(.*?)<\/\w+>/i', $value, $match);
+                        if (!empty($match) && isset($match[1])) {
+                            $value = $match[1];
+                        }
+                    }
+
+                    if ((isset($selects[$name]) && !in_array($value, $selects[$name])) || !isset($selects[$name]))
+                        $selects[$name][] = $value;
+                }
+            }
+            return ['selects' => $selects, 'rows' => $rowValues];
+        }
     }
 
     function addProductsWarehouse($product_ids, $warehouse_id, $amount, $buy_price)

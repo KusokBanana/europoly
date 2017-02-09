@@ -16,15 +16,22 @@ class ControllerWarehouse extends Controller
         if (isset($_GET["id"])) {
             $id = intval($_GET["id"]);
             $this->view->prices = $this->model->getPrices($_GET["id"]);
+            $array = $this->model->getSelects($id);
+            $selects = $array['selects'];
+            $rows = $array['rows'];
+            $this->view->selects = $selects;
+            $this->view->rows = $rows;
             if ($id == 0) {
                 $this->view->title = "All";
                 $this->view->id = 0;
+                $this->view->column_names = $this->model->product_warehouses_column_names_all;
                 $this->view->build('templates/template.php', 'warehouse.php');
             } else {
                 $this->view->warehouse = $this->model->getById("warehouses", "warehouse_id", $id);
                 if ($this->view->warehouse != NULL) {
                     $this->view->id = $this->view->warehouse["warehouse_id"];
                     $this->view->title = $this->view->warehouse["name"];
+                    $this->view->column_names = $this->model->product_warehouses_column_names;
                     $this->view->build('templates/template.php', 'warehouse.php');
                 } else {
                     http_response_code(400);

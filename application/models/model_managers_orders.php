@@ -7,7 +7,7 @@ class ModelManagers_orders extends Model
         array('dt' => 1, 'db' => "CONCAT('<a href=\"/order?id=', order_items.manager_order_id, '\">', order_items.manager_order_id,
             IF(order_items.reserve_since_date IS NULL, '', ' (reserved)'), '</a>')"),
         array('dt' => 2, 'db' => "CONCAT(managers.first_name, ' ', managers.last_name, '<a href=\"/sales_manager?id=',
-            orders.sales_manager_id, '\"><i class=\"glyphicon glyphicon-link\"></i></a></a>')"),
+            orders.sales_manager_id, '\"><i class=\"glyphicon glyphicon-link\"></i></a>')"),
         array('dt' => 3, 'db' => "CONCAT('<a href=\"/product?id=', order_items.product_id, '\"',
                                  'target=\"_blank\" data-id=\"', order_items.item_id, '\"',
                                  'class=\"order-item-product\">', products.name, '</a>')"),
@@ -116,11 +116,12 @@ class ModelManagers_orders extends Model
             left join clients as commission on (orders.commission_agent_id = commission.client_id)
             left join items_status as status on orders.order_status_id = status.status_id';
 
+    var $whereCondition = "order_items.manager_order_id IS NOT NULL";
+
     function getDTManagersOrders($input)
     {
-        $where = "order_items.manager_order_id IS NOT NULL";
         $this->sspComplex($this->managers_orders_table, "order_items.item_id",
-            $this->managers_orders_columns, $input, null, $where);
+            $this->managers_orders_columns, $input, null, $this->whereCondition);
     }
 
     function getDTManagersOrdersReduced($input)
@@ -141,6 +142,43 @@ class ModelManagers_orders extends Model
 
         $this->sspComplex($this->managers_orders_table, "order_items.item_id",
             $this->managers_orders_columns, $input, null, $where);
+    }
+
+    function getSelects()
+    {
+        $ssp = $this->getSspComplexJson($this->managers_orders_table, "order_items.item_id",
+            $this->managers_orders_columns, null, null, $this->whereCondition);
+        $columns = $this->managers_orders_column_names;
+        $rowValues = json_decode($ssp, true)['data'];
+        $ignoreArray = ['Manager Order ID', 'Quantity', 'Number of Packs', 'Total Weight', 'Purchase Price / Unit',
+            'Total Purchase Price', 'Sell Price / Unit', 'Total Sell Price', 'Downpayment', 'Downpayment rate',
+            'Supplier Order ID', 'Truck ID'];
+
+        if (!empty($rowValues)) {
+            $selects = [];
+            foreach ($rowValues as $product) {
+                foreach ($product as $key => $value) {
+                    if (!$value || $value == null)
+                        continue;
+                    $name = $columns[$key];
+                    if (in_array($name, $ignoreArray))
+                        continue;
+
+                    if (strpos($value, 'glyphicon') !== false) {
+                        $value = preg_replace('/<a \w+[^>]+?[^>]+>(.*?)<\/a>/i', '', $value);
+                    } else {
+                        preg_match('/<\w+[^>]+?[^>]+>(.*?)<\/\w+>/i', $value, $match);
+                        if (!empty($match) && isset($match[1])) {
+                            $value = $match[1];
+                        }
+                    }
+
+                    if ((isset($selects[$name]) && !in_array($value, $selects[$name])) || !isset($selects[$name]))
+                        $selects[$name][] = $value;
+                }
+            }
+            return ['selects' => $selects, 'rows' => $rowValues];
+        }
     }
 
 }

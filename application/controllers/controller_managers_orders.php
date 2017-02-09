@@ -13,6 +13,22 @@ class ControllerManagers_orders extends Controller
         $this->view->title = "Managers' Orders";
         $this->view->column_names = $this->model->managers_orders_column_names;
         $this->view->column_names_reduced = $this->model->managers_orders_reduced_column_names;
+
+        $cache = new Cache();
+        $selectsCache = $cache->read('managers_orders_selects');
+        if (!empty($selectsCache)) {
+            $array = $selectsCache;
+            $selects = $array['selects'];
+            $rows = $array['rows'];
+        } else {
+            $array = $this->model->getSelects();
+            $selects = $array['selects'];
+            $rows = $array['rows'];
+            $cache->write('managers_orders_selects', $array);
+        }
+        $this->view->selects = $selects;
+        $this->view->rows = $rows;
+
         $this->view->build('templates/template.php', 'managers_orders.php');
     }
 

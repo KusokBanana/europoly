@@ -260,7 +260,7 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        var $selects = <?= json_encode($this->selects) ?>;
+        var $selects = <?= json_encode($this->new_product_selects) ?>;
         var editableSelects = $('.select-editable');
         $.each(editableSelects, function() {
             var element = $(this);
