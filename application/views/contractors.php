@@ -108,7 +108,7 @@
                                                         ],
                                                         'column_names' => $this->column_names,
                                                         'hidden_by_default' => "[]",
-                                                        'click_url' => ""
+                                                        'click_url' => "javascript:;"
                                                     ];
                                                     include 'application/views/templates/table.php'
                                                     ?>
@@ -128,7 +128,8 @@
                                                             'url' => "/contractors/dt_customs"
                                                         ],
                                                         'column_names' => $this->column_names,
-                                                        'hidden_by_default' => "[]",                                                                                                 'click_url' => ""
+                                                        'hidden_by_default' => "[]",
+                                                        'click_url' => "javascript:;"
                                                     ];
                                                     include 'application/views/templates/table.php'
                                                     ?>
@@ -150,7 +151,8 @@
                                                             'url' => "/contractors/dt_transportation"
                                                         ],
                                                         'column_names' => $this->column_names,
-                                                        'hidden_by_default' => "[]",                                                                                                 'click_url' => ""
+                                                        'hidden_by_default' => "[]",
+                                                        'click_url' => "javascript:;"
                                                     ];
                                                     include 'application/views/templates/table.php'
                                                     ?>
@@ -170,7 +172,8 @@
                                                             'url' => "/contractors/dt_other"
                                                         ],
                                                         'column_names' => $this->column_names,
-                                                        'hidden_by_default' => "[]",                                                                                                 'click_url' => ""
+                                                        'hidden_by_default' => "[]",
+                                                        'click_url' => "javascript:;"
                                                     ];
                                                     include 'application/views/templates/table.php'
                                                     ?>
@@ -224,7 +227,7 @@ require_once 'modals/new_contractor.php';
             inputclass: 'form-control input-medium',
             source: [
                 {"value": "End Customer", "text": "End Customer"},
-                {"value": "Commission Agent", "text": "Commission Agent"},
+                {"value": "Comission Agent", "text": "Comission Agent"}, // TODO Commission or Comission
                 {"value": "Dealer", "text": "Dealer"}
             ],
             success: function () {

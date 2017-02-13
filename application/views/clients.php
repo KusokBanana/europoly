@@ -240,7 +240,7 @@
             inputclass: 'form-control input-medium',
             source: [
                 {"value": "End Customer", "text": "End Customer"},
-                {"value": "Commission Agent", "text": "Commission Agent"},
+                {"value": "Comission Agent", "text": "Comission Agent"}, // TODO commission or comission ?
                 {"value": "Dealer", "text": "Dealer"}
             ],
             success: function () {

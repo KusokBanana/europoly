@@ -9,7 +9,7 @@ class ModelAccountant extends Model
         array('dt' => 3, 'db' => "entities.name"),
         array('dt' => 4, 'db' => "payments.category"),
         array('dt' => 5, 'db' => "CONCAT('<a href=\"/', 
-            IF(payments.category = 'Client' OR payments.category = 'Comission Agent', 'client?id=', 
+            IF(payments.category = 'Client' OR payments.category = '".COMISSION_AGENT."', 'client?id=', 
             IF(payments.category = 'Supplier', 'supplier?id=', 
             IF(payments.category = 'Customs', 'custom?id=', 
             IF(payments.category = 'Delivery', 'transportation?id=', '')))), payments.contractor_id, '\"\">', 
@@ -30,8 +30,12 @@ class ModelAccountant extends Model
         array('dt' => 18, 'db' => "CONCAT('<span class=\"label label-', IF(payments.status = 'Executed', 
             'success', 'default'), '\">', payments.status, '</span>')"),
         array('dt' => 19, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
-                        CONCAT('<a href=\"/accountant/delete?payment_id=', payments.payment_id,
-                        '\" onclick=\"return confirm(\'Are you sure to delete the payment?\')\"><span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span></a>'),
+                        CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to delete the payment?\"
+                                   href=\"/accountant/delete?payment_id=', payments.payment_id, '\"
+                                   class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" 
+                                   data-singleton=\"true\">
+                                       <span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span>
+                                   </a>'),
                 '</div>')")
     ];
 

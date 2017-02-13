@@ -123,6 +123,7 @@
 <![endif]-->
 <!-- BEGIN CORE PLUGINS -->
 <script src="assets/global/plugins/js.cookie.min.js" type="text/javascript"></script>
+<script src="assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.js" type="text/javascript"></script>
 <script src="assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
 <script src="assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
 <script src="assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
@@ -146,16 +147,19 @@
 <!-- END THEME LAYOUT SCRIPTS -->
 
 <script>
- $("#menu-toggler").click(function(){
-	var menu_shown = true
-	if ($("#sidebar").is(":visible")) {
-		$("#sidebar").hide();
-		$(".page-fixed-main-content").css({'margin-left':'0px'});		
-	} else {
-		$("#sidebar").show();
-		$(".page-fixed-main-content").css({'margin-left':'255px'});		
-	}
- });
+    $(document).ready(function () {
+     $("#menu-toggler").click(function(){
+        var menu_shown = true;
+        if ($("#sidebar").is(":visible")) {
+            $("#sidebar").hide();
+            $(".page-fixed-main-content").css({'margin-left':'0px'});
+        } else {
+            $("#sidebar").show();
+            $(".page-fixed-main-content").css({'margin-left':'255px'});
+        }
+     });
+});
+
 </script>
 </body>
 

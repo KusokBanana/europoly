@@ -66,14 +66,20 @@ class ModelSuppliers_order extends ModelOrder
                  IF(suppliers_orders_items.reserve_since_date IS NULL, '', (CONCAT(' (reserved ', suppliers_orders_items.reserve_since_date, ')'))), '</a>')"),
         array('dt' => 13, 'db' => "clients.name"),
         array('dt' => 14, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
-                        CONCAT('<a href=\"/suppliers_order/delete_order_item?order_id=', suppliers_orders_items.supplier_order_id, '&order_item_id=', suppliers_orders_items.item_id,
-                        '\" onclick=\"return confirm(\'Are you sure to delete the item?\')\"><span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span></a>'),
+                        CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to delete the item?\" 
+                        href=\"/suppliers_order/delete_order_item?order_id=', suppliers_orders_items.supplier_order_id,
+                            '&order_item_id=', suppliers_orders_items.item_id, '\"
+                        class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" data-singleton=\"true\">
+                            <span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span>
+                        </a>'),
                         IF(suppliers_orders_items.reserve_since_date IS NOT NULL,
-                        CONCAT('<a href=\"/suppliers_order/delete_from_reserve?order_item_id=', suppliers_orders_items.item_id,
-                        '\" onclick=\"return confirm(\'Are you sure to delete from reserve the item?\')\"><span class=\'glyphicon glyphicon-remove\' title=\'Delete from reserve\'></span></a>'), ''),
+                        CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to delete from reserve the item?\"  
+                        href=\"/suppliers_order/delete_from_reserve?order_item_id=', suppliers_orders_items.item_id, '\"
+                        class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" data-singleton=\"true\">
+                            <span class=\'glyphicon glyphicon-remove\' title=\'Delete from reserve\'></span>
+                        </a>'), ''),
                 '</div>')")
 ];
-
     function getDTOrderItems($order_id, $input)
     {
         $table = 'order_items as suppliers_orders_items
@@ -118,7 +124,7 @@ class ModelSuppliers_order extends ModelOrder
             $purchase_price = ($product && $product['purchase_price']) ? $product['purchase_price'] : 0;
             $this->insert("INSERT INTO order_items (supplier_order_id, product_id, amount, 
               number_of_packs, status_id, purchase_price)
-            VALUES ($order_id, $product_id, 0, 0, 4, $purchase_price)");
+            VALUES ($order_id, $product_id, 0, 0, ".DRAFT_FOR_SUPPLIER.", $purchase_price)");
             $count++;
         }
         $this->update("UPDATE suppliers_orders 
@@ -130,7 +136,7 @@ class ModelSuppliers_order extends ModelOrder
     function deleteOrderItem($order_id, $order_item_id)
     {
 
-        $this->update("UPDATE order_items SET status_id = 1, supplier_order_id = NULL,
+        $this->update("UPDATE order_items SET status_id = ".DRAFT.", supplier_order_id = NULL
                        WHERE item_id = $order_item_id");
 
         $this->updateItemsStatus($order_id);
@@ -192,7 +198,7 @@ class ModelSuppliers_order extends ModelOrder
     {
         $status = $this->getFirst("SELECT status_id FROM order_items WHERE  
                                     status_id = (SELECT MIN(status_id) FROM order_items WHERE supplier_order_id = $orderId)");
-        $orderStatus = $status ? $status['status_id'] : 4;
+        $orderStatus = $status ? $status['status_id'] : DRAFT_FOR_SUPPLIER;
         $this->update("UPDATE `suppliers_orders` 
                 SET status_id = $orderStatus WHERE order_id = $orderId");
     }
@@ -235,8 +241,8 @@ class ModelSuppliers_order extends ModelOrder
         $result = $this->update("UPDATE order_items SET manager_order_id = NULL, reserve_since_date = NULL, reserve_till_date = NULL
           WHERE item_id = $order_item_id");
         if ($result) {
-            return $this->update("UPDATE order_items SET status_id = 1 WHERE (manager_order_id = ${item['manager_order_id']} AND
-          product_id = ${item['product_id']} AND status_id > 1)");
+            return $this->update("UPDATE order_items SET status_id = ".DRAFT." WHERE (manager_order_id = ${item['manager_order_id']} AND
+          product_id = ${item['product_id']} AND status_id > ".DRAFT.")");
         }
     }
 

@@ -18,19 +18,40 @@ class ModelShipment extends ModelManagers_orders
         array('dt' => 8, 'db' => "CONCAT('<a href=\"/order?id=', trucks_items.manager_order_id,  '\">', 
             trucks_items.manager_order_id, IF(trucks_items.reserve_since_date IS NULL, '', ' (reserved)'), '</a>')"),
         array('dt' => 9, 'db' => "CONCAT(managers.first_name, ' ', managers.last_name, '<a href=\"/sales_manager?id=', orders.sales_manager_id, '\"><i class=\"glyphicon glyphicon-link\"></i></a></a>')"),
-        array('dt' => 10, 'db' => "brands.name"),
+        array('dt' => 10, 'db' => "CONCAT('<a href=\"/brand?id=', brands.brand_id, '\">', IFNULL(brands.name, 'no name'), '</a>')"),
         array('dt' => 11, 'db' => "orders.start_date"),
         array('dt' => 12, 'db' => "status.name"),
         array('dt' => 13, 'db' => "trucks_items.amount"),
         array('dt' => 14, 'db' => "trucks_items.number_of_packs"),
-        array('dt' => 15, 'db' => "products.weight * trucks_items.number_of_packs"),
-        array('dt' => 16, 'db' => "trucks_items.purchase_price"),
-        array('dt' => 17, 'db' => "trucks_items.purchase_price * trucks_items.number_of_packs"),
+        array('dt' => 15, 'db' => "CAST(products.weight * trucks_items.amount as decimal(64, 3))"),
+        array('dt' => 16, 'db' => "CAST(trucks_items.purchase_price as decimal(64, 2))"),
+        array('dt' => 17, 'db' => "CAST(trucks_items.purchase_price * trucks_items.amount as decimal(64, 2))"),
         array('dt' => 18, 'db' => "'unknown'"),
-        array('dt' => 19, 'db' => "trucks_items.total_price"),
-        array('dt' => 20, 'db' => "orders.total_downpayment"),
+        array('dt' => 19, 'db' => "CAST(trucks_items.total_price as decimal(64, 2))"),
+        array('dt' => 20, 'db' => "CONCAT(orders.downpayment_rate, ' %')"),
         array('dt' => 21, 'db' => "orders.downpayment_rate"),
         array('dt' => 22, 'db' => "orders.expected_date_of_issue"),
+
+        array('dt' => 23, 'db' => "CONCAT('<a href=\"/order?id=',
+                trucks_items.manager_order_id,
+                '\">', trucks_items.manager_order_id,
+                 IF(trucks_items.reserve_since_date IS NULL, '', (CONCAT(' (reserved ', 
+                 trucks_items.reserve_since_date, ')'))), '</a>')"),
+        array('dt' => 24, 'db' => "products.units"),
+        array('dt' => 25, 'db' => "CAST(trucks_items.sell_price as decimal(64, 2))"),
+        array('dt' => 26, 'db' => "CAST(trucks_items.sell_price * trucks_items.amount as decimal(64, 2))"),
+        array('dt' => 27, 'db' => "CONCAT('<a href=\"\client?id=', orders.client_id, '\">', client.name, '</a>')"),
+        array('dt' => 28, 'db' => "CONCAT('<a href=\"\client?id=', orders.commission_agent_id, '\">', 
+            commission.name, '</a>')"),
+        array('dt' => 29, 'db' => "trucks_items.discount_rate"),
+        array('dt' => 30, 'db' => "trucks_items.reduced_price"),
+        array('dt' => 31, 'db' => "trucks_items.manager_bonus_rate"),
+        array('dt' => 32, 'db' => "trucks_items.manager_bonus"),
+        array('dt' => 33, 'db' => "trucks_items.commission_rate"),
+        array('dt' => 34, 'db' => "trucks_items.commission_agent_bonus"),
+        array('dt' => 35, 'db' => "trucks_items.production_date"),
+        array('dt' => 36, 'db' => "IFNULL(CONCAT(trucks_items.reserve_since_date, ' - ',
+            trucks_items.reserve_till_date), '')"),
 
     ];
 
@@ -58,6 +79,20 @@ class ModelShipment extends ModelManagers_orders
         'Downpayment',
         'Downpayment rate',
         'Client\'s expected date of issue',
+        'Manager Order ID',
+        'Units',
+        'Sell Price / Unit',
+        'Total Sell Price',
+        'Client',
+        'Commission Agent',
+        'Discount Rate',
+        'Reduced Price',
+        'Manager Bonus Rate',
+        'Manager Bonus',
+        'Commission Rate',
+        'Commission Agent Bonus',
+        'Production Date',
+        'Reserve Period',
     ];
 
     function getSelects()
@@ -104,6 +139,8 @@ class ModelShipment extends ModelManagers_orders
         left join users as managers on orders.sales_manager_id = managers.user_id
         join products on trucks_items.product_id = products.product_id
         left join brands on products.brand_id = brands.brand_id
+        left join clients as client on (orders.client_id = client.client_id)
+        left join clients as commission on (orders.commission_agent_id = commission.client_id)
         left join items_status as status on trucks_items.status_id = status.status_id
     ';
 

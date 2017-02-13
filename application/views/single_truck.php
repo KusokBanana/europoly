@@ -181,6 +181,9 @@
             }]
         });
         $table_order_items.on('draw.dt', function () {
+            $('.table-confirm-btn').confirmation({
+                rootSelector: '.table-confirm-btn'
+            });
             $('.x-import_brokers_price, .x-import_VAT, ' +
                 '.x-import_tax, .x-delivery_price').editable({
                 type: "number",

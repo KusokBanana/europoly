@@ -88,12 +88,20 @@ class ModelTruck extends ModelOrder
                     IFNULL(CAST(trucks_items.delivery_price as decimal(64, 2)), 0),
                 '</a>')"),
         array('dt' => 18, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
-                        CONCAT('<a href=\"/truck/delete_order_item?order_id=', trucks_items.truck_id, '&order_item_id=', trucks_items.item_id,
-                        '\" onclick=\"return confirm(\'Are you sure to delete the item?\')\"><span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span></a>'),
-                        IF(trucks_items.status_id < 9,
-                        CONCAT('<a href=\"/truck/put_item_to_warehouse?truck_item_id=', trucks_items.item_id, 
-                        '\" onclick=\"return confirm(\'Are you sure to put to warehouse the item?\')\"><span class=\'glyphicon
-                         glyphicon-home\' title=\'Put to Warehouse\'></span></a>'),
+                        CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to delete the item?\" 
+                                   href=\"/truck/delete_order_item?order_id=', trucks_items.truck_id, '&order_item_id=', 
+                                    trucks_items.item_id, '\"
+                                    class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" 
+                                    data-singleton=\"true\">
+                                        <span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span>
+                                    </a>'),
+                        IF(trucks_items.status_id < ".ON_STOCK.",
+                        CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to put to warehouse the item?\" 
+                                   href=\"/truck/put_item_to_warehouse?truck_item_id=', trucks_items.item_id, '\" 
+                                   class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" 
+                                    data-singleton=\"true\">
+                                        <span class=\'glyphicon glyphicon-home\' title=\'Put to Warehouse\'></span>
+                                        </a>'),
                          ''),
                 '</div>')")
     ];
@@ -156,7 +164,7 @@ class ModelTruck extends ModelOrder
         if ($truck_id) {
             $order_items_count = 0;
             foreach ($products as $order_item_id) {
-                $this->update("UPDATE order_items SET status_id = 8, truck_id = $truck_id WHERE item_id = $order_item_id");
+                $this->update("UPDATE order_items SET status_id = ".ON_THE_WAY.", truck_id = $truck_id WHERE item_id = $order_item_id");
                 $order_items_count++;
             }
             // Обновим количество товаров
@@ -215,7 +223,7 @@ class ModelTruck extends ModelOrder
         $buyAndExpenses *= $truckItem['amount'];
 
         $warehouseId = $this->insert("UPDATE order_items SET warehouse_id = 1, total_price = $totalPrice,
- 	      buy_and_taxes = $buyAndExpenses, warehouse_arrival_date = NOW(), status_id = 9 WHERE item_id = $itemId");
+ 	      buy_and_taxes = $buyAndExpenses, warehouse_arrival_date = NOW(), status_id = ".ON_STOCK." WHERE item_id = $itemId");
 
         $this->updateItemsStatus($truckItem['truck_id']);
 
@@ -236,7 +244,7 @@ class ModelTruck extends ModelOrder
     {
         $count = 0;
         foreach ($product_ids as $product_id) {
-            $this->update("UPDATE order_items SET status_id = 8, truck_id = $truck_id WHERE item_id = $product_id");
+            $this->update("UPDATE order_items SET status_id = ".ON_THE_WAY.", truck_id = $truck_id WHERE item_id = $product_id");
             $count++;
         }
         $this->update("UPDATE trucks
@@ -248,7 +256,7 @@ class ModelTruck extends ModelOrder
 
     function deleteOrderItem($order_id, $order_item_id)
     {
-        $this->update("UPDATE order_items SET status_id = 4, truck_id = null, import_brokers_price = null,
+        $this->update("UPDATE order_items SET status_id = ".DRAFT_FOR_SUPPLIER.", truck_id = null, import_brokers_price = null,
                       import_VAT = null, delivery_price = null, import_tax = null, warehouse_arrival_date = null
                       WHERE item_id = $order_item_id");
 
@@ -295,7 +303,7 @@ class ModelTruck extends ModelOrder
                     if ($field == 'number_of_packs')
                         $value = $newAmount / floatval($product['amount_in_pack']);
                     if ($field == 'status_id')
-                        $value = 5;
+                        $value = CONFIRMED_BY_SUPPLIER;
                     if ($field == 'manager_order_id') {
                         if ($value == null)
                             continue;
@@ -346,7 +354,7 @@ class ModelTruck extends ModelOrder
     {
         $status = $this->getFirst("SELECT status_id FROM order_items WHERE  
                                     status_id = (SELECT MIN(status_id) FROM order_items WHERE truck_id = $truckId)");
-        $truckStatus = $status ? $status['status_id'] : 8;
+        $truckStatus = $status ? $status['status_id'] : ON_THE_WAY;
         $this->update("UPDATE trucks 
                 SET status_id = $truckStatus WHERE id = $truckId");
     }

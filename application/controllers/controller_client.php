@@ -89,4 +89,15 @@ class ControllerClient extends Controller
         echo $result;
     }
 
+    function action_import_clients()
+    {
+
+        require dirname(__FILE__) . "/../../dump_db/parsers/clients.php";
+
+        $parser = getXLS('clients.xlsx'); //извлеаем данные из XLS
+
+        $this->model->importClients($parser);
+
+    }
+
 }

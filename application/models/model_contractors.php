@@ -18,6 +18,24 @@ class ModelContractors extends Model
         'Profit',
         'Discount Rate',
         'Change Type',
+        'Email',
+        'Mobile Number',
+        'Category',
+        'INN',
+        'Source',
+        'Legal Address',
+        'Actual Address',
+        'Status',
+        'Head Contractor',
+        'First Contact Date',
+        'Operational Manager',
+        'Quantity of People',
+        'Main Target',
+        'Showrooms',
+        'Main Competiter',
+        'Samples Position',
+        'Needful Actions',
+        'Comments',
         'Delete',
     ];
 
@@ -25,8 +43,12 @@ class ModelContractors extends Model
             array('dt' => 0, 'db' => "suppliers.supplier_id"),
             array('dt' => 1, 'db' => "suppliers.name"),
         array('dt' => 2, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
-                        CONCAT('<a href=\"/contractors/delete?id=', suppliers.supplier_id, '&type=suppliers', 
-                        '\" onclick=\"return confirm(\'Are you sure to delete the supplier?\')\"><span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span></a>'),
+                        CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to delete the supplier?\" 
+                                   href=\"/contractors/delete?id=', suppliers.supplier_id, '&type=suppliers', '\"
+                                   class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" 
+                                   data-singleton=\"true\">
+                                        <span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span>
+                                   </a>'),
                 '</div>')")
     ];
 
@@ -46,8 +68,12 @@ class ModelContractors extends Model
         array('dt' => 0, 'db' => "customs.custom_id"),
         array('dt' => 1, 'db' => "customs.name"),
         array('dt' => 2, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
-                        CONCAT('<a href=\"/contractors/delete?id=', customs.custom_id, '&type=customs', 
-                        '\" onclick=\"return confirm(\'Are you sure to delete the custom?\')\"><span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span></a>'),
+                        CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to delete the custom?\" 
+                                   href=\"/contractors/delete?id=', customs.custom_id, '&type=customs', '\" 
+                                   class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" 
+                                   data-singleton=\"true\">
+                                        <span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span>
+                                   </a>'),
                 '</div>')")
     ];
 
@@ -60,8 +86,13 @@ class ModelContractors extends Model
         array('dt' => 0, 'db' => "transport.transportation_company_id"),
         array('dt' => 1, 'db' => "transport.name"),
         array('dt' => 2, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
-                        CONCAT('<a href=\"/contractors/delete?id=', transport.transportation_company_id, '&type=transportation_companies', 
-                        '\" onclick=\"return confirm(\'Are you sure to delete the transportation company?\')\"><span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span></a>'),
+                        CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to delete the transportation company?\" 
+                                   href=\"/contractors/delete?id=', transport.transportation_company_id, 
+                                    '&type=transportation_companies', '\" 
+                                   class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" 
+                                   data-singleton=\"true\">
+                                        <span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span>
+                                   </a>'),
                 '</div>')")
     ];
 
@@ -75,8 +106,12 @@ class ModelContractors extends Model
         array('dt' => 0, 'db' => "other.other_id"),
         array('dt' => 1, 'db' => "other.name"),
         array('dt' => 2, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
-                        CONCAT('<a href=\"/contractors/delete?id=', other.other_id, '&type=other', 
-                        '\" onclick=\"return confirm(\'Are you sure to delete the other?\')\"><span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span></a>'),
+                        CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to delete the other?\" 
+                                   href=\"/contractors/delete?id=', other.other_id, '&type=other', '\" 
+                                   class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" 
+                                   data-singleton=\"true\">
+                                        <span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span>
+                                   </a>'),
                 '</div>')")
     ];
 

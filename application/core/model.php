@@ -1,5 +1,6 @@
 <?php
 include_once("mysql_config.php");
+include_once ('config.php');
 
 abstract class Model extends mysqli
 {
@@ -224,7 +225,7 @@ abstract class Model extends mysqli
 
     function getCommissionAgentsIdName()
     {
-        return $this->getAssoc("SELECT client_id, name FROM clients WHERE type = 'Commission Agent'");
+        return $this->getAssoc("SELECT client_id, name FROM clients WHERE type = " . COMISSION_AGENT);
     }
 
     function getClientsIdName()
@@ -330,7 +331,7 @@ abstract class Model extends mysqli
                 }
             }
         $rate = $totalSum / $order['total_price'] * 100;
-        if ($category == 'Client' || $category == 'Comission Agent') {
+        if ($category == 'Client' || $category == COMISSION_AGENT) {
             $this->update("UPDATE orders SET total_downpayment = $totalSum, downpayment_rate = $rate 
                                   WHERE order_id = $orderId");
         } else if ($category == 'Supplier') {

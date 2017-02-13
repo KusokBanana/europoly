@@ -87,7 +87,6 @@ function getXLS($xls){
             //заносим массив со значениями ячеек отдельной строки в "общий массв строк"
             if ($rowIndex >= 3)
                 array_push($array, $baseArrayItem);
-
         }
     }
     return $array;

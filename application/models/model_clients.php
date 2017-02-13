@@ -83,9 +83,13 @@ class ModelClients extends Model
         $columns = $this->client_columns;
 
         array_push($columns,
-            array('dt' => 9, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
-                        CONCAT('<a href=\"/contractors/delete?id=', clients.client_id, '&type=clients', 
-                        '\" onclick=\"return confirm(\'Are you sure to delete the client?\')\"><span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span></a>'),
+            array('dt' => 27, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
+                        CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to delete the client?\" 
+                                   href=\"/contractors/delete?id=', clients.client_id, '&type=clients', '\" 
+                                   class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" 
+                                   data-singleton=\"true\">
+                                        <span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span>
+                                   </a>'),
                 '</div>')")
         );
 
@@ -100,7 +104,8 @@ class ModelClients extends Model
 
     function getDTCommissionAgents($input)
     {
-        $this->sspComplex($this->client_table, "clients.client_id", $this->client_columns, $input, null, "clients.type = 'Commission Agent' AND clients.is_deleted = 0");
+        $this->sspComplex($this->client_table, "clients.client_id", $this->client_columns, $input, null,
+            "clients.type = '".COMISSION_AGENT."' AND clients.is_deleted = 0");
     }
 
     function getDTDealers($input)
@@ -119,4 +124,8 @@ class ModelClients extends Model
         $result = $this->update("UPDATE `clients` SET `$field` = '$new_value' WHERE client_id = $client_id");
         return $result;
     }
+
+
+
+
 }

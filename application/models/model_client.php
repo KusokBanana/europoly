@@ -319,5 +319,151 @@ class ModelClient extends Model
         ];
     }
 
+    public function importClients($array)
+    {
+
+        $entities = $this->getAssoc("SELECT * FROM legal_entities");
+
+        function getEntityId($entityStr, $entities, $client) {
+            $entityId = false;
+            foreach ($entities as $entity) {
+                if ($entity['name'] == $entityStr) {
+                    $entityId = $entity['legal_entity_id'];
+                }
+            }
+            if (!$entityId) {
+                $entityId = $client->insert("INSERT INTO legal_entities (name) VALUES ('$entityStr')");
+            }
+            return $entityId;
+        }
+
+        $commissionAgents = [];
+
+        foreach ($array as $item) {
+
+            $names = '';
+            $values = '';
+            $commissionAgent = '';
+            $additions = [];
+
+            foreach ($item as $name => $valsArray) {
+                $type = $valsArray['type'];
+                $value = $valsArray['val'];
+
+                if ($type != 'array') {
+                    $value = trim($value);
+                    $value = mysql_real_escape_string($value);
+                }
+
+                if (!$value)
+                    continue;
+
+                if (strpos($name, '.') !== false) {
+                    $explodeArray = explode('.', $name);
+
+                    // add commission agent to temp value for search
+                    if ($explodeArray[1] == 'commission_agent_id') {
+                        $commissionAgent = $value;
+                        continue;
+                    }
+                    if ($explodeArray[1] == 'sales_manager_id') {
+                        $explodeManagerName = explode(' ', $value);
+                        $managerId = $this->getFirst("SELECT user_id as id FROM users WHERE 
+                          (last_name = '${explodeManagerName[0]}' AND first_name = '${explodeManagerName[1]}') OR 
+                          (first_name = '${explodeManagerName[0]}' AND last_name = '${explodeManagerName[1]}')");
+                        if ($managerId) {
+                            $value = $managerId['id'];
+                        } else {
+                            $salesManagerMaxId = $this->getMax("SELECT MAX(user_id) FROM users") + 1;
+                            $login = 'sales_manager_'.$salesManagerMaxId;
+                            $value = $this->insert("INSERT INTO users (first_name, last_name, role, login, password) 
+                              VALUES ('${explodeManagerName[1]}', '${explodeManagerName[0]}', 'Sales Manager', 
+                              '$login', 'password')");
+                        }
+                        $name = $explodeArray[1];
+                    }
+                    if ($explodeArray[1] == 'Bank Accounts') {
+                        $additionNames = "requisites, ";
+                        $additionValues = "$value, ";
+                        $type = $explodeArray[1];
+                        $additions[$type] = [$additionNames, $additionValues];
+                        continue;
+                    }
+                    if ($type == 'array') {
+                        $additionNames = '';
+                        $additionValues = '';
+                        foreach ($value as $additionName => $additionValue) {
+                            if (!$additionValue)
+                                continue;
+                            if ($additionName == 'organization') {
+                                $additionValue = getEntityId($additionValue, $entities, $this);
+                            }
+                            $additionValues .= "'$additionValue', ";
+                            $additionNames .= $additionName . ', ';
+                        }
+                        if ($additionNames && $additionValues) {
+                            $type = $explodeArray[1];
+                            $additions[$type] = [$additionNames, $additionValues];
+                        }
+                        continue;
+                    }
+                }
+
+                $names .= $name . ', ';
+                if ($type == 'string')
+                    $values .= "'$value', ";
+                elseif ($type == 'date') {
+                    $value = (string) date('y-m-d', $value);
+                    $values .= "'$value', ";
+                }
+                else {
+                    if ($type == 'float' || $type == 'double') {
+                        $value = floatval($value);
+                    }
+                    if ($type == 'int') {
+                        $value = intval($value);
+                    }
+                    $values .= "$value, ";
+                }
+            }
+
+            if ($values && $names) {
+                $values = substr($values, 0, -2);
+                $names = substr($names, 0, -2);
+
+                $clientId = $this->insert("INSERT INTO clients ($names)
+                          VALUES ($values)");
+
+                if ($clientId) {
+                    if ($commissionAgent) {
+                        $commissionAgents[$clientId] = $commissionAgent;
+                    }
+                    if (!empty($additions)) {
+                        foreach ($additions as $additionType => $addition) {
+                            $names = $addition[0];
+                            $values = $addition[1];
+                            $this->insert("INSERT INTO client_additions ($names type, client_id) 
+                              VALUES ($values '$additionType', $clientId)");
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!empty($commissionAgents)) {
+            foreach ($commissionAgents as $client_id => $commissionAgent) {
+                $client = $this->getFirst("SELECT client_id FROM clients WHERE name = '$commissionAgent'");
+                if ($client) {
+                    $commissionAgentId = $client['client_id'];
+                } else {
+                    $commissionAgentId = $this->insert("INSERT INTO clients (name) VALUES ('$commissionAgent')");
+                }
+                if ($commissionAgentId)
+                    $this->update("UPDATE clients SET commission_agent_id = $commissionAgentId WHERE client_id = $client_id");
+            }
+        }
+
+    }
+
 
 }

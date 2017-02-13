@@ -14,22 +14,41 @@ class ModelSuppliers_orders extends ModelManagers_orders
         array('dt' => 5, 'db' => "suppliers_orders.release_date"),
         array('dt' => 6, 'db' => "suppliers_orders.departure_date"),
         array('dt' => 7, 'db' => "suppliers_orders_items.warehouse_arrival_date"),
-        array('dt' => 8, 'db' => "CONCAT('<a href=\"/order?id=', 
-            suppliers_orders_items.manager_order_id,'\">', suppliers_orders_items.manager_order_id, 
-            IF(suppliers_orders_items.reserve_since_date IS NULL, '', ' (reserved)'), '</a>')"),
+        array('dt' => 8, 'db' => "CONCAT('<a href=\"/order?id=',
+                suppliers_orders_items.manager_order_id,
+                '\">', suppliers_orders_items.manager_order_id,
+                 IF(suppliers_orders_items.reserve_since_date IS NULL, '', (CONCAT(' (reserved ', 
+                 suppliers_orders_items.reserve_since_date, ')'))), '</a>')"),
         array('dt' => 9, 'db' => "CONCAT(managers.first_name, ' ', managers.last_name, '<a href=\"/sales_manager?id=', orders.sales_manager_id, '\"><i class=\"glyphicon glyphicon-link\"></i></a></a>')"),
         array('dt' => 10, 'db' => "orders.start_date"),
         array('dt' => 11, 'db' => "status.name"),
         array('dt' => 12, 'db' => "suppliers_orders_items.amount"),
         array('dt' => 13, 'db' => "suppliers_orders_items.number_of_packs"),
-        array('dt' => 14, 'db' => "products.weight * suppliers_orders_items.number_of_packs"),
-        array('dt' => 15, 'db' => "products.purchase_price"),
-        array('dt' => 16, 'db' => "products.purchase_price * suppliers_orders_items.number_of_packs"),
+        array('dt' => 14, 'db' => "CAST(products.weight * suppliers_orders_items.amount as decimal(64, 3))"),
+        array('dt' => 15, 'db' => "CAST(suppliers_orders_items.purchase_price as decimal(64, 2))"),
+        array('dt' => 16, 'db' => "CAST(suppliers_orders_items.purchase_price * suppliers_orders_items.amount as decimal(64, 2))"),
         array('dt' => 17, 'db' => "'unknown'"),
-        array('dt' => 18, 'db' => "suppliers_orders.total_price"),
+        array('dt' => 18, 'db' => "CAST(suppliers_orders.total_price as decimal(64, 2))"),
         array('dt' => 19, 'db' => "suppliers_orders.total_downpayment"),
-        array('dt' => 20, 'db' => "orders.downpayment_rate"),
+        array('dt' => 20, 'db' => "CONCAT(orders.downpayment_rate, ' %')"),
         array('dt' => 21, 'db' => "orders.expected_date_of_issue"),
+        array('dt' => 22, 'db' => "products.units"),
+        array('dt' => 23, 'db' => "CAST(suppliers_orders_items.sell_price as decimal(64, 2))"),
+        array('dt' => 24, 'db' => "CAST(suppliers_orders_items.sell_price * suppliers_orders_items.amount as decimal(64, 2))"),
+        array('dt' => 25, 'db' => "CONCAT('<a href=\"/truck?id=', suppliers_orders_items.truck_id, '\">',
+            suppliers_orders_items.truck_id, '</a>')"),
+        array('dt' => 26, 'db' => "CONCAT('<a href=\"\client?id=', orders.client_id, '\">', client.name, '</a>')"),
+        array('dt' => 27, 'db' => "CONCAT('<a href=\"\client?id=', orders.commission_agent_id, '\">', 
+            commission.name, '</a>')"),
+        array('dt' => 28, 'db' => "suppliers_orders_items.discount_rate"),
+        array('dt' => 29, 'db' => "suppliers_orders_items.reduced_price"),
+        array('dt' => 30, 'db' => "suppliers_orders_items.manager_bonus_rate"),
+        array('dt' => 31, 'db' => "suppliers_orders_items.manager_bonus"),
+        array('dt' => 32, 'db' => "suppliers_orders_items.commission_rate"),
+        array('dt' => 33, 'db' => "suppliers_orders_items.commission_agent_bonus"),
+        array('dt' => 34, 'db' => "suppliers_orders_items.production_date"),
+        array('dt' => 35, 'db' => "IFNULL(CONCAT(suppliers_orders_items.reserve_since_date, ' - ',
+            suppliers_orders_items.reserve_till_date), '')"),
 
     ];
 
@@ -56,6 +75,20 @@ class ModelSuppliers_orders extends ModelManagers_orders
         'Downpayment',
         'Downpayment rate',
         'Client\'s expected date of issue',
+        'Units',
+        'Sell Price / Unit',
+        'Total Sell Price',
+        'Truck ID',
+        'Client',
+        'Commission Agent',
+        'Discount Rate',
+        'Reduced Price',
+        'Manager Bonus Rate',
+        'Manager Bonus',
+        'Commission Rate',
+        'Commission Agent Bonus',
+        'Production Date',
+        'Reserve Period',
     ];
 
     var $suppliers_orders_columns_reduce = [
@@ -84,6 +117,8 @@ class ModelSuppliers_orders extends ModelManagers_orders
             left join users as managers on orders.sales_manager_id = managers.user_id
             left join products as products on suppliers_orders_items.product_id = products.product_id
             left join items_status as status on suppliers_orders_items.status_id = status.status_id
+            left join clients as client on (orders.client_id = client.client_id)
+            left join clients as commission on (orders.commission_agent_id = commission.client_id)
             left join brands as brands on products.brand_id = brands.brand_id';
 
     var $suppliers_orders_table_reduce = 'suppliers_orders ' .
@@ -156,7 +191,7 @@ class ModelSuppliers_orders extends ModelManagers_orders
             foreach ($products as $order_item_id) {
                 $order_items_count++;
                 $this->update("UPDATE order_items SET supplier_order_id = $suppliers_order,
-                              status_id = 4 WHERE item_id = $order_item_id");
+                              status_id = ".DRAFT_FOR_SUPPLIER." WHERE item_id = $order_item_id");
                 $productId = $this->getFirst("SELECT product_id FROM order_items WHERE item_id = $order_item_id");
                 $productId = $productId ? $productId['product_id'] : 0;
             }
@@ -226,7 +261,7 @@ class ModelSuppliers_orders extends ModelManagers_orders
     {
         $status = $this->getFirst("SELECT status_id FROM order_items WHERE supplier_order_id = $orderId AND 
                                     status_id = (SELECT MIN(status_id) FROM order_items)");
-        $orderStatus = $status ? $status['status_id'] : 4;
+        $orderStatus = $status ? $status['status_id'] : DRAFT_FOR_SUPPLIER;
         $this->update("UPDATE suppliers_orders 
                 SET status_id = $orderStatus WHERE order_id = $orderId");
     }

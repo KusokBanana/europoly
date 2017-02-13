@@ -393,6 +393,9 @@ require_once 'modals/cancel_order.php';
             }]
         });
         $table_order_items.on('draw.dt', function () {
+            $('.table-confirm-btn').confirmation({
+                rootSelector: '.table-confirm-btn'
+            });
             $('.x-amount, .x-number_of_packs, .x-manager_bonus_rate, .x-sell-price, ' +
                 '.x-commission_rate, .x-commission_agent_bonus, .x-manager_bonus').editable({
                 type: "number",

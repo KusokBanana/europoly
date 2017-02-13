@@ -32,7 +32,7 @@ class ModelOrder extends Model
                     '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Quantity\">',
                         IFNULL(CONCAT(order_items.amount, ' ', products.units), ''),
                     '</a>'))"),
-            array('dt' => 3, 'db' => "IF(order_items.status_id > 2, 
+            array('dt' => 3, 'db' => "IF(order_items.status_id > ".HOLD.", 
             CONCAT(order_items.number_of_packs, ' ', IFNULL(products.packing_type, '')),
             CONCAT('<a href=\"javascript:;\" class=\"x-editable x-number_of_packs\" data-pk=\"',
                 order_items.item_id,
@@ -116,29 +116,35 @@ class ModelOrder extends Model
                 '</a>')"),
             array('dt' => 16, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
                     IF(order_items.status_id = 1,
-                    CONCAT('<a href=\"/order/hold?order_item_id=', order_items.item_id,
-                            '\" onclick=\"return confirm(\'Are you sure to hold the item?\')\">
+                    CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to hold the item?\" 
+                               href=\"/order/hold?order_item_id=', order_items.item_id, '\" 
+                               class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" data-singleton=\"true\">
                                 <span class=\'glyphicon glyphicon-star\' title=\'Hold Item\'></span>
                             </a>'), 
                     ''),
-                    IF(order_items.status_id = 1 OR order_items.status_id = 2, 
+                    IF(order_items.status_id = ".DRAFT." OR order_items.status_id = ".HOLD.", 
                         CONCAT('<a href=\"/order/reserve?order_item_id=', order_items.item_id, '&action=get_info',
                                 '\" class=\"reserve-product-btn\" data-id=\"', order_items.item_id, '\">
                                     <span class=\'glyphicon glyphicon-heart\' title=\'Reserve Item\'></span>
                                 </a>',
-                                '<a href=\"/order/send_to_logist?order_item_id=', order_items.item_id,
-                                '\" onclick=\"return confirm(\'Are you sure to send to logist the item?\')\">
-                                    <span class=\'glyphicon glyphicon-download-alt\' title=\'Send to Logist\'></span>
+                                '<a data-toggle=\"confirmation\" data-title=\"Are you sure to send to logist the item?\" 
+                                    href=\"/order/send_to_logist?order_item_id=', order_items.item_id, '\"
+                                    class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" data-singleton=\"true\">
+                                        <span class=\'glyphicon glyphicon-download-alt\' title=\'Send to Logist\'></span>
                                 </a>',
-                                '<a href=\"/order/delete_order_item?order_id=', order_items.manager_order_id, 
-                                '&order_item_id=', order_items.item_id,
-                                '\" onclick=\"return confirm(\'Are you sure to delete the item?\')\">
-                                    <span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span>
+                                '<a data-toggle=\"confirmation\" data-title=\"Are you sure to delete the item?\" 
+                                    href=\"/order/delete_order_item?order_id=', order_items.manager_order_id, 
+                                    '&order_item_id=', order_items.item_id, '\" 
+                                    class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" 
+                                    data-singleton=\"true\">
+                                        <span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span>
                                 </a>'), 
                         ''),
-                    IF(order_items.status_id = 9,
-                        CONCAT('<a href=\"/order/issue?order_item_id=', order_items.item_id,
-                                '\" onclick=\"return confirm(\'Are you sure to create issue for the item?\')\">
+                    IF(order_items.status_id = ".ON_STOCK.",
+                        CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to create issue for the item?\" 
+                                   href=\"/order/issue?order_item_id=', order_items.item_id, '\" 
+                                   class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" 
+                                   data-singleton=\"true\">
                                     <span class=\'fa fa-share\' title=\'Issue\'></span>
                                 </a>'),
                         ''),
@@ -156,14 +162,15 @@ class ModelOrder extends Model
         return $this->sspComplex($table, "order_items.item_id", $columns, $input, null, $where);
     }
 
-    function cancelOrder($order_id, $cancel_reason)
-    {
-        $this->update("UPDATE orders SET order_status = 'Cancelled', cancel_reason = '$cancel_reason' WHERE order_id = $order_id");
-    }
+//    function cancelOrder($order_id, $cancel_reason)
+//    {
+//        $this->update("UPDATE orders SET order_status_id = 'Cancelled', cancel_reason = '$cancel_reason' WHERE order_id = $order_id");
+//    }
 
     function deleteCommissionAgent($order_id)
     {
-        $this->update("UPDATE orders SET commission_agent_id = NULL, commission_rate = 0, total_commission = 0, commission_status = null WHERE order_id = $order_id");
+        $this->update("UPDATE orders SET commission_agent_id = NULL, commission_rate = 0, total_commission = 0, 
+          commission_status = null WHERE order_id = $order_id");
     }
 
     function addOrderItem($order_id, $product_ids)
@@ -351,7 +358,7 @@ class ModelOrder extends Model
     {
         $status = $this->getFirst("SELECT status_id FROM order_items WHERE manager_order_id = $orderId AND 
                                     status_id = (SELECT MIN(status_id) FROM order_items)");
-        $orderStatus = $status ? $status['status_id'] : 1;
+        $orderStatus = $status ? $status['status_id'] : DRAFT;
         $this->update("UPDATE `orders` 
                 SET order_status_id = $orderStatus WHERE order_id = $orderId");
     }
@@ -538,62 +545,6 @@ class ModelOrder extends Model
                 }
 
             }
-                // Update current item in Order
-//            if (!empty($items)) {
-////                $ordered = ($currentOrderItem['amount'] && $currentOrderItem['amount'] !== null) ? $currentOrderItem['amount'] : 0;
-///*                $availableItems = [];
-//                $available = 0;
-//                foreach ($items as $item) {
-//                    if ($availableAmount = floatval($item['amount']) && $item['amount'] !== null) {
-//                        $availableItems[] = ['id' => $item['id'], 'amount' => $availableAmount];
-//                        $available += floatval($availableAmount);
-//                    }
-//                }
-//
-//                $insertNames = '';
-//                $insertValues = '';
-//                foreach ($currentOrderItem as $name => $value) {
-//                    if ($name != 'order_item_id' && $name != 'is_reserve') {
-//
-//                        if ($name == 'amount')
-//                            $value = $available;
-//
-//                        if (!$value || $value == null)
-//                            continue;
-//                        $insertNames .= $name . ', ';
-//                        $insertValues .= "$value, ";
-//                    }
-//                }*/
-//
-//                /*// ordered > available
-//                if ($ordered > $available) {
-//                    $amount = $ordered - $available;
-//                    $newOrderItemId = $this->insert("INSERT INTO order_items ($insertNames is_reserve)
-//                          VALUES ($insertValues 1)");
-//                    $set = "`amount` = $amount";
-//                } elseif ($ordered == $available) {
-//                    $set = "`is_reserve` = 1";
-//                } elseif ($ordered < $available) {
-//
-//                }
-//                $this->update("UPDATE order_items SET $set WHERE order_item_id = $itemId");*/
-//
-//
-////                foreach ($availableItems as $availableItem) {
-////                    $amount = $availableItem['amount'];
-////                    if ($amount) {
-////                        if ($available) {
-////                            $newAmount = ($available >= $amount) ? 0 : $amount - $available;
-////                            if ($available - $amount >= 0) {
-////                                $this->update("UPDATE $table SET amount = $newAmount, reserved_item_id = $newOrderItemId");
-////                            }
-////                        } else {
-////                            break;
-////                        }
-////                    }
-////                }
-//            }
-
         }
     }
 

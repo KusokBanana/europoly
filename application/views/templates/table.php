@@ -141,6 +141,14 @@
             },
             colReorder: true
         });
+        $table.on('draw.dt', function () {
+            var tableConfirmBtn = $('.table-confirm-btn');
+            if (tableConfirmBtn.length) {
+                tableConfirmBtn.confirmation({
+                    rootSelector: '.table-confirm-btn'
+                });
+            }
+        });
         $table.find('tbody').on('click', 'tr td:not(:first-child)', function (e) {
             var data = table.row($(this).closest('tr')).data();
             var target = e.target;

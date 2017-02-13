@@ -9,7 +9,6 @@
                 <li>Warehouse</li>
             </ul>
             <!-- END BREADCRUMBS -->
-
             <div class="content-header-menu">
                 <!-- BEGIN MENU TOGGLER -->
                 <button type="button" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse">
@@ -215,13 +214,15 @@ if ($this->id != 0) {
 }
 ?>
 <script>
-    var $tables_warehouses = $('#table_warehouses_products');
-    var warehouses = <?= json_encode($this->warehouses); ?>;
-    $tables_warehouses.on('draw.dt', function () {
-        $('.x-warehouse_id').editable({
-            type: "select",
-            inputclass: 'form-control input-medium',
-            source: warehouses
+    $(document).ready(function () {
+        var $tables_warehouses = $('#table_warehouses_products');
+        var warehouses = <?= json_encode($this->warehouses); ?>;
+        $tables_warehouses.on('draw.dt', function () {
+            $('.x-warehouse_id').editable({
+                type: "select",
+                inputclass: 'form-control input-medium',
+                source: warehouses
+            });
         });
     });
 </script>

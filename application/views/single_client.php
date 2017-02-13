@@ -152,7 +152,7 @@ $isNewClient = !isset($this->client['client_id']);
                                         <div class="form-group">
                                             <label for="type">Category</label>
                                             <select class="form-control" id="type" name="type">
-                                                <?php $types = ['End-Customer', 'Commission Agent', 'Dealer'] ?>
+                                                <?php $types = ['End-Customer', 'Comission Agent', 'Dealer'] ?>
                                                 <option disabled selected></option>
                                                 <?php foreach ($types as $type): ?>
                                                     <option value="<?= $type ?>"

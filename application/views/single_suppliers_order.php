@@ -202,6 +202,9 @@
                     }]
                 });
                 $table_order_items.on('draw.dt', function () {
+                    $('.table-confirm-btn').confirmation({
+                        rootSelector: '.table-confirm-btn'
+                    });
                     $('.x-amount, .x-number_of_packs, .x-manager_bonus_rate, .x-purchase_price').editable({
                         type: "number",
                         min: 0,

@@ -132,13 +132,13 @@ class ModelWarehouse extends ModelManagers_orders
                 $where = '(' . $where . ' AND products_warehouses.manager_order_id IS NULL)';
                 break;
             case 'issue':
-                $where = '(' . $where . ' AND ((products_warehouses.manager_order_id IS NOT NULL AND 
-                products_warehouses.reserve_since_date IS NULL) OR ((products_warehouses.status_id = 9 OR 
-                products_warehouses.status_id = 10) AND products_warehouses.reserve_since_date IS NULL)))';
+                $where = '(' . $where . ' AND ((products_warehouses.manager_order_id IS NOT NULL AND '.
+                'products_warehouses.reserve_since_date IS NULL) AND (products_warehouses.status_id = '.ON_STOCK.' OR '.
+                'products_warehouses.status_id = '.EXPECTS_ISSUE.')))';
                 break;
             case 'reserve':
-                $where = '(' . $where . ' AND (products_warehouses.manager_order_id IS NOT NULL AND 
-                products_warehouses.reserve_since_date IS NOT NULL))';
+                $where = '(' . $where . ' AND (products_warehouses.manager_order_id IS NOT NULL AND '.
+                'products_warehouses.reserve_since_date IS NOT NULL))';
                 break;
         }
 
