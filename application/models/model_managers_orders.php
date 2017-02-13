@@ -6,8 +6,8 @@ class ModelManagers_orders extends Model
         array('dt' => 0, 'db' => "order_items.item_id"),
         array('dt' => 1, 'db' => "CONCAT('<a href=\"/order?id=', order_items.manager_order_id, '\">', order_items.manager_order_id,
             IF(order_items.reserve_since_date IS NULL, '', ' (reserved)'), '</a>')"),
-        array('dt' => 2, 'db' => "CONCAT(managers.first_name, ' ', managers.last_name, '<a href=\"/sales_manager?id=',
-            orders.sales_manager_id, '\"><i class=\"glyphicon glyphicon-link\"></i></a>')"),
+        array('dt' => 2, 'db' => "CONCAT('<a href=\"/sales_manager?id=', orders.sales_manager_id, '\">', 
+            managers.first_name, ' ', managers.last_name, '</a>')"),
         array('dt' => 3, 'db' => "CONCAT('<a href=\"/product?id=', order_items.product_id, '\"',
                                  'target=\"_blank\" data-id=\"', order_items.item_id, '\"',
                                  'class=\"order-item-product\">', products.name, '</a>')"),
@@ -180,14 +180,12 @@ class ModelManagers_orders extends Model
                     if (in_array($name, $ignoreArray))
                         continue;
 
-                    if (strpos($value, 'glyphicon') !== false) {
-                        $value = preg_replace('/<a \w+[^>]+?[^>]+>(.*?)<\/a>/i', '', $value);
-                    } else {
-                        preg_match('/<\w+[^>]+?[^>]+>(.*?)<\/\w+>/i', $value, $match);
-                        if (!empty($match) && isset($match[1])) {
-                            $value = $match[1];
-                        }
+
+                    preg_match('/<\w+[^>]+?[^>]+>(.*?)<\/\w+>/i', $value, $match);
+                    if (!empty($match) && isset($match[1])) {
+                        $value = $match[1];
                     }
+
 
                     if ((isset($selects[$name]) && !in_array($value, $selects[$name])) || !isset($selects[$name]))
                         $selects[$name][] = $value;

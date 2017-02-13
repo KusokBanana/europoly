@@ -46,7 +46,7 @@ class ModelCatalogue extends Model
         $ssp = $this->getSspComplexJson($this->full_products_table, "product_id", $this->full_product_columns, null);
         $columns = $this->full_product_column_names;
         $rowValues = json_decode($ssp, true)['data'];
-        $ignoreArray = ['_product_id', 'Article', 'Thickness', 'Width', 'Length',
+        $ignoreArray = ['_product_id', 'Name', 'Article', 'Thickness', 'Width', 'Length',
             'Weight', 'Quantity in 1 Pack', 'Purchase price', 'Supplier\'s discount',
             'Margin', 'Sell'];
 

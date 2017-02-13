@@ -348,5 +348,20 @@
                     }]
                 });
 
+                $table_order_items.find('tbody').on('click', 'tr td', function (e) {
+                    var target = e.target;
+                    var link = $(target).find('a').not('.table-confirm-btn, .x-editable, .reserve-product-btn');
+                    if (link.length) {
+                        window.location.href = link.attr('href');
+                    }
+                });
+                $table_payments.find('tbody').on('click', 'tr td', function (e) {
+                    var target = e.target;
+                    var link = $(target).find('a').not('.table-confirm-btn, .x-editable, .reserve-product-btn');
+                    if (link.length) {
+                        window.location.href = link.attr('href');
+                    }
+                });
+
             });
         </script>

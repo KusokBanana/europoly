@@ -430,6 +430,14 @@ require_once 'modals/cancel_order.php';
             });
         });
 
+        $table_order_items.find('tbody').on('click', 'tr td:not(:first-child)', function (e) {
+            var target = e.target;
+            var link = $(target).find('a').not('.table-confirm-btn, .x-editable, .reserve-product-btn');
+            if (link.length) {
+                window.location.href = link.attr('href');
+            }
+        });
+
         $('#editable-downpayment_rate, #editable-manager_bonus_rate').editable({
             type: "number",
             min: 0,

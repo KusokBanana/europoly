@@ -96,6 +96,7 @@
         var cookieHiddenCols = getHiddenColumns('<?= $table_id ?>');
         var mustHidden = <?= $mustHidden ?>;
         var $filterSearchValues = <?= json_encode($filterSearchValues); ?>;
+        var $clickUrl = "<?= $click_url == 'javascript:;' ? false : $click_url; ?>";
         hiddenByDefault = cookieHiddenCols ? cookieHiddenCols : hiddenByDefault;
         if (mustHidden)
             hiddenByDefault.push(mustHidden);
@@ -152,9 +153,17 @@
         $table.find('tbody').on('click', 'tr td:not(:first-child)', function (e) {
             var data = table.row($(this).closest('tr')).data();
             var target = e.target;
-            if ($(target).hasClass('editable-click') || $(target).closest('.editable-container').length)
-                return;
-            window.location.href = "<?= $click_url ?>" + data[0];
+            if ($clickUrl) {
+                if ($(target).hasClass('editable-click') || $(target).closest('.editable-container').length ||
+                    $(target).closest('.popover').length)
+                    return;
+                window.location.href = $clickUrl + data[0];
+            } else {
+                var link = $(target).find('a').not('.table-confirm-btn, .x-editable');
+                if (link.length) {
+                    window.location.href = link.attr('href');
+                }
+            }
         });
         // Позволяет не убегать за левый хидден x-editable окну
         $('table').on('click', '.x-editable.editable-click', function() {
@@ -320,7 +329,7 @@
                     filter[index] = $(this).val();
                 }
             });
-console.log(filter);
+
             if ($filterSearchValues && filter.length) {
                 $.each($filterSearchValues, function() {
                     var row = this;
