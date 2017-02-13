@@ -140,7 +140,8 @@
                 selector: 'td:first-child',
                 blurable: true
             },
-            colReorder: true
+            colReorder: false,
+            stateSave: true
         });
         $table.on('draw.dt', function () {
             var tableConfirmBtn = $('.table-confirm-btn');
