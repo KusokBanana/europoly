@@ -17,22 +17,32 @@ class ModelSuppliers_order extends ModelOrder
                     IFNULL(CONCAT(products.surface, ', '), ''),
                     IFNULL(CONCAT(products.thickness, 'x', products.width, 'x', products.length), ''),
                 '</a>')"),
-        array('dt' => 2, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-amount\" data-pk=\"',
+        array('dt' => 2, 'db' => "IF(suppliers_orders_items.manager_order_id IS NOT NULL, 
+            CONCAT(suppliers_orders_items.amount, ' ', products.units),
+            CONCAT('<a href=\"javascript:;\" class=\"x-editable x-amount\" data-pk=\"',
                 suppliers_orders_items.item_id,
                 '\" data-name=\"amount\" data-value=\"',
                 IFNULL(suppliers_orders_items.amount, ''),
                 '\" data-url=\"/suppliers_order/change_item_field\" data-original-title=\"Enter Quantity\">',
                     IFNULL(CONCAT(suppliers_orders_items.amount, ' ', products.units), ''),
-                '</a>')"),
-        array('dt' => 3, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-number_of_packs\" data-pk=\"',
+                '</a>'))"),
+        array('dt' => 3, 'db' => "IF(suppliers_orders_items.manager_order_id IS NOT NULL,
+            CONCAT(suppliers_orders_items.number_of_packs, ' ', IFNULL(products.packing_type, '')),
+            CONCAT('<a href=\"javascript:;\" class=\"x-editable x-number_of_packs\" data-pk=\"',
                 suppliers_orders_items.item_id,
                 '\" data-name=\"number_of_packs\" data-value=\"',
                 IFNULL(suppliers_orders_items.number_of_packs, ''),
                 '\" data-url=\"/suppliers_order/change_item_field\" data-original-title=\"Enter Number of Packs\">',
-                    IFNULL(suppliers_orders_items.number_of_packs, ''),
+                    IFNULL(CONCAT(suppliers_orders_items.number_of_packs, ' ', IFNULL(products.packing_type, '')), ''),
+                '</a>'))"),
+        array('dt' => 4, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-purchase_price\" data-pk=\"',
+                suppliers_orders_items.item_id,
+                '\" data-name=\"purchase_price\" data-value=\"',
+                IFNULL(CAST(suppliers_orders_items.purchase_price as decimal(64, 2)), ''),
+                '\" data-url=\"/suppliers_order/change_item_field\" data-original-title=\"Enter Purchase Price\">',
+                    IFNULL(CAST(suppliers_orders_items.purchase_price as decimal(64, 2)), ''),
                 '</a>')"),
-        array('dt' => 4, 'db' => "IFNULL(CAST(suppliers_orders_items.purchase_price as decimal(64, 2)), '')"),
-        array('dt' => 5, 'db' => "IFNULL(CAST(suppliers_orders_items.purchase_price * suppliers_orders_items.number_of_packs as decimal(64, 2)), '')"),
+        array('dt' => 5, 'db' => "IFNULL(CAST(suppliers_orders_items.purchase_price * suppliers_orders_items.amount as decimal(64, 2)), '')"),
         array('dt' => 6, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-item_status\" data-pk=\"',
                 suppliers_orders_items.item_id,
                 '\" data-name=\"status_id\" data-value=\"',
@@ -40,18 +50,27 @@ class ModelSuppliers_order extends ModelOrder
                 '\" data-url=\"/suppliers_order/change_item_field\" data-original-title=\"Choose Item Status\">',
                     status.name,
                 '</a>')"),
-        array('dt' => 7, 'db' => "products.weight"),
-        array('dt' => 8, 'db' => "orders.downpayment_rate"),
-        array('dt' => 9, 'db' => "orders.expected_date_of_issue"),
-        array('dt' => 10, 'db' => "managers.first_name"),
-        array('dt' => 11, 'db' => "CONCAT('<a href=\"/order?id=',
+        array('dt' => 7, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-production_date\" data-pk=\"',
+                suppliers_orders_items.item_id,
+                '\" data-name=\"production_date\" data-value=\"', IFNULL(suppliers_orders_items.production_date, ''),
+                '\" data-url=\"/suppliers_order/change_item_field\" data-original-title=\"Choose Production Date\">',
+                    IFNULL(suppliers_orders_items.production_date, ''),
+                '</a>')"),
+        array('dt' => 8, 'db' => "CAST(products.weight * suppliers_orders_items.amount as decimal(64, 3))"),
+        array('dt' => 9, 'db' => "CONCAT(orders.downpayment_rate, ' %')"),
+        array('dt' => 10, 'db' => "orders.expected_date_of_issue"),
+        array('dt' => 11, 'db' => "managers.first_name"),
+        array('dt' => 12, 'db' => "CONCAT('<a href=\"/order?id=',
                 suppliers_orders_items.manager_order_id,
                 '\">', suppliers_orders_items.manager_order_id,
-                 IF(suppliers_orders_items.reserve_since_date IS NULL, '', ' (reserved)'), '</a>')"),
-        array('dt' => 12, 'db' => "clients.name"),
-        array('dt' => 13, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
+                 IF(suppliers_orders_items.reserve_since_date IS NULL, '', (CONCAT(' (reserved ', suppliers_orders_items.reserve_since_date, ')'))), '</a>')"),
+        array('dt' => 13, 'db' => "clients.name"),
+        array('dt' => 14, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
                         CONCAT('<a href=\"/suppliers_order/delete_order_item?order_id=', suppliers_orders_items.supplier_order_id, '&order_item_id=', suppliers_orders_items.item_id,
                         '\" onclick=\"return confirm(\'Are you sure to delete the item?\')\"><span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span></a>'),
+                        IF(suppliers_orders_items.reserve_since_date IS NOT NULL,
+                        CONCAT('<a href=\"/suppliers_order/delete_from_reserve?order_item_id=', suppliers_orders_items.item_id,
+                        '\" onclick=\"return confirm(\'Are you sure to delete from reserve the item?\')\"><span class=\'glyphicon glyphicon-remove\' title=\'Delete from reserve\'></span></a>'), ''),
                 '</div>')")
 ];
 
@@ -95,9 +114,11 @@ class ModelSuppliers_order extends ModelOrder
     {
         $count = 0;
         foreach ($product_ids as $product_id) {
-            $this->insert("INSERT INTO order_items (supplier_order_id, product_id, total_price, amount, 
-              number_of_packs, status_id)
-            VALUES ($order_id, $product_id, 0, 0, 0, 4)");
+            $product = $this->getFirst("SELECT purchase_price FROM products WHERE product_id = $product_id");
+            $purchase_price = ($product && $product['purchase_price']) ? $product['purchase_price'] : 0;
+            $this->insert("INSERT INTO order_items (supplier_order_id, product_id, amount, 
+              number_of_packs, status_id, purchase_price)
+            VALUES ($order_id, $product_id, 0, 0, 4, $purchase_price)");
             $count++;
         }
         $this->update("UPDATE suppliers_orders 
@@ -108,11 +129,7 @@ class ModelSuppliers_order extends ModelOrder
 
     function deleteOrderItem($order_id, $order_item_id)
     {
-//        $order_item = $this->getFirst("SELECT * FROM suppliers_orders_items WHERE order_item_id = $order_item_id");
-//        if ($managerOrderItem = $order_item['managers_order_item_id']) {
-//            $this->update("UPDATE order_items SET item_status = 'Sent to Supplier' WHERE order_item_id = $managerOrderItem");
-//        }
-//        $this->delete("DELETE FROM suppliers_orders_items WHERE order_item_id = $order_item_id");
+
         $this->update("UPDATE order_items SET status_id = 1, supplier_order_id = NULL,
                        WHERE item_id = $order_item_id");
 
@@ -125,16 +142,15 @@ class ModelSuppliers_order extends ModelOrder
 
     public function updateField($order_id, $field, $new_value)
     {
-        $old_order = $this->getFirst("SELECT * FROM suppliers_orders WHERE order_id = $order_id");
-        $result = $this->update("UPDATE `suppliers_orders` SET `$field` = '$new_value' WHERE order_id = $order_id");
-        $new_order = $this->getFirst("SELECT * FROM suppliers_orders WHERE order_id = $order_id");
-
-        $total_price = $old_order['total_price'] - $old_order['special_expenses'] + $new_order['special_expenses'];
-        $this->update("UPDATE suppliers_orders 
-                SET total_price = $total_price
-                WHERE order_id = $order_id");
-
-        return $result;
+//        $old_order = $this->getFirst("SELECT * FROM suppliers_orders WHERE order_id = $order_id");
+//        $result = $this->update("UPDATE `suppliers_orders` SET `$field` = '$new_value' WHERE order_id = $order_id");
+//        $new_order = $this->getFirst("SELECT * FROM suppliers_orders WHERE order_id = $order_id");
+//
+//        $this->update("UPDATE suppliers_orders
+//                SET total_price = $total_price
+//                WHERE order_id = $order_id");
+//
+//        return $result;
     }
 
     public function updateItemField($order_item_id, $field, $new_value)
@@ -157,8 +173,11 @@ class ModelSuppliers_order extends ModelOrder
             return true;
         }
 
+        $this->update("UPDATE order_items SET `$field` = '$new_value' WHERE item_id = $order_item_id");
 
-        $this->update("UPDATE order_items SET `$field` = $new_value WHERE item_id = $order_item_id");
+        if ($field == 'production_date') {
+            $this->updateOrderProductionDate($old_order_item['supplier_order_id']);
+        }
 
 //        Изменим статус самого объекта
         if ($field == 'status_id') {
@@ -176,6 +195,15 @@ class ModelSuppliers_order extends ModelOrder
         $orderStatus = $status ? $status['status_id'] : 4;
         $this->update("UPDATE `suppliers_orders` 
                 SET status_id = $orderStatus WHERE order_id = $orderId");
+    }
+
+    public function updateOrderProductionDate($orderId)
+    {
+        $item = $this->getFirst("SELECT MAX(production_date) as production_date FROM order_items WHERE supplier_order_id = $orderId");
+        if ($item) {
+            $productionDate = $item['production_date'];
+            $this->update("UPDATE suppliers_orders SET production_date = '$productionDate' WHERE order_id = $orderId");
+        }
     }
 
     public function getStatusList()
@@ -198,6 +226,18 @@ class ModelSuppliers_order extends ModelOrder
             $suppliersList[] = $item;
         }
         return ['list' => $suppliersList, 'name' => $currentSupplierName];
+    }
+
+    public function deleteFromReserve($order_item_id)
+    {
+
+        $item = $this->getFirst("SELECT * FROM order_items WHERE item_id = $order_item_id");
+        $result = $this->update("UPDATE order_items SET manager_order_id = NULL, reserve_since_date = NULL, reserve_till_date = NULL
+          WHERE item_id = $order_item_id");
+        if ($result) {
+            return $this->update("UPDATE order_items SET status_id = 1 WHERE (manager_order_id = ${item['manager_order_id']} AND
+          product_id = ${item['product_id']} AND status_id > 1)");
+        }
     }
 
 }

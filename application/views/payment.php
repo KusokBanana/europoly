@@ -252,20 +252,6 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                                    value="<?= isset($this->payment['contractor_id']) ?
                                                        $this->payment['contractor_id'] : '' ?>">
                                         </div>
-
-                                        <br/>
-                                        <br/>
-                                        <br/>
-                                        <span class="help-block" style="color:red">
-												<ul>
-													<li>Если Category = Client, здесь будет список Клиентов в системе</li>
-													<li>Если Category = Comission Agent, здесь будет список Comission Agents в системе</li>
-													<li>Если Category = Supplier, здесь будет список Брендов в системе</li>
-													<li>Если Category = Customs, здесь будет список Таможен в системе</li>
-													<li>Если Category = Delivery, здесь будет список Траспортных компаний в системе</li>
-													<li>Если Category = Other, здесь будет свободное поле</li>
-												</ul>
-												</span>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-md-3 control-label" for="order_id">Order</label>
@@ -277,21 +263,6 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                                    value="<?= isset($this->payment['order_id']) ?
                                                        $this->payment['order_id'] : '' ?>">
                                         </div>
-
-                                        <br/>
-                                        <br/>
-                                        <br/>
-                                        <span class="help-block" style="color:red">
-													<ul>
-														<li>Если Category = Client, здесь будет список заказов выбранного Клиента в разделе Contractor</li>
-														<li>Если Category = Comission Agent, здесь будет список заказов , в которых Comission Agent'ом является выбранный Comission Agent в разделе Contractor</li>
-														<li>Если Category = Supplier, здесь будет список заказов выбранного Бренда в разделе Contractor</li>
-														<li>Если Category = Customs, здесь будет свободное поле</li>
-														<li>Если Category = Delivery, здесь будет свободное поле</li>
-														<li>Если Category = Other, здесь будет свободное поле</li>
-													</ul>
-												</span>
-
                                     </div>
                                     <div class="form-group">
                                         <label class="col-md-3 control-label" for="transfer_type_id">Transfer Type</label>

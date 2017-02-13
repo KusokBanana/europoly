@@ -18,22 +18,26 @@ class ModelTruck extends ModelOrder
                     IFNULL(CONCAT(products.surface, ', '), ''),
                     IFNULL(CONCAT(products.thickness, 'x', products.width, 'x', products.length), ''),
                 '</a>')"),
-        array('dt' => 2, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-amount\" data-pk=\"',
+        array('dt' => 2, 'db' => "IF(trucks_items.status_id > 8, 
+                CONCAT(trucks_items.amount, ' ', IFNULL(products.units, '')),
+                CONCAT('<a href=\"javascript:;\" class=\"x-editable x-amount\" data-pk=\"',
                 trucks_items.item_id,
                 '\" data-name=\"amount\" data-value=\"',
                 IFNULL(trucks_items.amount, ''),
                 '\" data-url=\"/truck/change_item_field\" data-original-title=\"Enter Quantity\">',
                     IFNULL(CONCAT(trucks_items.amount, ' ', products.units), ''),
-                '</a>')"),
-        array('dt' => 3, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-number_of_packs\" data-pk=\"',
+                '</a>'))"),
+        array('dt' => 3, 'db' => "IF(trucks_items.status_id > 8, 
+                CONCAT(trucks_items.number_of_packs, ' ', IFNULL(products.packing_type, '')),
+                CONCAT('<a href=\"javascript:;\" class=\"x-editable x-number_of_packs\" data-pk=\"',
                 trucks_items.item_id,
                 '\" data-name=\"number_of_packs\" data-value=\"',
                 IFNULL(trucks_items.number_of_packs, ''),
                 '\" data-url=\"/truck/change_item_field\" data-original-title=\"Enter Number of Packs\">',
-                    IFNULL(trucks_items.number_of_packs, ''),
-                '</a>')"),
-        array('dt' => 4, 'db' => "IFNULL(CAST(trucks_items.sell_price as decimal(64, 2)), '')"),
-        array('dt' => 5, 'db' => "IFNULL(CAST(trucks_items.sell_price * trucks_items.amount as decimal(64, 2)), '')"),
+                    CONCAT(trucks_items.number_of_packs, ' ', IFNULL(products.packing_type, '')),
+                '</a>'))"),
+        array('dt' => 4, 'db' => "IFNULL(CAST(trucks_items.purchase_price as decimal(64, 2)), '')"),
+        array('dt' => 5, 'db' => "IFNULL(CAST(trucks_items.purchase_price * trucks_items.amount as decimal(64, 2)), '')"),
         array('dt' => 6, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-item_status\" data-pk=\"',
                 trucks_items.item_id,
                 '\" data-name=\"status_id\" data-value=\"',
@@ -41,14 +45,15 @@ class ModelTruck extends ModelOrder
                 '\" data-url=\"/truck/change_item_field\" data-original-title=\"Choose Item Status\">',
                     status.name,
                 '</a>')"),
-        array('dt' => 7, 'db' => "products.weight"),
-        array('dt' => 8, 'db' => "orders.downpayment_rate"),
+        array('dt' => 7, 'db' => "CAST(products.weight * trucks_items.amount as decimal(64, 3))"),
+        array('dt' => 8, 'db' => "CONCAT(orders.downpayment_rate, ' %')"),
         array('dt' => 9, 'db' => "orders.expected_date_of_issue"),
         array('dt' => 10, 'db' => "managers.first_name"),
         array('dt' => 11, 'db' => "CONCAT('<a href=\"/order?id=',
                 trucks_items.manager_order_id,
                 '\">', trucks_items.manager_order_id,
-                 IF(trucks_items.reserve_since_date IS NULL, '', ' (reserved)'), '</a>')"),
+                 IF(trucks_items.reserve_since_date IS NULL, '', 
+                 (CONCAT(' (reserved ', trucks_items.reserve_since_date, ')'))), '</a>')"),
         array('dt' => 12, 'db' => "CONCAT('<a href=\"/suppliers_order?id=',
                 trucks_items.supplier_order_id,
                 '\">', trucks_items.supplier_order_id, '</a>')"),
@@ -277,8 +282,53 @@ class ModelTruck extends ModelOrder
                     $amount = floatval($new_value);
                     $number_of_packs = $amount / floatval($product['amount_in_pack']);
             }
-            return $this->update("UPDATE order_items SET number_of_packs = $number_of_packs, amount = $amount
+            if ($old_order_item['amount'] > $amount) {
+                $newAmount = $old_order_item['amount'] - $amount;
+                $valuesArray = [];
+                $fieldsArray = [];
+                foreach ($old_order_item as $field => $value) {
+                    if ($field == 'item_id' || $field == 'truck_id')
+                        continue;
+                    $value = $value != "" ? $this->escape_string($value) : '';
+                    if ($field == 'amount')
+                        $value = $newAmount;
+                    if ($field == 'number_of_packs')
+                        $value = $newAmount / floatval($product['amount_in_pack']);
+                    if ($field == 'status_id')
+                        $value = 5;
+                    if ($field == 'manager_order_id') {
+                        if ($value == null)
+                            continue;
+                    }
+
+                    if ($field == 'reserve_since_date' || $field == 'reserve_till_date')
+                        continue;
+
+                    $fieldsArray[] = "$field";
+                    $valuesArray[] = "'$value'";
+                }
+                $values = join(', ', $valuesArray);
+                $fieldsString = join(', ', $fieldsArray);
+                $newId = $this->insert("INSERT INTO order_items ($fieldsString) VALUES ($values)");
+                if ($old_order_item['manager_order_id']) {
+                    $sellValueOld = ($old_order_item['sell_price'] * (100 - $old_order_item['discount_rate'])) * $amount / 100;
+                    $sellValueNew = ($old_order_item['sell_price'] * (100 - $old_order_item['discount_rate'])) * $newAmount / 100;
+
+                    $commission_agent_bonusOld = $old_order_item['commission_rate'] * $sellValueOld / 100;
+                    $commission_agent_bonusNew = $old_order_item['commission_rate'] * $sellValueNew / 100;
+                    $manager_bonusOld = ($sellValueOld - $commission_agent_bonusOld) * $old_order_item['manager_bonus_rate'] / 100;
+                    $manager_bonusNew = ($sellValueNew - $commission_agent_bonusNew) * $old_order_item['manager_bonus_rate'] / 100;
+
+                    $this->update("UPDATE order_items SET commission_agent_bonus = $commission_agent_bonusOld, 
+                      manager_bonus = $manager_bonusOld WHERE item_id = $order_item_id");
+                    $this->update("UPDATE order_items SET commission_agent_bonus = $commission_agent_bonusNew, 
+                      manager_bonus = $manager_bonusNew WHERE item_id = $newId");
+
+                }
+                return $this->update("UPDATE order_items SET number_of_packs = $number_of_packs, amount = $amount
                                     WHERE item_id = $order_item_id");
+            }
+           return false;
         }
 
         $result = $this->update("UPDATE `order_items` SET `$field` = '$new_value' WHERE item_id = $order_item_id");

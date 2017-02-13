@@ -35,6 +35,14 @@ class ModelManagers_orders extends Model
         array('dt' => 23, 'db' => "order_items.warehouse_arrival_date"),
         array('dt' => 24, 'db' => "CONCAT('<a href=\"\client?id=', orders.client_id, '\">', client.name, '</a>')"),
         array('dt' => 25, 'db' => "CONCAT('<a href=\"\client?id=', orders.commission_agent_id, '\">', commission.name, '</a>')"),
+        array('dt' => 26, 'db' => "order_items.discount_rate"),
+        array('dt' => 27, 'db' => "order_items.reduced_price"),
+        array('dt' => 28, 'db' => "order_items.manager_bonus_rate"),
+        array('dt' => 29, 'db' => "order_items.manager_bonus"),
+        array('dt' => 30, 'db' => "order_items.commission_rate"),
+        array('dt' => 31, 'db' => "order_items.commission_agent_bonus"),
+        array('dt' => 32, 'db' => "order_items.production_date"),
+        array('dt' => 33, 'db' => "IFNULL(CONCAT(order_items.reserve_since_date, ' - ',order_items.reserve_till_date), '')"),
     ];
 
     var $managers_orders_column_names = [
@@ -63,7 +71,15 @@ class ModelManagers_orders extends Model
          'Supplier Departure Date',
          'Warehouse Arrival Date',
          'Client',
-         'Commission Agent'
+         'Commission Agent',
+         'Discount Rate',
+         'Reduced Price',
+         'Manager Bonus Rate',
+         'Manager Bonus',
+         'Commission Rate',
+         'Commission Agent Bonus',
+         'Production Date',
+         'Reserve Period',
     ];
 
     var $managers_orders_reduced_columns = [

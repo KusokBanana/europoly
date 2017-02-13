@@ -207,7 +207,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Quantity of product in 1 pack (in units)</label>
-                                <input name="amount_in_pack" class="form-control"
+                                <input name="amount_in_pack" class="form-control" required
                                        placeholder="Enter Amount of product in 1 pack (in units)">
                             </div>
                             <div class="form-group">

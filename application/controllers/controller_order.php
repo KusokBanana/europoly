@@ -19,6 +19,9 @@ class ControllerOrder extends Controller
         $this->view->full_product_column_names = $this->model->full_product_column_names;
         $this->view->full_product_hidden_columns = $this->model->full_product_hidden_columns;
         $this->view->managers = $this->model->getSalesManagersIdName();
+        $this->view->legalEntities = $this->model->getLegalEntities();
+        $this->view->legalEntityName = $this->model->getLegalEntityName($this->view->order['legal_entity_id']);
+
 //        $this->view->commission_agents = $this->model->getCommissionAgentsIdName();
 //        $this->view->clients = $this->model->getClientsIdName();
         $this->view->clients = $this->model->getClientsOfManager($this->view->order["sales_manager_id"]);

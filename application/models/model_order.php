@@ -23,25 +23,29 @@ class ModelOrder extends Model
                     IFNULL(CONCAT(products.surface, ', '), ''),
                     IFNULL(CONCAT(products.thickness, 'x', products.width, 'x', products.length), ''),
                 '</a>')"),
-            array('dt' => 2, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-amount\" data-pk=\"',
-                order_items.item_id,
-                '\" data-name=\"amount\" data-value=\"',
-                IFNULL(order_items.amount, ''),
-                '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Quantity\">',
-                    IFNULL(CONCAT(order_items.amount, ' ', products.units), ''),
-                '</a>')"),
-            array('dt' => 3, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-number_of_packs\" data-pk=\"',
+            array('dt' => 2, 'db' => "IF(order_items.status_id > 2, 
+                CONCAT(order_items.amount, ' ', IFNULL(products.units, '')),
+                CONCAT('<a href=\"javascript:;\" class=\"x-editable x-amount\" data-pk=\"',
+                    order_items.item_id,
+                    '\" data-name=\"amount\" data-value=\"',
+                    IFNULL(order_items.amount, ''),
+                    '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Quantity\">',
+                        IFNULL(CONCAT(order_items.amount, ' ', products.units), ''),
+                    '</a>'))"),
+            array('dt' => 3, 'db' => "IF(order_items.status_id > 2, 
+            CONCAT(order_items.number_of_packs, ' ', IFNULL(products.packing_type, '')),
+            CONCAT('<a href=\"javascript:;\" class=\"x-editable x-number_of_packs\" data-pk=\"',
                 order_items.item_id,
                 '\" data-name=\"number_of_packs\" data-value=\"',
                 IFNULL(order_items.number_of_packs, ''),
                 '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Number of Packs\">',
-                    IFNULL(order_items.number_of_packs, ''),
-                '</a>')"),
+                    IFNULL(CONCAT(order_items.number_of_packs, ' ', products.packing_type), ''),
+                '</a>'))"),
             array('dt' => 4, 'db' => "CONCAT(IF(products.units = 'm2' AND products.length NOT LIKE '%-%' 
                                                                         AND products.width NOT LIKE '%-%',
                                         IF(products.width = NULL, 'Width undefined', 
                                         IF(products.length = NULL, 'Length undefined', 
-                                            (order_items.amount * 1000 * 1000) / (products.width * products.length))
+                                            CAST((order_items.amount * 1000 * 1000) / (products.width * products.length) as decimal(64, 2)))
                                             ), 'n/a'), '')"),
             array('dt' => 5, 'db' => "IFNULL(CAST(order_items.purchase_price as decimal(64, 2)), '')"),
             array('dt' => 6, 'db' => "IFNULL(CAST(order_items.purchase_price * order_items.amount as decimal(64, 2)), '')"),
@@ -80,28 +84,28 @@ class ModelOrder extends Model
                 '\" data-name=\"commission_rate\" data-value=\"',
                 IFNULL(order_items.commission_rate, ''),
                 '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Commission Rate\">',
-                    IFNULL((CONCAT(order_items.commission_rate, '%')), ''),
+                    IFNULL((CONCAT(CAST(order_items.commission_rate as decimal(64, 2)), '%')), ''),
                 '</a>')"),
             array('dt' => 12, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-commission_agent_bonus\" data-pk=\"',
                 order_items.item_id,
                 '\" data-name=\"commission_agent_bonus\" data-value=\"',
                 IFNULL(order_items.commission_agent_bonus, ''),
                 '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Commission Agent Bonus\">',
-                    IFNULL(order_items.commission_agent_bonus, ''),
+                    IFNULL(CAST(order_items.commission_agent_bonus as decimal(64, 2)), ''),
                 '</a>')"),
             array('dt' => 13, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-manager_bonus_rate\" data-pk=\"',
                 order_items.item_id,
                 '\" data-name=\"manager_bonus_rate\" data-value=\"',
                 IFNULL(order_items.manager_bonus_rate, ''),
                 '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Manager Bonus Rate, %\">',
-                    IFNULL(CONCAT(order_items.manager_bonus_rate, '%'), ''),
+                    IFNULL(CONCAT(CAST(order_items.manager_bonus_rate as decimal(64, 2)), '%'), ''),
                 '</a>')"),
             array('dt' => 14, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-manager_bonus\" data-pk=\"',
                 order_items.item_id,
                 '\" data-name=\"manager_bonus\" data-value=\"',
                 IFNULL(order_items.manager_bonus, ''),
                 '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Manager Bonus\">',
-                    IFNULL(order_items.manager_bonus, ''),
+                    IFNULL(CAST(order_items.manager_bonus as decimal(64, 2)), ''),
                 '</a>')"),
             array('dt' => 15, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-item_status\" data-pk=\"',
                 order_items.item_id,
@@ -132,7 +136,7 @@ class ModelOrder extends Model
                                     <span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span>
                                 </a>'), 
                         ''),
-                    IF(order_items.status_id = 8,
+                    IF(order_items.status_id = 9,
                         CONCAT('<a href=\"/order/issue?order_item_id=', order_items.item_id,
                                 '\" onclick=\"return confirm(\'Are you sure to create issue for the item?\')\">
                                     <span class=\'fa fa-share\' title=\'Issue\'></span>
@@ -148,7 +152,7 @@ class ModelOrder extends Model
                     $this->full_products_table_addition .
                     ' left join items_status as status on order_items.status_id = status.status_id';
 
-        $where = "order_items.manager_order_id = $order_id AND order_items.reserve_since_date IS NULL";
+        $where = "order_items.manager_order_id = $order_id";
         return $this->sspComplex($table, "order_items.item_id", $columns, $input, null, $where);
     }
 
@@ -168,12 +172,11 @@ class ModelOrder extends Model
         $client = $this->getFirst("SELECT * FROM clients WHERE client_id = ${order['client_id']}");
         $sales_manager = $this->getFirst("SELECT * FROM users WHERE user_id = ${order['sales_manager_id']}");
         $manager_bonus_rate = isset($sales_manager['manager_bonus_rate']) && $sales_manager['manager_bonus_rate'] != "" ? $sales_manager['manager_bonus_rate'] : 0;
-        $price_field_name = $client['type'] == 'Dealer' ? 'dealer_price' : 'purchase_price';
         $discount_rate = $client['type'] == 'Dealer' ? 30 : 0;
         foreach ($product_ids as $product_id) {
             $product = $this->getFirst("SELECT * FROM products WHERE product_id = $product_id");
 
-            $productPrice = $product[$price_field_name] != null ? $product[$price_field_name] : 0;
+            $productPrice = $product['purchase_price'] != null ? $product['purchase_price'] : 0;
             $totalPrice = $order['total_price'] + $productPrice;
             $this->insert("INSERT INTO order_items (manager_order_id, product_id, purchase_price, amount, number_of_packs, total_price, discount_rate, reduced_price, manager_bonus_rate, manager_bonus, sell_price)
                 VALUES ($order_id, $product_id, $productPrice, 0, 0, 0, $discount_rate, 0, 
@@ -211,11 +214,11 @@ class ModelOrder extends Model
         $result = $this->update("UPDATE `orders` SET `$field` = '$new_value' WHERE order_id = $order_id");
         $new_order = $this->getFirst("SELECT * FROM orders WHERE order_id = $order_id");
 
-        $total_price = $old_order['total_price'] - $old_order['special_expenses'] + $new_order['special_expenses'];
-        $total_commission = $new_order['commission_rate'] * $total_price / 100;
-        $this->update("UPDATE orders 
-                SET total_price = $total_price, total_commission = $total_commission
-                WHERE order_id = $order_id");
+//        $total_price = $old_order['total_price'] - $old_order['special_expenses'] + $new_order['special_expenses'];
+//        $total_commission = $new_order['commission_rate'] * $total_price / 100;
+//        $this->update("UPDATE orders
+//                SET total_price = $total_price, total_commission = $total_commission
+//                WHERE order_id = $order_id");
 
         return $result;
     }
@@ -248,17 +251,21 @@ class ModelOrder extends Model
         if ($field == 'commission_agent_bonus' || $field == 'commission_rate') {
             switch ($field) {
                 case 'commission_agent_bonus':
-                    // Update Sell Price
-                    $sellPrice = $new_value / ($old_order_item['amount'] * $old_order_item['commission_rate'] * (100 - $old_order_item['discount_rate'])) * 100 * 100;
-                    $this->update("UPDATE `order_items` SET sell_price = $sellPrice
-                          WHERE item_id = $order_item_id");
-                    break;
+                    $sellValue = ($old_order_item['sell_price'] * (100 - $old_order_item['discount_rate'])) *
+                        $old_order_item['amount']/100;
+                    $commission_rate = $new_value / $sellValue * 100;
+                    $manager_bonus = ($sellValue - $new_value) * $old_order_item['manager_bonus_rate'] / 100;
+                    $this->update("UPDATE `order_items` SET commission_rate = $commission_rate, commission_agent_bonus = $new_value,
+                          manager_bonus = $manager_bonus WHERE item_id = $order_item_id");
+                    $this->updateOrderPrice($orderId);
+                    return true;
                 case 'commission_rate':
                     $sellValue = ($old_order_item['sell_price'] * (100 - $old_order_item['discount_rate'])) *
                         $old_order_item['amount'] / 100;
                     $commission_agent_bonus = $sellValue * $new_value / 100;
+                    $manager_bonus = ($sellValue - $commission_agent_bonus) * $old_order_item['manager_bonus_rate'] / 100;
                     $this->update("UPDATE `order_items` SET commission_agent_bonus = $commission_agent_bonus,
-                      commission_rate = $new_value WHERE item_id = $order_item_id");
+                      commission_rate = $new_value, manager_bonus = $manager_bonus WHERE item_id = $order_item_id");
                     $this->updateOrderPrice($orderId);
                     return true;
             }
@@ -487,7 +494,8 @@ class ModelOrder extends Model
                 $this->update("UPDATE order_items SET reserve_since_date = NOW(), reserve_till_date = ADDDATE(NOW(), 7),
                         manager_order_id = $order_id WHERE item_id = $reserved_item_id");
                 // update current item
-                $this->update("UPDATE order_items SET `amount` = $amount WHERE item_id = $itemId");
+                $this->updateItemField($itemId, 'amount', $amount);
+//                $this->update("UPDATE order_items SET `amount` = $amount WHERE item_id = $itemId");
 
             } elseif ($ordered == $available) {
 
@@ -594,5 +602,16 @@ class ModelOrder extends Model
         $status = $this->getFirst("SELECT name FROM items_status WHERE status_id = $status_id");
         return $status ? $status['name'] : 'WTF?!?';
 
+    }
+    public function getLegalEntities()
+    {
+        return $this->getAssoc("SELECT legal_entity_id as value, name as text FROM legal_entities");
+    }
+    public function getLegalEntityName($id)
+    {
+        if ($id == null)
+            return '';
+        $name = $this->getFirst("SELECT name FROM legal_entities WHERE legal_entity_id = $id");
+        return isset($name['name']) ? $name['name'] : '';
     }
 }

@@ -7,6 +7,7 @@
     $hidden_by_default = $table_data['hidden_by_default'];
     $click_url = $table_data['click_url'];
     $mustHidden = 0;
+    $method = isset($table_data['method']) ? $table_data['method'] : 'GET';
     $selectSearch = isset($table_data['selectSearch']) ?
         (!empty($table_data['selectSearch']) ? $table_data['selectSearch'] : []) : false;
     $filterSearchValues = isset($table_data['filterSearchValues']) ?
@@ -60,9 +61,6 @@
                         $input .= '<option value="'.$value.'">'.$value.'</option>';
                     }
                     $input .= '</select>';
-                } else {
-//                    $input = '<input type="text" class="form-control" style="width: 100%"
-//                            onclick="$(this).focus(); event.stopPropagation()" />';
                 }
                 echo '<th>' . $column_name . '<br>' . $input . '</th>';
             }
@@ -92,7 +90,6 @@
 </style>
 
 <script>
-    var global;
     $(document).ready(function () {
         var $table = $('#<?= $table_id ?>');
         var hiddenByDefault = <?= $hidden_by_default ?>;
@@ -117,6 +114,7 @@
             processing: true,
             serverSide: true,
             ajax: ajax,
+            sServerMethod: '<?= $method; ?>',
             columnDefs: [
                 {
                     targets: 0,
@@ -143,7 +141,6 @@
             },
             colReorder: true
         });
-global = table;
         $table.find('tbody').on('click', 'tr td:not(:first-child)', function (e) {
             var data = table.row($(this).closest('tr')).data();
             var target = e.target;

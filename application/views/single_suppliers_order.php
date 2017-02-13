@@ -25,8 +25,9 @@
                             <div class="col-xs-6 invoice-logo-space">
                                 <img src="../assets/pages/media/invoice/adminter.png" class="img-responsive" alt="" /> </div>
                             <div class="col-xs-6">
-                                <p> <?= $this->title ?>
-                                </p>
+                                <span class="caption-subject font-dark sbold uppercase"><?= $this->title ?>
+                                    <span class="hidden-xs">| <?= $this->order['supplier_date_of_order'] ?> </span>
+                                </span>
                             </div>
                         </div>
                         <hr/>
@@ -54,7 +55,7 @@
                                 <h3>Production Date:</h3>
                                 <ul class="list-unstyled">
                                     <li>
-                                        <strong>01.07.2017</strong></li> <?php // TODO Max (prod date) ?>
+                                        <strong> <?= $this->order['production_date'] ?></strong></li>
                                 </ul>
                             </div>
                             <div class="col-xs-4 invoice-block">
@@ -87,11 +88,12 @@
                                             <th> Product </th>
                                             <th> Quantity </th>
                                             <th class="hidden-xs"> # of packs </th>
-                                            <th class="hidden-xs"> Price/unit </th>
-                                            <th class="hidden-xs"> Total price </th>
+                                            <th class="hidden-xs"> Purchase Price </th>
+                                            <th class="hidden-xs"> Purchase Value </th>
                                             <th> Status </th>
+                                            <th> Production Date </th>
                                             <th> Weight </th>
-                                            <th> Downpayment rate </th>
+                                            <th> Downpayment rate, % </th>
                                             <th> Client's expected date of issue </th>
                                             <th> Manager </th>
                                             <th> Managers order id </th>
@@ -140,8 +142,8 @@
                                                     <th>Contractor</th>
                                                     <th>Order</th>
                                                     <th>Transfer Type</th>
-                                                    <th>Currency</th>
                                                     <th>Sum</th>
+                                                    <th>Currency</th>
                                                     <th>Direction</th>
                                                     <th>Purpose of Payment</th>
                                                     <th>Responsible Person</th>
@@ -200,7 +202,7 @@
                     }]
                 });
                 $table_order_items.on('draw.dt', function () {
-                    $('.x-amount, .x-number_of_packs, .x-manager_bonus_rate').editable({
+                    $('.x-amount, .x-number_of_packs, .x-manager_bonus_rate, .x-purchase_price').editable({
                         type: "number",
                         min: 0,
                         step: 0.01,
@@ -235,6 +237,18 @@
                         type: "select",
                         inputclass: 'form-control input-medium',
                         source: suppliers,
+                        success: function () {
+                            location.reload();
+                        }
+                    });
+                    $('.x-production_date').editable({
+                        type: "date",
+                        inputclass: 'form-control input-medium',
+                        format: 'yyyy-mm-dd',
+                        viewformat: 'yyyy-mm-dd',
+                        datepicker: {
+                            weekStart: 1
+                        },
                         success: function () {
                             location.reload();
                         }

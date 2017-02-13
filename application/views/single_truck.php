@@ -20,6 +20,14 @@
         <div class="page-fixed-main-content">
             <!-- BEGIN PAGE BASE CONTENT -->
             <div class="invoice">
+                <div class="portlet light portlet-fit portlet-datatable bordered">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="icon-settings font-dark"></i>
+                            <span class="caption-body font-dark sbold uppercase"><?= $this->title ?></span>
+                        </div>
+                    </div>
+                </div>
                 <div class="row">
                     <form action="/truck/change_truck_select" id="truck-select-form" method="POST">
                         <div class="col-xs-2">
@@ -29,44 +37,43 @@
                             </ul>
                         </div>
                         <div class="col-xs-3">
-                                <input type="hidden" name="pk" value="<?= $this->order['id'] ?>">
-                                <h3>Delivery</h3>
-                                <ul class="list-unstyled">
-                                    <li>
-                                                <span class="label label-sm label-success">
-                                                    Price: <?= $this->delivery['price'] ?>
-                                                </span>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void;" class="x-editable x-transportation_company_id"
-                                           data-pk="<?= $this->order['id'] ?>" data-name="transportation_company_id"
-                                           data-value="<?= $this->order['transportation_company_id'] ?>"
-                                           data-url="/truck/change_field"
-                                           data-original-title="Select Transportation Company">
-                                            <?= $this->delivery['name'] ?>
-                                        </a>
-                                    </li>
-                                </ul>
+                            <input type="hidden" name="pk" value="<?= $this->order['id'] ?>">
+                            <h3>Delivery</h3>
+                            <div>
+                                <span class="label label-sm label-success">
+                                    Price: <?= $this->delivery['price'] ?>
+                                </span>
+                            </div>
+                            <br>
+                            <div>
+                                <span>Delivery Service: </span>
+                                <a href="javascript:void;" class="x-editable x-transportation_company_id"
+                                   data-pk="<?= $this->order['id'] ?>" data-name="transportation_company_id"
+                                   data-value="<?= $this->order['transportation_company_id'] ?>"
+                                   data-url="/truck/change_field"
+                                   data-original-title="Select Transportation Company">
+                                    <?= $this->delivery['name'] ?>
+                                </a>
+                            </div>
                         </div>
                         <div class="col-xs-3">
                             <h3>Customs</h3>
-                            <ul class="list-unstyled">
-                                <li>
-                                                <span class="label label-sm label-success">
-                                                    Price: <?= $this->customs['price'] ?>
-                                                </span>
-                                </li>
-                                <li>
-                                    <a href="javascript:void;" class="x-editable x-custom_id"
-                                       data-pk="<?= $this->order['id'] ?>" data-name="custom_id"
-                                       data-value="<?= $this->order['custom_id'] ?>"
-                                       data-url="/truck/change_field"
-                                       data-original-title="Select Custom">
-                                        <?= $this->customs['name'] ?>
-                                    </a>
-                                </li>
-                            </ul>
-
+                            <div>
+                                <span class="label label-sm label-success">
+                                    Price: <?= $this->customs['price'] ?>
+                                </span>
+                            </div>
+                            <br>
+                            <div>
+                                <span>Customs Service: </span>
+                                <a href="javascript:void;" class="x-editable x-custom_id"
+                                   data-pk="<?= $this->order['id'] ?>" data-name="custom_id"
+                                   data-value="<?= $this->order['custom_id'] ?>"
+                                   data-url="/truck/change_field"
+                                   data-original-title="Select Custom">
+                                    <?= $this->customs['name'] ?>
+                                </a>
+                            </div>
                         </div>
                         <div class="col-xs-4">
                             <h3> Items in this Truck
@@ -108,11 +115,11 @@
                                 <th> Product </th>
                                 <th> Quantity </th>
                                 <th class="hidden-xs"> # of packs </th>
-                                <th class="hidden-xs"> Price/unit </th>
-                                <th class="hidden-xs"> Total price </th>
+                                <th class="hidden-xs"> Purchase Price </th>
+                                <th class="hidden-xs"> Purchase Value </th>
                                 <th> Status </th>
                                 <th> Weight </th>
-                                <th> Downpayment rate </th>
+                                <th> Downpayment rate, % </th>
                                 <th> Client's expected date of issue </th>
                                 <th> Manager </th>
                                 <th> Managers order id </th>
@@ -174,7 +181,7 @@
             }]
         });
         $table_order_items.on('draw.dt', function () {
-            $('.x-amount, .x-number_of_packs, .x-import_brokers_price, .x-import_VAT, ' +
+            $('.x-import_brokers_price, .x-import_VAT, ' +
                 '.x-import_tax, .x-delivery_price').editable({
                 type: "number",
                 min: 0,
@@ -182,6 +189,19 @@
                 inputclass: 'form-control input-medium',
                 success: function () {
                     location.reload();
+                }
+            });
+            $('.x-amount, .x-number_of_packs').editable({
+                type: "number",
+                min: 0,
+                step: 0.01,
+                inputclass: 'form-control input-medium',
+                success: function () {
+                    location.reload();
+                },
+                validate: function(value) {
+                    if (parseFloat(value) > parseFloat($(this).attr('data-value')))
+                        return 'Invalid Value';
                 }
             });
             $('.x-item_status').editable({

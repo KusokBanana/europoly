@@ -13,8 +13,7 @@ class ControllerSuppliers_order extends Controller
         $this->view->title = "Suppliers Order";
         $this->view->order = $this->model->getOrder($_GET['id']);
 //        $this->view->client = $this->model->getClient($this->view->order['client_id']);
-        $this->view->title = "Evropoly Order #".$this->view->order['order_id']." " .
-            $this->view->order['supplier_date_of_order'];
+        $this->view->title = "Supplier Order #".$this->view->order['order_id'];
         $this->view->full_product_column_names = $this->model->full_product_column_names;
         $this->view->full_product_hidden_columns = $this->model->full_product_hidden_columns;
         $this->view->clients = $this->model->getClientsIdName();
@@ -87,5 +86,15 @@ class ControllerSuppliers_order extends Controller
         } else {
             http_response_code(400);
         }
+    }
+
+    function action_delete_from_reserve()
+    {
+        if (isset($_GET["order_item_id"]) && $_GET["order_item_id"]) {
+            $order_item_id = $_GET["order_item_id"];
+            $this->model->deleteFromReserve($order_item_id);
+            header("Location: " . $_SERVER['HTTP_REFERER']);
+        }
+
     }
 }

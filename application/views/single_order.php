@@ -72,6 +72,16 @@
                                             </div>
                                         </div>
                                         <div class="row static-info">
+                                            <div class="col-md-5 name"> Evropoly Contractor:</div>
+                                            <div class="col-md-7 value">
+                                                <a href="javascript:;" id="editable-legal_entity" class='x-editable'
+                                                   data-pk="<?= $this->order['order_id'] ?>"
+                                                   data-name="legal_entity_id" data-value="<?= $this->order['legal_entity_id'] ?>"
+                                                   data-url='/order/change_field' data-original-title='Choose Contractor:'>
+                                                    <?= $this->legalEntityName ?></a>
+                                            </div>
+                                        </div>
+                                        <div class="row static-info">
                                             <div class="col-md-5 name"> Client's expected date of issue:</div>
                                             <div class="col-md-7 value">
                                                 <a href="javascript:;" id="editable-expected_date_of_issue" class='x-editable' data-pk="<?= $this->order['order_id'] ?>" data-name="expected_date_of_issue"
@@ -81,12 +91,13 @@
                                         </div>
                                         <div class="row static-info">
                                             <div class="col-md-5 name"> Total Price:</div>
-                                            <div class="col-md-7 value"><?= $this->order['total_price'] ?> €</div>
+                                            <div class="col-md-7 value"><?= round($this->order['total_price'], 2) ?> €</div>
                                         </div>
                                         <div class="row static-info">
                                             <div class="col-md-5 name"> Total Downpayment:</div>
                                             <div class="col-md-7 value">
-                                                <span><?= $this->order['total_downpayment'] != null ? $this->order['total_downpayment'] . ' &euro;' : '' ?></span>
+                                                <span><?= $this->order['total_downpayment'] != null ?
+                                                        round($this->order['total_downpayment'], 2) . ' &euro;' : '' ?></span>
                                             </div>
                                         </div>
                                         <div class="row static-info">
@@ -102,7 +113,8 @@
                                                 <a href="javascript:;" id="editable-manager" class='x-editable' data-pk="<?= $this->order['order_id'] ?>" data-name="sales_manager_id" data-value="<?= $this->order['sales_manager_id'] ?>"
                                                    data-url='/order/change_field' data-original-title='Enter Sales Manager'>
                                                     <?= $this->sales_manager['first_name'] . ' ' . $this->sales_manager['last_name'] ?>
-                                                    <a href="/sales_manager?id=<?= $this->sales_manager['user_id'] ?>"><i class="glyphicon glyphicon-link"></i></a>
+                                                    <a href="/sales_manager?id=<?= $this->sales_manager['user_id'] ?>">
+                                                        <i class="glyphicon glyphicon-link"></i></a>
                                                 </a>
                                             </div>
                                         </div>
@@ -134,6 +146,8 @@
                                             <div class="col-md-7 value">
                                                 <a href="javascript:;" id="editable-client" class='x-editable' data-pk="<?= $this->order['order_id'] ?>" data-name="client_id" data-value="<?= $this->order['client_id'] ?>"
                                                    data-url='/order/change_field' data-original-title='Choose Client:'><?= $this->client['name'] ?></a>
+                                                <a href="/client?id=<?= $this->order['client_id'] ?>">
+                                                    <i class="glyphicon glyphicon-link"></i></a>
                                             </div>
                                         </div>
                                         <div class="row static-info">
@@ -145,8 +159,7 @@
                                         <div class="row static-info">
                                             <div class="col-md-5 name"> Email:</div>
                                             <div class="col-md-7 value">
-                                                <a href="javascript:;" id="editable-email" class='x-editable' data-pk="<?= $this->order['order_id'] ?>" data-name="email" data-value="<?= $this->order['email'] ?>"
-                                                   data-url='/order/change_field' data-original-title='Enter Email'> <?= $this->order['email'] ?> </a>
+                                                <?= $this->client['email']; ?>
                                             </div>
                                         </div>
                                         <div class="row static-info">
@@ -159,15 +172,7 @@
                                         <div class="row static-info">
                                             <div class="col-md-5 name"> Phone Number:</div>
                                             <div class="col-md-7 value">
-                                                <a href="javascript:;" id="editable-mobile_number" class='x-editable' data-pk="<?= $this->order['order_id'] ?>" data-name="mobile_number" data-value="<?= $this->order['mobile_number'] ?>"
-                                                   data-url='/order/change_field' data-original-title='Enter Phone Number'> <?= $this->order['mobile_number'] ?> </a>
-                                            </div>
-                                        </div>
-                                        <br/>
-                                        <div class="row static-info">
-                                            <div class="col-md-5 name"> Total Commission:</div>
-                                            <div class="col-md-7 value">
-                                                <span> <?= $this->order['total_commission'] . ' &euro;' ?> </span>
+                                                <?= $this->client['mobile_number']; ?>
                                             </div>
                                         </div>
                                         <br/>
@@ -178,6 +183,14 @@
                                                    data-url='/order/change_field' data-original-title='Enter Commission Agent'>
                                                     <?= $this->commission_agent['name'] != null ? $this->commission_agent['name'] . '<a href="/order/delete_commission_agent?order_id=' . $this->order["order_id"] . '"><span class="glyphicon glyphicon-trash"></span></a>' : '' ?>
                                                 </a>
+                                                <a href="/client?id=<?= $this->order['commission_agent_id'] ?>">
+                                                    <i class="glyphicon glyphicon-link"></i></a>
+                                            </div>
+                                        </div>
+                                        <div class="row static-info">
+                                            <div class="col-md-5 name"> Total Commission:</div>
+                                            <div class="col-md-7 value">
+                                                <span> <?= $this->order['total_commission'] . ' &euro;' ?> </span>
                                             </div>
                                         </div>
                                     </div>
@@ -244,6 +257,11 @@
                                                        value="<?= $this->client['client_id'] ?>">
                                                 <input type="hidden" name="Order[order_id]"
                                                        value="<?= $this->order['order_id'] ?>">
+                                                <?php if ($this->order['legal_entity_id'] &&
+                                                    $this->order['legal_entity_id'] !== null): ?>
+                                                <input type="hidden" name="Order[legal_entity_id]"
+                                                       value="<?= $this->order['legal_entity_id'] ?>">
+                                                <?php endif; ?>
                                             </form>
                                             <a href="javascript:void;" onclick="$('#payment-form').submit()"
                                                class="btn btn-default btn-sm">
@@ -263,8 +281,8 @@
                                                     <th>Contractor</th>
                                                     <th>Order</th>
                                                     <th>Transfer Type</th>
-                                                    <th>Currency</th>
                                                     <th>Sum</th>
+                                                    <th>Currency</th>
                                                     <th>Direction</th>
                                                     <th>Currency Rate</th>
                                                     <th>Sum in EURO</th>
@@ -292,27 +310,27 @@
                                 <div class="well">
                                     <div class="row static-info align-reverse">
                                         <div class="col-md-8 name"> Total Price:</div>
-                                        <div class="col-md-3 value"> €<?= $this->order['total_price'] ?></div>
+                                        <div class="col-md-3 value"> €<?= round($this->order['total_price'], 2) ?></div>
                                     </div>
                                     <div class="row static-info align-reverse">
                                         <div class="col-md-8 name"> Total Expences:</div>
-                                        <div class="col-md-3 value"> €2,200.00</div>
+                                        <div class="col-md-3 value"> € -</div>
                                     </div>
                                     <div class="row static-info align-reverse">
                                         <div class="col-md-8 name"> Total Profit:</div>
-                                        <div class="col-md-3 value"> €564.00</div>
+                                        <div class="col-md-3 value"> € -</div>
                                     </div>
                                     <div class="row static-info align-reverse">
                                         <div class="col-md-8 name"> Total Comission:</div>
-                                        <div class="col-md-3 value"> €<?= $this->order['total_commission'] ?></div>
+                                        <div class="col-md-3 value"> €<?= round($this->order['total_commission'], 2) ?></div>
                                     </div>
                                     <div class="row static-info align-reverse">
                                         <div class="col-md-8 name"> Manager Bonus:</div>
-                                        <div class="col-md-3 value"> €<?= $this->order['manager_bonus'] ?> </div>
+                                        <div class="col-md-3 value"> €<?= round($this->order['manager_bonus'], 2) ?> </div>
                                     </div>
                                     <div class="row static-info align-reverse">
                                         <div class="col-md-8 name"> Downpayment:</div>
-                                        <div class="col-md-3 value"> €<?= $this->order['total_downpayment'] != null ? $this->order['total_downpayment']  : '' ?></div>
+                                        <div class="col-md-3 value"> €<?= $this->order['total_downpayment'] != null ? round($this->order['total_downpayment'], 2)  : '' ?></div>
                                     </div>
                                     <div class="row static-info align-reverse">
                                         <div class="col-md-8 name"> Downpayment rate:</div>
@@ -349,6 +367,7 @@ require_once 'modals/cancel_order.php';
         var commission_agents = <?= $this->toJsList($this->commission_agents, "client_id") ?>;
         var clients = <?= $this->toJsList($this->clients, "client_id") ?>;
         var item_statuses = <?= json_encode($this->statusList); ?>;
+        var legalEntities = <?= json_encode($this->legalEntities); ?>;
         <?php if ($this->order['downpayment_rate'] == 100): ?>
         item_statuses[6] = undefined;
         <?php endif; ?>
@@ -463,6 +482,14 @@ require_once 'modals/cancel_order.php';
             type: "select",
             inputclass: 'form-control input-medium',
             source: clients,
+            success: function () {
+                location.reload();
+            }
+        });
+        $('#editable-legal_entity').editable({
+            type: "select",
+            inputclass: 'form-control input-medium',
+            source: legalEntities,
             success: function () {
                 location.reload();
             }

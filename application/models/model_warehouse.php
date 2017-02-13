@@ -7,21 +7,71 @@ class ModelWarehouse extends ModelManagers_orders
     var $products_warehouses_table = "order_items as products_warehouses
             left join products on products_warehouses.product_id = products.product_id
             left join brands on products.brand_id = brands.brand_id
+            left join orders on products_warehouses.manager_order_id = orders.order_id
+            left join suppliers_orders on products_warehouses.supplier_order_id = suppliers_orders.order_id
+            left join trucks on products_warehouses.truck_id = trucks.id
+            left join clients as client on (orders.client_id = client.client_id)
+            left join clients as commission on (orders.commission_agent_id = commission.client_id)
+            left join items_status as status on products_warehouses.status_id = status.status_id
+            left join users as managers on orders.sales_manager_id = managers.user_id
             left join warehouses on products_warehouses.warehouse_id = warehouses.warehouse_id";
 
-    var $product_warehouses_columns_all = array(
+    var $product_warehouses_columns = array(
         array('dt' => 0, 'db' => 'products_warehouses.item_id'),
         array('dt' => 1, 'db' => 'products.article'),
         array('dt' => 2, 'db' => 'CONCAT(\'<a href="/product?id=\', products.product_id, \'">\', IFNULL(products.name, \'no name\'), \'</a>\')'),
         array('dt' => 3, 'db' => 'CONCAT(\'<a href="/brand?id=\', brands.brand_id, \'">\', IFNULL(brands.name, \'no name\'), \'</a>\')'),
-        array('dt' => 4, 'db' => 'CONCAT(\'<a href="/warehouse?id=\', warehouses.warehouse_id, \'">\', IFNULL(warehouses.name, \'no name\'), \'</a>\')'),
+        array('dt' => 4, 'db' => 'CONCAT(\'<a href="javascript:;" class="x-editable x-warehouse_id" 
+            data-pk="\', products_warehouses.item_id ,\'" 
+            data-name="warehouse_id" data-value="\', products_warehouses.warehouse_id, \'" data-url="/warehouse/change_item_field" 
+            data-original-title="Change Warehouse">\', IFNULL(warehouses.name, \'no name\'), \'</a>,
+            <a href="/warehouse?id=\', products_warehouses.warehouse_id, \'"><i class="glyphicon glyphicon-link"></i></a>\')'),
         array('dt' => 5, 'db' => 'products_warehouses.amount'),
         array('dt' => 6, 'db' => 'products.units'),
-        array('dt' => 7, 'db' => 'products_warehouses.buy_price'),
-        array('dt' => 8, 'db' => 'products_warehouses.buy_and_taxes'),
-        array('dt' => 9, 'db' => 'products_warehouses.sell_price'),
-        array('dt' => 10, 'db' => 'products_warehouses.dealer_price'),
-        array('dt' => 11, 'db' => 'products_warehouses.total_price')
+        array('dt' => 7, 'db' => "products_warehouses.number_of_packs"),
+        array('dt' => 8, 'db' => "products.weight * products_warehouses.number_of_packs"),
+        array('dt' => 9, 'db' => 'products_warehouses.buy_price'),
+        array('dt' => 10, 'db' => 'products_warehouses.buy_and_taxes'),
+        array('dt' => 11, 'db' => 'products_warehouses.sell_price'),
+        array('dt' => 12, 'db' => 'products_warehouses.dealer_price'),
+        array('dt' => 13, 'db' => 'products_warehouses.total_price'),
+        array('dt' => 14, 'db' => 'CAST((products_warehouses.purchase_price * products_warehouses.amount + products_warehouses.import_vat + products_warehouses.import_brokers_price + products_warehouses.import_tax + products_warehouses.delivery_price) as decimal(64, 2))'),
+        array('dt' => 15, 'db' => 'CAST((products_warehouses.purchase_price * products_warehouses.amount + 
+        products_warehouses.import_vat + products_warehouses.import_brokers_price + products_warehouses.import_tax +
+         products_warehouses.delivery_price) / products_warehouses.amount as decimal(64, 2))'),
+        array('dt' => 16, 'db' => "CONCAT('<a href=\"/order?id=', products_warehouses.manager_order_id, '\">', 
+            products_warehouses.manager_order_id,
+            IF(products_warehouses.reserve_since_date IS NULL, '', ' (reserved)'), '</a>')"),
+        array('dt' => 17, 'db' => "CONCAT(managers.first_name, ' ', managers.last_name, '<a href=\"/sales_manager?id=',
+            orders.sales_manager_id, '\"><i class=\"glyphicon glyphicon-link\"></i></a>')"),
+        array('dt' => 18, 'db' => "orders.start_date"),
+        array('dt' => 19, 'db' => "status.name"),
+        array('dt' => 20, 'db' => "products_warehouses.purchase_price"),
+        array('dt' => 21, 'db' => "products_warehouses.purchase_price * products_warehouses.number_of_packs"),
+        array('dt' => 22, 'db' => "products_warehouses.sell_price"),
+        array('dt' => 23, 'db' => "products_warehouses.sell_price * products_warehouses.number_of_packs"),
+        array('dt' => 24, 'db' => "orders.total_downpayment"),
+        array('dt' => 25, 'db' => "orders.downpayment_rate"),
+        array('dt' => 26, 'db' => "orders.expected_date_of_issue"),
+        array('dt' => 27, 'db' => "CONCAT('<a href=\"/suppliers_order?id=', products_warehouses.supplier_order_id, '\">',
+            products_warehouses.supplier_order_id, '</a>')"),
+        array('dt' => 28, 'db' => "suppliers_orders.supplier_date_of_order"),
+        array('dt' => 29, 'db' => "suppliers_orders.release_date"),
+        array('dt' => 30, 'db' => "CONCAT('<a href=\"/truck?id=', products_warehouses.truck_id, '\">',
+            products_warehouses.truck_id, '</a>')"),
+        array('dt' => 31, 'db' => "trucks.supplier_departure_date"),
+        array('dt' => 32, 'db' => "products_warehouses.warehouse_arrival_date"),
+        array('dt' => 33, 'db' => "CONCAT('<a href=\"\client?id=', orders.client_id, '\">', client.name, '</a>')"),
+        array('dt' => 34, 'db' => "CONCAT('<a href=\"\client?id=', orders.commission_agent_id, '\">', commission.name, '</a>')"),
+        array('dt' => 35, 'db' => "products_warehouses.discount_rate"),
+        array('dt' => 36, 'db' => "products_warehouses.reduced_price"),
+        array('dt' => 37, 'db' => "products_warehouses.manager_bonus_rate"),
+        array('dt' => 38, 'db' => "products_warehouses.manager_bonus"),
+        array('dt' => 39, 'db' => "products_warehouses.commission_rate"),
+        array('dt' => 40, 'db' => "products_warehouses.commission_agent_bonus"),
+        array('dt' => 41, 'db' => "products_warehouses.production_date"),
+        array('dt' => 42, 'db' => "IFNULL(CONCAT(products_warehouses.reserve_since_date, 
+            ' - ',products_warehouses.reserve_till_date), '')"),
     );
 
     var $product_warehouses_column_names = [
@@ -29,69 +79,83 @@ class ModelWarehouse extends ModelManagers_orders
         "Article",
         "Product",
         "Brand",
-        "Quantity",
-        "Units",
-        "Buy Price",
-        "Buy + Transport + Taxes",
-        "Sell Price",
-        "Dealer Price (-30%)",
-        "Total Price"
-    ];
-
-    var $product_warehouses_column_names_all = [
-        "Id",
-        "Article",
-        "Product",
-        "Brand",
         "Warehouse",
         "Quantity",
         "Units",
+        'Number of Packs',
+        'Total Weight',
         "Buy Price",
         "Buy + Transport + Taxes",
         "Sell Price",
         "Dealer Price (-30%)",
-        "Total Price"
+        "Total Price",
+        "Purchase Value + Expenses",
+        "Purchase Price + Expenses",
+        'Manager Order ID',
+        'Manager',
+        'Date of Order (Client)',
+        'Status',
+        'Purchase Price / Unit',
+        'Total Purchase Price',
+        'Sell Price / Unit',
+        'Total Sell Price',
+        'Downpayment',
+        'Downpayment rate',
+        'Client\'s expected date of issue',
+        'Supplier Order ID',
+        'Date of Order (Supplier)',
+        'Supplier Release Date',
+        'Truck ID',
+        'Supplier Departure Date',
+        'Warehouse Arrival Date',
+        'Client',
+        'Commission Agent',
+        'Discount Rate',
+        'Reduced Price',
+        'Manager Bonus Rate',
+        'Manager Bonus',
+        'Commission Rate',
+        'Commission Agent Bonus',
+        'Production Date',
+        'Reserve Period',
     ];
 
-    function getDTProductsForAllWarehouses($input)
+    function getDTProductsForWarehouses($input, $warehouse_id = 0, $type)
     {
-        $where = 'products_warehouses.warehouse_id IS NOT NULL';
-        $this->sspComplex($this->products_warehouses_table, "products_warehouses.item_id", $this->product_warehouses_columns_all,
-            $input, null, $where);
-    }
+        if ($warehouse_id) {
+            $where = "products_warehouses.warehouse_id = $warehouse_id";
+        } else {
+            $where = 'products_warehouses.warehouse_id IS NOT NULL';
+        }
+        switch ($type) {
+            case '':
+                $where = '(' . $where . ' AND products_warehouses.manager_order_id IS NULL)';
+                break;
+            case 'issue':
+                $where = '(' . $where . ' AND ((products_warehouses.manager_order_id IS NOT NULL AND 
+                products_warehouses.reserve_since_date IS NULL) OR ((products_warehouses.status_id = 9 OR 
+                products_warehouses.status_id = 10) AND products_warehouses.reserve_since_date IS NULL)))';
+                break;
+            case 'reserve':
+                $where = '(' . $where . ' AND (products_warehouses.manager_order_id IS NOT NULL AND 
+                products_warehouses.reserve_since_date IS NOT NULL))';
+                break;
+        }
 
-    var $product_warehouses_columns = array(
-        array('dt' => 0, 'db' => 'products_warehouses.item_id'),
-        array('dt' => 1, 'db' => 'products.article'),
-        array('dt' => 2, 'db' => 'CONCAT(\'<a href="/product?id=\', products.product_id, \'">\', IFNULL(products.name, \'no name\'), \'</a>\')'),
-        array('dt' => 3, 'db' => 'CONCAT(\'<a href="/brand?id=\', brands.brand_id, \'">\', IFNULL(brands.name, \'no name\'), \'</a>\')'),
-        array('dt' => 4, 'db' => 'products_warehouses.amount'),
-        array('dt' => 5, 'db' => 'products.units'),
-        array('dt' => 6, 'db' => 'products_warehouses.buy_price'),
-        array('dt' => 7, 'db' => 'products_warehouses.buy_and_taxes'),
-        array('dt' => 8, 'db' => 'products_warehouses.sell_price'),
-        array('dt' => 9, 'db' => 'products_warehouses.dealer_price'),
-        array('dt' => 10, 'db' => 'products_warehouses.total_price')
-    );
-
-    function getDTProductsForWarehouse($warehouse_id, $input)
-    {
         $this->sspComplex($this->products_warehouses_table, "products_warehouses.item_id", $this->product_warehouses_columns,
-            $input, null, "products_warehouses.warehouse_id = $warehouse_id");
+            $input, null, $where);
     }
 
     function getSelects($warehouse_id = 0)
     {
         if (!$warehouse_id) {
             $where = 'products_warehouses.warehouse_id IS NOT NULL';
-            $ssp = $this->getSspComplexJson($this->products_warehouses_table, "products_warehouses.item_id",
-                $this->product_warehouses_columns_all, null, null, $where);
-            $columns = $this->product_warehouses_column_names_all;
         } else {
-            $ssp = $this->getSspComplexJson($this->products_warehouses_table, "products_warehouses.item_id",
-                $this->product_warehouses_columns, null, null, "products_warehouses.warehouse_id = $warehouse_id");
-            $columns = $this->product_warehouses_column_names;
+            $where = "products_warehouses.warehouse_id = $warehouse_id";
         }
+        $ssp = $this->getSspComplexJson($this->products_warehouses_table, "products_warehouses.item_id",
+            $this->product_warehouses_columns, null, null, $where);
+        $columns = $this->product_warehouses_column_names;
         $rowValues = json_decode($ssp, true)['data'];
         $ignoreArray = ['Id', 'Quantity', 'Buy Price', 'Buy + Transport + Taxes', 'Sell Price',
             'Dealer Price (-30%)', 'Total Price'];
@@ -161,44 +225,6 @@ class ModelWarehouse extends ModelManagers_orders
 //        }
     }
 
-    function transferProductWarehouse($product_warehouse_id, $warehouse_id, $amount)
-    {
-//        $old_pw = $this->getFirst("SELECT *
-//                FROM products_warehouses
-//                WHERE product_warehouse_id = $product_warehouse_id");
-//        $new_pw = $this->getFirst("SELECT *
-//                FROM products_warehouses
-//                WHERE product_id = ${old_pw['product_id']} AND warehouse_id = $warehouse_id");
-//        if ($old_pw['amount'] == $amount) {
-//            $this->delete("DELETE FROM products_warehouses
-//                WHERE product_warehouse_id = $product_warehouse_id");
-//        } else {
-//            $old_amount = $old_pw['amount'] - $amount;
-//            $this->update("UPDATE products_warehouses
-//                SET amount = $old_amount
-//                WHERE product_warehouse_id = $product_warehouse_id");
-//        }
-//        if ($new_pw != null) {
-//            $old_amount = $old_pw['amount'];
-//            $new_amount = $new_pw['amount'];
-//            $new_new_amount = $new_pw['amount'] + $amount;
-//            $buy_price = ($old_pw['buy_price'] * $amount + $new_pw['buy_price'] * $new_amount) / $new_new_amount;
-//            $buy_and_taxes = ($old_pw['buy_and_taxes'] * $amount + $new_pw['buy_and_taxes'] * $new_amount) / $new_new_amount;
-//            $sell_price = ($old_pw['sell_price'] * $amount + $new_pw['sell_price'] * $new_amount) / $new_new_amount;
-//            $dealer_price = ($old_pw['dealer_price'] * $amount + $new_pw['dealer_price'] * $new_amount) / $new_new_amount;
-//            $total_price = $new_pw['total_price'] + $old_pw['total_price'] * $amount / $old_amount;
-//
-//            $this->update("UPDATE products_warehouses
-//                SET amount = $new_new_amount, buy_price = $buy_price, buy_and_taxes = $buy_and_taxes,
-//                    sell_price = $sell_price, dealer_price = $dealer_price, total_price = $total_price
-//                WHERE product_warehouse_id = ${new_pw['product_warehouse_id']}");
-//        } else {
-//            $this->insert("INSERT INTO products_warehouses (product_id, warehouse_id, amount, buy_price, buy_and_taxes, sell_price, dealer_price, total_price)
-//                VALUES (${old_pw['product_id']}, $warehouse_id, $amount, ${old_pw['buy_price']}, ${old_pw['buy_and_taxes']},
-//                 ${old_pw['sell_price']}, ${old_pw['dealer_price']}, ${old_pw['total_price']})");
-//        }
-    }
-
     function getPrices($warehouse_id)
     {
 
@@ -224,5 +250,18 @@ class ModelWarehouse extends ModelManagers_orders
             'dealer' => $dealerPrice,
             'sellPrice' => $sellPrice,
         ];
+    }
+
+    public function getWarehousesIdNames()
+    {
+        return $this->getAssoc("SELECT warehouse_id as value, name as text FROM warehouses");
+    }
+
+    public function updateItemField($warehouse_item_id, $field, $new_value)
+    {
+        $old_order_item = $this->getFirst("SELECT * FROM order_items WHERE item_id = $warehouse_item_id");
+
+        return $this->update("UPDATE `order_items` SET `$field` = '$new_value' WHERE item_id = $warehouse_item_id");
+
     }
 }

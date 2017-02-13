@@ -12,6 +12,26 @@ class ModelClients extends Model
         array('dt' => 6, 'db' => "clients.profit"),
         array('dt' => 7, 'db' => "clients.discount_rate"),
         array('dt' => 8, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-type\" data-pk=\"', clients.client_id ,'\" data-name=\"type\" data-value=\"', clients.type, '\" data-url=\"/clients/change_item_field\" data-original-title=\"Change Manager\">', clients.type, '</a>')"),
+        array('dt' => 9, 'db' => "clients.email"),
+        array('dt' => 10, 'db' => "clients.mobile_number"),
+        array('dt' => 11, 'db' => "clients.client_category"),
+        array('dt' => 12, 'db' => "clients.inn"),
+        array('dt' => 13, 'db' => "clients.source"),
+        array('dt' => 14, 'db' => "clients.legal_address"),
+        array('dt' => 15, 'db' => "clients.actual_address"),
+        array('dt' => 16, 'db' => "clients.status"),
+        array('dt' => 17, 'db' => "CONCAT('<a href=\"/client?id=', clients.head_contractor_client_id, '\"\">', 
+            head_contractor.name, '</a>')"),
+        array('dt' => 18, 'db' => "clients.first_contact_date"),
+        array('dt' => 19, 'db' => "CONCAT(operational_manager.first_name, ' ', operational_manager.last_name)"),
+        array('dt' => 20, 'db' => "clients.quantity_of_people"),
+        array('dt' => 21, 'db' => "clients.main_target"),
+        array('dt' => 22, 'db' => "clients.showrooms"),
+        array('dt' => 23, 'db' => "clients.main_competiter"),
+        array('dt' => 24, 'db' => "clients.samples_position"),
+        array('dt' => 25, 'db' => "clients.needful_actions"),
+        array('dt' => 26, 'db' => "clients.comments"),
+
     ];
 
     var $client_column_names = [
@@ -23,13 +43,33 @@ class ModelClients extends Model
         'Turnover',
         'Profit',
         'Discount Rate',
-        'Change Type'
+        'Change Type',
+        'Email',
+        'Mobile Number',
+        'Category',
+        'INN',
+        'Source',
+        'Legal Address',
+        'Actual Address',
+        'Status',
+        'Head Contractor',
+        'First Contact Date',
+        'Operational Manager',
+        'Quantity of People',
+        'Main Target',
+        'Showrooms',
+        'Main Competiter',
+        'Samples Position',
+        'Needful Actions',
+        'Comments',
     ];
 
     var $client_table = 'clients
             left join users as managers on clients.sales_manager_id = managers.user_id
             left join clients as commission_agents on clients.commission_agent_id = commission_agents.client_id
             left join countries on clients.country_id = countries.country_id
+            left join clients as head_contractor on clients.head_contractor_client_id = head_contractor.client_id 
+            left join users as operational_manager on clients.operational_manager_id = operational_manager.user_id 
             left join regions on clients.region_id = regions.region_id';
 
     public function __construct()

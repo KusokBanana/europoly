@@ -31,7 +31,7 @@
         <li id="nav-staff" class="nav-item">
             <a href="/staff" class="nav-link nav-toggle">
                 <i class="icon-bar-chart"></i>
-                <span class="title">Staff</span>
+                <span class="title">Employees</span>
             </a>
         </li>
         <li id="nav-managers-orders" class="nav-item">

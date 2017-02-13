@@ -12,7 +12,7 @@ class ControllerWarehouse extends Controller
     {
         $this->view->full_product_column_names = $this->model->full_product_column_names;
         $this->view->full_product_hidden_columns = $this->model->full_product_hidden_columns;
-
+        $this->view->warehouses = $this->model->getWarehousesIdNames();
         if (isset($_GET["id"])) {
             $id = intval($_GET["id"]);
             $this->view->prices = $this->model->getPrices($_GET["id"]);
@@ -21,17 +21,16 @@ class ControllerWarehouse extends Controller
             $rows = $array['rows'];
             $this->view->selects = $selects;
             $this->view->rows = $rows;
+            $this->view->column_names = $this->model->product_warehouses_column_names;
             if ($id == 0) {
                 $this->view->title = "All";
                 $this->view->id = 0;
-                $this->view->column_names = $this->model->product_warehouses_column_names_all;
                 $this->view->build('templates/template.php', 'warehouse.php');
             } else {
                 $this->view->warehouse = $this->model->getById("warehouses", "warehouse_id", $id);
                 if ($this->view->warehouse != NULL) {
                     $this->view->id = $this->view->warehouse["warehouse_id"];
                     $this->view->title = $this->view->warehouse["name"];
-                    $this->view->column_names = $this->model->product_warehouses_column_names;
                     $this->view->build('templates/template.php', 'warehouse.php');
                 } else {
                     http_response_code(400);
@@ -46,11 +45,8 @@ class ControllerWarehouse extends Controller
     {
         if (isset($_GET['warehouse_id'])) {
             $warehouse_id = intval($_GET['warehouse_id']);
-            if ($warehouse_id === 0) {
-                $this->model->getDTProductsForAllWarehouses($_GET);
-            } else {
-                $this->model->getDTProductsForWarehouse($warehouse_id, $_GET);
-            }
+            $type = isset($_GET['type']) ? $_GET['type'] : '';
+            $this->model->getDTProductsForWarehouses($_GET, $warehouse_id, $type);
         } else {
             http_response_code(400);
         }
@@ -66,12 +62,19 @@ class ControllerWarehouse extends Controller
         header("Location: /warehouse?id=" . $_POST['warehouse_id']);
     }
 
-    function action_transfer()
+    function action_change_item_field()
     {
-        $this->model->transferProductWarehouse(
-            $this->escape_and_empty_to_null($_POST['product_warehouse_id']),
-            $this->escape_and_empty_to_null($_POST['warehouse_id']),
-            $this->escape_and_empty_to_null($_POST['amount']));
-        header("Location: /warehouse?id=" . $_POST['warehouse_id']);
+        if (isset($_POST["pk"]) && isset($_POST["name"]) && isset($_POST["value"])) {
+            $order_item_id = intval($_POST["pk"]);
+            $name = $this->model->escape_string($_POST["name"]);
+            $value = $this->model->escape_string($_POST["value"]);
+            if (!$this->model->updateItemField($order_item_id, $name, $value)) {
+                http_response_code(500);
+            } else {
+                echo $value;
+            }
+        } else {
+            http_response_code(400);
+        }
     }
 }
