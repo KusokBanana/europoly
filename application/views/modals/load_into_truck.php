@@ -3,7 +3,7 @@ $products = [];
 $columnNames = [];
 if (isset($_POST['table_data']) && $post = $_POST['table_data']) {
     $columnNames = $post['column_names'];
-    $products = $post['products'];
+    $products = isset($post['products']) ? $post['products'] : [];
     $isError = false;
     $errorMessage = '';
     if (empty($products)) {

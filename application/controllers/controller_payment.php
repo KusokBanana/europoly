@@ -11,6 +11,7 @@ class ControllerPayment extends Controller
     function action_index($action_param = null, $action_data = null)
     {
         if ($id = $_GET['id']) {
+            $this->getAccess('payment', 'v');
             if ($id == 'new') {
                 if (isset($_POST['Order']) && !empty(isset($_POST['Order']))) {
                     $this->view->payment = $_POST['Order'];
@@ -61,7 +62,7 @@ class ControllerPayment extends Controller
 
     function action_save_payment()
     {
-
+        $this->getAccess('payment', 'ch');
         $payment_id = isset($_GET['id']) ? $_GET['id'] : false;
         $form = !empty($_POST) ? $_POST : false;
         if (!$payment_id || !$form)

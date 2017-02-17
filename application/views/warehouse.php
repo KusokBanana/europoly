@@ -129,6 +129,8 @@
                                     <div class="portlet-body">
                                         <?php
                                         $buttons = ($this->id) ? ['<button class="btn sbold green" data-toggle="modal" data-target="#modal_newProductWarehouse">Add New <i class="fa fa-plus"></i></button>'] : [];
+                                        if (!$this->access)
+                                            $buttons = [];
                                         $urlId = ($this->id) ? $this->warehouse['warehouse_id'] : 0;
                                         $table_data = [
                                             'buttons' => $buttons,

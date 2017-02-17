@@ -101,4 +101,17 @@ abstract class Controller
             return $file['name'];
         }
     }
+
+    protected function getAccess($page, $action)
+    {
+        $roles = new Roles();
+        if (!$roles->returnAccessAbilities($page, $action)) {
+            echo '<h1 style="text-align: center">403 Forbidden ';
+            if (isset($_SERVER['HTTP_REFERER']))
+                echo '<a href="'.$_SERVER['HTTP_REFERER'].'">return</a>';
+            echo '</h1>';
+            http_response_code(403);
+            die();
+        };
+    }
 }

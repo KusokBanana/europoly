@@ -10,8 +10,16 @@ class ModelSent_to_logist extends ModelManagers_orders
     {
         $where = "(order_items.status_id = '$this->statusesFilter')";
 
+        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
+            $where .= " AND (orders.sales_manager_id = " . $_SESSION['user_id'] . ' OR 
+                order_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
+        }
+
+        $roles = new Roles();
+        $columns = $roles->returnModelColumns($this->managers_orders_columns, 'sentToLogist');
+
         $this->sspComplex($this->managers_orders_table, "orders.order_id",
-            $this->managers_orders_columns, $input, null, $where);
+            $columns, $input, null, $where);
     }
 
     function getSelects()

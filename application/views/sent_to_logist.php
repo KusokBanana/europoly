@@ -36,12 +36,14 @@
 								<i class="icon-social-dribbble font-dark"></i>
 								<span class="caption-subject bold uppercase font-dark">Managers' Order</span>
 							</div>
-							<div class="actions">
-								<a class="btn btn-default modal-new-suppliers-order-btn">
-									+ Add to Supplier's Order
-								</a>
-							</div>
-						</div>
+                            <?php if($this->access): ?>
+                                <div class="actions">
+                                    <a class="btn btn-default modal-new-suppliers-order-btn">
+                                        + Add to Supplier's Order
+                                    </a>
+                                </div>
+                            <?php endif; ?>
+                        </div>
 						<div class="portlet-body">
 							<div class="tabbable-custom nav-justified">
 								<ul class="nav nav-tabs nav-justified">

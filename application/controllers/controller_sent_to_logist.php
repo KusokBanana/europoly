@@ -10,8 +10,11 @@ class ControllerSent_to_logist extends Controller
 
     function action_index($action_param = null, $action_data = null)
     {
+        $this->getAccess('sent to logist', 'v');
         $this->view->title = "Sent to logist";
-        $this->view->column_names = $this->model->managers_orders_column_names;
+        $roles = new Roles();
+        $this->view->column_names = $roles->returnModelNames($this->model->managers_orders_column_names, 'sentToLogist');
+        $this->view->access = $roles->returnAccessAbilities('sent to logist', 'ch');
 
         $cache = new Cache();
         $selectsCache = $cache->read('sent_to_logist');

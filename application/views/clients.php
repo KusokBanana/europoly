@@ -150,13 +150,16 @@
                                             <div class="tab-pane active" id="tab_1_11">
                                                 <div class="portlet-body">
                                                     <?php
-                                                    $table_data = [
-                                                        'buttons' => [
-                                                            '<a class="btn sbold green" 
+                                                    $buttons = [
+                                                        '<a class="btn sbold green" 
                                                                 href="client?id=new">
                                                                     Add Client <i class="fa fa-plus"></i>
                                                             </a>'
-                                                        ],
+                                                    ];
+                                                    if (!$this->access)
+                                                        $buttons = [];
+                                                    $table_data = [
+                                                        'buttons' => $buttons,
                                                         'table_id' => "table_end_customers",
                                                         'ajax' => [
                                                             'url' => "/clients/dt_end_customers"
@@ -172,10 +175,13 @@
                                             <div class="tab-pane" id="tab_1_22">
                                                 <div class="portlet-body">
                                                     <?php
+                                                    $buttons = [
+                                                        '<button class="btn sbold green" data-toggle="modal" data-target="#modal_newClient">Add Client <i class="fa fa-plus"></i></button>'
+                                                    ];
+                                                    if (!$this->access)
+                                                        $buttons = [];
                                                     $table_data = [
-                                                        'buttons' => [
-                                                            '<button class="btn sbold green" data-toggle="modal" data-target="#modal_newClient">Add Client <i class="fa fa-plus"></i></button>'
-                                                        ],
+                                                        'buttons' => $buttons,
                                                         'table_id' => "table_commission_agents",
                                                         'ajax' => [
                                                             'url' => "/clients/dt_commission_agents"
@@ -191,10 +197,13 @@
                                             <div class="tab-pane" id="tab_1_33">
                                                 <div class="portlet-body">
                                                     <?php
+                                                    $buttons = [
+                                                        '<button class="btn sbold green" data-toggle="modal" data-target="#modal_newClient">Add Client <i class="fa fa-plus"></i></button>'
+                                                    ];
+                                                    if (!$this->access)
+                                                        $buttons = [];
                                                     $table_data = [
-                                                        'buttons' => [
-                                                            '<button class="btn sbold green" data-toggle="modal" data-target="#modal_newClient">Add Client <i class="fa fa-plus"></i></button>'
-                                                        ],
+                                                        'buttons' => $buttons,
                                                         'table_id' => "table_dealers",
                                                         'ajax' => [
                                                             'url' => "/clients/dt_dealers"
@@ -234,28 +243,30 @@
     var commission_agents = <?= $this->toJsList($this->commission_agents, "client_id") ?>;
 
     var $tables_clients = $("#table_end_customers, #table_commission_agents, #table_dealers");
-    $tables_clients.on('draw.dt', function () {
-        $('.x-type').editable({
-            type: "select",
-            inputclass: 'form-control input-medium',
-            source: [
-                {"value": "End Customer", "text": "End Customer"},
-                {"value": "Comission Agent", "text": "Comission Agent"}, // TODO commission or comission ?
-                {"value": "Dealer", "text": "Dealer"}
-            ],
-            success: function () {
-                location.reload();
-            }
+    <?php if ($this->access): ?>
+        $tables_clients.on('draw.dt', function () {
+            $('.x-type').editable({
+                type: "select",
+                inputclass: 'form-control input-medium',
+                source: [
+                    {"value": "End Customer", "text": "End Customer"},
+                    {"value": "Comission Agent", "text": "Comission Agent"}, // TODO commission or comission ?
+                    {"value": "Dealer", "text": "Dealer"}
+                ],
+                success: function () {
+                    location.reload();
+                }
+            });
+            $('.x-sales_manager').editable({
+                type: "select",
+                inputclass: 'form-control input-medium',
+                source: managers
+            });
+            $('.x-commission_agent').editable({
+                type: "select",
+                inputclass: 'form-control input-medium',
+                source: commission_agents
+            });
         });
-        $('.x-sales_manager').editable({
-            type: "select",
-            inputclass: 'form-control input-medium',
-            source: managers
-        });
-        $('.x-commission_agent').editable({
-            type: "select",
-            inputclass: 'form-control input-medium',
-            source: commission_agents
-        });
-    });
+    <?php endif; ?>
 </script>

@@ -318,20 +318,28 @@
                                                 <input name="user_id" type="hidden" value="<?= $this->support['user_id'] ?>"/>
                                                 <div class="form-group">
                                                     <label class="control-label">Login</label>
-                                                    <input id="input_login" name="login" class="form-control" value="<?= $this->support['login'] ?>" required/>
+                                                    <?php if ($this->access): ?>
+                                                        <input id="input_login" name="login"
+                                                               class="form-control" value="<?= $this->support['login'] ?>"
+                                                               required/>
+                                                    <?php else: ?>
+                                                        <?= $this->support['login'] ?>
+                                                    <?php endif; ?>
                                                 </div>
-                                                <div class="form-group">
-                                                    <label class="control-label">New Password</label>
-                                                    <input id="input_password" name="password" type="password" class="form-control" required/>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="control-label">Re-type New Password</label>
-                                                    <input id="input_retype_password" type="password" class="form-control" required/>
-                                                </div>
-                                                <div class="margin-top-10">
-                                                    <button type="submit" class="btn green"> Save Changes</button>
-                                                    <button class="btn default" onclick="cancelAccountChanges(event);"> Cancel</button>
-                                                </div>
+                                                <?php if ($this->access): ?>
+                                                    <div class="form-group">
+                                                        <label class="control-label">New Password</label>
+                                                        <input id="input_password" name="password" type="password" class="form-control" required/>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label">Re-type New Password</label>
+                                                        <input id="input_retype_password" type="password" class="form-control" required/>
+                                                    </div>
+                                                    <div class="margin-top-10">
+                                                        <button type="submit" class="btn green"> Save Changes</button>
+                                                        <button class="btn default" onclick="cancelAccountChanges(event);"> Cancel</button>
+                                                    </div>
+                                                <?php endif; ?>
                                             </form>
                                             <script>
                                                 function cancelAccountChanges(event) {
@@ -361,12 +369,19 @@
                                                 <input name="user_id" type="hidden" value="<?= $this->support['user_id'] ?>"/>
                                                 <div class="form-group">
                                                     <label class="control-label">Salary, &euro;</label>
-                                                    <input id="input_salary" name="salary" class="form-control" value="<?= $this->support['salary'] ?>"/>
+                                                    <?php if ($this->access): ?>
+                                                        <input id="input_salary" name="salary" class="form-control"
+                                                               value="<?= $this->support['salary'] ?>"/>
+                                                    <?php else: ?>
+                                                        <?= $this->support['salary'] ?>
+                                                    <?php endif; ?>
                                                 </div>
-                                                <div class="margin-top-10">
-                                                    <button type="submit" class="btn green"> Save Changes</button>
-                                                    <button type="reset" class="btn default"> Cancel</button>
-                                                </div>
+                                                <?php if ($this->access): ?>
+                                                    <div class="margin-top-10">
+                                                        <button type="submit" class="btn green"> Save Changes</button>
+                                                        <button type="reset" class="btn default"> Cancel</button>
+                                                    </div>
+                                                <?php endif; ?>
                                             </form>
                                         </div>
                                     </div>

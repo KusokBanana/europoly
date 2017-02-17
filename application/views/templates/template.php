@@ -98,7 +98,18 @@
                             <img src="assets/layouts/layout5/img/avatar1.jpg" alt=""></button>
                         <ul class="dropdown-menu-v2" role="menu">
                             <li>
-                                <a href="#"><i class="icon-user"></i> My Profile</a>
+                                <?php
+                                $userRole = $_SESSION['user_role'];
+                                $url = '#';
+                                if (ROLE_SALES_MANAGER == $userRole) {
+                                    $url = '/sales_manager?id=' . $_SESSION['user_id'];
+                                } elseif ($userRole == ROLE_WAREHOUSE || $userRole == ROLE_ACCOUNTANT) {
+                                    $url = '/support?id=' . $_SESSION['user_id'];
+                                }
+                                ?>
+                                <a href="<?= $url ?>">
+                                    <i class="icon-user"></i> My Profile
+                                </a>
                             </li>
                             <li>
                                 <a href="/login/logout"><i class="icon-key"></i> Log Out </a>

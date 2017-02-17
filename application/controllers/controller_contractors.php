@@ -10,6 +10,7 @@ class ControllerContractors extends Controller
 
     function action_index($action_param = null, $action_data = null)
     {
+        $this->getAccess('contractors', 'v');
         $this->view->title = "Contractors";
         $this->view->clients_column_names = $this->model->client_column_names;
         $this->view->column_names = $this->model->column_names;
@@ -40,6 +41,7 @@ class ControllerContractors extends Controller
 
     function action_add()
     {
+        $this->getAccess('contractors', 'ch');
         $type = isset($_GET['type']) ? $_GET['type'] : false;
         $name = isset($_POST['name']) ? $_POST['name'] : false;
         if (!$type)
@@ -50,6 +52,7 @@ class ControllerContractors extends Controller
 
     function action_delete()
     {
+        $this->getAccess('contractors', 'd');
         $type = isset($_GET['type']) ? $_GET['type'] : false;
         $id = isset($_GET['id']) ? $_GET['id'] : false;
         if ($type || $id) {

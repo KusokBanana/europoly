@@ -18,7 +18,7 @@
                                 <select name="type" class="form-control">
                                     <option disabled selected value></option>
                                     <option value="End Customer">End Customer</option>
-                                    <option value="Commission Agent">Commission Agent</option>
+                                    <option value="<?= COMISSION_AGENT ?>"><?= COMISSION_AGENT ?></option>
                                     <option value="Dealer">Dealer</option>
                                 </select>
                             </div>

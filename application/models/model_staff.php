@@ -26,7 +26,7 @@ class ModelStaff extends Model
 
     function getDTManagers($input)
     {
-        $this->sspComplex("users", "user_id", $this->manager_columns, $input, null, "role = 'Sales Manager'");
+        $this->sspComplex("users", "user_id", $this->manager_columns, $input, null, "role_id = 2"); // TODO REPLACE_CONST
     }
 
     function getDTSupport($input)
@@ -34,14 +34,19 @@ class ModelStaff extends Model
         $this->sspComplex("users", "user_id", $this->support_columns, $input, null, "role = 'Support'");
     }
 
-    function addUser($first_name, $last_name, $role, $login, $password)
+    function addUser($first_name, $last_name, $role_id, $login, $password)
     {
         $existing_user = $this->getFirst("SELECT * FROM users WHERE login = $login");
         if ($existing_user != null) {
             return false;
         } else {
-            return $this->insert("INSERT INTO users (login, password, first_name, last_name, role)
-                VALUES ('$login', '$password', '$first_name', '$last_name', '$role')");
+            return $this->insert("INSERT INTO users (login, password, first_name, last_name, role_id)
+                VALUES ('$login', '$password', '$first_name', '$last_name', $role_id)");
         }
+    }
+
+    function getRoles()
+    {
+        return $this->getAssoc("SELECT role_id as id, name FROM roles WHERE role_id != ".ROLE_ADMIN);
     }
 }

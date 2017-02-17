@@ -10,9 +10,21 @@ class ControllerSupport extends Controller
 
     function action_index($action_param = null, $action_data = null)
     {
-        $this->view->support = $this->model->getUser($_GET['id']);
-        $this->view->title = $this->view->support['first_name'] . " " . $this->view->support['last_name'];
-        $this->view->build('templates/template.php', 'single_support.php');
+        if (in_array($_SESSION['user_role'], [ROLE_WAREHOUSE, ROLE_ACCOUNTANT, ROLE_ADMIN])) {
+            $this->view->support = $this->model->getUser($_GET['id']);
+            $userId = $_SESSION['user_id'];
+            if ($userId !== $_GET['id']) {
+                $this->getAccess('none', 'v');
+            }
+            $this->getAccess('support', 'v');
+            $roles = new Roles();
+            $this->view->access = $roles->returnAccessAbilities('support', 'ch');
+            $this->view->title = $this->view->support['first_name'] . " " . $this->view->support['last_name'];
+            $this->view->build('templates/template.php', 'single_support.php');
+        } else {
+            http_response_code(400);
+        }
+
     }
 
     function action_update_personal_info()

@@ -523,20 +523,27 @@
                                                 <input name="user_id" type="hidden" value="<?= $this->manager['user_id'] ?>"/>
                                                 <div class="form-group">
                                                     <label class="control-label">Login</label>
-                                                    <input id="input_login" name="login" class="form-control" value="<?= $this->manager['login'] ?>" required/>
+                                                    <?php if ($this->access): ?>
+                                                        <input id="input_login" name="login" class="form-control"
+                                                                              value="<?= $this->manager['login'] ?>" required/>
+                                                    <?php else: ?>
+                                                        <?= $this->manager['login'] ?>
+                                                    <?php endif; ?>
                                                 </div>
-                                                <div class="form-group">
-                                                    <label class="control-label">New Password</label>
-                                                    <input id="input_password" name="password" type="password" class="form-control" required/>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="control-label">Re-type New Password</label>
-                                                    <input id="input_retype_password" type="password" class="form-control" required/>
-                                                </div>
-                                                <div class="margin-top-10">
-                                                    <button type="submit" class="btn green"> Save Changes</button>
-                                                    <button type="reset" class="btn default"> Cancel</button>
-                                                </div>
+                                                <?php if ($this->access): ?>
+                                                    <div class="form-group">
+                                                        <label class="control-label">New Password</label>
+                                                        <input id="input_password" name="password" type="password" class="form-control" required/>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label">Re-type New Password</label>
+                                                        <input id="input_retype_password" type="password" class="form-control" required/>
+                                                    </div>
+                                                    <div class="margin-top-10">
+                                                        <button type="submit" class="btn green"> Save Changes</button>
+                                                        <button type="reset" class="btn default"> Cancel</button>
+                                                    </div>
+                                                <?php endif; ?>
                                             </form>
                                         </div>
                                         <div id="tab_4-4" class="tab-pane">
@@ -544,16 +551,29 @@
                                                 <input name="user_id" type="hidden" value="<?= $this->manager['user_id'] ?>"/>
                                                 <div class="form-group">
                                                     <label class="control-label">Salary, &euro;</label>
-                                                    <input id="input_salary" name="salary" class="form-control" value="<?= $this->manager['salary'] ?>" step="0.01" min="0"/>
+                                                    <?php if ($this->access): ?>
+                                                        <input id="input_salary" name="salary"
+                                                               class="form-control" value="<?= $this->manager['salary'] ?>"
+                                                               step="0.01" min="0"/>
+                                                    <?php else: ?>
+                                                        <?= $this->manager['salary'] ?>
+                                                    <?php endif; ?>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="control-label">Bonus Rate, %</label>
-                                                    <input id="input_manager_bonus_rate" name="manager_bonus_rate" type="number" class="form-control" placeholder="1,4" value="<?= $this->manager['salary_bonus_rate'] ?>" step="0.01" min="0" max="100"/>
+                                                    <?php if ($this->access): ?>
+                                                        <input id="input_manager_bonus_rate" name="manager_bonus_rate" type="number"
+                                                               class="form-control" placeholder="1,4" value="<?= $this->manager['salary_bonus_rate'] ?>" step="0.01" min="0" max="100"/>
+                                                    <?php else: ?>
+                                                        <?= $this->manager['salary_bonus_rate'] ?>
+                                                    <?php endif; ?>
                                                 </div>
-                                                <div class="margin-top-10">
-                                                    <button type="submit" class="btn green"> Save Changes</button>
-                                                    <button type="reset" class="btn default"> Cancel</button>
-                                                </div>
+                                                <?php if ($this->access): ?>
+                                                    <div class="margin-top-10">
+                                                        <button type="submit" class="btn green"> Save Changes</button>
+                                                        <button type="reset" class="btn default"> Cancel</button>
+                                                    </div>
+                                                <?php endif; ?>
                                             </form>
                                         </div>
                                     </div>
@@ -584,8 +604,8 @@ require_once 'modals/new_order.php';
 ?>
 
 <script>
-    var password = document.getElementById("input_password");
-    var confirm_password = document.getElementById("input_retype_password");
+    var password = $("#input_password");
+    var confirm_password = $("#input_retype_password");
     function validatePassword() {
         if (password.value != confirm_password.value) {
             confirm_password.setCustomValidity("Passwords Don't Match");
@@ -593,8 +613,10 @@ require_once 'modals/new_order.php';
             confirm_password.setCustomValidity('');
         }
     }
-    password.onchange = validatePassword;
-    confirm_password.onkeyup = validatePassword;
+    if (password.length) {
+        password.onchange = validatePassword;
+        confirm_password.onkeyup = validatePassword;
+    }
 
     $(document).ready(function () {
         var $table_clients = $("#table_clients");

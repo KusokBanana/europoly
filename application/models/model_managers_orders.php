@@ -136,14 +136,22 @@ class ModelManagers_orders extends Model
 
     function getDTManagersOrders($input)
     {
+        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
+            $this->whereCondition .= " AND orders.sales_manager_id = " . $_SESSION['user_id'];
+        }
+
         $this->sspComplex($this->managers_orders_table, "order_items.item_id",
             $this->managers_orders_columns, $input, null, $this->whereCondition);
     }
 
     function getDTManagersOrdersReduced($input)
     {
+        $where = '';
+        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
+            $where = " orders.sales_manager_id = " . $_SESSION['user_id'];
+        }
         $this->sspComplex($this->managers_orders_table_reduce, "orders.order_id",
-            $this->managers_orders_reduced_columns, $input, null, null);
+            $this->managers_orders_reduced_columns, $input, null, $where);
     }
 
     function getDTManagersOrdersToSuppliersOrder($input, $products)

@@ -159,8 +159,32 @@ class ModelOrder extends Model
                     ' left join items_status as status on order_items.status_id = status.status_id';
 
         $where = "order_items.manager_order_id = $order_id";
+
+        $roles = new Roles();
+        $columns = $roles->returnModelColumns($columns, 'order');
+
         return $this->sspComplex($table, "order_items.item_id", $columns, $input, null, $where);
     }
+
+    var $order_columns_names = [
+        'Id',
+        'Product',
+        'Quantity',
+        '# of Packs',
+        '# of planks',
+        'Purchase Price',
+        'Purchase Value',
+        'Sell Price',
+        'Discount Rate (%)',
+        'Reduced Price',
+        'Sell Value',
+        'Commission Rate (%)',
+        'Commission Agent Bonus',
+        'Manager Bonus Rate (%)',
+        'Manager Bonus',
+        'Status',
+        'Actions'
+    ];
 
 //    function cancelOrder($order_id, $cancel_reason)
 //    {
@@ -399,7 +423,7 @@ class ModelOrder extends Model
     public function getCommissionAgentsOfManager($managerId)
     {
         return $this->getAssoc("SELECT client_id, name FROM clients 
-              WHERE sales_manager_id = $managerId AND type = 'Commission Agent'");
+              WHERE sales_manager_id = $managerId AND type = 'Comission Agent'"); // TODO REPLACE_CONST
     }
 
     public function getReserveInformation($item_id)

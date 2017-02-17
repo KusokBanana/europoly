@@ -31,6 +31,7 @@ class ControllerAccountant extends Controller
 
     function action_index($action_param = null, $action_data = null)
     {
+        $this->getAccess('accountant', 'v');
         $this->view->column_names = $this->model->payments_column_names;
         $this->view->build('templates/template.php', 'accountant.php');
     }
@@ -47,6 +48,7 @@ class ControllerAccountant extends Controller
 
     function action_delete()
     {
+        $this->getAccess('accountant', 'd');
         $payment_id = isset($_GET['payment_id']) ? $_GET['payment_id'] : false;
         if (!$payment_id)
             return false;

@@ -34,9 +34,12 @@
         <div id="<?= $table_id ?>_columns_choose" class="dropdown-menu hold-on-click dropdown-checkboxes" style="left: 0" role="menu">
             <?php
             echo '<label style="display: none;"><input type="checkbox" data-column="0">Id</label>';
+            $category_column_id = 0;
             foreach ($column_names as $column_id => $column_name) {
-                if ($column_name == '_category_id')
+                if ($column_name == '_category_id') {
+                    $category_column_id = $column_id;
                     $mustHidden = $column_id;
+                }
                 if ($column_name[0] == '_') continue;
                 echo '<label><input type="checkbox" data-column="' . $column_id . '" checked>' . $column_name . '</label>';
             }
@@ -88,18 +91,33 @@
         background-color: #fff;
     }
 </style>
+<?php
+$hidden = json_decode($hidden_by_default, true);
+if (!empty($hidden)) {
+    if ($mustHidden) {
+        if (is_array($mustHidden)) {
+            $hidden = array_merge($hidden, $mustHidden);
+        } else {
+            $hidden[] = $mustHidden;
+        }
+        $hidden = array_unique($hidden);
+    }
+    foreach ($hidden as $key => $value) {
+        if (!isset($column_names[$value]))
+            unset($hidden[$key]);
+    }
+    $hidden_by_default = json_encode($hidden);
+}
 
+?>
 <script>
     $(document).ready(function () {
         var $table = $('#<?= $table_id ?>');
         var hiddenByDefault = <?= $hidden_by_default ?>;
         var cookieHiddenCols = getHiddenColumns('<?= $table_id ?>');
-        var mustHidden = <?= $mustHidden ?>;
         var $filterSearchValues = <?= json_encode($filterSearchValues); ?>;
         var $clickUrl = "<?= $click_url == 'javascript:;' ? false : $click_url; ?>";
         hiddenByDefault = cookieHiddenCols ? cookieHiddenCols : hiddenByDefault;
-        if (mustHidden)
-            hiddenByDefault.push(mustHidden);
         <?php
         if (isset($ajax['data']) && $ajax['data'] != "") {
             echo "var ajax = { url: '" . $ajax['url'] . "', 
@@ -140,8 +158,8 @@
                 selector: 'td:first-child',
                 blurable: true
             },
-            colReorder: false,
-            stateSave: true
+            colReorder: false
+//            stateSave: true
         });
         $table.on('draw.dt', function () {
             var tableConfirmBtn = $('.table-confirm-btn');
@@ -262,6 +280,8 @@
                         if (returnValue.length) {
                             var checkedCols = [];
                             $.each(returnValue, function() {
+                                if (hiddenByDefault[this] == undefined)
+                                    return;
                                 var checked = $('#'+tableId+'_columns_choose').find('label input[data-column="'+this+'"]');
                                 if (checked.length) {
                                     var index = checked.closest('label').index();
@@ -281,14 +301,15 @@
 
         //    If category tabs exist on page
         var categoryTabsBlock = $('.category-tabs');
-        if (categoryTabsBlock.length) {
+        var $category_column_id = <?= $category_column_id ?>;
+        if (categoryTabsBlock.length && $category_column_id) {
 
             categoryTabsBlock.on('click', 'a[data-toggle="tab"]', function() {
                 var categoryId = $(this).attr('data-category-id');
                 if (categoryId == '0') {
                     location.reload();
                 }
-                table.columns(33).search(categoryId).draw()
+                table.columns($category_column_id).search(categoryId).draw()
             })
         }
 
@@ -393,216 +414,6 @@
             filterSelectsValues($(this))
         });
 
-        // add filter selects for all not numeric columns
-        //addFilterSelects();
-//        function addFilterSelects() {
-//            var data = {};
-//            var url = ajax;
-//            if (ajax instanceof Object && ajax['data'] !== "undefined") {
-//                data = ajax['data'];
-//                url = ajax['url'];
-//            }
-//
-//            if ($selectSearchColumns && $selectSearchColumns.length) {
-//                $.each($selectSearchColumns, function(key, colId) {
-//                    var selector = 'table thead th[data-column-index="' + colId + '"] input';
-//                    var input = $(selector);
-//
-//                    if (input.hasClass('es-input'))
-//                        return;
-//
-//                    input.addClass('es-input not-built');
-//                    $('body').on('focus', selector, {selector: selector}, notBuiltFocusHandler)
-//                })
-//            } else {
-//                $.ajax({
-//                    url: url,
-//                    type: "GET",
-//                    data: data,
-//                    success: function (data) {
-//                        if (data) {
-//                            var ajaxReq = JSON.parse(data);
-//                            var dataAr = ajaxReq['data'];
-//                            if (!dataAr.length)
-//                                return;
-//                            fuckingFunctionRows(dataAr);
-//                        }
-//                    }
-//                });
-//            }
-//
-//            function notBuiltFocusHandler(data) {
-//                var selector = data.data.selector;
-//                var input = $(selector);
-//                var colId = $(this).closest('th').attr('data-column-index');
-//
-//                $.ajax({
-//                    url: '/catalogue/dt_ajax_filter/',
-//                    type: "GET",
-//                    data: {
-//                        columns: [{
-//                            data: 2,
-//                            name: '',
-//                            searchable: false,
-//                            orderable: false,
-//                            search: {
-//                                value: false,
-//                                regex: false
-//                            }
-//                        }],
-//                        start: 0,
-//                        length: -1,
-//                        id: colId
-//                    },
-//                    success: function (data) {
-//                        if (data) {
-//                            data = JSON.parse(data);
-//                            if (!data.length)
-//                                return;
-//
-//                            var select = $(document.createElement('select'));
-//                            select.attr('class', input.attr('class'));
-//                            select.removeClass('not-built').addClass('built');
-//                            select.attr('style', input.attr('style'));
-//                            select.attr('onclick', input.attr('onclick'));
-//                            select.attr('data-col-id', colId);
-//
-//                            var option = '';
-//                            $.each(data, function (id, val) {
-//                                option += '<option value="' + val + '">' + val + '</option>';
-//                            });
-//
-//                            if (option) {
-//                                input.parent().append(select);
-//                                input.remove();
-//                                select.append(option);
-//                                select.editableSelect('show');
-//                                // remove current listener from new object and focus after click
-//                                $('body').off('focus', selector, notBuiltFocusHandler);
-//                                $(selector).focus();
-//
-//                                select.on('select.editable-select', function (e, li) {
-//                                    var value = li.text();
-//                                    if (table.column($(this).attr('data-col-id')).search() !== value) {
-//                                        table.column($(this).attr('data-col-id')).search(value).draw();
-//                                    }
-//                                })
-//                            }
-//
-//                        }
-//                    }
-//                })
-//            }
-//
-//        }
-
-//        function fuckingFunctionRows(rows, columnId) {
-//
-//            var cols = [];
-//            var numberCols = [];
-//            $.each(rows, function (rowId, row) {
-//                $.each(row, function (colId, value) {
-//                    if (!colId)
-//                        return;
-//
-//                    if (columnId !== undefined && columnId)
-//                        if (colId != columnId)
-//                            return;
-//
-//                    // TODO fix it
-//                    if (!$selectSearchColumns) {
-//                        if ($selectSearchColumns.length) {
-//                            if ($selectSearchColumns.indexOf(colId) !== -1)
-//                                return;
-//                        }
-//                    }
-//
-//                    if (numberCols.length) {
-//                        if (numberCols.indexOf(colId) !== -1)
-//                            return;
-//                    }
-//
-//                    if (!value)
-//                        return;
-//
-//                    //delete spaces
-//                    value = value.replace(/\s+/g, ' ');
-//
-//                    var tagExp = /<.+\s*>.*?<\/.+>/gi;
-//                    var isTag = (value.search(tagExp) !== -1);
-//                    if (isTag) {
-//                        if (value[0] == '<') {
-//                            value = $(value).text();
-//                        }
-//                        else {
-//                            value = value.replace(tagExp, '');
-//                        }
-//                    }
-//
-//                    var isNumber = !isNaN(parseFloat(value)) && isFinite(value);
-//                    if (isNumber) {
-//                        numberCols.push(colId);
-//                        if (cols[colId] !== undefined)
-//                            delete cols[colId];
-//                        return;
-//                    }
-//
-//                    if (cols[colId] === undefined) {
-//                        cols[colId] = [value];
-//                        return;
-//                    }
-//                    if (cols[colId].indexOf(value) === -1 && cols[colId].length < 50)
-//                        cols[colId].push(value);
-//                });
-//            });
-//            if (cols.length) {
-//                $.each(cols, function (colId, valuesArray) {
-//                    if (valuesArray !== undefined && valuesArray.length) {
-//                        var input = $(table.column(colId).header()).find('input');
-//                        input.addClass('es-input not-built');
-//                    }
-//                })
-//            }
-//            table.on('focus', 'input.es-input.not-built', {cols: cols}, notBuiltFocusHandler);
-//
-//            function notBuiltFocusHandler(data) {
-//                var cols = data.data.cols;
-//                var input = $(this);
-//
-//                var colId = input.closest('th').attr('data-column-index');
-//                var valuesArray = cols[colId];
-//                delete cols[colId];
-//                var select = $(document.createElement('select'));
-//                select.attr('class', input.attr('class'));
-//                select.removeClass('not-built').addClass('built');
-//                select.attr('style', input.attr('style'));
-//                select.attr('onclick', input.attr('onclick'));
-//                select.attr('data-col-id', colId);
-//                var options = '';
-//
-//                $.each(valuesArray, function (id, val) {
-//                    options += '<option value="' + val + '">' + val + '</option>';
-//                });
-//                if (options) {
-//                    input.parent().append(select);
-//                    input.remove();
-//                    select.append(options);
-//                    select.editableSelect('show');
-//                    // remove current listener from new object and focus after click
-//                    var selector = 'table thead th[data-column-index="' + colId + '"] input';
-//                    $('body').off('focus', selector, notBuiltFocusHandler);
-//                    $(selector).focus();
-//
-//                    select.on('select.editable-select', function (e, li) {
-//                        var value = li.text();
-//                        if (table.column($(this).attr('data-col-id')).search() !== value) {
-//                            table.column($(this).attr('data-col-id')).search(value).draw();
-//                        }
-//                    })
-//                }
-//            }
-//        }
-
         // fixed header of table
         function fixedHeader() {
 
@@ -666,8 +477,6 @@
         if (!$table.closest('.modal-content').length) {
             fixedHeader();
         }
-
-
 
     });
 

@@ -76,13 +76,16 @@
                             <div class="tab-content" style="padding: 10px;">
                                 <div class="tab-pane fade active in">
                                     <?php
-                                    $table_data = [
-                                        'buttons' => [
-                                            '<button class="btn sbold green" data-toggle="modal" 
+                                    $buttons = [
+                                        '<button class="btn sbold green" data-toggle="modal" 
 data-target="#modal_newProduct">Add New Product <i class="fa fa-plus"></i></button>',
-                                            '<button class="btn sbold blue new-similar-product-btn" data-toggle="modal" 
+                                        '<button class="btn sbold blue new-similar-product-btn" data-toggle="modal" 
 data-target="#modal_newProduct">Add Similar Product <i class="fa fa-plus"></i></button>'
-                                        ],
+                                    ];
+                                    if (!$this->access)
+                                        $buttons = [];
+                                    $table_data = [
+                                        'buttons' => $buttons,
                                         'table_id' => "table_catalogue",
                                         'ajax' => [
                                             'url' => "/catalogue/dt",

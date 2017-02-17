@@ -22,8 +22,10 @@ class ControllerLogin extends Controller
             $user_exist = $this->model->getUserByEmailAndPassword($_POST["username"], md5($_POST["password"]));
             if ($user_exist) {
                 $_SESSION["user_connected"] = true;
+                $roleId = $user_exist['role_id'];
                 $_SESSION["user_id"] = $user_exist['user_id'];
-                $_SESSION["user_role"] = $user_exist['role'];
+                $_SESSION["user_role"] = $user_exist['role_id'];
+                $_SESSION["perm"] = $this->model->getRolePermissions($roleId);;
             }
             header("Location: /");
         }

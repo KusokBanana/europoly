@@ -220,12 +220,22 @@ abstract class Model extends mysqli
 
     function getSalesManagersIdName()
     {
-        return $this->getAssoc("SELECT user_id, CONCAT(first_name, ' ', last_name) AS name FROM users WHERE role = 'Sales Manager'");
+        return $this->getAssoc("SELECT user_id, CONCAT(first_name, ' ', last_name) AS name
+          FROM users LEFT JOIN roles ON roles.role_id = users.role_id WHERE roles.name = 'Sales Manager'");
+    }
+
+    function getRolePermissions($roleId)
+    {
+        if ($roleId) {
+            $permissions = $this->getFirst("SELECT permissions FROM roles WHERE role_id = $roleId");
+            return $permissions ? $permissions['permissions'] : false;
+        }
+
     }
 
     function getCommissionAgentsIdName()
     {
-        return $this->getAssoc("SELECT client_id, name FROM clients WHERE type = " . COMISSION_AGENT);
+        return $this->getAssoc("SELECT client_id, name FROM clients WHERE type = '" . COMISSION_AGENT . "'");
     }
 
     function getClientsIdName()

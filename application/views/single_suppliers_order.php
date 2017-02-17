@@ -84,21 +84,16 @@
                                 <table class="table table-striped table-hover" id="table_order_items">
                                     <thead>
                                         <tr>
-                                            <th> ID </th>
-                                            <th> Product </th>
-                                            <th> Quantity </th>
-                                            <th class="hidden-xs"> # of packs </th>
-                                            <th class="hidden-xs"> Purchase Price </th>
-                                            <th class="hidden-xs"> Purchase Value </th>
-                                            <th> Status </th>
-                                            <th> Production Date </th>
-                                            <th> Weight </th>
-                                            <th> Downpayment rate, % </th>
-                                            <th> Client's expected date of issue </th>
-                                            <th> Manager </th>
-                                            <th> Managers order id </th>
-                                            <th> Client </th>
-                                            <th> Actions</th>
+                                            <?php
+                                            $column_name_ids = [];
+                                            if (!empty($this->column_names)) {
+                                                foreach ($this->column_names as $key => $column_name) {
+                                                    echo '<th>' . $column_name . '</th>';
+                                                    if ($key)
+                                                        $column_name_ids[] = $key;
+                                                }
+                                            }
+                                            ?>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -180,6 +175,7 @@
                 var clients = <?= $this->toJsList($this->clients, "client_id") ?>;
                 var item_statuses = <?= json_encode($this->statusList); ?>;
                 var suppliers = <?= json_encode($this->supplier['list']); ?>;
+                var $column_name_ids = <?= json_encode($column_name_ids); ?>;
                 var $table_order_items = $("#table_order_items");
                 $table_order_items.DataTable({
                     processing: true,
@@ -192,7 +188,7 @@
                     },
                     dom: '<t>ip',
                     columnDefs: [{
-                        targets: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+                        targets: $column_name_ids,
                         searchable: false,
                         orderable: false
                     }, {

@@ -19,9 +19,14 @@
                             </div>
                             <div class="form-group">
                                 <label for="modal_new_user_customer_role">Role</label>
-                                <select id="modal_new_user_customer_role" name="role" class="form-control" required>
-                                    <option value="Sales Manager">Sales Manager</option>
-                                    <option value="Support">Support</option>
+                                <select id="modal_new_user_customer_role" name="role_id" class="form-control" required>
+                                    <?php
+                                    if (!empty($this->roles)) {
+                                        foreach ($this->roles as $role) {
+                                            echo '<option value="'.$role['id'].'">'.$role['name'].'</option>';
+                                        }
+                                    }
+                                    ?>
                                 </select>
                             </div>
                         </div>

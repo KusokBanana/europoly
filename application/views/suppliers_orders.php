@@ -36,11 +36,13 @@
 								<i class="icon-social-dribbble font-dark"></i>
 								<span class="caption-subject bold uppercase font-dark">Suppliers' Orders</span>
 							</div>
- 							<div class="actions">
-								<a class="btn btn-default load-into-truck-modal-btn">
-									+ Load into Truck
-								</a>
-							</div>
+                            <?php if($this->access): ?>
+                                <div class="actions">
+                                    <a class="btn btn-default load-into-truck-modal-btn">
+                                        + Load into Truck
+                                    </a>
+                                </div>
+                            <?php endif; ?>
 							<script>
 								$('body').on('click', '.load-into-truck-modal-btn', function() {
                                     var table = $('#table_suppliers_orders');

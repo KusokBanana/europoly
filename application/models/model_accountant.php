@@ -2,6 +2,7 @@
 
 class ModelAccountant extends Model
 {
+
     var $payments_columns = [
         array('dt' => 0, 'db' => "payments.payment_id"),
         array('dt' => 1, 'db' => "CONCAT('<a href=\"/payment?id=', payments.payment_id, '\">', payments.payment_id, '</a>')"),

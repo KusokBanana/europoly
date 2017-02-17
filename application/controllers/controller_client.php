@@ -11,19 +11,26 @@ class ControllerClient extends Controller
     function action_index($action_param = null, $action_data = null)
     {
         if ($id = $_GET['id']) {
+            $this->getAccess('client', 'v');
             if ($id == 'new') {
                 $this->view->title = 'New Client';
                 $this->view->commission_agents = $this->model->getCommissionAgentsIdName();
             } else {
                 $this->view->client = $this->model->getClient($id);
                 $this->view->title = $this->view->client['name'];
+                $salesManagerId = $this->view->client['sales_manager_id'];
                 $this->view->primaryForm = $this->model->buildPrimaryForm($id);
                 $this->view->countryAndRegion = $this->model->getCountryAndRegionNamesByIds($this->view->client['country_id'],
                     $this->view->client['region_id']);
             }
-            $this->view->managers = $this->model->getSalesManagersIdName();
-            $this->view->clients = $this->model->getClientsIdName();
-            $this->view->build('templates/template.php', 'single_client.php');
+            if ((isset($salesManagerId) && $salesManagerId == $_SESSION['user_id']) || ($id == 'new')) {
+                $this->view->managers = $this->model->getSalesManagersIdName();
+                $this->view->clients = $this->model->getClientsIdName();
+                $this->view->build('templates/template.php', 'single_client.php');
+            } else {
+                $this->getAccess('none', 'v');
+            }
+
         }
 
     }

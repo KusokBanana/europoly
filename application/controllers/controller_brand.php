@@ -11,12 +11,15 @@ class ControllerBrand extends Controller
     function action_index($action_param = null, $action_data = null)
     {
         if (isset($_GET["id"])) {
+            $this->getAccess('brand', 'v');
             $id = intval($_GET["id"]);
             $this->view->brand = $this->model->getById("brands", "brand_id", $id);
             if ($this->view->brand != NULL) {
                 $this->view->title = $this->view->brand["name"];
                 $this->view->full_product_column_names = $this->model->full_product_column_names;
                 $this->view->full_product_hidden_columns = $this->model->full_product_hidden_columns;
+                $roles = new Roles();
+                $this->view->access = $roles->returnAccessAbilities('brand', 'ch');
 
                 $this->view->brands = $this->model->getAll("brands");
                 $this->view->colors = $this->model->getAll("colors");

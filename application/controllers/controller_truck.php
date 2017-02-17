@@ -10,11 +10,14 @@ class ControllerTruck extends Controller
 
     function action_index($action_param = null, $action_data = null)
     {
+        $this->getAccess('truck', 'v');
         $this->view->title = "Truck #" . $_GET['id'];
         $this->view->order = $this->model->getOrder($_GET['id']);
-        $this->view->full_product_column_names = $this->model->full_product_column_names;
+        $roles = new Roles();
+        $this->view->suppliers_orders_column_names =
+            $roles->returnModelNames($this->model->suppliers_orders_column_names, 'suppliersOrders');
+        $this->view->column_names = $roles->returnModelNames($this->model->truck_column_names, 'truck');
         $this->view->full_product_hidden_columns = $this->model->full_product_hidden_columns;
-        $this->view->suppliers_orders_column_names = $this->model->suppliers_orders_column_names;
         $this->view->status = $this->model->getTruckStatus($_GET['id']);
         $this->view->statusList = $this->model->getStatusList();
         $this->view->delivery = $this->model->getDelivery($_GET['id']);
@@ -39,12 +42,14 @@ class ControllerTruck extends Controller
 
     function action_put_to_the_warehouse()
     {
+        $this->getAccess('truck', 'ch');
         $this->model->putToTheWarehouse($_GET['truck_id']);
         header("Location: " . $_SERVER['HTTP_REFERER']);
     }
 
     function action_put_item_to_warehouse()
     {
+        $this->getAccess('truck', 'ch');
         $warehouseId = $this->model->putItemToWarehouse($_GET['truck_item_id']);
         header("Location: " . $_SERVER['HTTP_REFERER']);
     }
@@ -63,6 +68,7 @@ class ControllerTruck extends Controller
 
     function action_change_status()
     {
+        $this->getAccess('truck', 'ch');
         $this->model->changeStatus($this->escape_and_empty_to_null($_GET['order_id']),
             $this->escape_and_empty_to_null($_GET['status']));
         header("Location: " . $_SERVER['HTTP_REFERER']);
@@ -71,6 +77,7 @@ class ControllerTruck extends Controller
 
     function action_add_order_item()
     {
+        $this->getAccess('truck', 'ch');
         $this->model->addOrderItem($this->escape_and_empty_to_null($_POST['order_id']),
             json_decode($_POST['product_ids']));
         header("Location: " . $_SERVER['HTTP_REFERER']);
@@ -78,6 +85,7 @@ class ControllerTruck extends Controller
 
     function action_delete_order_item()
     {
+        $this->getAccess('truck', 'd');
         $this->model->deleteOrderItem($this->escape_and_empty_to_null($_GET['order_id']),
             $this->escape_and_empty_to_null($_GET['order_item_id']));
         header("Location: " . $_SERVER['HTTP_REFERER']);
@@ -85,6 +93,7 @@ class ControllerTruck extends Controller
 
     function action_change_field()
     {
+        $this->getAccess('truck', 'ch');
         if (isset($_POST["pk"]) && isset($_POST["name"]) && isset($_POST["value"])) {
             $order_id = intval($_POST["pk"]);
             $name = $this->model->escape_string($_POST["name"]);
@@ -101,6 +110,7 @@ class ControllerTruck extends Controller
 
     function action_change_item_field()
     {
+        $this->getAccess('truck', 'ch');
         if (isset($_POST["pk"]) && isset($_POST["name"]) && isset($_POST["value"])) {
             $order_item_id = intval($_POST["pk"]);
             $name = $this->model->escape_string($_POST["name"]);
@@ -118,6 +128,7 @@ class ControllerTruck extends Controller
 
     function action_change_truck_select()
     {
+        $this->getAccess('truck', 'ch');
         if (isset($_POST["pk"])){
             $transportation_company_id = isset($_POST["transportation_company_id"]) && $_POST["transportation_company_id"] ?
                 $this->model->escape_string($_POST["transportation_company_id"]) : false;

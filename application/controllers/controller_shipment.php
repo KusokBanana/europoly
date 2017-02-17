@@ -10,8 +10,10 @@ class ControllerShipment extends Controller
 
     function action_index($action_param = null, $action_data = null)
     {
+        $this->getAccess('shipment', 'v');
         $this->view->title = "Shipment";
-        $this->view->column_names = $this->model->suppliers_orders_column_names;
+        $roles = new Roles();
+        $this->view->column_names = $roles->returnModelNames($this->model->suppliers_orders_column_names, 'shipment');
         $this->view->column_names_reduce = $this->model->suppliers_orders_column_names_reduce;
 
         //        $cache = new Cache();

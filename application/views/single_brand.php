@@ -80,10 +80,13 @@
                                 <div class="tab-pane fade active in"
                                      id="">
                                     <?php
+                                    $button = '<button class="btn sbold green" data-toggle="modal" data-target="#modal_newProduct">
+                                                    Add New Product <i class="fa fa-plus"></i>
+                                                </button>';
+                                    if (!$this->access)
+                                        $button = '';
                                     $table_data = [
-                                        'buttons' => [
-                                            '<button class="btn sbold green" data-toggle="modal" data-target="#modal_newProduct">Add New Product <i class="fa fa-plus"></i></button>'
-                                        ],
+                                        'buttons' => [$button],
                                         'table_id' => "table_products",
                                         'ajax' => [
                                             'url' => "/brand/dt",
@@ -112,5 +115,7 @@
 </div>
 
 <?php
-require_once 'modals/new_product.php';
+if ($this->access):
+    require_once 'modals/new_product.php';
+endif;
 ?>

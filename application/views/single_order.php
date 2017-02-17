@@ -214,23 +214,16 @@
                                             <table id="table_order_items" class="table table-hover table-bordered table-striped">
                                                 <thead>
                                                 <tr>
-                                                    <th> Id</th>
-                                                    <th> Product</th>
-                                                    <th> Quantity</th>
-                                                    <th> # of Packs</th>
-                                                    <th> # of planks</th>
-                                                    <th> Purchase Price</th>
-                                                    <th> Purchase Value</th>
-                                                    <th> Sell Price</th>
-                                                    <th> Discount Rate (%)</th>
-                                                    <th> Reduced Price</th>
-                                                    <th> Sell Value</th>
-                                                    <th> Commission Rate (%)</th>
-                                                    <th> Commission Agent Bonus</th>
-                                                    <th> Manager Bonus Rate (%)</th>
-                                                    <th> Manager Bonus</th>
-                                                    <th> Status</th>
-                                                    <th> Actions</th>
+                                                    <?php
+                                                    $column_name_ids = [];
+                                                    if (!empty($this->column_names)) {
+                                                        foreach ($this->column_names as $key => $column_name) {
+                                                            echo '<th>' . $column_name . '</th>';
+                                                            if ($key)
+                                                                $column_name_ids[] = $key;
+                                                        }
+                                                    }
+                                                    ?>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -367,6 +360,7 @@ require_once 'modals/cancel_order.php';
         var commission_agents = <?= $this->toJsList($this->commission_agents, "client_id") ?>;
         var clients = <?= $this->toJsList($this->clients, "client_id") ?>;
         var item_statuses = <?= json_encode($this->statusList); ?>;
+        var $column_name_ids = <?= json_encode($column_name_ids); ?>;
         var legalEntities = <?= json_encode($this->legalEntities); ?>;
         <?php if ($this->order['downpayment_rate'] == 100): ?>
         item_statuses[6] = undefined;
@@ -383,7 +377,7 @@ require_once 'modals/cancel_order.php';
             },
             dom: '<t>ip',
             columnDefs: [{
-                targets: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+                targets: $column_name_ids,
                 searchable: false,
                 orderable: false
             }, {
@@ -557,8 +551,6 @@ require_once 'modals/cancel_order.php';
                 }
             })
         });
-        if ($('.reserved_row_table').length)
-            $('.reserved_row_table').closest('tr').attr('title', 'Reserved');
     });
 </script>
 <style>

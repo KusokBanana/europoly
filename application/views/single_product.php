@@ -31,7 +31,7 @@
                         <strong>Status: Active.</strong>
                         <div style="float:right" class="action btn-group ">
                             <?php
-                            if ($_SESSION["user_role"] == 'admin') {
+                            if ($this->access) {
                                 echo <<<END
                             <button class="btn green btn-sm dropdown-toggle" data-toggle="dropdown">Change Status
                                 <i class="fa fa-angle-down"></i>
@@ -61,7 +61,7 @@ END;
                         <strong>Status: Limited Edition.</strong>
                         <div style="float:right" class="action btn-group ">
                             <?php
-                            if ($_SESSION["user_role"] == 'admin') {
+                            if ($this->access) {
                                 echo <<<END
                             <button class="btn yellow btn-sm dropdown-toggle" data-toggle="dropdown">Change Status
                                 <i class="fa fa-angle-down"></i>
@@ -89,7 +89,7 @@ END;
                         <strong>Status: Out of Production.</strong>
                         <div style="float:right" class="action btn-group ">
                             <?php
-                            if ($_SESSION["user_role"] == 'admin') {
+                            if ($this->access) {
                                 echo <<<END
                             <button class="btn red btn-sm dropdown-toggle" data-toggle="dropdown">Change Status
                                 <i class="fa fa-angle-down"></i>
@@ -123,7 +123,7 @@ END;
                             </div>
                             <div class="actions">
                                 <?php
-                                if ($_SESSION["user_role"] == 'admin') {
+                                if ($this->access) {
                                     echo '<a href="javascript:;" class="btn btn-default btn-sm" data-toggle="modal" data-target="#modal_uploadImage"><i class="fa fa-pencil"></i> Add </a>';
                                 }
                                 ?>
@@ -138,7 +138,7 @@ END;
                                         <a href="{$photo['path']}" class="fancybox-button" data-rel="fancybox-button" style="position:relative">
                                             <img class="img-responsive" src="{$photo['path']}" alt="" style="float: left; padding:10px;">
 END;
-                                    if ($_SESSION["user_role"] == 'admin') {
+                                    if ($this->access) {
                                         echo "<span class='glyphicon glyphicon-remove-circle' style='position:absolute;top:15px;right:15px;font-size:20px' onclick='showDeleteModal(event, {$photo['photo_id']})'></span>";
                                     }
                                     echo "</a></div>";
@@ -169,7 +169,6 @@ END;
                                     $formName .= '.' . $column_name_rus;
                                 } else {
                                     $value = $text = $this->orEmpty($this->product[$name]);
-//                                    $text = $this->orEmpty($this->full_product[$name]);
                                     if ($column['type'] == 'id') {
                                         // TODO remove please
                                         if (isset($this->selects[$name]))
@@ -395,7 +394,7 @@ require_once "modals/upload_image.php"
     });
 
     <?php
-    if ($_SESSION['user_role'] != "admin") {
+    if (!$this->access) {
         echo "$('.x-editable').editable('toggleDisabled');";
     }
     ?>

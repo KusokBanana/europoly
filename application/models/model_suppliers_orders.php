@@ -123,21 +123,37 @@ class ModelSuppliers_orders extends ModelManagers_orders
             left join brands as brands on products.brand_id = brands.brand_id';
 
     var $suppliers_orders_table_reduce = 'suppliers_orders ' .
+        'left join order_items on order_items.supplier_order_id = suppliers_orders.order_id '.
+        'left join orders on orders.order_id = order_items.manager_order_id '.
         'left join items_status as status on (suppliers_orders.status_id = status.status_id)';
 
-    var $suppliersFilterWhere = "suppliers_orders_items.supplier_order_id IS NOT NULL 
-                                    AND suppliers_orders_items.truck_id IS NULL";
+    var $suppliersFilterWhere = "(suppliers_orders_items.supplier_order_id IS NOT NULL 
+                                    AND suppliers_orders_items.truck_id IS NULL)";
 
     function getDTSuppliersOrders($input)
     {
-        $this->sspComplex($this->suppliers_orders_table, "suppliers_orders_items.item_id", $this->suppliers_orders_columns,
+        $roles = new Roles();
+        $columns = $roles->returnModelColumns($this->suppliers_orders_columns, 'suppliersOrders');
+
+        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
+            $this->suppliersFilterWhere .= " AND (orders.sales_manager_id = " . $_SESSION['user_id'] . ' OR 
+                suppliers_orders_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
+        }
+
+        $this->sspComplex($this->suppliers_orders_table, "suppliers_orders_items.item_id", $columns,
             $input, null, $this->suppliersFilterWhere);
     }
 
     function getDTSuppliersOrdersReduce($input)
     {
+        $where = '';
+        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
+            $where = "orders.sales_manager_id = " . $_SESSION['user_id'] . ' OR 
+                order_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL';
+        }
+
         $this->sspComplex($this->suppliers_orders_table_reduce, "suppliers_orders.order_id", $this->suppliers_orders_columns_reduce,
-            $input, null, null);
+            $input, null, $where);
     }
 
 
@@ -252,9 +268,11 @@ class ModelSuppliers_orders extends ModelManagers_orders
             $where .= ($count-$key > 1) ? ' OR ' : '';
         }
         $where2 = 'suppliers_orders_items.supplier_order_id IS NOT NULL AND suppliers_orders_items.truck_id IS NULL';
+        $roles = new Roles();
+        $columns = $roles->returnModelColumns($this->suppliers_orders_columns, 'suppliersOrders');
 
         $this->sspComplex($this->suppliers_orders_table, "suppliers_orders_items.item_id",
-            $this->suppliers_orders_columns, $input, $where2, $where);
+            $columns, $input, $where2, $where);
     }
 
 

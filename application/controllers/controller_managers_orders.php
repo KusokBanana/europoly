@@ -10,9 +10,14 @@ class ControllerManagers_orders extends Controller
 
     function action_index($action_param = null, $action_data = null)
     {
+        $this->getAccess('managers orders', 'v');
+
         $this->view->title = "Managers' Orders";
         $this->view->column_names = $this->model->managers_orders_column_names;
         $this->view->column_names_reduced = $this->model->managers_orders_reduced_column_names;
+
+        $roles = new Roles();
+        $this->view->access = $roles->returnAccessAbilities('managers orders', 'ch');
 
         $cache = new Cache();
         $selectsCache = $cache->read('managers_orders_selects');

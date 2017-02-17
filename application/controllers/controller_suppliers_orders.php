@@ -10,21 +10,16 @@ class ControllerSuppliers_orders extends Controller
 
     function action_index($action_param = null, $action_data = null)
     {
+        $this->getAccess('suppliers orders', 'v');
         $this->view->title = "Suppliers' Orders";
-        $this->view->column_names = $this->model->suppliers_orders_column_names;
+        $roles = new Roles();
+        $this->view->column_names = $roles->returnModelNames($this->model->suppliers_orders_column_names, 'suppliersOrders');
         $this->view->column_names_reduce = $this->model->suppliers_orders_column_names_reduce;
-//        $cache = new Cache();
-//        $selectsCache = $cache->read('suppliers_orders_selects');
-//        if (!empty($selectsCache)) {
-//            $array = $selectsCache;
-//            $selects = $array['selects'];
-//            $rows = $array['rows'];
-//        } else {
-            $array = $this->model->getSelects();
-            $selects = $array['selects'];
-            $rows = $array['rows'];
-//            $cache->write('suppliers_orders_selects', $array);
-//        }
+        $this->view->access = $roles->returnAccessAbilities('suppliers orders', 'ch');
+
+        $array = $this->model->getSelects();
+        $selects = $array['selects'];
+        $rows = $array['rows'];
         $this->view->selects = $selects;
         $this->view->rows = $rows;
 
@@ -43,6 +38,7 @@ class ControllerSuppliers_orders extends Controller
 
     function action_add_suppliers_order()
     {
+        $this->getAccess('suppliers orders', 'ch');
         if (!empty($_POST)) {
             $products = $_POST['suppliers_products'];
             if (empty($products))

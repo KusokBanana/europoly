@@ -11,23 +11,22 @@ class ControllerProduct extends Controller
     function action_index($action_param = null, $action_data = null)
     {
         if (isset($_GET["id"])) {
+            $this->getAccess('product', 'v');
             $id = intval($_GET["id"]);
             $this->view->product = $this->model->getById("products", "product_id", $id);
             if ($this->view->product != NULL) {
-//                $this->view->full_product = $this->model->getFullProductEntity($id);
-//                $this->view->full_product = $this->model->getById('products', 'product_id', $id);
                 $this->view->rus = $this->model->getRus($id);
                 $this->view->brand = $this->model->getById("brands", "brand_id", $this->view->product["brand_id"]);
                 $this->view->title = $this->view->product["name"];
                 $this->view->photos = $this->model->getPhotos($this->view->product["product_id"]);
-
 //                $this->view->brands = $this->model->getAll("brands");
 //                $this->view->colors = $this->model->getAll("colors");
 //                $this->view->constructions = $this->model->getAll("constructions");
 //                $this->view->wood = $this->model->getAll("wood");
 //                $this->view->grading = $this->model->getAll("grading");
 //                $this->view->patterns = $this->model->getAll("patterns");
-
+                $roles = new Roles();
+                $this->view->access = $roles->returnAccessAbilities('product', 'ch');
                 $this->view->balances = $this->model->getBalances($id);
                 $this->view->all_warehouces_balance = $this->model->getAllWarehousesBalance($id);
 
@@ -42,7 +41,8 @@ class ControllerProduct extends Controller
                 }
                 $this->view->selects = $selects;
 
-                $this->view->columns = $this->model->columns;
+                $roles = new Roles();
+                $this->view->columns = $roles->columnsNamesAccess($this->model->columns, 'product');
 
                 $this->view->build('templates/template.php', 'single_product.php');
             } else {
@@ -55,6 +55,7 @@ class ControllerProduct extends Controller
 
     function action_delete()
     {
+        $this->getAccess('product', 'd');
         if (isset($_POST["product_id"])) {
             $product_id = intval($_POST["product_id"]);
             $this->model->deleteProduct($product_id);
@@ -63,6 +64,7 @@ class ControllerProduct extends Controller
 
     function action_upload_image()
     {
+        $this->getAccess('product', 'ch');
         $target_dir = __DIR__ . "/../../images/" . $this->model->getById("products", "product_id", $_POST["product_id"])['brand'] . '/';
         if (!file_exists($target_dir)) {
             mkdir($target_dir, 0777, true);
@@ -79,6 +81,7 @@ class ControllerProduct extends Controller
 
     function action_delete_photo()
     {
+        $this->getAccess('product', 'd');
         if (isset($_POST["photo_id"])) {
             $photo_id = intval($_POST["photo_id"]);
             $this->model->deletePhoto($photo_id);
@@ -87,6 +90,7 @@ class ControllerProduct extends Controller
 
     function action_change_field()
     {
+        $this->getAccess('product', 'ch');
         if (isset($_POST["pk"]) && isset($_POST["name"]) && isset($_POST["value"])) {
             $product_id = intval($_POST["pk"]);
             $name = $this->model->escape_string($_POST["name"]);
@@ -104,6 +108,7 @@ class ControllerProduct extends Controller
 
     function action_change_status()
     {
+        $this->getAccess('product', 'ch');
         if (isset($_POST["product_id"]) && isset($_POST["new_status"])) {
             $product_id = intval($_POST["product_id"]);
             $new_status = intval($_POST["new_status"]);

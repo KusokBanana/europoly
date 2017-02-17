@@ -81,6 +81,25 @@ class ModelSuppliers_order extends ModelOrder
                         </a>'), ''),
                 '</div>')")
 ];
+
+    var $suppliers_orders_column_names = [
+        'ID',
+        'Product',
+        'Quantity',
+        '# of packs',
+        'Purchase Price',
+        'Purchase Value',
+        'Status',
+        'Production Date',
+        'Weight',
+        'Downpayment rate, %',
+        'Client\'s expected date of issue',
+        'Manager',
+        'Managers order id ',
+        'Client',
+        'Actions',
+    ];
+
     function getDTOrderItems($order_id, $input)
     {
         $table = 'order_items as suppliers_orders_items
@@ -93,8 +112,9 @@ class ModelSuppliers_order extends ModelOrder
                 left join clients on orders.client_id = clients.client_id
                 left join users as managers on orders.sales_manager_id = managers.user_id';
 
-
-        $this->sspComplex($table, "suppliers_orders_items.item_id", $this->suppliers_orders_columns,
+        $roles = new Roles();
+        $columns = $roles->returnModelColumns($this->suppliers_orders_columns, 'suppliersOrder');
+        $this->sspComplex($table, "suppliers_orders_items.item_id", $columns,
             $input, null, "suppliers_orders_items.supplier_order_id = $order_id");
     }
 

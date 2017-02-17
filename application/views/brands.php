@@ -32,10 +32,11 @@
                         </div>
                         <div class="portlet-body">
                             <?php
+                            $buttons = '<button class="btn sbold green" data-toggle="modal" data-target="#modal_newBrand"> Add New Brand <i class="fa fa-plus"></i></button>';
+                            if (!$this->access)
+                                $buttons = '';
                             $table_data = [
-                                'buttons' => [
-                                    '<button class="btn sbold green" data-toggle="modal" data-target="#modal_newBrand"> Add New Brand <i class="fa fa-plus"></i></button>'
-                                ],
+                                'buttons' => [$buttons],
                                 'table_id' => "table_brands",
                                 'ajax' => [
                                     'url' => "/brands/dt"

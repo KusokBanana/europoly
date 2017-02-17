@@ -146,13 +146,23 @@ class ModelShipment extends ModelManagers_orders
     ';
 
     var $suppliers_orders_table_reduce = 'trucks 
+                                          left join order_items on trucks.id = order_items.truck_id
+                                          left join orders on orders.order_id = order_items.manager_order_id
                                           left join items_status as status on trucks.status_id = status.status_id';
 
-    var $filterWhere = "trucks_items.truck_id IS NOT NULL AND trucks_items.warehouse_id IS NULL";
+    var $filterWhere = "(trucks_items.truck_id IS NOT NULL AND trucks_items.warehouse_id IS NULL)";
 
     function getDTSuppliersOrders($input)
     {
-        $this->sspComplex($this->suppliers_orders_table, "trucks_items.item_id", $this->suppliers_orders_columns,
+        $roles = new Roles();
+        $columns = $roles->returnModelColumns($this->suppliers_orders_columns, 'shipment');
+
+        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
+            $this->filterWhere .= " AND (orders.sales_manager_id = " . $_SESSION['user_id'] . ' OR 
+                trucks_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
+        }
+
+        $this->sspComplex($this->suppliers_orders_table, "trucks_items.item_id", $columns,
             $input, null, $this->filterWhere);
     }
 
@@ -176,8 +186,14 @@ class ModelShipment extends ModelManagers_orders
 
     function getDTSuppliersOrdersReduce($input)
     {
+        $where = '';
+        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
+            $where .= "(orders.sales_manager_id = " . $_SESSION['user_id'] . ' OR 
+                order_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
+        }
+
         $this->sspComplex($this->suppliers_orders_table_reduce, "trucks.id", $this->suppliers_orders_columns_reduce,
-            $input, null, null);
+            $input, null, $where);
     }
 
 }

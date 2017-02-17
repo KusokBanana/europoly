@@ -111,25 +111,16 @@
                         <table class="table table-striped table-hover" id="table_truck_items">
                             <thead>
                             <tr>
-                                <th> ID </th>
-                                <th> Product </th>
-                                <th> Quantity </th>
-                                <th class="hidden-xs"> # of packs </th>
-                                <th class="hidden-xs"> Purchase Price </th>
-                                <th class="hidden-xs"> Purchase Value </th>
-                                <th> Status </th>
-                                <th> Weight </th>
-                                <th> Downpayment rate, % </th>
-                                <th> Client's expected date of issue </th>
-                                <th> Manager </th>
-                                <th> Managers order id </th>
-                                <th> Suppliers order id </th>
-                                <th> Client </th>
-                                <th> Import VAT </th>
-                                <th> Import Brokers Price </th>
-                                <th> Import Tax </th>
-                                <th> Delivery Price </th>
-                                <th> Actions</th>
+                                <?php
+                                $column_name_ids = [];
+                                if (!empty($this->column_names)) {
+                                    foreach ($this->column_names as $key => $column_name) {
+                                        echo '<th>' . $column_name . '</th>';
+                                        if ($key)
+                                            $column_name_ids[] = $key;
+                                    }
+                                }
+                                ?>
                             </tr>
                             </thead>
                             <tbody>
@@ -159,6 +150,7 @@
         var item_statuses = <?= json_encode($this->statusList); ?>;
         var transports = <?= json_encode($this->delivery['list']) ?>;
         var customs = <?= json_encode($this->customs['list']) ?>;
+        var $column_name_ids = <?= json_encode($column_name_ids); ?>;
         var $table_order_items = $("#table_truck_items");
         $table_order_items.DataTable({
             processing: true,
@@ -171,7 +163,7 @@
             },
             dom: '<t>ip',
             columnDefs: [{
-                targets: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+                targets: $column_name_ids,
                 searchable: false,
                 orderable: false
             }, {

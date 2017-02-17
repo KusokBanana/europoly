@@ -132,17 +132,42 @@ class ModelTruck extends ModelOrder
         'Client\'s expected date of issue',
     ];
 
+    var $truck_column_names = [
+        'ID',
+        'Product',
+        'Quantity',
+        '# of packs ',
+        'Purchase Price ',
+        'Purchase Value ',
+        'Status',
+        'Weight',
+        'Downpayment rate, % ',
+        'Client\'s',
+        'Manager',
+        'Managers order id ',
+        'Suppliers order id ',
+        'Client',
+        'Import VAT ',
+        'Import Brokers Price ',
+        'Import Tax ',
+        'Delivery Price ',
+        'Actions'
+    ];
+
     function getDTTrucks($truck_id, $input)
     {
         $trucks_table = 'order_items as trucks_items
-    left join products on trucks_items.product_id = products.product_id ' . $this->full_products_table_addition .' 
-    left join trucks on trucks.id = trucks_items.truck_id
-    left join orders on trucks_items.manager_order_id = orders.order_id
-    left join clients on orders.client_id = clients.client_id
-    left join items_status as status on trucks_items.status_id = status.status_id
-    left join users as managers on orders.sales_manager_id = managers.user_id';
+            left join products on trucks_items.product_id = products.product_id ' . $this->full_products_table_addition .' 
+            left join trucks on trucks.id = trucks_items.truck_id
+            left join orders on trucks_items.manager_order_id = orders.order_id
+            left join clients on orders.client_id = clients.client_id
+            left join items_status as status on trucks_items.status_id = status.status_id
+            left join users as managers on orders.sales_manager_id = managers.user_id';
 
-        $this->sspComplex($trucks_table, "trucks_items.item_id", $this->truck_columns,
+        $roles = new Roles();
+        $columns = $roles->returnModelColumns($this->truck_columns, 'truck');
+
+        $this->sspComplex($trucks_table, "trucks_items.item_id", $columns,
             $input, null, "trucks_items.truck_id = $truck_id");
     }
 

@@ -10,7 +10,10 @@ class ControllerClients extends Controller
 
     function action_index($action_param = null, $action_data = null)
     {
+        $this->getAccess('clients', 'v');
         $this->view->title = "Clients";
+        $roles = new Roles();
+        $this->view->access = $roles->returnAccessAbilities('clients', 'ch');
 
         $this->view->column_names = $this->model->client_column_names;
         $this->view->managers = $this->model->getSalesManagersIdName();
@@ -55,6 +58,7 @@ class ControllerClients extends Controller
 
     function action_add()
     {
+        $this->getAccess('clients', 'ch');
         $this->model->addClient(
             $this->escape_and_empty_to_null($_POST['name']),
             $this->escape_and_empty_to_null($_POST['type']),
@@ -68,6 +72,7 @@ class ControllerClients extends Controller
 
     function action_change_item_field()
     {
+        $this->getAccess('clients', 'ch');
         if (isset($_POST["pk"]) && isset($_POST["name"]) && isset($_POST["value"])) {
             $client_id = intval($_POST["pk"]);
             $name = $this->model->escape_string($_POST["name"]);

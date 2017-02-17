@@ -10,12 +10,26 @@ class ControllerSales_manager extends Controller
 
     function action_index($action_param = null, $action_data = null)
     {
-        $this->view->manager = $this->model->getUser($_GET['id']);
-        $this->view->title = $this->view->manager['first_name'] . " " . $this->view->manager['last_name'];
-        $this->view->managers = $this->model->getSalesManagersIdName();
-        $this->view->clients = $this->model->getClientsOfSalesManager($this->view->manager['user_id']);
-        $this->view->commission_agents = $this->model->getCommissionAgentsIdName();
-        $this->view->build('templates/template.php', 'single_manager.php');
+        $roles = new Roles();
+
+        if ($roles->returnAccessAbilities('sales manager', 'v')) {
+            $userId = $_SESSION['user_id'];
+            if ($userId !== $_GET['id']) {
+                $this->getAccess('none', 'v');
+            }
+            $this->getAccess('sales manager', 'v');
+            $this->view->access = $roles->returnAccessAbilities('sales manager', 'ch');
+
+            $this->view->manager = $this->model->getUser($_GET['id']);
+            $this->view->title = $this->view->manager['first_name'] . " " . $this->view->manager['last_name'];
+            $this->view->managers = $this->model->getSalesManagersIdName();
+            $this->view->clients = $this->model->getClientsOfSalesManager($this->view->manager['user_id']);
+            $this->view->commission_agents = $this->model->getCommissionAgentsIdName();
+            $this->view->build('templates/template.php', 'single_manager.php');
+        } else {
+            http_response_code(400);
+        }
+
     }
 
     function action_update_personal_info()
@@ -35,6 +49,7 @@ class ControllerSales_manager extends Controller
 
     function action_update_salary_settings()
     {
+        $this->getAccess('sales manager', 'ch');
         $this->model->updateSalarySettings($this->escape_and_empty_to_null($_POST['user_id']),
             $this->escape_and_empty_to_null($_POST['salary']),
             $this->escape_and_empty_to_null($_POST['manager_bonus_rate']));
@@ -65,6 +80,7 @@ class ControllerSales_manager extends Controller
 
     function action_update_account()
     {
+        $this->getAccess('sales manager', 'ch');
         $this->model->updateAccount($this->escape_and_empty_to_null($_POST['user_id']),
             $this->escape_and_empty_to_null($_POST['login']),
             md5($this->escape_and_empty_to_null($_POST['password'])));

@@ -11,7 +11,10 @@ class ControllerCatalogue extends Controller
     function action_index($action_param = null, $action_data = null)
     {
         $this->view->title = "Catalogue";
-        $this->view->full_product_column_names = $this->model->full_product_column_names;
+
+        $this->getAccess('catalogue', 'v');
+        $roles = new Roles();
+        $this->view->full_product_column_names = $roles->returnModelNames($this->model->full_product_column_names, 'catalogue');
         $this->view->full_product_hidden_columns = $this->model->full_product_hidden_columns;
 
         $this->view->brands = $this->model->getAll("brands");
@@ -21,6 +24,8 @@ class ControllerCatalogue extends Controller
         $this->view->grading = $this->model->getAll("grading");
         $this->view->patterns = $this->model->getAll("patterns");
         $this->view->tabs = $this->model->getCategoryTabs();
+
+        $this->view->access = $roles->returnAccessAbilities('catalogue', 'ch');
 
         $cache = new Cache();
         $selectsCache = $cache->read('catalogue_selects');
@@ -56,14 +61,9 @@ class ControllerCatalogue extends Controller
         $this->model->getDTProducts($_GET, $id);
     }
 
-    function action_dt_ajax_filter()
-    {
-        $id = isset($_GET['id']) ? $_GET['id'] : false;
-        echo $this->model->getAjaxColumn($id);
-    }
-
     function action_add()
     {
+        $this->getAccess('catalogue', 'ch');
         $postArray = [];
         $rusArray = [];
         foreach ($_POST as $key => $post) {
@@ -81,6 +81,7 @@ class ControllerCatalogue extends Controller
 
     function action_similar_product()
     {
+        $this->getAccess('catalogue', 'ch');
         $productId = (isset($_GET['product_id']) && $_GET['product_id']) ? intval($_GET['product_id']) : 0;
         if ($productId) {
             echo $this->model->getProductValuesForSimilar($productId);

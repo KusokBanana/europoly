@@ -376,9 +376,9 @@ class ModelClient extends Model
                         } else {
                             $salesManagerMaxId = $this->getMax("SELECT MAX(user_id) FROM users") + 1;
                             $login = 'sales_manager_'.$salesManagerMaxId;
-                            $value = $this->insert("INSERT INTO users (first_name, last_name, role, login, password) 
-                              VALUES ('${explodeManagerName[1]}', '${explodeManagerName[0]}', 'Sales Manager', 
-                              '$login', 'password')");
+                            $value = $this->insert("INSERT INTO users (first_name, last_name, role_id, login, password) 
+                              VALUES ('${explodeManagerName[1]}', '${explodeManagerName[0]}', 2, 
+                              '$login', 'password')"); // TODO REPLACE_CONST
                         }
                         $name = $explodeArray[1];
                     }

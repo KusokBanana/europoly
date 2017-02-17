@@ -26,7 +26,7 @@ class ModelPayment extends Model
                     $this->getOrdersBy($contractorId, 'client_id');
                 break;
             case 'Comission Agent':
-                $select = (!$contractorId) ? $this->getClientsByType('Commission Agent') :
+                $select = (!$contractorId) ? $this->getClientsByType(COMISSION_AGENT) :
                     $this->getOrdersBy($contractorId, 'commission_agent_id');
                 break;
             case 'Supplier':
