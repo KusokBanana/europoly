@@ -215,7 +215,6 @@ if (!empty($hidden)) {
             });
 
             function keyUpChangeHandler(event) {
-                console.log('search out')
                 if (event.data.column.search() !== this.value) {
                     event.data.column.search(this.value).draw();
                 }
@@ -311,8 +310,22 @@ if (!empty($hidden)) {
                 if (categoryId == '0') {
                     location.reload();
                 }
-                table.columns($category_column_id).search(categoryId).draw()
+                table.columns($category_column_id).search(categoryId).draw();
+                $table.attr('data-category', categoryId);
             })
+        }
+
+        function getCategoryId()
+        {
+            if (categoryTabsBlock.length && $category_column_id) {
+                var currentCategory = $table.attr('data-category');
+                if (currentCategory !== undefined) {
+                    return currentCategory;
+                } else {
+                    return false;
+                }
+            }
+            return false;
         }
 
         // replace selects by editable selects
@@ -346,6 +359,7 @@ if (!empty($hidden)) {
             })
         });
 
+        // to filter values in selects
         function filterSelectsValues(select)
         {
             if (!select.hasClass('column-filter-select'))
@@ -355,7 +369,6 @@ if (!empty($hidden)) {
             var values = [];
             var ul = select.next('ul');
             var lis = ul.find('li');
-//            var currentIndex = select.closest('th').attr('data-column-index');
             var currentIndex = select.closest('th').attr('data-header-id');
             $.each(editableSelects, function() {
                 if ($(this).val()) {
@@ -364,7 +377,12 @@ if (!empty($hidden)) {
                     filter[index] = $(this).val();
                 }
             });
-console.log($filterSearchValues, filter);
+            var catId = getCategoryId();
+            if (catId) {
+                filter[$category_column_id] = catId;
+            }
+            console.log(filter);
+            console.log($filterSearchValues);
             if ($filterSearchValues && filter.length) {
                 $.each($filterSearchValues, function() {
                     var row = this;
@@ -404,13 +422,10 @@ console.log($filterSearchValues, filter);
                 if (ul.length) {
                     $.each(lis, function() {
                         var value = $(this).attr('value');
-                        console.log(values);
                         if (values.indexOf(value) === -1) {
                             $(this).hide();
-                            console.log(1, value, this);
                         } else {
                             $(this).show();
-                            console.log(2, value, this);
                         }
                     });
                     $('.filtered-select').removeClass('filtered-select');
@@ -419,7 +434,6 @@ console.log($filterSearchValues, filter);
             } else {
                 if (ul.length) {
                     $.each(lis, function() {
-                        console.log(3, this);
                         $(this).show();
                     })
                 }

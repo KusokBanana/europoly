@@ -2,10 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fe24c410-5d2a-4ad7-aea6-4e59e4e304a8" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/cache/catalogue_selects" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/cache/new_product_selects" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/cache/product_selects" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/views/templates/table.php" afterPath="$PROJECT_DIR$/application/views/templates/table.php" />
     </list>
     <ignored path="europoly.iws" />
@@ -58,13 +54,36 @@
       <file leaf-file-name="table.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/application/views/templates/table.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="321">
-              <caret line="118" column="0" lean-forward="false" selection-start-line="118" selection-start-column="0" selection-end-line="118" selection-end-column="0" />
+            <state relative-caret-position="319">
+              <caret line="382" column="13" lean-forward="true" selection-start-line="382" selection-start-column="13" selection-end-line="382" selection-end-column="13" />
               <folding>
-                <marker date="1487372754555" expanded="true" signature="1800:1814" ph="..." />
-                <marker date="1487372754555" expanded="false" signature="2781:2792" ph="..." />
-                <marker date="1487372754555" expanded="true" signature="2793:2875" ph="..." />
-                <marker date="1487372754555" expanded="true" signature="3080:3172" ph="..." />
+                <marker date="1487516351729" expanded="true" signature="1800:1814" ph="..." />
+                <marker date="1487516351729" expanded="false" signature="2781:2792" ph="..." />
+                <marker date="1487516351729" expanded="true" signature="2793:2875" ph="..." />
+                <marker date="1487516351729" expanded="true" signature="3080:3172" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="model_catalogue.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/application/models/model_catalogue.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="102">
+              <caret line="51" column="85" lean-forward="true" selection-start-line="51" selection-start-column="85" selection-end-line="51" selection-end-column="85" />
+              <folding>
+                <marker date="1487369765132" expanded="true" signature="495:517" ph="SELECT * FRO... products" />
+                <marker date="1487369765132" expanded="true" signature="3195:3241" ph="SELECT * FRO... ${$tableName}" />
+                <marker date="1487369765132" expanded="true" signature="4132:4196" ph="UPDATE nls_r... " />
+                <marker date="1487369765132" expanded="true" signature="4305:4347" ph="SELECT MAX(r... nls_resources" />
+                <marker date="1487369765132" expanded="true" signature="4440:4585" ph="INSERT INTO nls_resources... " />
+                <marker date="1487369765132" expanded="true" signature="4927:4969" ph="SELECT MAX(r... nls_resources" />
+                <marker date="1487369765132" expanded="true" signature="5040:5116" ph="INSERT INTO ${$tableName}... " />
+                <marker date="1487369765132" expanded="true" signature="5253:5398" ph="INSERT INTO nls_resources... " />
+                <marker date="1487369765132" expanded="true" signature="6082:6154" ph="INSERT INTO products... " />
+                <marker date="1487369765132" expanded="true" signature="6665:6804" ph="INSERT INTO nls_products... " />
+                <marker date="1487369765132" expanded="true" signature="6928:6970" ph="SELECT * FRO... products" />
+                <marker date="1487369765132" expanded="true" signature="7024:7070" ph="SELECT * FRO... nls_products" />
               </folding>
             </state>
           </provider>
@@ -81,7 +100,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>manager</find>
       <find>sort</find>
       <find>buy</find>
       <find>disco</find>
@@ -111,6 +129,7 @@
       <find>es-vi</find>
       <find>column-filter-select</find>
       <find>$column_names</find>
+      <find>console.log</find>
     </findStrings>
     <replaceStrings>
       <replace>import_tax</replace>
@@ -298,28 +317,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="views" />
-              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="europoly" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="europoly" />
-              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="application" />
-              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="views" />
-              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="templates" />
               <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
             </PATH_ELEMENT>
           </PATH>
@@ -532,12 +529,12 @@
       <workItem from="1487165278518" duration="4466000" />
       <workItem from="1487165335786" duration="55220000" />
       <workItem from="1487369939054" duration="324000" />
-      <workItem from="1487372297607" duration="14883000" />
+      <workItem from="1487372297607" duration="16651000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1014769000" />
+    <option name="totallyTimeSpent" value="1016537000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="7" />
@@ -638,6 +635,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="425">
           <caret line="120" column="29" lean-forward="true" selection-start-line="120" selection-start-column="29" selection-end-line="120" selection-end-column="29" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -653,6 +651,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="189">
           <caret line="138" column="30" lean-forward="true" selection-start-line="138" selection-start-column="30" selection-end-line="138" selection-end-column="30" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -660,14 +659,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="234">
           <caret line="159" column="17" lean-forward="false" selection-start-line="159" selection-start-column="17" selection-end-line="159" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/models/model_catalogue.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -802,6 +793,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="228">
           <caret line="28" column="84" lean-forward="false" selection-start-line="28" selection-start-column="84" selection-end-line="28" selection-end-column="84" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -824,6 +816,16 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="187">
           <caret line="11" column="20" lean-forward="true" selection-start-line="11" selection-start-column="20" selection-end-line="11" selection-end-column="20" />
+          <folding>
+            <marker date="1486995573571" expanded="true" signature="2236:2297" ph="SELECT clien... clients" />
+            <marker date="1486995573571" expanded="true" signature="2518:3150" ph="UPDATE users... " />
+            <marker date="1486995573571" expanded="true" signature="3278:3368" ph="UPDATE users... " />
+            <marker date="1486995573571" expanded="true" signature="3472:3544" ph="UPDATE users... " />
+            <marker date="1486995573571" expanded="true" signature="3655:3741" ph="UPDATE users... " />
+            <marker date="1486995573571" expanded="true" signature="3854:3894" ph="SELECT * FRO... clients" />
+            <marker date="1486995573571" expanded="true" signature="3947:3983" ph="SELECT * FRO... users" />
+            <marker date="1486995573571" expanded="true" signature="4282:4835" ph="INSERT INTO orders... " />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -868,6 +870,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="270">
           <caret line="451" column="0" lean-forward="true" selection-start-line="451" selection-start-column="0" selection-end-line="451" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -891,6 +894,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="194">
           <caret line="260" column="13" lean-forward="false" selection-start-line="260" selection-start-column="13" selection-end-line="260" selection-end-column="13" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -898,6 +902,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="245">
           <caret line="425" column="103" lean-forward="false" selection-start-line="425" selection-start-column="103" selection-end-line="425" selection-end-column="103" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -995,15 +1000,36 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/application/models/model_catalogue.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="51" column="85" lean-forward="true" selection-start-line="51" selection-start-column="85" selection-end-line="51" selection-end-column="85" />
+          <folding>
+            <marker date="1487369765132" expanded="true" signature="495:517" ph="SELECT * FRO... products" />
+            <marker date="1487369765132" expanded="true" signature="3195:3241" ph="SELECT * FRO... ${$tableName}" />
+            <marker date="1487369765132" expanded="true" signature="4132:4196" ph="UPDATE nls_r... " />
+            <marker date="1487369765132" expanded="true" signature="4305:4347" ph="SELECT MAX(r... nls_resources" />
+            <marker date="1487369765132" expanded="true" signature="4440:4585" ph="INSERT INTO nls_resources... " />
+            <marker date="1487369765132" expanded="true" signature="4927:4969" ph="SELECT MAX(r... nls_resources" />
+            <marker date="1487369765132" expanded="true" signature="5040:5116" ph="INSERT INTO ${$tableName}... " />
+            <marker date="1487369765132" expanded="true" signature="5253:5398" ph="INSERT INTO nls_resources... " />
+            <marker date="1487369765132" expanded="true" signature="6082:6154" ph="INSERT INTO products... " />
+            <marker date="1487369765132" expanded="true" signature="6665:6804" ph="INSERT INTO nls_products... " />
+            <marker date="1487369765132" expanded="true" signature="6928:6970" ph="SELECT * FRO... products" />
+            <marker date="1487369765132" expanded="true" signature="7024:7070" ph="SELECT * FRO... nls_products" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/application/views/templates/table.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="321">
-          <caret line="118" column="0" lean-forward="false" selection-start-line="118" selection-start-column="0" selection-end-line="118" selection-end-column="0" />
+        <state relative-caret-position="319">
+          <caret line="382" column="13" lean-forward="true" selection-start-line="382" selection-start-column="13" selection-end-line="382" selection-end-column="13" />
           <folding>
-            <marker date="1487372754555" expanded="true" signature="1800:1814" ph="..." />
-            <marker date="1487372754555" expanded="false" signature="2781:2792" ph="..." />
-            <marker date="1487372754555" expanded="true" signature="2793:2875" ph="..." />
-            <marker date="1487372754555" expanded="true" signature="3080:3172" ph="..." />
+            <marker date="1487516351729" expanded="true" signature="1800:1814" ph="..." />
+            <marker date="1487516351729" expanded="false" signature="2781:2792" ph="..." />
+            <marker date="1487516351729" expanded="true" signature="2793:2875" ph="..." />
+            <marker date="1487516351729" expanded="true" signature="3080:3172" ph="..." />
           </folding>
         </state>
       </provider>
