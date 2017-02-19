@@ -338,10 +338,6 @@ if (!empty($hidden)) {
                     $(this).remove();
                     nextSelect.removeClass('hidden').editableSelect('show');
                     var select = parent.find('.es-input');
-//                    var lis = select.next('ul').find('li');
-//                    $.each(lis, function() {
-//                        $(this).attr('onclick', 'event.stopPropagation()')
-//                    });
                     select.focus();
                     select.on('select.editable-select', function (e, li) {
                         e.stopPropagation();
@@ -352,7 +348,6 @@ if (!empty($hidden)) {
                         if (table.column(index).search() !== value) {
                             $(this).val(value);
                             $(this).change();
-//                            table.column(index).search(value).draw();
                         }
                     })
                 }
@@ -381,8 +376,6 @@ if (!empty($hidden)) {
             if (catId) {
                 filter[$category_column_id] = catId;
             }
-            console.log(filter);
-            console.log($filterSearchValues);
             if ($filterSearchValues && filter.length) {
                 $.each($filterSearchValues, function() {
                     var row = this;

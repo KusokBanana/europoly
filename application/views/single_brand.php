@@ -96,7 +96,9 @@
                                         ],
                                         'column_names' => $this->full_product_column_names,
                                         'hidden_by_default' => $this->full_product_hidden_columns,
-                                        'click_url' => "/product?id="
+                                        'click_url' => "/product?id=",
+                                        'selectSearch' => $this->selects,
+                                        'filterSearchValues' => $this->rows
                                     ];
                                     include 'application/views/templates/table.php'
                                     ?>

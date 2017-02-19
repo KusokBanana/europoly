@@ -10,6 +10,7 @@ class ControllerManagers_orders extends Controller
 
     function action_index($action_param = null, $action_data = null)
     {
+
         $this->getAccess('managers orders', 'v');
 
         $this->view->title = "Managers' Orders";

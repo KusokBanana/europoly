@@ -135,7 +135,42 @@ class ModelClients extends Model
         return $result;
     }
 
+    function getSelects()
+    {
+        $where = "clients.type = '".COMISSION_AGENT."' AND clients.is_deleted = 0";
+        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER)
+            $where .= " AND clients.sales_manager_id = " . $_SESSION['user_id'];
+        $ssp = $this->sspComplex($this->client_table, "clients.client_id", $this->client_columns, null, null,
+            $where);
 
+        $columns = $this->client_column_names;
+        $rowValues = json_decode($ssp, true)['data'];
+        $ignoreArray = ['_client_id', 'Turnover', 'Profit', 'Discount Rate'];
+
+
+
+        if (!empty($rowValues)) {
+            $selects = [];
+            foreach ($rowValues as $product) {
+                foreach ($product as $key => $value) {
+                    if (!$value || $value == null)
+                        continue;
+                    $name = $columns[$key];
+                    if (in_array($name, $ignoreArray))
+                        continue;
+
+                    preg_match('/<\w+[^>]+?[^>]+>(.*?)<\/\w+>/i', $value, $match);
+                    if (!empty($match) && isset($match[1])) {
+                        $value = $match[1];
+                    }
+
+                    if ((isset($selects[$name]) && !in_array($value, $selects[$name])) || !isset($selects[$name]))
+                        $selects[$name][] = $value;
+                }
+            }
+            return ['selects' => $selects, 'rows' => $rowValues];
+        }
+    }
 
 
 }

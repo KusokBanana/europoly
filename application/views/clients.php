@@ -209,7 +209,7 @@
                                                             'url' => "/clients/dt_dealers"
                                                         ],
                                                         'column_names' => $this->column_names,
-                                                        'hidden_by_default' => "[]",                                                                                                 'click_url' => "client?id="
+                                                        'hidden_by_default' => "[]",                                                                                                         'click_url' => "client?id="
                                                     ];
                                                     include 'application/views/templates/table.php'
                                                     ?>

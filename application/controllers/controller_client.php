@@ -23,13 +23,13 @@ class ControllerClient extends Controller
                 $this->view->countryAndRegion = $this->model->getCountryAndRegionNamesByIds($this->view->client['country_id'],
                     $this->view->client['region_id']);
             }
-            if ((isset($salesManagerId) && $salesManagerId == $_SESSION['user_id']) || ($id == 'new')) {
-                $this->view->managers = $this->model->getSalesManagersIdName();
-                $this->view->clients = $this->model->getClientsIdName();
-                $this->view->build('templates/template.php', 'single_client.php');
-            } else {
-                $this->getAccess('none', 'v');
+            if (ROLE_SALES_MANAGER == $_SESSION['user_role']) {
+                if ((isset($salesManagerId) && $salesManagerId != $_SESSION['user_id']))
+                    $this->getAccess('none', 'v');
             }
+            $this->view->managers = $this->model->getSalesManagersIdName();
+            $this->view->clients = $this->model->getClientsIdName();
+            $this->view->build('templates/template.php', 'single_client.php');
 
         }
 

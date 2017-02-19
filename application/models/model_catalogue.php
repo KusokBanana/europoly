@@ -45,8 +45,10 @@ class ModelCatalogue extends Model
 
     function getSelects()
     {
-        $ssp = $this->getSspComplexJson($this->full_products_table, "product_id", $this->full_product_columns, null);
-        $columns = $this->full_product_column_names;
+        $role = new Roles();
+        $cols = $role->returnModelColumns($this->full_product_columns, 'catalogue');
+        $ssp = $this->getSspComplexJson($this->full_products_table, "product_id", $cols, null);
+        $columns = $role->returnModelNames($this->full_product_column_names, 'catalogue');
         $rowValues = json_decode($ssp, true)['data'];
         $ignoreArray = ['_product_id', 'Name', 'Article', 'Thickness', 'Width', 'Length',
             'Weight', 'Quantity in 1 Pack', 'Purchase price', 'Supplier\'s discount',

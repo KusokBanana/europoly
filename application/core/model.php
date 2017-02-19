@@ -199,15 +199,15 @@ abstract class Model extends mysqli
         '_category_id'
     );
 
-    var $full_products_table = 'products
-            left join brands on products.brand_id = brands.brand_id
-            left join suppliers on (brands.supplier_id = suppliers.supplier_id)
-            left join colors on products.color_id = colors.color_id
-            left join colors as colors2 on products.color2_id = colors2.color_id
-            left join constructions on products.construction_id = constructions.construction_id
-            left join wood on products.wood_id = wood.wood_id
-            left join grading on products.grading_id = grading.grading_id
-            left join patterns on products.pattern_id = patterns.pattern_id';
+    var $full_products_table = "products ".
+            "left join brands on products.brand_id = brands.brand_id ".
+            "left join suppliers on brands.supplier_id = suppliers.supplier_id ".
+            "left join colors on products.color_id = colors.color_id ".
+            "left join colors as colors2 on products.color2_id = colors2.color_id ".
+            "left join constructions on products.construction_id = constructions.construction_id ".
+            "left join wood on products.wood_id = wood.wood_id ".
+            "left join grading on products.grading_id = grading.grading_id ".
+            "left join patterns on products.pattern_id = patterns.pattern_id";
 
     var $full_products_table_addition = 'left join brands on products.brand_id = brands.brand_id
                                         left join suppliers on (brands.supplier_id = suppliers.supplier_id)
