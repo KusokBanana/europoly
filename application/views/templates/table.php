@@ -61,11 +61,11 @@
                     $input .= '<select class="column-filter-select hidden form-control" 
                                         onclick="$(this).focus(); event.stopPropagation()">';
                     foreach ($selectSearch[$column_name] as $value) {
-                        $input .= '<option value="'.$value.'">'.$value.'</option>';
+                        $input .= '<option value="'.$value.'" onclick="event.stopPropagation()">'.$value.'</option>';
                     }
                     $input .= '</select>';
                 }
-                echo '<th>' . $column_name . '<br>' . $input . '</th>';
+                echo '<th data-header-id="'.$column_id.'">' . $column_name . '<br>' . $input . '</th>';
             }
         }
         ?>
@@ -153,6 +153,7 @@ if (!empty($hidden)) {
             order: [
                 [1, 'asc']
             ],
+            orderCellsTop: true,
             select: {
                 style: 'os',
                 selector: 'td:first-child',
@@ -214,6 +215,7 @@ if (!empty($hidden)) {
             });
 
             function keyUpChangeHandler(event) {
+                console.log('search out')
                 if (event.data.column.search() !== this.value) {
                     event.data.column.search(this.value).draw();
                 }
@@ -315,20 +317,29 @@ if (!empty($hidden)) {
 
         // replace selects by editable selects
         $.each($table.find('.column-filter-input'), function() {
-            $(this).on('click', function() {
+            $(this).on('click', function(event) {
+                event.stopPropagation();
                 var nextSelect = $(this).next('.column-filter-select');
                 if (nextSelect.length) {
                     var parent = $(this).parent();
                     $(this).remove();
                     nextSelect.removeClass('hidden').editableSelect('show');
                     var select = parent.find('.es-input');
+//                    var lis = select.next('ul').find('li');
+//                    $.each(lis, function() {
+//                        $(this).attr('onclick', 'event.stopPropagation()')
+//                    });
                     select.focus();
                     select.on('select.editable-select', function (e, li) {
+                        e.stopPropagation();
+                        if (li == undefined)
+                            return false;
                         var value = $(this).val();
-//                        var value = $(this).text();
                         var index = $(this).closest('th').attr('data-column-index');
                         if (table.column(index).search() !== value) {
-                            table.column(index).search(value).draw();
+                            $(this).val(value);
+                            $(this).change();
+//                            table.column(index).search(value).draw();
                         }
                     })
                 }
@@ -337,25 +348,26 @@ if (!empty($hidden)) {
 
         function filterSelectsValues(select)
         {
-            if (!select.hasClass('column-filter-select') || select.hasClass('filtered-select'))
+            if (!select.hasClass('column-filter-select'))
                 return false;
             var editableSelects = $table.find('.es-input');
             var filter = [];
             var values = [];
             var ul = select.next('ul');
             var lis = ul.find('li');
-            var currentIndex = select.closest('th').attr('data-column-index');
+//            var currentIndex = select.closest('th').attr('data-column-index');
+            var currentIndex = select.closest('th').attr('data-header-id');
             $.each(editableSelects, function() {
                 if ($(this).val()) {
-                    var index = $(this).closest('th').attr('data-column-index');
+                    var index = $(this).closest('th').attr('data-header-id');
+//                    var index = $(this).closest('th').attr('data-column-index');
                     filter[index] = $(this).val();
                 }
             });
-
+console.log($filterSearchValues, filter);
             if ($filterSearchValues && filter.length) {
                 $.each($filterSearchValues, function() {
                     var row = this;
-                    var success = true;
                     for (var key in filter) {
                         var value = row[key];
                         if (value) {
@@ -372,7 +384,7 @@ if (!empty($hidden)) {
                             return;
                         }
                     }
-                    if (success && row[currentIndex]) {
+                    if (row[currentIndex]) {
                         var currentValue = row[currentIndex];
                         if (currentValue !== null) {
                             if (currentValue.indexOf('glyphicon') !== -1) {
@@ -392,10 +404,13 @@ if (!empty($hidden)) {
                 if (ul.length) {
                     $.each(lis, function() {
                         var value = $(this).attr('value');
+                        console.log(values);
                         if (values.indexOf(value) === -1) {
                             $(this).hide();
+                            console.log(1, value, this);
                         } else {
                             $(this).show();
+                            console.log(2, value, this);
                         }
                     });
                     $('.filtered-select').removeClass('filtered-select');
@@ -404,13 +419,15 @@ if (!empty($hidden)) {
             } else {
                 if (ul.length) {
                     $.each(lis, function() {
+                        console.log(3, this);
                         $(this).show();
                     })
                 }
             }
         }
 
-        $table.on('focus', '.column-filter-select', function() {
+        $table.on('focus', '.column-filter-select', function(e) {
+            e.stopPropagation();
             filterSelectsValues($(this))
         });
 
