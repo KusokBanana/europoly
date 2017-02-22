@@ -3,15 +3,17 @@ include_once "model_catalogue.php";
 
 class ModelBrand extends ModelCatalogue
 {
+
+    public $tableName = "table_brand_products";
+
     function getDTProductsForBrand($brand_id, $input)
     {
         $where = "brands.brand_id = " . $brand_id;
 
-        $role = new Roles();
-        $cols = $role->returnModelColumns($this->full_product_columns, 'catalogue');
+        $columns = $this->getColumns($this->full_product_columns, 'catalogue', $this->tableName);
 
         $this->sspComplex($this->full_products_table, "product_id",
-            $cols, $input, null, $where);
+            $columns, $input, null, $where);
     }
 
     function getSelectsBrand($brand_id)

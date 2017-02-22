@@ -2,6 +2,9 @@
 
 class ModelManagers_orders extends Model
 {
+
+    var $tableNames = ["table_managers_orders", "table_managers_orders_reduced"];
+
     var $managers_orders_columns = [
         array('dt' => 0, 'db' => "order_items.item_id"),
         array('dt' => 1, 'db' => "CONCAT('<a href=\"/order?id=', order_items.manager_order_id, '\">', order_items.manager_order_id,
@@ -46,7 +49,7 @@ class ModelManagers_orders extends Model
     ];
 
     var $managers_orders_column_names = [
-        'Manager Order ID',
+        '_Manager Order ID',
         'Manager Order ID',
         'Manager',
         'Product',
@@ -97,7 +100,7 @@ class ModelManagers_orders extends Model
     ];
 
     var $managers_orders_reduced_column_names = [
-        'Order ID',
+        '_Order ID',
         'Order ID',
         'Manager',
         'Date of Order',
@@ -140,8 +143,10 @@ class ModelManagers_orders extends Model
             $this->whereCondition .= " AND orders.sales_manager_id = " . $_SESSION['user_id'];
         }
 
+        $columns = $this->getColumns($this->managers_orders_columns, 'managers orders', $this->tableNames[0]);
+
         $this->sspComplex($this->managers_orders_table, "order_items.item_id",
-            $this->managers_orders_columns, $input, null, $this->whereCondition);
+            $columns, $input, null, $this->whereCondition);
     }
 
     function getDTManagersOrdersReduced($input)
@@ -150,8 +155,11 @@ class ModelManagers_orders extends Model
         if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
             $where = " orders.sales_manager_id = " . $_SESSION['user_id'];
         }
+
+        $columns = $this->getColumns($this->managers_orders_reduced_columns, 'managers orders', $this->tableNames[1]);
+
         $this->sspComplex($this->managers_orders_table_reduce, "orders.order_id",
-            $this->managers_orders_reduced_columns, $input, null, $where);
+            $columns, $input, null, $where);
     }
 
     function getDTManagersOrdersToSuppliersOrder($input, $products)

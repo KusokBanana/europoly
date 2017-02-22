@@ -2,6 +2,8 @@
 
 class ControllerContractors extends Controller
 {
+    public $page = 'contractors';
+
     public function __construct()
     {
         parent::__construct();
@@ -10,10 +12,15 @@ class ControllerContractors extends Controller
 
     function action_index($action_param = null, $action_data = null)
     {
-        $this->getAccess('contractors', 'v');
+        $this->getAccess($this->page, 'v');
         $this->view->title = "Contractors";
-        $this->view->clients_column_names = $this->model->client_column_names;
         $this->view->column_names = $this->model->column_names;
+
+        $this->view->tableName = 'table_clients';
+        $this->view->clients_column_names = $this->model->getColumns($this->model->client_column_names,
+            $this->page, 'table_clients', true);
+        $this->view->originalColumns = $this->model->client_column_names;
+
         $this->view->managers = $this->model->getSalesManagersIdName();
         $this->view->commission_agents = $this->model->getCommissionAgentsIdName();
         $this->view->build('templates/template.php', 'contractors.php');
@@ -41,7 +48,7 @@ class ControllerContractors extends Controller
 
     function action_add()
     {
-        $this->getAccess('contractors', 'ch');
+        $this->getAccess($this->page, 'ch');
         $type = isset($_GET['type']) ? $_GET['type'] : false;
         $name = isset($_POST['name']) ? $_POST['name'] : false;
         if (!$type)
@@ -52,7 +59,7 @@ class ControllerContractors extends Controller
 
     function action_delete()
     {
-        $this->getAccess('contractors', 'd');
+        $this->getAccess($this->page, 'd');
         $type = isset($_GET['type']) ? $_GET['type'] : false;
         $id = isset($_GET['id']) ? $_GET['id'] : false;
         if ($type || $id) {

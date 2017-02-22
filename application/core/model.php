@@ -173,7 +173,7 @@ abstract class Model extends mysqli
         'Wood',
         'Additional characteristics',
         'Color',
-        'Color',
+        'Color2',
         'Grading',
         'Thickness',
         'Width',
@@ -349,6 +349,54 @@ abstract class Model extends mysqli
                             WHERE order_id = $orderId");
             // TODO add here downpayment_rate too
         }
+    }
+
+    public function getColumns($columns, $page, $tableId, $isNames = false)
+    {
+        $roles = new Roles();
+        if ($isNames) {
+            $columns = $roles->returnModelNames($columns, $page);
+        } else {
+            $columns = $roles->returnModelColumns($columns, $page);
+        }
+        return $this->reOrderColumns($columns, $tableId);
+    }
+
+    private function reOrderColumns($columns, $tableId)
+    {
+        $userId = $_SESSION['user_id'];
+        $userOrder = $this->getFirst("SELECT columns_order FROM users WHERE user_id = $userId");
+        $userOrder = $userOrder['columns_order'];
+        if ($userOrder && $userOrder !== null) {
+            $columnsRightOrder = json_decode($userOrder, true);
+            if (!empty($columnsRightOrder) && isset($columnsRightOrder[$tableId]) && !empty($columnsRightOrder[$tableId])) {
+                $columnsRightOrderForTable = $columnsRightOrder[$tableId];
+                $isNames = !isset($columns[0]['dt']);
+                $newColumns = [];
+                $newColumns[] = $columns[0];
+                foreach($columnsRightOrderForTable as $number) {
+                    if (isset($columns[$number])) {
+                        $newColumn = $columns[$number];
+                        if (!$isNames) {
+                            $lastIndex = intval($newColumns[count($newColumns) - 1]['dt']);
+                            $newColumn['dt'] = $lastIndex + 1;
+                        }
+                        $newColumns[] = $newColumn;
+                    }
+                }
+                if (($count = count($columns) - count($columnsRightOrderForTable)) > 1) {
+                    for ($i=$count-2; $i >= 0; $i--) {
+                        $newColumn = $columns[count($columns)-$i-1];
+                        if (!$isNames) {
+                            $newColumn['dt'] = count($newColumns);
+                        }
+                        $newColumns[] = $newColumn;
+                    }
+                }
+                $columns = $newColumns;
+            }
+        }
+        return $columns;
     }
 
 }

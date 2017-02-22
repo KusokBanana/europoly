@@ -8,13 +8,21 @@ class ControllerBrands extends Controller
         $this->model = new ModelBrands();
     }
 
+    public $page = 'brands';
+
     function action_index($action_param = null, $action_data = null)
     {
-        $this->getAccess('brands', 'v');
+        $this->getAccess($this->page, 'v');
         $this->view->title = "Brands";
         $roles = new Roles();
-        $this->view->access = $roles->returnAccessAbilities('brands', 'ch');
+        $this->view->access = $roles->returnAccessAbilities($this->page, 'ch');
         $this->view->suppliers = $this->model->getSuppliersIdNames();
+
+        $this->view->tableName = $this->model->tableName;
+        $this->view->column_names = $this->model->getColumns($this->model->columnNames,
+            $this->page, $this->model->tableName, true);
+        $this->view->originalColumns = $this->model->columnNames;
+
         $this->view->build('templates/template.php', 'brands.php');
     }
 
@@ -25,7 +33,7 @@ class ControllerBrands extends Controller
 
     function action_add()
     {
-        $this->getAccess('brands', 'ch');
+        $this->getAccess($this->page, 'ch');
         $brand_id = $this->model->addBrand($this->escape_and_empty_to_null($_POST['name']),
             $this->escape_and_empty_to_null($_POST['supplier']));
         header("Location: /brand?id=" . $brand_id);

@@ -143,7 +143,8 @@
                                             'click_url' => "javascript:;",
                                             'selectSearch' => $this->selects,
                                             'filterSearchValues' => $this->rows,
-                                            'method' => 'POST'
+                                            'method' => 'POST',
+                                            'originalColumns' => $this->originalColumns
                                         ];
                                         include 'application/views/templates/table.php'
                                         ?>
@@ -164,7 +165,8 @@
                                                 'click_url' => "javascript:;",
                                                 'selectSearch' => $this->selects,
                                                 'filterSearchValues' => $this->rows,
-                                                'method' => 'POST'
+                                                'method' => 'POST',
+                                                'originalColumns' => $this->originalColumns
                                             ];
                                             include 'application/views/templates/table.php'
                                             ?>
@@ -186,7 +188,8 @@
                                                 'click_url' => "javascript:;",
                                                 'selectSearch' => $this->selects,
                                                 'filterSearchValues' => $this->rows,
-                                                'method' => 'POST'
+                                                'method' => 'POST',
+                                                'originalColumns' => $this->originalColumns
                                             ];
                                             include 'application/views/templates/table.php'
                                             ?>

@@ -87,18 +87,19 @@
                                         $button = '';
                                     $table_data = [
                                         'buttons' => [$button],
-                                        'table_id' => "table_products",
+                                        'table_id' => $this->tableName,
                                         'ajax' => [
                                             'url' => "/brand/dt",
                                             'data' => [
                                                 'brand_id' => $this->brand["brand_id"]
                                             ]
                                         ],
-                                        'column_names' => $this->full_product_column_names,
-                                        'hidden_by_default' => $this->full_product_hidden_columns,
+                                        'column_names' => $this->column_names,
+                                        'hidden_by_default' => $this->hidden_columns,
                                         'click_url' => "/product?id=",
                                         'selectSearch' => $this->selects,
-                                        'filterSearchValues' => $this->rows
+                                        'filterSearchValues' => $this->rows,
+                                        'originalColumns' => $this->originalColumns
                                     ];
                                     include 'application/views/templates/table.php'
                                     ?>

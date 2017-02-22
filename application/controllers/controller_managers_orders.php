@@ -8,17 +8,26 @@ class ControllerManagers_orders extends Controller
         $this->model = new ModelManagers_orders();
     }
 
+    public $page = 'managers orders';
+
     function action_index($action_param = null, $action_data = null)
     {
 
-        $this->getAccess('managers orders', 'v');
+        $this->getAccess($this->page, 'v');
 
         $this->view->title = "Managers' Orders";
-        $this->view->column_names = $this->model->managers_orders_column_names;
-        $this->view->column_names_reduced = $this->model->managers_orders_reduced_column_names;
 
         $roles = new Roles();
-        $this->view->access = $roles->returnAccessAbilities('managers orders', 'ch');
+        $this->view->access = $roles->returnAccessAbilities($this->page, 'ch');
+
+        $this->view->tableNames = $this->model->tableNames;
+        $this->view->column_names = $this->model->getColumns($this->model->managers_orders_column_names,
+            $this->page, $this->model->tableNames[0], true);
+        $this->view->column_names_reduced = $this->model->getColumns($this->model->managers_orders_reduced_column_names,
+            $this->page, $this->model->tableNames[1], true);
+
+        $this->view->originalColumns = $this->model->managers_orders_column_names;
+        $this->view->originalColumnsReduced = $this->model->managers_orders_reduced_column_names;
 
         $cache = new Cache();
         $selectsCache = $cache->read('managers_orders_selects');

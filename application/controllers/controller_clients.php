@@ -8,14 +8,21 @@ class ControllerClients extends Controller
         $this->model = new ModelClients();
     }
 
+    public $page = 'clients';
+
     function action_index($action_param = null, $action_data = null)
     {
-        $this->getAccess('clients', 'v');
+        $this->getAccess($this->page, 'v');
         $this->view->title = "Clients";
         $roles = new Roles();
-        $this->view->access = $roles->returnAccessAbilities('clients', 'ch');
+        $this->view->access = $roles->returnAccessAbilities($this->page, 'ch');
 
-        $this->view->column_names = $this->model->client_column_names;
+        $this->view->column_names = $this->model->getColumns($this->model->client_column_names,
+            $this->page, 'table_clients', true);
+        $this->view->hidden_columns = $this->model->full_product_hidden_columns;
+        $this->view->originalColumns = $this->model->client_column_names;
+
+//        $this->view->column_names = $this->model->client_column_names;
         $this->view->managers = $this->model->getSalesManagersIdName();
         $this->view->commission_agents = $this->model->getCommissionAgentsIdName();
         $this->view->build('templates/template.php', 'clients.php');
@@ -58,7 +65,7 @@ class ControllerClients extends Controller
 
     function action_add()
     {
-        $this->getAccess('clients', 'ch');
+        $this->getAccess($this->page, 'ch');
         $this->model->addClient(
             $this->escape_and_empty_to_null($_POST['name']),
             $this->escape_and_empty_to_null($_POST['type']),
@@ -72,7 +79,7 @@ class ControllerClients extends Controller
 
     function action_change_item_field()
     {
-        $this->getAccess('clients', 'ch');
+        $this->getAccess($this->page, 'ch');
         if (isset($_POST["pk"]) && isset($_POST["name"]) && isset($_POST["value"])) {
             $client_id = intval($_POST["pk"]);
             $name = $this->model->escape_string($_POST["name"]);

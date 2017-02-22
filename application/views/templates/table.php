@@ -4,8 +4,9 @@
     $table_id = $table_data['table_id'];
     $ajax = $table_data['ajax'];
     $column_names = $table_data['column_names'];
-    $hidden_by_default = $table_data['hidden_by_default'];
+    $hidden_by_default = isset($table_data['hidden_by_default']) ? $table_data['hidden_by_default'] : '';
     $click_url = $table_data['click_url'];
+    $originalColumns = isset($table_data['originalColumns']) ? $table_data['originalColumns'] : [];
     $mustHidden = 0;
     $method = isset($table_data['method']) ? $table_data['method'] : 'GET';
     $selectSearch = isset($table_data['selectSearch']) ?
@@ -31,22 +32,28 @@
 
     <div class="btn-group pull-right">
         <button type="button" class="btn blue dropdown-toggle" data-toggle="dropdown">Columns <i class="fa fa-angle-down"></i></button>
-        <div id="<?= $table_id ?>_columns_choose" class="dropdown-menu hold-on-click dropdown-checkboxes" style="left: 0" role="menu">
+        <div id="<?= $table_id ?>_columns_choose" class="dropdown-menu hold-on-click dropdown-checkboxes order-columns-block"
+             style="left: 0" role="menu">
             <?php
+            echo '<button class="btn btn-warning order-columns-button-change">Change Order</button>';
+            echo '<button class="btn btn-warning order-columns-button-save" disabled>Save</button>';
             echo '<label style="display: none;"><input type="checkbox" data-column="0">Id</label>';
             $category_column_id = 0;
             foreach ($column_names as $column_id => $column_name) {
+                $originalColumnId = array_search($column_name, $originalColumns);
                 if ($column_name == '_category_id') {
                     $category_column_id = $column_id;
-                    $mustHidden = $column_id;
+                    $mustHidden = $originalColumnId;
                 }
                 if ($column_name[0] == '_') continue;
-                echo '<label><input type="checkbox" data-column="' . $column_id . '" checked>' . $column_name . '</label>';
+                echo '<label><input type="checkbox" data-original-column-id="'.$originalColumnId.'" 
+                                    data-column="' . $column_id . '" checked>' . $column_name . '</label>';
             }
             ?>
         </div>
     </div>
 </div>
+
 <table id="<?= $table_id ?>" class="table table-striped table-bordered table-hover table-checkable order-column">
     <thead>
     <tr>
@@ -99,32 +106,38 @@
     }
 </style>
 <?php
-$hidden = json_decode($hidden_by_default, true);
-if (!empty($hidden)) {
-    if ($mustHidden) {
-        if (is_array($mustHidden)) {
-            $hidden = array_merge($hidden, $mustHidden);
-        } else {
-            $hidden[] = $mustHidden;
+if ($hidden_by_default) {
+    $hidden = json_decode($hidden_by_default, true);
+    if (!empty($hidden)) {
+        if ($mustHidden) {
+            if (is_array($mustHidden)) {
+                $hidden = array_merge($hidden, $mustHidden);
+            } else {
+                $hidden[] = $mustHidden;
+            }
+            $hidden = array_unique($hidden);
         }
-        $hidden = array_unique($hidden);
+        foreach ($hidden as $key => $value) {
+            if (!isset($column_names[$value]))
+                unset($hidden[$key]);
+        }
+        $hidden_by_default = json_encode($hidden);
     }
-    foreach ($hidden as $key => $value) {
-        if (!isset($column_names[$value]))
-            unset($hidden[$key]);
-    }
-    $hidden_by_default = json_encode($hidden);
 }
+
 
 ?>
 <script>
     $(document).ready(function () {
         var $table = $('#<?= $table_id ?>');
-        var hiddenByDefault = <?= $hidden_by_default ?>;
-        var cookieHiddenCols = getHiddenColumns('<?= $table_id ?>');
+        var hiddenByDefault = <?= $hidden_by_default ? $hidden_by_default : 'false'; ?>;
+        var $mustHidden = <?= $mustHidden ? $mustHidden : 'false' ?>;
+        hiddenByDefault = getHiddenColumns('<?= $table_id ?>');
+        if ($mustHidden && hiddenByDefault.indexOf($mustHidden) === -1) {
+            hiddenByDefault.push($mustHidden);
+        }
         var $filterSearchValues = <?= json_encode($filterSearchValues); ?>;
         var $clickUrl = "<?= $click_url == 'javascript:;' ? false : $click_url; ?>";
-        hiddenByDefault = cookieHiddenCols ? cookieHiddenCols : hiddenByDefault;
         <?php
         if (isset($ajax['data']) && $ajax['data'] != "") {
             echo "var ajax = { url: '" . $ajax['url'] . "', 
@@ -145,7 +158,7 @@ if (!empty($hidden)) {
                 {
                     targets: 0,
                     searchable: false,
-                    orderable: true,
+                    orderable: false,
                     className: 'dt-body-center select-checkbox',
                     render: function (data, type, full, meta) {
                         return '';
@@ -167,7 +180,6 @@ if (!empty($hidden)) {
                 blurable: true
             },
             colReorder: false
-//            stateSave: true
         });
         $table.on('draw.dt', function () {
             var tableConfirmBtn = $('.table-confirm-btn');
@@ -176,7 +188,7 @@ if (!empty($hidden)) {
                     rootSelector: '.table-confirm-btn'
                 });
             }
-
+            reOrderColumns();
         });
         $table.find('tbody').on('click', 'tr td:not(:first-child)', function (e) {
             var data = table.row($(this).closest('tr')).data();
@@ -229,31 +241,30 @@ if (!empty($hidden)) {
             }
         }
 
-        // to add top scroll of table
-
-
-        var $inputs = $("#<?= $table_id ?>_columns_choose input");
-        hiddenByDefault.forEach(function (item) {
-            $($inputs[item]).removeAttr('checked');
-        });
-        $inputs.each(function () {
-            $(this).on('change', function () {
-                var column = table.column($(this).attr('data-column'));
-                column.visible(!column.visible());
-            });
-        });
-
-        // Save hidden columns in cookies
         var tableId = $table.attr('id');
         var columnChoose = $('#'+tableId+'_columns_choose');
         columnChoose.css('height', '405px').css('overflow-y', 'auto');
-        var tableCheckboxes = columnChoose.find('label').not(':first-child');
-        tableCheckboxes.on('change', 'input', function() {
+        var $inputs = columnChoose.find('input');
+        if (hiddenByDefault.length) {
+            hiddenByDefault.forEach(function (item) {
+                var input = $('#<?= $table_id ?>_columns_choose input[data-column="'+item+'"]');
+                if (input.length) {
+                    input.removeAttr('checked');
+                }
+            });
+        }
+        columnChoose.on('change', 'input', function () {
+            var column = table.column($(this).attr('data-column'));
+            column.visible(!column.visible());
+            saveHiddenColumnsInCookie();
+            });
+
+        // Save hidden columns in cookies
+        function saveHiddenColumnsInCookie() {
             var columnsId = [];
-            var columns = tableCheckboxes.find('input');
-            $.each(columns, function() {
-                if (!$(this).is(':checked')) {
-                    columnsId.push(+$(this).attr('data-column'));
+            $.each($inputs, function() {
+                if (!$(this).is(':checked') && $(this).attr('data-original-column-id')) {
+                    columnsId.push(+$(this).attr('data-original-column-id'));
                 }
             });
             var cols = {
@@ -269,15 +280,14 @@ if (!empty($hidden)) {
                     'columnsHidden': cols
                 }
             })
-        });
-
+        }
         // Get hidden columns for current table from cookies
         function getHiddenColumns(tableId) {
             var cols = {
                 'tableId': tableId,
                 'action': 'get'
             },
-                returnValue = false;
+            returnValue = false;
             cols = JSON.stringify(cols);
             var ajax = $.ajax({
                 url: '/clients/hidden_columns',
@@ -290,21 +300,22 @@ if (!empty($hidden)) {
                     if (data) {
                         returnValue = JSON.parse(data);
                         if (returnValue.length) {
-                            var checkedCols = [];
-                            $.each(returnValue, function() {
-                                if (hiddenByDefault[this] == undefined)
-                                    return;
-                                var checked = $('#'+tableId+'_columns_choose').find('label input[data-column="'+this+'"]');
-                                if (checked.length) {
-                                    var index = checked.closest('label').index();
-                                    checkedCols.push(index);
-                                }
-                            });
-                            returnValue = checkedCols;
+                            var hiddenColumns = returnValue;
                         }
                     }
-                    else {
-                        returnValue = false;
+                    if (!data || !returnValue || hiddenColumns == undefined) {
+                        hiddenColumns = hiddenByDefault;
+                    }
+                    var checkedCols = [];
+                    if (hiddenColumns.length) {
+                        $.each(hiddenColumns, function() {
+                            var checked = $('#'+tableId+'_columns_choose').find('label input[data-original-column-id="'+this+'"]');
+                            if (checked.length) {
+                                var index = +checked.attr('data-column');
+                                checkedCols.push(index);
+                            }
+                        });
+                        returnValue = checkedCols;
                     }
                 }
             });
@@ -513,6 +524,67 @@ if (!empty($hidden)) {
             fixedHeader();
         }
 
+        function reOrderColumns()
+        {
+            var columnsBlock = $('#'+$table.attr('id')+'_columns_choose.order-columns-block');
+            const CANCEL_CLASS = 'order-columns-button-cancel';
+            columnsBlock.on('click', '.order-columns-button-change', function() {
+                $(this).next('.btn').prop('disabled', false);
+                $(this).addClass(CANCEL_CLASS).text('Cancel');
+                var labels = columnsBlock.find('label:visible');
+                labels.addClass('draggable').css('border', 'solid 1px green').css('padding', '1px')
+                    .find('input').prop('disabled', true);
+                columnsBlock.sortable({
+                    revert: true,
+                    axis: 'y'
+//                    cancel: '.'+CANCEL_CLASS
+                });
+                $(":not(.draggable)").disableSelection();
+            }).on('click', '.'+CANCEL_CLASS, function() {
+                var draggable = columnsBlock.find('.draggable');
+                $(this).removeClass(CANCEL_CLASS).text('Change order');
+                columnsBlock.sortable("destroy");
+                var saveBtn = $(this).next('.btn');
+                saveBtn.prop('disabled', true);
+
+                // back to first places
+                draggable.sort(function(a,b){
+                    if(+$(a).find('input').attr('data-column') < +$(b).find('input').attr('data-column')) {
+                        return -1;
+                    } else {
+                        return 1;
+                    }
+                }).each(function() {
+                    $(this).removeClass('draggable')
+                        .css('border', 'none').css('padding', '0').find('input').prop('disabled', false);
+                    columnsBlock.append($(this));
+                });
+
+            }).on('click', '.order-columns-button-save', function() {
+                var draggable = $('.draggable');
+                var columns = [];
+                $.each(draggable, function() {
+                    var number = $(this).find('input').attr('data-original-column-id');
+                    columns.push(number);
+                });
+                columns = JSON.stringify(columns);
+                $.ajax({
+                    url: '/login/save_order_columns',
+                    type: 'POST',
+                    data: {
+                        columns: columns,
+                        tableId: $table.attr('id')
+                    },
+                    success: function(data) {
+                        if (data) {
+                            window.location.href = '';
+                        }
+                    }
+                })
+            })
+        }
+
     });
 
 </script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>

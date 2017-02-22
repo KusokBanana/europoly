@@ -97,7 +97,7 @@
 											<?php
 											$table_data = [
 												'buttons' => [],
-												'table_id' => "table_managers_orders",
+												'table_id' => $this->tableName,
 												'ajax' => [
 													'url' => "/sent_to_logist/dt_managers_orders"
 												],
@@ -105,7 +105,8 @@
 												'hidden_by_default' => "[]",
 												'click_url' => "javascript:;",
                                                 'selectSearch' => $this->selects,
-                                                'filterSearchValues' => $this->rows
+                                                'filterSearchValues' => $this->rows,
+                                                'originalColumns' => $this->originalColumns
 											];
 											include 'application/views/templates/table.php'
 											?>

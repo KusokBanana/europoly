@@ -8,14 +8,19 @@ class ControllerCatalogue extends Controller
         $this->model = new ModelCatalogue();
     }
 
+    public $page = 'catalogue';
+
     function action_index($action_param = null, $action_data = null)
     {
         $this->view->title = "Catalogue";
 
-        $this->getAccess('catalogue', 'v');
+        $this->getAccess($this->page, 'v');
         $roles = new Roles();
-        $this->view->full_product_column_names = $roles->returnModelNames($this->model->full_product_column_names, 'catalogue');
-        $this->view->full_product_hidden_columns = $this->model->full_product_hidden_columns;
+        $this->view->tableName = $this->model->tableName;
+        $this->view->column_names = $this->model->getColumns($this->model->full_product_column_names,
+            $this->page, $this->model->tableName, true);
+        $this->view->hidden_columns = $this->model->full_product_hidden_columns;
+        $this->view->originalColumns = $this->model->full_product_column_names;
 
         $this->view->brands = $this->model->getAll("brands");
         $this->view->wood = $this->model->getAll("wood");

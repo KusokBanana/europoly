@@ -158,9 +158,9 @@ class Roles {
                 'sales manager' => true,
                 'staff' => true,
                 'shipment' => true,
-                'suppliers orders' => true,
+                'suppliersOrders' => true,
                 'warehouse' => true,
-                'sent to logist' => true,
+                'sentToLogist' => true,
             ]
         ],
         ROLE_ACCOUNTANT => [

@@ -3,6 +3,9 @@ include_once 'model_managers_orders.php';
 
 class ModelSuppliers_orders extends ModelManagers_orders
 {
+
+    var $tableNames = ["table_suppliers_orders", "table_suppliers_orders_reduced"];
+
     var $suppliers_orders_columns = [
         array('dt' => 0, 'db' => "suppliers_orders_items.item_id"),
         array('dt' => 1, 'db' => "CONCAT('<a href=\"/brand?id=', brands.brand_id, '\">', IFNULL(brands.name, 'no name'), '</a>')"),
@@ -54,7 +57,7 @@ class ModelSuppliers_orders extends ModelManagers_orders
     ];
 
     var $suppliers_orders_column_names = [
-        'Supplier Order ID',
+        '_Supplier Order ID',
         'Brand',
         'Supplier Order ID',
         'Product',
@@ -103,7 +106,7 @@ class ModelSuppliers_orders extends ModelManagers_orders
     ];
 
     var $suppliers_orders_column_names_reduce = [
-        'Supplier Order ID',
+        '_Supplier Order ID',
         'Supplier Order ID',
         'Date of Order (Supplier)',
         'Status',
@@ -132,13 +135,13 @@ class ModelSuppliers_orders extends ModelManagers_orders
 
     function getDTSuppliersOrders($input)
     {
-        $roles = new Roles();
-        $columns = $roles->returnModelColumns($this->suppliers_orders_columns, 'suppliersOrders');
 
         if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
             $this->suppliersFilterWhere .= " AND (orders.sales_manager_id = " . $_SESSION['user_id'] . ' OR 
                 suppliers_orders_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
         }
+
+        $columns = $this->getColumns($this->suppliers_orders_columns, 'suppliersOrders', $this->tableNames[0]);
 
         $this->sspComplex($this->suppliers_orders_table, "suppliers_orders_items.item_id", $columns,
             $input, null, $this->suppliersFilterWhere);
@@ -152,7 +155,9 @@ class ModelSuppliers_orders extends ModelManagers_orders
                 order_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL';
         }
 
-        $this->sspComplex($this->suppliers_orders_table_reduce, "suppliers_orders.order_id", $this->suppliers_orders_columns_reduce,
+        $columns = $this->getColumns($this->suppliers_orders_columns_reduce, 'suppliersOrders', $this->tableNames[1]);
+
+        $this->sspComplex($this->suppliers_orders_table_reduce, "suppliers_orders.order_id", $columns,
             $input, null, $where);
     }
 

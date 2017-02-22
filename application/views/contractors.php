@@ -86,8 +86,8 @@
                                                             'url' => "/clients/dt_clients"
                                                         ],
                                                         'column_names' => $this->clients_column_names,
-                                                        'hidden_by_default' => "[]",
-                                                        'click_url' => "client?id="
+                                                        'click_url' => "client?id=",
+                                                        'originalColumns' => $this->originalColumns
                                                     ];
                                                     include 'application/views/templates/table.php'
                                                     ?>

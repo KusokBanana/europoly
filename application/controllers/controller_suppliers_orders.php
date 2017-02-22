@@ -2,6 +2,9 @@
 
 class ControllerSuppliers_orders extends Controller
 {
+
+    public $page = 'suppliersOrders';
+
     public function __construct()
     {
         parent::__construct();
@@ -10,12 +13,21 @@ class ControllerSuppliers_orders extends Controller
 
     function action_index($action_param = null, $action_data = null)
     {
-        $this->getAccess('suppliers orders', 'v');
+        $this->getAccess($this->page, 'v');
         $this->view->title = "Suppliers' Orders";
         $roles = new Roles();
-        $this->view->column_names = $roles->returnModelNames($this->model->suppliers_orders_column_names, 'suppliersOrders');
-        $this->view->column_names_reduce = $this->model->suppliers_orders_column_names_reduce;
-        $this->view->access = $roles->returnAccessAbilities('suppliers orders', 'ch');
+//        $this->view->column_names = $roles->returnModelNames($this->model->suppliers_orders_column_names, $this->page);
+//        $this->view->column_names_reduce = $this->model->suppliers_orders_column_names_reduce;
+        $this->view->access = $roles->returnAccessAbilities($this->page, 'ch');
+
+        $this->view->tableNames = $this->model->tableNames;
+        $this->view->column_names = $this->model->getColumns($this->model->suppliers_orders_column_names,
+            $this->page, $this->model->tableNames[0], true);
+        $this->view->column_names_reduced = $this->model->getColumns($this->model->suppliers_orders_column_names_reduce,
+            $this->page, $this->model->tableNames[1], true);
+
+        $this->view->originalColumns = $this->model->suppliers_orders_column_names;
+        $this->view->originalColumnsReduced = $this->model->suppliers_orders_column_names_reduce;
 
         $array = $this->model->getSelects();
         $selects = $array['selects'];
@@ -38,7 +50,7 @@ class ControllerSuppliers_orders extends Controller
 
     function action_add_suppliers_order()
     {
-        $this->getAccess('suppliers orders', 'ch');
+        $this->getAccess($this->page, 'ch');
         if (!empty($_POST)) {
             $products = $_POST['suppliers_products'];
             if (empty($products))

@@ -45,4 +45,18 @@ class ControllerLogin extends Controller
 //            setcookie(COOKIE_SIDEBAR, $isVisible, 1000000, '/', 'localhost');
         }
     }
+
+    function action_save_order_columns()
+    {
+        if (isset($_POST["columns"])) {
+            $columns = $_POST["columns"];
+            $userId = $_SESSION['user_id'];
+            $tableId = $_POST['tableId'];
+            if (in_array($tableId, ["table_warehouses_products","table_warehouses_products_issue","table_warehouses_products_reserved"]))
+                $tableId = 'table_warehouse';
+            if (in_array($tableId, ["table_end_customers","table_commission_agents","table_dealers"]))
+                $tableId = 'table_clients';
+            echo $this->model->saveOrderColumns($columns, $userId, $tableId);
+        }
+    }
 }

@@ -50,13 +50,13 @@
                                                                     Add New <i class="fa fa-plus"></i>
                                                             </a>'
                                                 ],
-												'table_id' => "table_accountant",
+												'table_id' => $this->tableName,
 												'ajax' => [
 													'url' => "/accountant/dt_payments"
 												],
 												'column_names' => $this->column_names,
-												'hidden_by_default' => "[]",
-												'click_url' => "javascript:;"
+												'click_url' => "javascript:;",
+                                                'originalColumns' => $this->originalColumns
 											];
 											include 'application/views/templates/table.php'
 											?>

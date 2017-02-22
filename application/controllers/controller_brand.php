@@ -8,17 +8,23 @@ class ControllerBrand extends Controller
         $this->model = new ModelBrand();
     }
 
+    public $page = 'brand';
+
     function action_index($action_param = null, $action_data = null)
     {
         if (isset($_GET["id"])) {
-            $this->getAccess('brand', 'v');
+            $this->getAccess($this->page, 'v');
             $id = intval($_GET["id"]);
             $this->view->brand = $this->model->getById("brands", "brand_id", $id);
             if ($this->view->brand != NULL) {
                 $this->view->title = $this->view->brand["name"];
                 $roles = new Roles();
-                $this->view->full_product_column_names = $roles->returnModelNames($this->model->full_product_column_names, 'catalogue');
-                $this->view->full_product_hidden_columns = $this->model->full_product_hidden_columns;
+
+                $this->view->tableName = $this->model->tableName;
+                $this->view->column_names = $this->model->getColumns($this->model->full_product_column_names,
+                    'catalogue', $this->model->tableName, true);
+                $this->view->hidden_columns = $this->model->full_product_hidden_columns;
+                $this->view->originalColumns = $this->model->full_product_column_names;
 
                 $cache = new Cache();
                 $selectsCache = $cache->read('brand_catalogue_selects');
@@ -35,7 +41,7 @@ class ControllerBrand extends Controller
                 $this->view->selects = $selects;
                 $this->view->rows = $rows;
 
-                $this->view->access = $roles->returnAccessAbilities('brand', 'ch');
+                $this->view->access = $roles->returnAccessAbilities($this->page, 'ch');
 
                 $this->view->brands = $this->model->getAll("brands");
                 $this->view->colors = $this->model->getAll("colors");

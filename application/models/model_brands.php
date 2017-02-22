@@ -2,11 +2,20 @@
 
 class ModelBrands extends Model
 {
-    var $brand_columns = array(
+    var $tableName = 'table_brands';
+
+    var $columns = array(
         array('dt' => 0, 'db' => 'brands.brand_id'),
         array('dt' => 1, 'db' => "CONCAT('<a href=\"/brand?id=', brands.brand_id, '\">', brands.name, '</a>')"),
         array('dt' => 2, 'db' => 'suppliers.name'),
         array('dt' => 3, 'db' => '"N/A"')
+    );
+
+    var $columnNames = array(
+        '_brand_id',
+        'Name',
+        'Supplier',
+        'Status'
     );
 
     public function __construct()
@@ -16,7 +25,7 @@ class ModelBrands extends Model
 
     function getDTBrands($input)
     {
-        $this->sspSimple('brands left join suppliers on suppliers.supplier_id = brands.supplier_id', "brand_id", $this->brand_columns, $input);
+        $this->sspSimple('brands left join suppliers on suppliers.supplier_id = brands.supplier_id', "brand_id", $this->columns, $input);
     }
 
     function addBrand($name, $supplier)

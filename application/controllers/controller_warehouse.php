@@ -2,6 +2,9 @@
 
 class ControllerWarehouse extends Controller
 {
+
+    public $page = 'warehouse';
+
     public function __construct()
     {
         parent::__construct();
@@ -10,11 +13,12 @@ class ControllerWarehouse extends Controller
 
     function action_index($action_param = null, $action_data = null)
     {
-        $this->getAccess('warehouse', 'v');
+        $this->getAccess($this->page, 'v');
         $roles = new Roles();
-        $this->view->access = $roles->returnAccessAbilities('warehouse', 'ch');
+        $this->view->access = $roles->returnAccessAbilities($this->page, 'ch');
         $this->view->full_product_column_names = $roles->returnModelNames($this->model->full_product_column_names, 'catalogue');
         $this->view->full_product_hidden_columns = $this->model->full_product_hidden_columns;
+
         $this->view->warehouses = $this->model->getWarehousesIdNames();
         if (isset($_GET["id"])) {
             $id = intval($_GET["id"]);
@@ -24,7 +28,10 @@ class ControllerWarehouse extends Controller
             $rows = $array['rows'];
             $this->view->selects = $selects;
             $this->view->rows = $rows;
-            $this->view->column_names = $roles->returnModelNames($this->model->product_warehouses_column_names, 'warehouse');
+
+            $this->view->column_names = $this->model->getColumns($this->model->product_warehouses_column_names,
+                $this->page, $this->model->tableName, true);
+            $this->view->originalColumns = $this->model->product_warehouses_column_names;
 
             if ($id == 0) {
                 $this->view->title = "All";
@@ -58,7 +65,7 @@ class ControllerWarehouse extends Controller
 
     function action_add_product()
     {
-        $this->getAccess('warehouse', 'ch');
+        $this->getAccess($this->page, 'ch');
         $this->model->addProductsWarehouse(
             $this->escape_and_empty_to_null($_POST['product_ids']),
             $this->escape_and_empty_to_null($_POST['warehouse_id']),
@@ -69,7 +76,7 @@ class ControllerWarehouse extends Controller
 
     function action_change_item_field()
     {
-        $this->getAccess('warehouse', 'ch');
+        $this->getAccess($this->page, 'ch');
         if (isset($_POST["pk"]) && isset($_POST["name"]) && isset($_POST["value"])) {
             $order_item_id = intval($_POST["pk"]);
             $name = $this->model->escape_string($_POST["name"]);

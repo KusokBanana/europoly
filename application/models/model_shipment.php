@@ -4,6 +4,7 @@ include_once 'model_managers_orders.php';
 
 class ModelShipment extends ModelManagers_orders
 {
+    var $tableNames = ["table_trucks", "table_trucks_reduced"];
 
     var $suppliers_orders_columns = [
         array('dt' => 0, 'db' => "trucks_items.item_id"),
@@ -57,7 +58,7 @@ class ModelShipment extends ModelManagers_orders
     ];
 
     var $suppliers_orders_column_names = [
-        'Truck ID',
+        '_Truck ID',
         'Truck ID',
         'Product',
         'Date of Order (Supplier)',
@@ -154,13 +155,12 @@ class ModelShipment extends ModelManagers_orders
 
     function getDTSuppliersOrders($input)
     {
-        $roles = new Roles();
-        $columns = $roles->returnModelColumns($this->suppliers_orders_columns, 'shipment');
-
         if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
             $this->filterWhere .= " AND (orders.sales_manager_id = " . $_SESSION['user_id'] . ' OR 
                 trucks_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
         }
+
+        $columns = $this->getColumns($this->suppliers_orders_columns, 'shipment', $this->tableNames[0]);
 
         $this->sspComplex($this->suppliers_orders_table, "trucks_items.item_id", $columns,
             $input, null, $this->filterWhere);
@@ -176,7 +176,7 @@ class ModelShipment extends ModelManagers_orders
     ];
 
     var $suppliers_orders_column_names_reduce = [
-        'Truck ID',
+        '_Truck ID',
         'Truck ID',
         'Supplier Departure Date',
         'Warehouse Arrival Date',
@@ -192,7 +192,9 @@ class ModelShipment extends ModelManagers_orders
                 order_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
         }
 
-        $this->sspComplex($this->suppliers_orders_table_reduce, "trucks.id", $this->suppliers_orders_columns_reduce,
+        $columns = $this->getColumns($this->suppliers_orders_columns_reduce, 'shipment', $this->tableNames[1]);
+
+        $this->sspComplex($this->suppliers_orders_table_reduce, "trucks.id", $columns,
             $input, null, $where);
     }
 

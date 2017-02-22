@@ -86,21 +86,21 @@ data-target="#modal_newProduct">Add Similar Product <i class="fa fa-plus"></i></
                                         $buttons = [];
                                     $table_data = [
                                         'buttons' => $buttons,
-                                        'table_id' => "table_catalogue",
+                                        'table_id' => $this->tableName,
                                         'ajax' => [
                                             'url' => "/catalogue/dt",
                                         ],
-                                        'column_names' => $this->full_product_column_names,
-                                        'hidden_by_default' => $this->full_product_hidden_columns,
+                                        'column_names' => $this->column_names,
+                                        'hidden_by_default' => $this->hidden_columns,
                                         'click_url' => "/product?id=",
                                         'selectSearch' => $this->selects,
-                                        'filterSearchValues' => $this->rows
+                                        'filterSearchValues' => $this->rows,
+                                        'originalColumns' => $this->originalColumns
                                     ];
                                     include 'application/views/templates/table.php'
                                     ?>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>

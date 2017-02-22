@@ -93,6 +93,7 @@ class ModelClients extends Model
                 '</div>')")
         );
 
+        $columns = $this->getColumns($columns, 'contractors', 'table_clients');
 
         $this->sspComplex($this->client_table, "clients.client_id", $columns, $input, null, 'clients.is_deleted = 0');
     }
@@ -102,7 +103,10 @@ class ModelClients extends Model
         $where = "clients.type = 'End-Customer' AND clients.is_deleted = 0";
         if ($_SESSION['user_role'] == ROLE_SALES_MANAGER)
             $where .= " AND clients.sales_manager_id = " . $_SESSION['user_id'];
-        $this->sspComplex($this->client_table, "clients.client_id", $this->client_columns, $input, null,
+
+        $columns = $this->getColumns($this->client_columns, 'clients', 'table_clients');
+
+        $this->sspComplex($this->client_table, "clients.client_id", $columns, $input, null,
             $where);
     }
 
@@ -111,7 +115,10 @@ class ModelClients extends Model
         $where = "clients.type = '".COMISSION_AGENT."' AND clients.is_deleted = 0";
         if ($_SESSION['user_role'] == ROLE_SALES_MANAGER)
             $where .= " AND clients.sales_manager_id = " . $_SESSION['user_id'];
-        $this->sspComplex($this->client_table, "clients.client_id", $this->client_columns, $input, null,
+
+        $columns = $this->getColumns($this->client_columns, 'clients', 'table_clients');
+
+        $this->sspComplex($this->client_table, "clients.client_id", $columns, $input, null,
             $where);
     }
 
@@ -120,7 +127,10 @@ class ModelClients extends Model
         $where = "clients.type = 'Dealer' AND clients.is_deleted = 0";
         if ($_SESSION['user_role'] == ROLE_SALES_MANAGER)
             $where .= " AND clients.sales_manager_id = " . $_SESSION['user_id'];
-        $this->sspComplex($this->client_table, "clients.client_id", $this->client_columns, $input, null, $where);
+
+        $columns = $this->getColumns($this->client_columns, 'clients', 'table_clients');
+
+        $this->sspComplex($this->client_table, "clients.client_id", $columns, $input, null, $where);
     }
 
     function addClient($name, $type, $manager_id, $commission_agent_id, $country_id, $region_id, $city)

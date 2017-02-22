@@ -53,15 +53,15 @@
 											<?php
 											$table_data = [
 												'buttons' => [],
-												'table_id' => "table_trucks",
+                                                'table_id' => $this->tableNames[0],
 												'ajax' => [
 													'url' => "/shipment/dt_trucks"
 												],
 												'column_names' => $this->column_names,
-												'hidden_by_default' => "[]",
 												'click_url' => "javascript:;",
                                                 'selectSearch' => $this->selects,
-                                                'filterSearchValues' => $this->rows
+                                                'filterSearchValues' => $this->rows,
+                                                'originalColumns' => $this->originalColumns
 											];
 											include 'application/views/templates/table.php'
 											?>
@@ -72,13 +72,13 @@
 											<?php
 											$table_data = [
 												'buttons' => [],
-												'table_id' => "table_trucks_reduced",
+                                                'table_id' => $this->tableNames[1],
 												'ajax' => [
 													'url' => "/shipment/dt_trucks_reduce"
 												],
-												'column_names' => $this->column_names_reduce,
-												'hidden_by_default' => "[]",
-												'click_url' => "javascript:;"
+												'column_names' => $this->column_names_reduced,
+												'click_url' => "javascript:;",
+                                                'originalColumns' => $this->originalColumnsReduced
 											];
 											include 'application/views/templates/table.php'
 											?>

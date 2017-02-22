@@ -53,15 +53,15 @@
 											<?php
 											$table_data = [
 												'buttons' => [],
-												'table_id' => "table_managers_orders",
+												'table_id' => $this->tableNames[0],
 												'ajax' => [
 													'url' => "/managers_orders/dt_managers_orders"
 												],
 												'column_names' => $this->column_names,
-												'hidden_by_default' => "[]",
 												'click_url' => "javascript:;",
                                                 'selectSearch' => $this->selects,
-                                                'filterSearchValues' => $this->rows
+                                                'filterSearchValues' => $this->rows,
+                                                'originalColumns' => $this->originalColumns
 											];
 											include 'application/views/templates/table.php'
 											?>
@@ -72,13 +72,13 @@
 											<?php
 											$table_data = [
 												'buttons' => [],
-												'table_id' => "table_managers_orders_reduced",
+												'table_id' => $this->tableNames[1],
 												'ajax' => [
 													'url' => "/managers_orders/dt_managers_orders_reduced"
 												],
 												'column_names' => $this->column_names_reduced,
-												'hidden_by_default' => "[]",
-												'click_url' => "javascript:;"
+												'click_url' => "javascript:;",
+                                                'originalColumns' => $this->originalColumnsReduced
 											];
 											include 'application/views/templates/table.php'
 											?>

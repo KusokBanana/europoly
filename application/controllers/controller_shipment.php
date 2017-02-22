@@ -2,6 +2,9 @@
 
 class ControllerShipment extends Controller
 {
+
+    public $page = 'shipment';
+
     public function __construct()
     {
         parent::__construct();
@@ -10,11 +13,20 @@ class ControllerShipment extends Controller
 
     function action_index($action_param = null, $action_data = null)
     {
-        $this->getAccess('shipment', 'v');
+        $this->getAccess($this->page, 'v');
         $this->view->title = "Shipment";
-        $roles = new Roles();
-        $this->view->column_names = $roles->returnModelNames($this->model->suppliers_orders_column_names, 'shipment');
-        $this->view->column_names_reduce = $this->model->suppliers_orders_column_names_reduce;
+//        $roles = new Roles();
+//        $this->view->column_names = $roles->returnModelNames($this->model->suppliers_orders_column_names, $this->page);
+//        $this->view->column_names_reduce = $this->model->suppliers_orders_column_names_reduce;
+
+        $this->view->tableNames = $this->model->tableNames;
+        $this->view->column_names = $this->model->getColumns($this->model->suppliers_orders_column_names,
+            $this->page, $this->model->tableNames[0], true);
+        $this->view->column_names_reduced = $this->model->getColumns($this->model->suppliers_orders_column_names_reduce,
+            $this->page, $this->model->tableNames[1], true);
+
+        $this->view->originalColumns = $this->model->suppliers_orders_column_names;
+        $this->view->originalColumnsReduced = $this->model->suppliers_orders_column_names_reduce;
 
         //        $cache = new Cache();
 //        $selectsCache = $cache->read('suppliers_orders_selects');

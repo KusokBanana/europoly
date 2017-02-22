@@ -4,6 +4,8 @@ include_once 'model_managers_orders.php';
 class ModelSent_to_logist extends ModelManagers_orders
 {
 
+    public $tableName = 'sent_to_logist';
+
     var $statusesFilter = 3;
 
     function getDTManagersOrders($input)
@@ -15,8 +17,7 @@ class ModelSent_to_logist extends ModelManagers_orders
                 order_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
         }
 
-        $roles = new Roles();
-        $columns = $roles->returnModelColumns($this->managers_orders_columns, 'sentToLogist');
+        $columns = $this->getColumns($this->managers_orders_columns, 'sentToLogist', $this->tableName);
 
         $this->sspComplex($this->managers_orders_table, "orders.order_id",
             $columns, $input, null, $where);

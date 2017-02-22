@@ -7,11 +7,12 @@ class ModelCatalogue extends Model
         $this->connect_db();
     }
 
+    public $tableName = "table_catalogue";
+
     function getDTProducts($input, $id)
     {
         $where = '';
-        $role = new Roles();
-        $columns = $role->returnModelColumns($this->full_product_columns, 'catalogue');
+        $columns = $this->getColumns($this->full_product_columns, 'catalogue', $this->tableName);
         $this->sspComplex($this->full_products_table, "product_id", $columns, $input, null, $where);
     }
 

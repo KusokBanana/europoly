@@ -4,6 +4,8 @@ include_once 'model_managers_orders.php';
 
 class ModelWarehouse extends ModelManagers_orders
 {
+    var $tableName = 'table_accountant';
+
     var $products_warehouses_table = "order_items as products_warehouses
             left join products on products_warehouses.product_id = products.product_id
             left join brands on products.brand_id = brands.brand_id
@@ -75,7 +77,7 @@ class ModelWarehouse extends ModelManagers_orders
     );
 
     var $product_warehouses_column_names = [
-        "Id",
+        "_Id",
         "Article",
         "Product",
         "Brand",
@@ -142,8 +144,7 @@ class ModelWarehouse extends ModelManagers_orders
                 break;
         }
 
-        $roles = new Roles();
-        $columns = $roles->returnModelColumns($this->product_warehouses_columns, 'warehouse');
+        $columns = $this->getColumns($this->product_warehouses_columns, 'warehouse', $this->tableName);
 
         if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
             $where = '(' . $where . ") AND (orders.sales_manager_id = " . $_SESSION['user_id'] . ' OR 

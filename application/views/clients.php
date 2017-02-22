@@ -165,8 +165,8 @@
                                                             'url' => "/clients/dt_end_customers"
                                                         ],
                                                         'column_names' => $this->column_names,
-                                                        'hidden_by_default' => "[]",
-                                                        'click_url' => "client?id="
+                                                        'click_url' => "client?id=",
+                                                        'originalColumns' => $this->originalColumns
                                                     ];
                                                     include 'application/views/templates/table.php'
                                                     ?>
@@ -187,8 +187,8 @@
                                                             'url' => "/clients/dt_commission_agents"
                                                         ],
                                                         'column_names' => $this->column_names,
-                                                        'hidden_by_default' => "[]",
-                                                        'click_url' => "client?id="
+                                                        'click_url' => "client?id=",
+                                                        'originalColumns' => $this->originalColumns
                                                     ];
                                                     include 'application/views/templates/table.php'
                                                     ?>
@@ -209,7 +209,8 @@
                                                             'url' => "/clients/dt_dealers"
                                                         ],
                                                         'column_names' => $this->column_names,
-                                                        'hidden_by_default' => "[]",                                                                                                         'click_url' => "client?id="
+                                                        'click_url' => "client?id=",
+                                                        'originalColumns' => $this->originalColumns
                                                     ];
                                                     include 'application/views/templates/table.php'
                                                     ?>

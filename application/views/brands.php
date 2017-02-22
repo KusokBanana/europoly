@@ -37,18 +37,13 @@
                                 $buttons = '';
                             $table_data = [
                                 'buttons' => [$buttons],
-                                'table_id' => "table_brands",
+                                'table_id' => $this->tableName,
                                 'ajax' => [
                                     'url' => "/brands/dt"
                                 ],
-                                'column_names' => [
-                                    '_brand_id',
-                                    'Name',
-                                    'Supplier',
-                                    'Status'
-                                ],
-                                'hidden_by_default' => "[]",
-                                'click_url' => "/brand?id="
+                                'column_names' => $this->column_names,
+                                'click_url' => "/brand?id=",
+                                'originalColumns' => $this->originalColumns
                             ];
                             include 'application/views/templates/table.php'
                             ?>

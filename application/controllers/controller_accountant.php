@@ -2,6 +2,9 @@
 
 class ControllerAccountant extends Controller
 {
+
+    public $page = 'accountant';
+
     public function __construct()
     {
         parent::__construct();
@@ -31,8 +34,13 @@ class ControllerAccountant extends Controller
 
     function action_index($action_param = null, $action_data = null)
     {
-        $this->getAccess('accountant', 'v');
-        $this->view->column_names = $this->model->payments_column_names;
+        $this->getAccess($this->page, 'v');
+
+        $this->view->tableName = $this->model->tableName;
+        $this->view->column_names = $this->model->getColumns($this->model->payments_column_names,
+            $this->page, $this->model->tableName, true);
+        $this->view->originalColumns = $this->model->payments_column_names;
+
         $this->view->build('templates/template.php', 'accountant.php');
     }
 
@@ -48,7 +56,7 @@ class ControllerAccountant extends Controller
 
     function action_delete()
     {
-        $this->getAccess('accountant', 'd');
+        $this->getAccess($this->page, 'd');
         $payment_id = isset($_GET['payment_id']) ? $_GET['payment_id'] : false;
         if (!$payment_id)
             return false;

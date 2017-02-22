@@ -2,6 +2,7 @@
 
 class ModelAccountant extends Model
 {
+    var $tableName = 'table_warehouse';
 
     var $payments_columns = [
         array('dt' => 0, 'db' => "payments.payment_id"),
@@ -83,7 +84,10 @@ class ModelAccountant extends Model
 
     function getDTPayments($input)
     {
-        $this->sspComplex($this->payments_table, "payments.payment_id", $this->payments_columns, $input, null,
+
+        $columns = $this->getColumns($this->payments_columns, 'accountant', $this->tableName);
+
+        $this->sspComplex($this->payments_table, "payments.payment_id", $columns, $input, null,
             "payments.is_deleted = 0");
     }
 
