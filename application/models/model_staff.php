@@ -26,12 +26,13 @@ class ModelStaff extends Model
 
     function getDTManagers($input)
     {
-        $this->sspComplex("users", "user_id", $this->manager_columns, $input, null, "role_id = 2"); // TODO REPLACE_CONST
+        $this->sspComplex("users", "user_id", $this->manager_columns, $input, null, "role_id = " . ROLE_SALES_MANAGER);
     }
 
     function getDTSupport($input)
     {
-        $this->sspComplex("users", "user_id", $this->support_columns, $input, null, "role = 'Support'");
+        $where = "role_id IN (" . ROLE_ACCOUNTANT . ', ' . ROLE_WAREHOUSE . ')';
+        $this->sspComplex("users", "user_id", $this->support_columns, $input, null, $where);
     }
 
     function addUser($first_name, $last_name, $role_id, $login, $password)
@@ -40,6 +41,7 @@ class ModelStaff extends Model
         if ($existing_user != null) {
             return false;
         } else {
+            $password = md5($password);
             return $this->insert("INSERT INTO users (login, password, first_name, last_name, role_id)
                 VALUES ('$login', '$password', '$first_name', '$last_name', $role_id)");
         }

@@ -169,6 +169,72 @@
             $(".page-fixed-main-content").css({'margin-left':'255px'});
         }
      });
+
+        addTopScroll();
+
+        function addTopScroll()
+        {
+            var table = $('table.dataTable');
+            function addScroll(e)
+            {
+                if (e.currentTarget !== undefined) {
+                    var currentTab = $($(e.currentTarget).attr('href'));
+                    var table = currentTab.find('table');
+                } else {
+                    table = e;
+                }
+
+                if (table.attr('data-top-scroll'))
+                    return false;
+
+                var tableScrollable = table.closest('.table-scrollable');
+                if (tableScrollable.length)
+                    var tableWrapper = tableScrollable;
+                else {
+                    var tableResponsive = table.closest('.table-responsive');
+
+                    if (tableResponsive.length) {
+                        tableWrapper = tableResponsive;
+                    }
+                }
+                if (!tableWrapper.length)
+                    return false;
+
+                var topScrollCode = '<div class="top-scroll"><div class="fake"></div></div>';
+                tableWrapper.before(topScrollCode);
+
+                var topScroll = tableWrapper.prev('.top-scroll');
+                var fake = topScroll.find('.fake');
+
+                topScroll.width(tableWrapper.width());
+                fake.width(table.width());
+
+                topScroll.on('scroll', function(e){
+                    tableWrapper.scrollLeft($(this).scrollLeft());
+                });
+                tableWrapper.on('scroll', function(e){
+                    topScroll.scrollLeft($(this).scrollLeft());
+                });
+                table.attr('data-top-scroll', true);
+            }
+
+            var tab = table.closest('.tab-pane');
+            if ($('body').find('.tab-pane').length) {
+                $.each($('body').find('.tab-pane'), function() {
+                    if ($(this).find('table.dataTable').length) {
+                        if ($(this).is('.active')) {
+                            addScroll($(this).find('table'));
+                        } else {
+                            var tabId = $(this).attr('id');
+                            var selector = 'a[href="#'+tabId+'"]';
+                            $(selector).on('shown.bs.tab', addScroll);
+                        }
+                    }
+                });
+            } else if($('body').find('.table-scrollable').length) {
+                addScroll($('body').find('.table-scrollable').find('table'));
+            }
+        }
 });
 
 </script>

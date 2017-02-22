@@ -5,6 +5,7 @@ define('COMISSION_AGENT', 'Comission Agent');
 // Order Item Status
 define('DRAFT', 1);
 define('HOLD', 2);
+define('SENT_TO_LOSIGT', 3);
 define('DRAFT_FOR_SUPPLIER', 4);
 define('CONFIRMED_BY_SUPPLIER', 5);
 define('ON_THE_WAY', 8);
@@ -22,6 +23,6 @@ define('SALES_MANAGER_PERM', 8);
 define('ACCOUNTANT_PERM', 6);
 define('WAREHOUSE_PERM', 4);
 
-define('LOLO', 'srat');
+define('SESSION_SIDEBAR', 'sidebar_is_opened');
 
 define('RESERVE_PERIOD', 7);

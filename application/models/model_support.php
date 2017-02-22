@@ -34,6 +34,7 @@ class ModelSupport extends Model
 
     function updateAccount($user_id, $login, $password)
     {
+        $password = md5($password);
         return $this->update("UPDATE users SET login = '$login', password = '$password'
             WHERE user_id = $user_id");
     }

@@ -41,7 +41,7 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
             <?php include 'application/views/templates/sidebar.php' ?>
             <!-- END SIDEBAR -->
         </div>
-        <div class="page-fixed-main-content">
+        <div class="page-fixed-main-content" <?= $this->isSidebarClosed() ? 'style="margin-left:0"' : '' ?>>
             <!-- BEGIN PAGE BASE CONTENT -->
             <div class="row">
                 <div class="col-md-12 ">

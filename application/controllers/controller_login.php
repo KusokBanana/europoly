@@ -36,4 +36,13 @@ class ControllerLogin extends Controller
         session_destroy();
         header("Location: /");
     }
+
+    function action_hidden_sidebar()
+    {
+        if (isset($_GET["visible"])) {
+            $isVisible = $_GET["visible"];
+            $_SESSION[SESSION_SIDEBAR] = $isVisible;
+//            setcookie(COOKIE_SIDEBAR, $isVisible, 1000000, '/', 'localhost');
+        }
+    }
 }

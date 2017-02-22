@@ -44,7 +44,7 @@ $isNewClient = !isset($this->client['client_id']);
             <?php include 'application/views/templates/sidebar.php' ?>
             <!-- END SIDEBAR -->
         </div>
-        <div class="page-fixed-main-content">
+        <div class="page-fixed-main-content" <?= $this->isSidebarClosed() ? 'style="margin-left:0"' : '' ?>>
             <!-- BEGIN PAGE BASE CONTENT -->
             <!-- BEGIN PAGE BASE CONTENT -->
             <div class="row ">

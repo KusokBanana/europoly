@@ -11,14 +11,16 @@
             <!-- END BREADCRUMBS -->
             <div class="content-header-menu">
                 <div class="page-toolbar">
-                    <div style="margin:10px" id="dashboard-report-range" class="pull-right tooltips btn btn-fit-height blue" data-placement="top" data-original-title="Change dashboard date range">
+                    <div style="margin:10px" id="dashboard-report-range" class="pull-right tooltips btn btn-fit-height blue"
+                         data-placement="top" data-original-title="Change dashboard date range">
                         <i class="icon-calendar"></i>&nbsp;
                         <span class="thin uppercase hidden-xs"></span>&nbsp;
                         <i class="fa fa-angle-down"></i>
                     </div>
                 </div>
                 <!-- BEGIN MENU TOGGLER -->
-                <button type="button" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse">
+                <button type="button" class="menu-toggler responsive-toggler"
+                        data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="toggle-icon">
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
@@ -33,7 +35,7 @@
             <?php include 'application/views/templates/sidebar.php' ?>
             <!-- END SIDEBAR -->
         </div>
-        <div class="page-fixed-main-content">
+        <div class="page-fixed-main-content" <?= $this->isSidebarClosed() ? 'style="margin-left:0"' : '' ?>>
             <!-- BEGIN PAGE BASE CONTENT -->
             <div class="row">
                 <div class="col-md-7">

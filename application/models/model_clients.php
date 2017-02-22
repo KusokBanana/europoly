@@ -99,7 +99,7 @@ class ModelClients extends Model
 
     function getDTEndCustomers($input)
     {
-        $where = "clients.type = 'End Customer' AND clients.is_deleted = 0";
+        $where = "clients.type = 'End-Customer' AND clients.is_deleted = 0";
         if ($_SESSION['user_role'] == ROLE_SALES_MANAGER)
             $where .= " AND clients.sales_manager_id = " . $_SESSION['user_id'];
         $this->sspComplex($this->client_table, "clients.client_id", $this->client_columns, $input, null,

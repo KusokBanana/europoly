@@ -14,7 +14,7 @@ class ControllerOrder extends Controller
 
         $this->view->order = $this->model->getOrder($_GET['id']);
 
-        if ($_SESSION["user_role"] == ROLE_SALES_MANAGER && $this->view->order['sales_manager_id'] == $_SESSION['user_id']) {
+        if (($_SESSION["user_role"] == ROLE_SALES_MANAGER && $this->view->order['sales_manager_id'] == $_SESSION['user_id']) || $_SESSION["user_role"] == ROLE_ADMIN) {
             $this->view->order_status = $this->model->getItemStatusName($this->view->order['order_status_id']);
             $this->view->client = $this->model->getClient($this->view->order['client_id']);
             $this->view->sales_manager = $this->model->getUser($this->view->order["sales_manager_id"]);

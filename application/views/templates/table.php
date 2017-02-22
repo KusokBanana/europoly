@@ -79,6 +79,13 @@
 </table>
 
 <style>
+    .top-scroll {
+        height: 20px;
+        overflow-x: scroll;
+    }
+    .top-scroll > .fake {
+        height: 1px;
+    }
     .hide-text {
         text-indent: 100%;
         white-space: nowrap;
@@ -169,6 +176,7 @@ if (!empty($hidden)) {
                     rootSelector: '.table-confirm-btn'
                 });
             }
+
         });
         $table.find('tbody').on('click', 'tr td:not(:first-child)', function (e) {
             var data = table.row($(this).closest('tr')).data();
@@ -220,6 +228,9 @@ if (!empty($hidden)) {
                 }
             }
         }
+
+        // to add top scroll of table
+
 
         var $inputs = $("#<?= $table_id ?>_columns_choose input");
         hiddenByDefault.forEach(function (item) {

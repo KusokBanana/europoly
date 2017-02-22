@@ -17,7 +17,7 @@
             <?php include 'application/views/templates/sidebar.php' ?>
             <!-- END SIDEBAR -->
         </div>
-        <div class="page-fixed-main-content">
+        <div class="page-fixed-main-content" <?= $this->isSidebarClosed() ? 'style="margin-left:0"' : '' ?>>
             <!-- BEGIN PAGE BASE CONTENT -->
             <div class="invoice">
                 <div class="portlet light portlet-fit portlet-datatable bordered">
@@ -107,7 +107,7 @@
                     </div>
                 </div>
                 <div class="row" >
-                    <div class="col-xs-12" style="overflow-x: scroll;">
+                    <div class="col-xs-12 table-scrollable"">
                         <table class="table table-striped table-hover" id="table_truck_items">
                             <thead>
                             <tr>

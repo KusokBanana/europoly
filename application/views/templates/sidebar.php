@@ -1,4 +1,4 @@
-<div id="sidebar" class="page-sidebar">
+<div id="sidebar" class="page-sidebar" <?= $this->isSidebarClosed() ? 'style="display:none;"' : '' ?>>
     <!-- BEGIN SIDEBAR MENU -->
     <ul class="page-sidebar-menu  page-header-fixed " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
         <li id="nav-catalogue" class="nav-item">
@@ -143,3 +143,27 @@
     </ul>
     <!-- END SIDEBAR MENU -->
 </div>
+<script>
+    $(document).ready(function() {
+        $('body').on('click', '#menu-toggler', function () {
+            var isOpened = $('#sidebar').is(':visible');
+            $.ajax({
+                url: '/login/hidden_sidebar',
+                type: "GET",
+                data: {
+                    visible: isOpened
+                }
+            });
+            var topScroll = $('.top-scroll');
+            if (topScroll.length) {
+                $.each(topScroll, function() {
+                    var scroll = $(this);
+                    var fake = scroll.find('.fake');
+                    var tableWrapper = scroll.next('div');
+                    scroll.width(tableWrapper.width());
+                    fake.width(tableWrapper.find('table').width());
+                })
+            }
+        })
+    })
+</script>

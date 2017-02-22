@@ -26,4 +26,9 @@ class View
         }
         return json_encode($result);
     }
+
+    public function isSidebarClosed()
+    {
+        return (isset($_SESSION[SESSION_SIDEBAR]) && $_SESSION[SESSION_SIDEBAR] == 'false') ? true : false;
+    }
 }
