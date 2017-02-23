@@ -147,7 +147,6 @@ if ($hidden_by_default) {
         var $filterSearchValues = <?= json_encode($filterSearchValues); ?>;
         var $clickUrl = "<?= $click_url == 'javascript:;' ? false : $click_url; ?>";
         var $sort = <?= json_encode(explode('-', $sort)); ?>;
-        console.log($sort);
         <?php
         if (isset($ajax['data']) && $ajax['data'] != "") {
             echo "var ajax = { url: '" . $ajax['url'] . "', 
@@ -499,6 +498,11 @@ if ($hidden_by_default) {
                         fixedTable.css('position', 'absolute').css('top', '20px')
                             .css('background-color', '#ebeaff').addClass('fixed-table');
                         tableDad.children(':first-child').before(fixedTable);
+                        fixedTable.addClass('fixed-table-head');
+                        var tableWrapper = $table.closest('.table-scrollable');
+                        if (tableWrapper.length) {
+                            fixedTable.css('left', -tableWrapper.scrollLeft() + 'px');
+                        }
 
                         var tds = $table.find('thead th');
                         $.each(tds, function() {
@@ -519,8 +523,8 @@ if ($hidden_by_default) {
 
                         if (currentWindowOffset <= bottomMax) {
 
-                            var needOffset = (currentWindowOffset + 30 + fixedTableHeight <= bottomMax) ?
-                                currentWindowOffset + 30 : bottomMax - fixedTableHeight + 10;
+                            var needOffset = (currentWindowOffset + 60 + fixedTableHeight <= bottomMax) ?
+                                currentWindowOffset + 60 : bottomMax - fixedTableHeight + 30;
 
                             fixedTable.css('top', (needOffset - topMax) + 'px');
                         }
@@ -532,6 +536,7 @@ if ($hidden_by_default) {
                     }
                 }
             }
+
         }
         // not appear in modal windows
         if (!$table.closest('.modal-content').length) {
@@ -606,7 +611,6 @@ if ($hidden_by_default) {
             if (lastSort && lastSort !== undefined && originalColumnId && originalColumnId != undefined) {
                 var sortString = originalColumnId + '-' + $sort[1];
                 if (lastSort !== sortString) {
-                console.log(sortString);
                     $.ajax({
                         url: '/login/save_sort_columns',
                         type: 'POST',

@@ -161,7 +161,6 @@
 <script>
     $(document).ready(function () {
      $("#menu-toggler").click(function(){
-        var menu_shown = true;
         if ($("#sidebar").is(":visible")) {
             $("#sidebar").hide();
             $(".page-fixed-main-content").css({'margin-left':'0px'});
@@ -215,6 +214,13 @@
                 });
                 tableWrapper.on('scroll', function(e){
                     topScroll.scrollLeft($(this).scrollLeft());
+
+                    // for fixed table header
+                    var fixedHeader = $('.fixed-table-head');
+                    if (fixedHeader.length) {
+                        fixedHeader.css('left', -$(this).scrollLeft() + 'px');
+                    }
+
                 });
                 table.attr('data-top-scroll', true);
             }
