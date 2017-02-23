@@ -141,6 +141,7 @@ class ModelManagers_orders extends Model
     {
         if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
             $this->whereCondition .= " AND orders.sales_manager_id = " . $_SESSION['user_id'];
+            $this->unLinkStrings($this->managers_orders_columns, [24, 25]);
         }
 
         $columns = $this->getColumns($this->managers_orders_columns, 'managersOrders', $this->tableNames[0]);
@@ -154,6 +155,7 @@ class ModelManagers_orders extends Model
         $where = '';
         if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
             $where = " orders.sales_manager_id = " . $_SESSION['user_id'];
+            $this->unLinkStrings($this->managers_orders_reduced_columns, [9, 10]);
         }
 
         $columns = $this->getColumns($this->managers_orders_reduced_columns, 'managersOrders', $this->tableNames[1]);

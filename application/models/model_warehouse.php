@@ -144,12 +144,15 @@ class ModelWarehouse extends ModelManagers_orders
                 break;
         }
 
-        $columns = $this->getColumns($this->product_warehouses_columns, 'warehouse', $this->tableName);
-
         if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
             $where = '(' . $where . ") AND (orders.sales_manager_id = " . $_SESSION['user_id'] . ' OR 
                 products_warehouses.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
         }
+        if ($_SESSION['perm'] <= SALES_MANAGER_PERM) {
+            $this->unLinkStrings($this->product_warehouses_columns, [27, 30, 33, 34]);
+        }
+        $columns = $this->getColumns($this->product_warehouses_columns, 'warehouse', $this->tableName);
+
 
         $this->sspComplex($this->products_warehouses_table, "products_warehouses.item_id", $columns,
             $input, null, $where);

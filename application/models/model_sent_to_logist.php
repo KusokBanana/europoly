@@ -15,6 +15,7 @@ class ModelSent_to_logist extends ModelManagers_orders
         if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
             $where .= " AND (orders.sales_manager_id = " . $_SESSION['user_id'] . ' OR 
                 order_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
+            $this->unLinkStrings($this->managers_orders_columns, [24, 25]);
         }
 
         $columns = $this->getColumns($this->managers_orders_columns, 'sentToLogist', $this->tableName);

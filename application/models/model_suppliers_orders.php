@@ -139,6 +139,7 @@ class ModelSuppliers_orders extends ModelManagers_orders
         if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
             $this->suppliersFilterWhere .= " AND (orders.sales_manager_id = " . $_SESSION['user_id'] . ' OR 
                 suppliers_orders_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
+            $this->unLinkStrings($this->suppliers_orders_columns, [2, 26, 27]);
         }
 
         $columns = $this->getColumns($this->suppliers_orders_columns, 'suppliersOrders', $this->tableNames[0]);
@@ -153,6 +154,7 @@ class ModelSuppliers_orders extends ModelManagers_orders
         if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
             $where = "orders.sales_manager_id = " . $_SESSION['user_id'] . ' OR 
                 order_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL';
+            $this->unLinkStrings($this->suppliers_orders_columns_reduce, [1]);
         }
 
         $columns = $this->getColumns($this->suppliers_orders_columns_reduce, 'suppliersOrders', $this->tableNames[1]);

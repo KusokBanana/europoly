@@ -85,6 +85,10 @@ class ModelAccountant extends Model
     function getDTPayments($input)
     {
 
+        if ($_SESSION['perm'] <= SALES_MANAGER_PERM) {
+            $this->unLinkStrings($this->payments_columns, [5, 6]);
+        }
+
         $columns = $this->getColumns($this->payments_columns, 'accountant', $this->tableName);
 
         $this->sspComplex($this->payments_table, "payments.payment_id", $columns, $input, null,
@@ -124,6 +128,10 @@ class ModelAccountant extends Model
             array('dt' => 17, 'db' => "CONCAT('<span class=\"label label-', IF(payments.status = 'Executed', 
             'success', 'default'), '\">', payments.status, '</span>')"),
         ];
+
+        if ($_SESSION['perm'] <= SALES_MANAGER_PERM) {
+            $this->unLinkStrings($columns, [1, 5]);
+        }
 
         $where = "payments.order_id = $order_id AND category = '$type' AND payments.is_deleted = 0";
 

@@ -92,7 +92,7 @@ class ModelClients extends Model
                                    </a>'),
                 '</div>')")
         );
-
+        $this->unLinkStrings($columns, [17]);
         $columns = $this->getColumns($columns, 'contractors', 'table_clients');
 
         $this->sspComplex($this->client_table, "clients.client_id", $columns, $input, null, 'clients.is_deleted = 0');
@@ -101,8 +101,10 @@ class ModelClients extends Model
     function getDTEndCustomers($input)
     {
         $where = "clients.type = 'End-Customer' AND clients.is_deleted = 0";
-        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER)
+        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
             $where .= " AND clients.sales_manager_id = " . $_SESSION['user_id'];
+            $this->unLinkStrings($this->client_columns, [17]);
+        }
 
         $columns = $this->getColumns($this->client_columns, 'clients', 'table_clients');
 
@@ -113,8 +115,10 @@ class ModelClients extends Model
     function getDTCommissionAgents($input)
     {
         $where = "clients.type = '".COMISSION_AGENT."' AND clients.is_deleted = 0";
-        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER)
+        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
             $where .= " AND clients.sales_manager_id = " . $_SESSION['user_id'];
+            $this->unLinkStrings($this->client_columns, [17]);
+        }
 
         $columns = $this->getColumns($this->client_columns, 'clients', 'table_clients');
 
@@ -125,8 +129,10 @@ class ModelClients extends Model
     function getDTDealers($input)
     {
         $where = "clients.type = 'Dealer' AND clients.is_deleted = 0";
-        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER)
+        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
             $where .= " AND clients.sales_manager_id = " . $_SESSION['user_id'];
+            $this->unLinkStrings($this->client_columns, [17]);
+        }
 
         $columns = $this->getColumns($this->client_columns, 'clients', 'table_clients');
 

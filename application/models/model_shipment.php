@@ -158,6 +158,7 @@ class ModelShipment extends ModelManagers_orders
         if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
             $this->filterWhere .= " AND (orders.sales_manager_id = " . $_SESSION['user_id'] . ' OR 
                 trucks_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
+            $this->unLinkStrings($this->suppliers_orders_columns, [1, 7, 27, 28]);
         }
 
         $columns = $this->getColumns($this->suppliers_orders_columns, 'shipment', $this->tableNames[0]);
@@ -190,6 +191,8 @@ class ModelShipment extends ModelManagers_orders
         if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
             $where .= "(orders.sales_manager_id = " . $_SESSION['user_id'] . ' OR 
                 order_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
+
+            $this->unLinkStrings($this->suppliers_orders_columns_reduce, [1]);
         }
 
         $columns = $this->getColumns($this->suppliers_orders_columns_reduce, 'shipment', $this->tableNames[1]);

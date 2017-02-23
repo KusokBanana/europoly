@@ -399,4 +399,17 @@ abstract class Model extends mysqli
         return $columns;
     }
 
+    protected function unLinkStrings (&$array, $cols) {
+        foreach ($cols as $col) {
+            $array[$col]['formatter'] = function($d) {
+                preg_match('/<a+[^>]+?[^>]+>(.*?)<\/a+>/i', $d, $match);
+                if (!empty($match) && isset($match[1])) {
+                    $d = $match[1];
+                }
+                return $d;
+            };
+        }
+
+    }
+
 }

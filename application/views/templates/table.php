@@ -188,7 +188,8 @@ if ($hidden_by_default) {
                 selector: 'td:first-child',
                 blurable: true
             },
-            colReorder: false
+            colReorder: false,
+            deferRender: true
         });
 
         $table.on('draw.dt', function () {

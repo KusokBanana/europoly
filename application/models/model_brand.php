@@ -10,7 +10,7 @@ class ModelBrand extends ModelCatalogue
     {
         $where = "brands.brand_id = " . $brand_id;
 
-        $columns = $this->getColumns($this->full_product_columns, 'catalogue', $this->tableName);
+        $columns = $this->getColumns($this->full_product_columns, 'brand', $this->tableName);
 
         $this->sspComplex($this->full_products_table, "product_id",
             $columns, $input, null, $where);
