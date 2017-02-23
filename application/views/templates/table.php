@@ -13,6 +13,9 @@
         (!empty($table_data['selectSearch']) ? $table_data['selectSearch'] : []) : false;
     $filterSearchValues = isset($table_data['filterSearchValues']) ?
         (!empty($table_data['filterSearchValues']) ? $table_data['filterSearchValues'] : []) : false;
+
+    $sort = (isset($_SESSION['sort_columns']) && isset($_SESSION['sort_columns'][$table_id])) ? $_SESSION['sort_columns'][$table_id] :
+        '1-asc';
     ?>
     <div id="<?= $table_id ?>_left_buttons" class="btn-group">
         <?php
@@ -41,6 +44,11 @@
             $category_column_id = 0;
             foreach ($column_names as $column_id => $column_name) {
                 $originalColumnId = array_search($column_name, $originalColumns);
+                $sortCol = explode('-', $sort);
+                if ($sortCol[0] == $originalColumnId) {
+                    $sort = $column_id . '-' . $sortCol[1];
+                }
+
                 if ($column_name == '_category_id') {
                     $category_column_id = $column_id;
                     $mustHidden = $originalColumnId;
@@ -53,8 +61,8 @@
         </div>
     </div>
 </div>
-
-<table id="<?= $table_id ?>" class="table table-striped table-bordered table-hover table-checkable order-column">
+<table id="<?= $table_id ?>" class="table table-striped table-bordered table-hover table-checkable order-column"
+                            data-last-sort="<?= $sort ?>">
     <thead>
     <tr>
         <?php
@@ -138,6 +146,8 @@ if ($hidden_by_default) {
         }
         var $filterSearchValues = <?= json_encode($filterSearchValues); ?>;
         var $clickUrl = "<?= $click_url == 'javascript:;' ? false : $click_url; ?>";
+        var $sort = <?= json_encode(explode('-', $sort)); ?>;
+        console.log($sort);
         <?php
         if (isset($ajax['data']) && $ajax['data'] != "") {
             echo "var ajax = { url: '" . $ajax['url'] . "', 
@@ -171,7 +181,7 @@ if ($hidden_by_default) {
                 }
             ],
             order: [
-                [1, 'asc']
+                $sort
             ],
             orderCellsTop: true,
             select: {
@@ -190,6 +200,10 @@ if ($hidden_by_default) {
             }
             reOrderColumns();
         });
+        $table.on( 'order.dt', function () {
+            var order = table.order();
+            saveColumnSort(order[0]);
+        } );
         $table.find('tbody').on('click', 'tr td:not(:first-child)', function (e) {
             var data = table.row($(this).closest('tr')).data();
             var target = e.target;
@@ -536,10 +550,9 @@ if ($hidden_by_default) {
                     .find('input').prop('disabled', true);
                 columnsBlock.sortable({
                     revert: true,
-                    axis: 'y'
-//                    cancel: '.'+CANCEL_CLASS
+                    axis: 'y',
+                    items: '.draggable'
                 });
-                $(":not(.draggable)").disableSelection();
             }).on('click', '.'+CANCEL_CLASS, function() {
                 var draggable = columnsBlock.find('.draggable');
                 $(this).removeClass(CANCEL_CLASS).text('Change order');
@@ -584,7 +597,33 @@ if ($hidden_by_default) {
             })
         }
 
+        function saveColumnSort($sort) {
+
+            var columnId = $sort[0];
+            var columnsBlock = $('#'+$table.attr('id')+'_columns_choose.order-columns-block');
+            var originalColumnId = columnsBlock.find('input[data-column="'+columnId+'"]').attr('data-original-column-id');
+            var lastSort = $table.attr('data-last-sort');
+            if (lastSort && lastSort !== undefined && originalColumnId && originalColumnId != undefined) {
+                var sortString = originalColumnId + '-' + $sort[1];
+                if (lastSort !== sortString) {
+                console.log(sortString);
+                    $.ajax({
+                        url: '/login/save_sort_columns',
+                        type: 'POST',
+                        data: {
+                            sort: sortString,
+                            tableId: $table.attr('id')
+                        },
+                        success: function() {
+                            $table.attr('data-last-sort', sortString);
+                        }
+                    })
+
+                }
+            }
+
+        }
+
     });
 
 </script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>

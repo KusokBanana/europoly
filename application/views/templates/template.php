@@ -153,6 +153,7 @@
 <!-- BEGIN THEME LAYOUT SCRIPTS -->
 <script src="assets/layouts/layout6/scripts/layout.min.js" type="text/javascript"></script>
 <script src="assets/layouts/global/scripts/quick-sidebar.min.js" type="text/javascript"></script>
+<script src="assets/global/plugins/jquery-sortable/jquery-ui.js" type="text/javascript"></script>
 <script src="assets/global/plugins/jquery-editable-select-master/dist/jquery-editable-select.min.js"
         type="text/javascript"></script>
 <!-- END THEME LAYOUT SCRIPTS -->

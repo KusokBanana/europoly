@@ -59,4 +59,16 @@ class ControllerLogin extends Controller
             echo $this->model->saveOrderColumns($columns, $userId, $tableId);
         }
     }
+    function action_save_sort_columns()
+    {
+        if (isset($_POST["sort"])) {
+            $sort = $_POST["sort"];
+            $tableId = $_POST['tableId'];
+
+            $currentSort = isset($_COOKIE['sort_columns']) ? $_COOKIE['sort_columns'] : [];
+            $currentSort[$tableId] = $sort;
+//            setcookie('sort_columns', $currentSort);
+            $_SESSION['sort_columns'] = $currentSort;
+        }
+    }
 }
