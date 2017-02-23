@@ -20,7 +20,7 @@ class ControllerSent_to_logist extends Controller
         $this->view->tableName = $this->model->tableName;
         $this->view->column_names = $this->model->getColumns($this->model->managers_orders_column_names,
             $this->page, $this->model->tableName, true);
-        $this->view->originalColumns = $this->model->managers_orders_column_names;
+        $this->view->originalColumns = $roles->returnModelNames($this->model->managers_orders_column_names, $this->page);
 
         $cache = new Cache();
         $selectsCache = $cache->read('sent_to_logist');

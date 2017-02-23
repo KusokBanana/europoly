@@ -31,7 +31,7 @@ class ControllerWarehouse extends Controller
 
             $this->view->column_names = $this->model->getColumns($this->model->product_warehouses_column_names,
                 $this->page, $this->model->tableName, true);
-            $this->view->originalColumns = $this->model->product_warehouses_column_names;
+            $this->view->originalColumns = $roles->returnModelNames($this->model->product_warehouses_column_names, $this->page);
 
             if ($id == 0) {
                 $this->view->title = "All";

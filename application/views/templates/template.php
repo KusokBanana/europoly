@@ -103,7 +103,8 @@
                                 $url = '#';
                                 if (ROLE_SALES_MANAGER == $userRole) {
                                     $url = '/sales_manager?id=' . $_SESSION['user_id'];
-                                } elseif ($userRole == ROLE_WAREHOUSE || $userRole == ROLE_ACCOUNTANT) {
+                                } else {
+//                                } elseif ($userRole == ROLE_WAREHOUSE || $userRole == ROLE_ACCOUNTANT || $userRole == ROLE_ADMIN) {
                                     $url = '/support?id=' . $_SESSION['user_id'];
                                 }
                                 ?>
@@ -161,13 +162,35 @@
 <script>
     $(document).ready(function () {
      $("#menu-toggler").click(function(){
-        if ($("#sidebar").is(":visible")) {
-            $("#sidebar").hide();
-            $(".page-fixed-main-content").css({'margin-left':'0px'});
+         var sidebar = $('#sidebar');
+         var isOpened = sidebar.is(':visible');
+         var mainBlock = $(".page-fixed-main-content");
+
+         if (isOpened) {
+             sidebar.hide();
+             mainBlock.css({'margin-left':'0px'});
         } else {
-            $("#sidebar").show();
-            $(".page-fixed-main-content").css({'margin-left':'255px'});
+             sidebar.show();
+             mainBlock.css({'margin-left':'255px'});
         }
+
+         $.ajax({
+             url: '/login/hidden_sidebar',
+             type: "GET",
+             data: {
+                 visible: isOpened
+             }
+         });
+         var topScroll = $('.top-scroll');
+         if (topScroll.length) {
+             $.each(topScroll, function() {
+                 var scroll = $(this);
+                 var fake = scroll.find('.fake');
+                 var tableWrapper = scroll.next('div');
+                 scroll.width(tableWrapper.width());
+                 fake.width(tableWrapper.find('table').width());
+             })
+         }
      });
 
         addTopScroll();

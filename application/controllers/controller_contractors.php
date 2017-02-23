@@ -19,7 +19,8 @@ class ControllerContractors extends Controller
         $this->view->tableName = 'table_clients';
         $this->view->clients_column_names = $this->model->getColumns($this->model->client_column_names,
             $this->page, 'table_clients', true);
-        $this->view->originalColumns = $this->model->client_column_names;
+        $roles = new Roles();
+        $this->view->originalColumns = $roles->returnModelNames($this->model->client_column_names, $this->page);
 
         $this->view->managers = $this->model->getSalesManagersIdName();
         $this->view->commission_agents = $this->model->getCommissionAgentsIdName();

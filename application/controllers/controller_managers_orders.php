@@ -8,7 +8,7 @@ class ControllerManagers_orders extends Controller
         $this->model = new ModelManagers_orders();
     }
 
-    public $page = 'managers orders';
+    public $page = 'managersOrders';
 
     function action_index($action_param = null, $action_data = null)
     {
@@ -26,8 +26,8 @@ class ControllerManagers_orders extends Controller
         $this->view->column_names_reduced = $this->model->getColumns($this->model->managers_orders_reduced_column_names,
             $this->page, $this->model->tableNames[1], true);
 
-        $this->view->originalColumns = $this->model->managers_orders_column_names;
-        $this->view->originalColumnsReduced = $this->model->managers_orders_reduced_column_names;
+        $this->view->originalColumns = $roles->returnModelNames($this->model->managers_orders_column_names, $this->page);
+        $this->view->originalColumnsReduced = $roles->returnModelNames($this->model->managers_orders_reduced_column_names, $this->page);
 
         $cache = new Cache();
         $selectsCache = $cache->read('managers_orders_selects');

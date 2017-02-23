@@ -25,8 +25,9 @@ class ControllerShipment extends Controller
         $this->view->column_names_reduced = $this->model->getColumns($this->model->suppliers_orders_column_names_reduce,
             $this->page, $this->model->tableNames[1], true);
 
-        $this->view->originalColumns = $this->model->suppliers_orders_column_names;
-        $this->view->originalColumnsReduced = $this->model->suppliers_orders_column_names_reduce;
+        $roles = new Roles();
+        $this->view->originalColumns = $roles->returnModelNames($this->model->suppliers_orders_column_names, $this->page);
+        $this->view->originalColumnsReduced = $roles->returnModelNames($this->model->suppliers_orders_column_names_reduce, $this->page);
 
         //        $cache = new Cache();
 //        $selectsCache = $cache->read('suppliers_orders_selects');

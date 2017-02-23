@@ -46,7 +46,7 @@ class Roles {
         return false;
     }
 
-    private $catalogueModelColumns = [25, 26, 27, 28];
+    private $catalogueModelColumns = [25, 26, 27, 28, 31, 32];
     private $suppliersOrdersModelColumns = [15, 16, 17, 18, 23, 24, 29];
     private $shipmentModelColumns = [16, 17, 18, 19, 25, 26, 30];
     private $suppliersOrderModelColumns = [4, 5];
@@ -61,21 +61,23 @@ class Roles {
         $columns = $this->columns;
         $modelColumnsClosed = $this->model . 'ModelColumns';
         $count = 0;
-        if (!empty($columns)) {
-            foreach ($columns as $key => $column) {
-                $dt = $column['dt'];
-                if (in_array($dt, $this->$modelColumnsClosed)) {
-                    unset($columns[$key]);
-                    $count++;
-                    continue;
+        if (isset($this->$modelColumnsClosed)) {
+            if (!empty($columns)) {
+                foreach ($columns as $key => $column) {
+                    $dt = $column['dt'];
+                    if (in_array($dt, $this->$modelColumnsClosed)) {
+                        unset($columns[$key]);
+                        $count++;
+                        continue;
+                    }
+                    if ($count) {
+                        $columns[$key]['dt'] = $dt - $count;
+                        continue;
+                    }
+                    $count = 0;
                 }
-                if ($count) {
-                    $columns[$key]['dt'] = $dt - $count;
-                    continue;
-                }
-                $count = 0;
+                $this->columns = array_values($columns);
             }
-            $this->columns = array_values($columns);
         }
         $this->columnsNamesAccess();
         return false;
@@ -91,16 +93,18 @@ class Roles {
         $names = $returnNames ? $returnNames : $this->names;
         $model = $model ? $model : $this->model;
         $modelColumnsClosed = $model . 'ModelColumns';
-        if (!empty($names)) {
-            foreach ($names as $key => $name) {
-                if (in_array($key, $this->$modelColumnsClosed)) {
-                    unset($names[$key]);
+        if (isset($this->$modelColumnsClosed)) {
+            if (!empty($names)) {
+                foreach ($names as $key => $name) {
+                    if (in_array($key, $this->$modelColumnsClosed)) {
+                        unset($names[$key]);
+                    }
                 }
-            }
-            if ($returnNames) {
-                return $names;
-            } else {
-                $this->names = array_values($names);
+                if ($returnNames) {
+                    return $names;
+                } else {
+                    $this->names = array_values($names);
+                }
             }
         }
     }
@@ -153,7 +157,7 @@ class Roles {
                 'catalogue' => true,
                 'clients' => true,
                 'client' => true,
-                'managers orders' => true,
+                'managersOrders' => true,
                 'order' => true,
                 'sales manager' => true,
                 'staff' => true,

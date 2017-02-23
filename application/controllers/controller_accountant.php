@@ -39,7 +39,8 @@ class ControllerAccountant extends Controller
         $this->view->tableName = $this->model->tableName;
         $this->view->column_names = $this->model->getColumns($this->model->payments_column_names,
             $this->page, $this->model->tableName, true);
-        $this->view->originalColumns = $this->model->payments_column_names;
+        $roles = new Roles();
+        $this->view->originalColumns = $roles->returnModelNames($this->model->payments_column_names, $this->page);
 
         $this->view->build('templates/template.php', 'accountant.php');
     }

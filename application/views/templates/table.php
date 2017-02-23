@@ -190,6 +190,7 @@ if ($hidden_by_default) {
             },
             colReorder: false
         });
+
         $table.on('draw.dt', function () {
             var tableConfirmBtn = $('.table-confirm-btn');
             if (tableConfirmBtn.length) {
@@ -199,10 +200,13 @@ if ($hidden_by_default) {
             }
             reOrderColumns();
         });
+
         $table.on( 'order.dt', function () {
             var order = table.order();
             saveColumnSort(order[0]);
         } );
+
+        // Link on entire cell, not on Anchor element
         $table.find('tbody').on('click', 'tr td:not(:first-child)', function (e) {
             var data = table.row($(this).closest('tr')).data();
             var target = e.target;
@@ -218,7 +222,7 @@ if ($hidden_by_default) {
                 }
             }
         });
-        // Позволяет не убегать за левый хидден x-editable окну
+        // X-editable don't run away from visible area
         $('table').on('click', '.x-editable.editable-click', function() {
             var popover = $(this).next('.popover.editable-container.editable-popup');
             var maxLeft = popover.closest('table').offset().left,
@@ -231,6 +235,7 @@ if ($hidden_by_default) {
             }
         });
 
+        // Write selected rows into table data
         $table.find('tbody').on('click', 'tr td:first-child', function (e) {
             var selectedRows = table.rows('.selected').data(),
                 ids = [];
@@ -269,6 +274,15 @@ if ($hidden_by_default) {
         columnChoose.on('change', 'input', function () {
             var column = table.column($(this).attr('data-column'));
             column.visible(!column.visible());
+
+            var topScroll = $('.top-scroll');
+            if (topScroll.length) {
+                var fake = topScroll.find('.fake');
+                var tableWrapper = topScroll.next('div');
+                topScroll.width(tableWrapper.width());
+                fake.width(tableWrapper.find('table').width());
+            }
+
             saveHiddenColumnsInCookie();
             });
 
@@ -350,8 +364,7 @@ if ($hidden_by_default) {
             })
         }
 
-        function getCategoryId()
-        {
+        function getCategoryId() {
             if (categoryTabsBlock.length && $category_column_id) {
                 var currentCategory = $table.attr('data-category');
                 if (currentCategory !== undefined) {
@@ -390,8 +403,7 @@ if ($hidden_by_default) {
         });
 
         // to filter values in selects
-        function filterSelectsValues(select)
-        {
+        function filterSelectsValues(select) {
             if (!select.hasClass('column-filter-select'))
                 return false;
             var editableSelects = $table.find('.es-input');
@@ -543,8 +555,8 @@ if ($hidden_by_default) {
             fixedHeader();
         }
 
-        function reOrderColumns()
-        {
+        // reorder columns in table
+        function reOrderColumns() {
             var columnsBlock = $('#'+$table.attr('id')+'_columns_choose.order-columns-block');
             const CANCEL_CLASS = 'order-columns-button-cancel';
             columnsBlock.on('click', '.order-columns-button-change', function() {

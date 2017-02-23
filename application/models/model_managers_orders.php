@@ -143,7 +143,7 @@ class ModelManagers_orders extends Model
             $this->whereCondition .= " AND orders.sales_manager_id = " . $_SESSION['user_id'];
         }
 
-        $columns = $this->getColumns($this->managers_orders_columns, 'managers orders', $this->tableNames[0]);
+        $columns = $this->getColumns($this->managers_orders_columns, 'managersOrders', $this->tableNames[0]);
 
         $this->sspComplex($this->managers_orders_table, "order_items.item_id",
             $columns, $input, null, $this->whereCondition);
@@ -156,7 +156,7 @@ class ModelManagers_orders extends Model
             $where = " orders.sales_manager_id = " . $_SESSION['user_id'];
         }
 
-        $columns = $this->getColumns($this->managers_orders_reduced_columns, 'managers orders', $this->tableNames[1]);
+        $columns = $this->getColumns($this->managers_orders_reduced_columns, 'managersOrders', $this->tableNames[1]);
 
         $this->sspComplex($this->managers_orders_table_reduce, "orders.order_id",
             $columns, $input, null, $where);

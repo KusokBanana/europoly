@@ -20,7 +20,7 @@ class ControllerClients extends Controller
         $this->view->column_names = $this->model->getColumns($this->model->client_column_names,
             $this->page, 'table_clients', true);
         $this->view->hidden_columns = $this->model->full_product_hidden_columns;
-        $this->view->originalColumns = $this->model->client_column_names;
+        $this->view->originalColumns = $roles->returnModelNames($this->model->client_column_names, $this->page);
 
 //        $this->view->column_names = $this->model->client_column_names;
         $this->view->managers = $this->model->getSalesManagersIdName();

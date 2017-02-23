@@ -21,7 +21,7 @@ class ControllerBrands extends Controller
         $this->view->tableName = $this->model->tableName;
         $this->view->column_names = $this->model->getColumns($this->model->columnNames,
             $this->page, $this->model->tableName, true);
-        $this->view->originalColumns = $this->model->columnNames;
+        $this->view->originalColumns = $roles->returnModelNames($this->model->columnNames, $this->page);
 
         $this->view->build('templates/template.php', 'brands.php');
     }
