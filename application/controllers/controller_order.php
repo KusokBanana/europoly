@@ -181,4 +181,15 @@ class ControllerOrder extends Controller
         }
     }
 
+    function action_print_payment()
+    {
+//        require dirname(__FILE__) . '/../classes/NumbersToStrings.php';
+//        echo NumbersToStrings::num2str(201300);
+        if (isset($_GET['order_id'])) {
+            $orderId = $_GET['order_id'];
+            $result = $this->model->printPayment($orderId);
+        }
+
+    }
+
 }

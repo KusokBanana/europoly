@@ -589,4 +589,11 @@ class ModelOrder extends Model
         $name = $this->getFirst("SELECT name FROM legal_entities WHERE legal_entity_id = $id");
         return isset($name['name']) ? $name['name'] : '';
     }
+
+    public function printPayment($orderId)
+    {
+
+
+
+    }
 }
