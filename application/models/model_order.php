@@ -23,7 +23,7 @@ class ModelOrder extends Model
                     IFNULL(CONCAT(products.surface, ', '), ''),
                     IFNULL(CONCAT(products.thickness, 'x', products.width, 'x', products.length), ''),
                 '</a>')"),
-            array('dt' => 2, 'db' => "IF(order_items.status_id > 2, 
+            array('dt' => 2, 'db' => "IF(order_items.status_id > ".HOLD.", 
                 CONCAT(order_items.amount, ' ', IFNULL(products.units, '')),
                 CONCAT('<a href=\"javascript:;\" class=\"x-editable x-amount\" data-pk=\"',
                     order_items.item_id,
@@ -49,13 +49,7 @@ class ModelOrder extends Model
                                             ), 'n/a'), '')"),
             array('dt' => 5, 'db' => "IFNULL(CAST(order_items.purchase_price as decimal(64, 2)), '')"),
             array('dt' => 6, 'db' => "IFNULL(CAST(order_items.purchase_price * order_items.amount as decimal(64, 2)), '')"),
-            array('dt' => 7, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-sell-price\" data-pk=\"',
-                order_items.item_id,
-                '\" data-name=\"sell_price\" data-value=\"',
-                IFNULL(CAST(order_items.sell_price as decimal(64, 2)), ''),
-                '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Sell Price, %\">',
-                    IFNULL(CAST(order_items.sell_price as decimal(64, 2)), ''),
-                '</a>')"),
+            array('dt' => 7, 'db' => "IFNULL(CAST(order_items.sell_price as decimal(64, 2)), '')"),
             array('dt' => 8, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-discount_rate\" data-pk=\"',
                 order_items.item_id,
                 '\" data-name=\"discount_rate\" data-value=\"',
@@ -161,6 +155,11 @@ class ModelOrder extends Model
         $where = "order_items.manager_order_id = $order_id";
 
         $roles = new Roles();
+
+        if ($_SESSION['perm'] < ADMIN_PERM) {
+            $this->unLinkStrings($columns, [13, 14, 15]);
+        }
+
         $columns = $roles->returnModelColumns($columns, 'order');
 
         return $this->sspComplex($table, "order_items.item_id", $columns, $input, null, $where);
@@ -588,6 +587,33 @@ class ModelOrder extends Model
             return '';
         $name = $this->getFirst("SELECT name FROM legal_entities WHERE legal_entity_id = $id");
         return isset($name['name']) ? $name['name'] : '';
+    }
+
+    public function validateItemField($itemId, $name, $value)
+    {
+
+        $item = $this->getFirst("SELECT * FROM order_items WHERE item_id = $itemId");
+        switch ($name) {
+            case 'reduced-price':
+                $maxPrice = $item['sell_price'] + $item['sell_price'] * MANAGER_MAX_REDUCED_PRICE_INPUT / 100;
+                if ($maxPrice >= $value)
+                    return true;
+                break;
+            case 'sell-value':
+                $sellValue = ($item['sell_price'] *
+                        (100 - $item['discount_rate'])) * $item['amount']/100;
+                $maxPrice = $sellValue + $sellValue * MANAGER_MAX_SELL_VALUE_INPUT / 100;
+                if ($maxPrice >= $value)
+                    return true;
+                 break;
+            case 'commission_agent_bonus':
+                $reducedPrice = $item['sell_price'] * (100 - $item['discount_rate'])/100;
+                $maxPrice = $reducedPrice + $reducedPrice * MANAGER_MAX_COMMISSION_AGENT_BONUS_INPUT / 100;
+                if ($maxPrice >= $value)
+                    return true;
+                break;
+        }
+        return false;
     }
 
     public function printPayment($orderId)

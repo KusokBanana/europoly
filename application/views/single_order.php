@@ -390,8 +390,7 @@ require_once 'modals/cancel_order.php';
             $('.table-confirm-btn').confirmation({
                 rootSelector: '.table-confirm-btn'
             });
-            $('.x-amount, .x-number_of_packs, .x-manager_bonus_rate, .x-sell-price, ' +
-                '.x-commission_rate, .x-commission_agent_bonus, .x-manager_bonus').editable({
+            $('.x-amount, .x-number_of_packs, .x-manager_bonus_rate, .x-manager_bonus').editable({
                 type: "number",
                 min: 0,
                 step: 0.01,
@@ -400,20 +399,62 @@ require_once 'modals/cancel_order.php';
                     location.reload();
                 }
             });
-            <?php if ($this->client['type'] != 'Dealer' || $_SESSION["user_role"] == 'admin'): ?>
+
+            $('.x-sell-price, .x-commission_agent_bonus').editable({
+                type: "number",
+                min: 0,
+                step: 0.01,
+                inputclass: 'form-control input-medium',
+                success: function () {
+                    location.reload();
+                },
+                validate: function (value) {
+                    <?php if ($_SESSION['perm'] < ADMIN_PERM): ?>
+                        var itemId = $(this).attr('data-pk');
+                        var name = $(this).attr('data-name');
+                        var result = true;
+                            $.ajax({
+                                url: '/order/validate_item_field',
+                                type: "GET",
+                                data: {
+                                    item_id: itemId,
+                                    name: name,
+                                    value: value
+                                },
+                                async: false,
+                                success: function(data) {
+                                    result = data;
+                                }
+                            });
+                        return result ? '' : 'Invalid Value';
+                    <?php endif; ?>
+                }
+            });
+
+            $('.x-commission_rate').editable({
+                type: "number",
+                min: 0,
+                <?php if ($_SESSION["perm"] < ADMIN_PERM): ?>
+                max: <?= MANAGER_MAX_COMMISSION_RATE_INPUT ?>,
+                <?php endif; ?>
+                step: 0.01,
+                inputclass: 'form-control input-medium',
+                success: function () {
+                    location.reload();
+                }
+            });
             $('.x-discount_rate').editable({
                 type: "number",
                 min: 0,
-                <?php if ($_SESSION["user_role"] != 'admin'): ?>
-                max: 10,
-                <?php endif ?>
+                <?php if ($_SESSION["perm"] < ADMIN_PERM): ?>
+                max: <?= MANAGER_MAX_DISCOUNT_RATE_INPUT ?>,
+                <?php endif; ?>
                 step: 0.01,
                 inputclass: 'form-control input-medium',
                 success: function () {
                     location.reload();
                 }
             });
-            <?php endif ?>
             $('.x-item_status').editable({
                 type: "select",
                 inputclass: 'form-control input-medium',

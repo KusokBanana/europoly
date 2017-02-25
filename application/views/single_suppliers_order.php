@@ -140,7 +140,11 @@
                                                     <th>Sum</th>
                                                     <th>Currency</th>
                                                     <th>Direction</th>
+                                                    <th>Currency Rate</th>
+                                                    <th>Sum in EURO</th>
                                                     <th>Purpose of Payment</th>
+                                                    <th>Article of Expense</th>
+                                                    <th>Category of Expense</th>
                                                     <th>Responsible Person</th>
                                                     <th>Status</th>
                                                 </tr>
@@ -334,7 +338,7 @@
                     },
                     dom: '<t>ip',
                     columnDefs: [{
-                        targets: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+                        targets: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
                         searchable: false,
                         orderable: false
                     }, {
@@ -342,6 +346,28 @@
                         visible: false,
                         searchable: false
                     }]
+                });
+
+                $table_payments.on('draw', function() {
+                    var contractors = $('table').find('.change-me-contractor');
+                    $.each(contractors, function() {
+                        if ($(this).attr('data-type') && $(this).text()) {
+                            var string = $(this).attr('data-type') + '.' + $(this).text();
+                            var that = $(this);
+                            $.ajax({
+                                url: '/order/change_contractor_id_to_name',
+                                data: {
+                                    tableAndId: string
+                                },
+                                type: "GET",
+                                success: function(data) {
+                                    if (data) {
+                                        that.text(data);
+                                    }
+                                }
+                            })
+                        }
+                    })
                 });
 
                 $table_order_items.find('tbody').on('click', 'tr td', function (e) {

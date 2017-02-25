@@ -181,6 +181,18 @@ class ControllerOrder extends Controller
         }
     }
 
+    function action_validate_item_field()
+    {
+
+        $itemId = isset($_GET['item_id']) ? $_GET['item_id'] : false;
+        $fieldName = isset($_GET['name']) ? $_GET['name'] : false;
+        $value = isset($_GET['value']) ? $_GET['value'] : false;
+        if ($itemId && $fieldName && $value) {
+            echo $this->model->validateItemField($itemId, $fieldName, $value);
+        }
+
+    }
+
     function action_print_payment()
     {
 //        require dirname(__FILE__) . '/../classes/NumbersToStrings.php';
