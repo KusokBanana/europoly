@@ -16,10 +16,8 @@ class ControllerWarehouse extends Controller
         $this->getAccess($this->page, 'v');
         $roles = new Roles();
         $this->view->access = $roles->returnAccessAbilities($this->page, 'ch');
-        $this->view->full_product_column_names = $roles->returnModelNames($this->model->full_product_column_names, 'catalogue');
-        $this->view->full_product_hidden_columns = $this->model->full_product_hidden_columns;
-
         $this->view->warehouses = $this->model->getWarehousesIdNames();
+
         if (isset($_GET["id"])) {
             $id = intval($_GET["id"]);
             $this->view->prices = $this->model->getPrices($_GET["id"]);
@@ -32,6 +30,11 @@ class ControllerWarehouse extends Controller
             $this->view->column_names = $this->model->getColumns($this->model->product_warehouses_column_names,
                 $this->page, $this->model->tableName, true);
             $this->view->originalColumns = $roles->returnModelNames($this->model->product_warehouses_column_names, $this->page);
+
+            $this->view->products_column_names = $this->model->getColumns($this->model->full_product_column_names,
+                $this->page, 'table_catalogue', true);
+            $this->view->products_hidden_columns = $this->model->full_product_hidden_columns;
+            $this->view->products_originalColumns = $roles->returnModelNames($this->model->full_product_column_names, $this->page);
 
             if ($id == 0) {
                 $this->view->title = "All";
@@ -66,12 +69,17 @@ class ControllerWarehouse extends Controller
     function action_add_product()
     {
         $this->getAccess($this->page, 'ch');
-        $this->model->addProductsWarehouse(
+        $docName = $this->model->addProductsWarehouse(
             $this->escape_and_empty_to_null($_POST['product_ids']),
             $this->escape_and_empty_to_null($_POST['warehouse_id']),
             $this->escape_and_empty_to_null($_POST['amount']),
             $this->escape_and_empty_to_null($_POST['buy_price']));
-        header("Location: /warehouse?id=" . $_POST['warehouse_id']);
+        $url = "Location: /warehouse?id=" . $_POST['warehouse_id'];
+        $roles = new Roles();
+        if ($roles->getPageAccessAbilities('warehouse')['p']) {
+            $url .= '&documentPath=' . $docName;
+        }
+        header($url);
     }
 
     function action_change_item_field()

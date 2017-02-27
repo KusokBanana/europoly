@@ -267,4 +267,38 @@ class ModelSuppliers_order extends ModelOrder
         }
     }
 
+    public function printDoc($orderId, $type = '')
+    {
+
+        $orderItems = $this->getAssoc("SELECT * FROM order_items WHERE supplier_order_id = $orderId");
+        $fileName = 'supplier';
+
+        if (!empty($orderItems)) {
+            $array = $this->getProductsDataArrayForDocPrint($orderItems);
+
+            $products = $array['products'];
+            $values = $array['values'];
+
+            require dirname(__FILE__) . "/../../assets/PHPWord_CloneRow-master/PHPWord.php";
+            $phpWord =  new PHPWord();
+            $docFile = dirname(__FILE__) . "/../../docs/templates/$fileName.docx";
+
+            $order = $this->getFirst("SELECT * FROM suppliers_orders WHERE order_id = $orderId");
+            $values['order_id'] = $orderId;
+            $values['date'] = date('Y-m-d', strtotime($order['supplier_date_of_order']));
+
+            $templateProcessor = $phpWord->loadTemplate($docFile);
+
+            $templateProcessor->cloneRow('TBL', $products);
+            foreach ($values as $key => $value) {
+                $templateProcessor->setValue($key, $value);
+            }
+
+            $templateProcessor->save(dirname(__FILE__) . "/../../docs/ready/$fileName.docx");
+
+            return "/docs/ready/$fileName.docx";
+        }
+
+    }
+
 }

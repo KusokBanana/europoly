@@ -16,9 +16,10 @@
                         'ajax' => [
                             'url' => "/catalogue/dt"
                         ],
-                        'column_names' => $this->full_product_column_names,
-                        'hidden_by_default' => $this->full_product_hidden_columns,
-                        'click_url' => "#"
+                        'column_names' => $this->products_column_names,
+                        'hidden_by_default' => $this->products_hidden_columns,
+                        'click_url' => "#",
+                        'originalColumns' => $this->products_originalColumns
                     ];
                     include 'application/views/templates/table.php'
                     ?>

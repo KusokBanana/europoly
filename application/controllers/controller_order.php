@@ -20,9 +20,11 @@ class ControllerOrder extends Controller
             $this->view->sales_manager = $this->model->getUser($this->view->order["sales_manager_id"]);
             $this->view->commission_agent = $this->model->getClient($this->view->order["commission_agent_id"]);
             $this->view->title = 'Order #' . $this->view->order['order_id'] . ' / ' . $this->view->order['order_items_count'];
+
             $roles = new Roles();
             $this->view->full_product_column_names = $roles->returnModelNames($this->model->full_product_column_names, 'catalogue');
             $this->view->column_names = $roles->returnModelNames($this->model->order_columns_names, 'order');
+            $this->view->access = $roles->getPageAccessAbilities('order');
 
             $this->view->full_product_hidden_columns = $this->model->full_product_hidden_columns;
             $this->view->managers = $this->model->getSalesManagersIdName();
@@ -183,25 +185,22 @@ class ControllerOrder extends Controller
 
     function action_validate_item_field()
     {
-
         $itemId = isset($_GET['item_id']) ? $_GET['item_id'] : false;
         $fieldName = isset($_GET['name']) ? $_GET['name'] : false;
         $value = isset($_GET['value']) ? $_GET['value'] : false;
         if ($itemId && $fieldName && $value) {
             echo $this->model->validateItemField($itemId, $fieldName, $value);
         }
-
     }
 
     function action_print_payment()
     {
-//        require dirname(__FILE__) . '/../classes/NumbersToStrings.php';
-//        echo NumbersToStrings::num2str(201300);
         if (isset($_GET['order_id'])) {
             $orderId = $_GET['order_id'];
-            $result = $this->model->printPayment($orderId);
+            $type = $_GET['type'];
+            $result = $this->model->printDoc($orderId, $type);
+            echo $result;
         }
-
     }
 
 }

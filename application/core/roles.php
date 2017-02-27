@@ -166,6 +166,9 @@ class Roles {
                 'suppliersOrders' => true,
                 'warehouse' => true,
                 'sentToLogist' => true,
+            ],
+            'p' => [ // print
+                'order' => true
             ]
         ],
         ROLE_ACCOUNTANT => [
@@ -197,5 +200,39 @@ class Roles {
             ]
         ]
     ];
+
+    private $actions = ['ch', 'd', 'v', 'p'];
+
+    public function getPageAccessAbilities($page)
+    {
+//        $this->permissions = (isset($_SESSION['perm']) && $_SESSION['perm']) ? $_SESSION['perm'] : 0;
+        $role = (isset($_SESSION['user_role']) && $_SESSION['user_role']) ? $_SESSION['user_role'] : 0;
+        $this->page = $page;
+        $accessAbilities = [];
+        if ($page) {
+            if ($role == ROLE_ADMIN) {
+                foreach ($this->actions as $key => $val) {
+                    $accessAbilities[$val] = true;
+                }
+            } else {
+                $abilities = $this->permissionsAccess[$role];
+                if (!empty($abilities)) {
+                    foreach ($abilities as $action => $arrayPage) {
+                        if (isset($arrayPage[$page]) && $arrayPage[$page]) {
+                            $accessAbilities[$action] = true;
+                        }
+                    }
+                    if (count($accessAbilities) < count($this->actions)) {
+                        foreach ($this->actions as $val) {
+                            if (!isset($accessAbilities[$val])) {
+                                $accessAbilities[$val] = false;
+                            }
+                        }
+                    }
+                }
+            }
+            return $accessAbilities;
+        }
+    }
 
 }

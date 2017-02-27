@@ -229,5 +229,12 @@ if ($this->id != 0) {
                 source: warehouses
             });
         });
+        <?php if (isset($_GET['documentPath']) && $_GET['documentPath']): ?>
+            var path = '<?= $_GET['documentPath']; ?>';
+            location.href = path;
+            var re = new RegExp('(\\?|&)documentPath=[^&]+','g');
+            var url = location.href.replace(re,'');
+            history.pushState({}, '', url);
+        <?php endif; ?>
     });
 </script>

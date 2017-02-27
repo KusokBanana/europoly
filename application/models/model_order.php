@@ -607,8 +607,9 @@ class ModelOrder extends Model
                     return true;
                  break;
             case 'commission_agent_bonus':
-                $reducedPrice = $item['sell_price'] * (100 - $item['discount_rate'])/100;
-                $maxPrice = $reducedPrice + $reducedPrice * MANAGER_MAX_COMMISSION_AGENT_BONUS_INPUT / 100;
+                $sellValue = ($item['sell_price'] *
+                        (100 - $item['discount_rate'])) * $item['amount']/100;
+                $maxPrice = $sellValue * MANAGER_MAX_COMMISSION_AGENT_BONUS_INPUT / 100;
                 if ($maxPrice >= $value)
                     return true;
                 break;
@@ -616,10 +617,48 @@ class ModelOrder extends Model
         return false;
     }
 
-    public function printPayment($orderId)
+    public function printDoc($orderId, $type)
     {
+        $orderItems = $this->getAssoc("SELECT * FROM order_items WHERE manager_order_id = $orderId");
 
+        switch ($type) {
+            case 'payment':
+                $fileName = 'payment';
+                break;
+            case 'order':
+                $fileName = 'order';
+                break;
+            case 'return':
+                $fileName = 'return';
+                break;
+        }
 
+        if (!empty($orderItems)) {
 
+            $multi = ($type == 'return') ? true : false;
+            $array = $this->getProductsDataArrayForDocPrint($orderItems, $multi);
+
+            $products = $array['products'];
+            $values = $array['values'];
+
+            require dirname(__FILE__) . "/../../assets/PHPWord_CloneRow-master/PHPWord.php";
+            $phpWord =  new PHPWord();
+            $docFile = dirname(__FILE__) . "/../../docs/templates/$fileName.docx";
+
+            $order = $this->getFirst("SELECT * FROM orders WHERE order_id = $orderId");
+            $values['order_id'] = $orderId;
+            $values['date'] = date('Y-m-d', strtotime($order['start_date']));
+
+            $templateProcessor = $phpWord->loadTemplate($docFile);
+
+            $templateProcessor->cloneRow('TBL', $products);
+            foreach ($values as $key => $value) {
+                $templateProcessor->setValue($key, $value);
+            }
+
+            $templateProcessor->save(dirname(__FILE__) . "/../../docs/ready/$fileName.docx");
+
+            return "/docs/ready/$fileName.docx";
+        }
     }
 }

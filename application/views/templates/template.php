@@ -265,6 +265,19 @@
                 addScroll($('body').find('.table-scrollable').find('table'));
             }
         }
+
+        $('.print-btn').on('click', function(e) {
+            e.preventDefault();
+            var btn = $(this);
+            $.ajax({
+                url: btn.attr('href'),
+                success: function(data) {
+                    if (data) {
+                        location.href = data;
+                    }
+                }
+            })
+        })
 });
 
 </script>

@@ -43,8 +43,7 @@ class ControllerTruck extends Controller
     function action_put_to_the_warehouse()
     {
         $this->getAccess('truck', 'ch');
-        $this->model->putToTheWarehouse($_GET['truck_id']);
-        header("Location: " . $_SERVER['HTTP_REFERER']);
+        echo $this->model->putToTheWarehouse($_GET['truck_id']);
     }
 
     function action_put_item_to_warehouse()

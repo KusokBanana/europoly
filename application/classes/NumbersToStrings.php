@@ -7,7 +7,7 @@ class NumbersToStrings {
      * @author runcore
      * @uses morph(...)
      */
-    public static function num2str($num) {
+    public static function num2str($num, $currency = 'RUB') {
         $nul='ноль';
         $ten=array(
             array('','один','два','три','четыре','пять','шесть','семь', 'восемь','девять'),
@@ -17,8 +17,8 @@ class NumbersToStrings {
         $tens=array(2=>'двадцать','тридцать','сорок','пятьдесят','шестьдесят','семьдесят' ,'восемьдесят','девяносто');
         $hundred=array('','сто','двести','триста','четыреста','пятьсот','шестьсот', 'семьсот','восемьсот','девятьсот');
         $unit=array( // Units
-            array('копейка' ,'копейки' ,'копеек',	 1),
-            array('рубль'   ,'рубля'   ,'рублей'    ,0),
+            self::getCurrencyArray($currency)[0],
+            self::getCurrencyArray($currency)[1],
             array('тысяча'  ,'тысячи'  ,'тысяч'     ,1),
             array('миллион' ,'миллиона','миллионов' ,0),
             array('миллиард','милиарда','миллиардов',0),
@@ -57,5 +57,21 @@ class NumbersToStrings {
         if ($n>1 && $n<5) return $f2;
         if ($n==1) return $f1;
         return $f5;
+    }
+
+    private static function getCurrencyArray($currency)
+    {
+        switch ($currency) {
+            case 'RUB':
+                return [
+                    array('копейка' ,'копейки' ,'копеек',	 1),
+                    array('рубль'   ,'рубля'   ,'рублей'    ,0)
+                ];
+            case 'EUR':
+                return [
+                    array('цент' ,'цента' ,'центов',	 1),
+                    array('евро'   ,'евро'   ,'евро'    ,0)
+                ];
+        }
     }
 }

@@ -228,7 +228,36 @@ class ModelTruck extends ModelOrder
         $truckItems = $this->getAssoc("SELECT * FROM order_items WHERE truck_id = $truckId");
         foreach ($truckItems as $truckItem) {
             if ($truckItem['warehouse_arrival_date'] == null)
-                $this->putItemToWarehouse($truckItem['truck_item_id']);
+                $this->putItemToWarehouse($truckItem['item_id']);
+        }
+        return $this->printDoc($truckId);
+    }
+
+    public function printDoc($truckId, $type = '')
+    {
+        $truckItems = $this->getAssoc("SELECT * FROM order_items WHERE truck_id = $truckId");
+        $fileName = 'truck_to_warehouse';
+
+        if (!empty($truckItems)) {
+            $array = $this->getProductsDataArrayForDocPrint($truckItems, true);
+
+            $products = $array['products'];
+            $values = $array['values'];
+
+            require dirname(__FILE__) . "/../../assets/PHPWord_CloneRow-master/PHPWord.php";
+            $phpWord =  new PHPWord();
+            $docFile = dirname(__FILE__) . "/../../docs/templates/$fileName.docx";
+
+            $templateProcessor = $phpWord->loadTemplate($docFile);
+
+            $templateProcessor->cloneRow('TBL', $products);
+            foreach ($values as $key => $value) {
+                $templateProcessor->setValue($key, $value);
+            }
+
+            $templateProcessor->save(dirname(__FILE__) . "/../../docs/ready/$fileName.docx");
+
+            return "/docs/ready/$fileName.docx";
         }
     }
 

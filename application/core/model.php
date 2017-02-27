@@ -409,7 +409,169 @@ abstract class Model extends mysqli
                 return $d;
             };
         }
-
     }
 
+    protected function getProductName($productId, $productArray = [], $isMulti = false)
+    {
+        if (!empty($productArray))
+            $product = $productArray;
+        else
+            $product = $this->getFirst("SELECT * FROM products WHERE product_id = $productId");
+
+        $name = [];
+        $enName = [];
+        $rusOrderItem = $this->getFirst("SELECT * FROM nls_products WHERE product_id = $productId");
+
+        if ($brandId = $product['brand_id']) {
+            $brand = $this->getFirst("SELECT name FROM brands WHERE brand_id = $brandId");
+            if ($brand) {
+                $rusBrand = $this->getFirst("SELECT name FROM nls_brands WHERE brand_id = $brandId");
+                $brandName = ($rusBrand && $rusBrand['name']) ? $rusBrand['name'] :
+                    ($brand['name'] ? $brand['name'] : '');
+                if ($brandName)
+                    $name[] = $brandName;
+                if ($brand['name'])
+                    $enName[] = $brand['name'];
+            }
+
+        }
+
+        $collection = $rusOrderItem['collection'] ? $rusOrderItem['collection'] : $product['collection'];
+        if ($collection)
+            $name[] = $collection;
+        if ($product['collection'])
+            $enName[] = $product['collection'];
+
+        if ($woodId = $product['wood_id']) {
+            $wood = $this->getFirst("SELECT * FROM wood WHERE wood_id = $woodId");
+            if ($wood) {
+                $rusWood = $this->getFirst("SELECT value FROM nls_resources 
+                          WHERE nls_resource_id = ${wood['nls_resource_id']}");
+                $woodName = ($rusWood && $rusWood['value']) ? $rusWood['value'] : $wood['name'];
+                if ($woodName)
+                    $name[] = $woodName;
+                if ($wood['name'])
+                    $enName[] = $wood['name'];
+            }
+        }
+        if ($gradingId = $product['grading_id']) {
+            $grading = $this->getFirst("SELECT * FROM grading WHERE grading_id = $gradingId");
+            if ($grading) {
+                $rusGrading = $this->getFirst("SELECT value FROM nls_resources
+                          WHERE nls_resource_id = ${grading['nls_resource_id']}");
+                $gradingName = ($rusGrading && $rusGrading['value']) ? $rusGrading['value'] : $grading['name'];
+                if ($gradingName)
+                    $name[] = $gradingName;
+                if ($grading['name'])
+                    $enName[] = $grading['name'];
+            }
+        }
+        if ($colorId = $product['color_id']) {
+            $color = $this->getFirst("SELECT * FROM colors WHERE color_id = $colorId");
+            if ($color) {
+                $rusColor = $this->getFirst("SELECT value FROM nls_resources WHERE
+                          nls_resource_id = ${color['nls_resource_id']}");
+                $colorName = ($rusColor && $rusColor['value']) ? $rusColor['value'] : $color['name'];
+                if ($colorName)
+                    $name[] = $colorName;
+                if ($color['name'])
+                    $enName[] = $color['name'];
+            }
+        }
+        $texture = $rusOrderItem['texture'] ? $rusOrderItem['texture'] : $product['texture'];
+        if ($texture)
+            $name[] = $texture;
+        if ($product['texture'])
+            $enName[] = $product['texture'];
+
+        $surface = $rusOrderItem['surface'] ? $rusOrderItem['surface'] : $product['surface'];
+        if ($surface)
+            $name[] = $surface;
+        if ($product['surface'])
+            $enName[] = $product['surface'];
+
+        $size = '';
+        if ($thickness = $product['thickness'])
+            $size .= $thickness;
+        if ($width = $product['width']) {
+            if ($size)
+                $size .= 'x';
+            $size .= $width;
+        }
+        if ($length = $product['length']) {
+            if ($size)
+                $size .= 'x';
+            $size .= $length;
+        }
+
+        if ($size) {
+            $name[] = $size;
+            $enName[] = $size;
+        }
+        if (!$isMulti)
+            return implode(', ', $name);
+        else
+            return [
+                'en' => implode(', ', $enName),
+                'rus' => implode(', ', $name)
+            ];
+    }
+
+    protected function getProductsDataArrayForDocPrint($items, $multi_lang_name = false)
+    {
+        $values = [
+            'sum' => 0,
+            'currency' => 'EUR',
+            'amount' => 0,
+            'total' => 0,
+            'total_weight' => 0,
+            'packs_number_total' => 0
+        ];
+        $products = [];
+
+        foreach ($items as $id => $orderItem) {
+            $id++;
+            $productId = $orderItem['product_id'];
+            $product = $this->getFirst("SELECT * FROM products WHERE product_id = $productId");
+            $unitsRus = $this->getFirst("SELECT units FROM nls_products WHERE product_id = $productId");
+
+            $units = ($unitsRus && $unitsRus['units']) ? $unitsRus['units'] : $product['units'];
+            $reducedPrice = $orderItem['sell_price'] * (100 - $orderItem['discount_rate'])/100;
+            $sum = floatval($reducedPrice * $orderItem['amount']);
+
+            $products['id'][] = $id;
+            $products['article'][] = $product['article'];
+            $products['units'][] = $units;
+            $products['price'][] = round(floatval($reducedPrice), 2);
+            $products['sum'][] = round($sum, 2);
+            $products['pack_type'][] = $product['packing_type'];
+            $products['weight'][] = $product['weight'];
+            $products['amount'][] = round($orderItem['amount'], 2);
+            $products['packs_number'][] = round($orderItem['number_of_packs'], 2);
+            $products['production_date'][] = $orderItem['production_date'];
+
+            $values['total_packs_number'] += $orderItem['number_of_packs'];
+            $values['amount'] += $orderItem['amount'];
+            $values['total_weight'] += floatval($product['weight']);
+            $values['sum'] += $sum;
+            $values['total']++;
+
+            if ($multi_lang_name) {
+                $names = $this->getProductName($productId, $product, true);
+                $products['name'][] = $names['rus'];
+                $products['en_name'][] = $names['en'];
+            } else {
+                $products['name'][] = $this->getProductName($productId, $product);
+            }
+        }
+
+        $values['sum'] = round($values['sum'], 2);
+        require dirname(__FILE__) . '/../classes/NumbersToStrings.php';
+        $values['sum_string'] = NumbersToStrings::num2str($values['sum'], $values['currency']);
+        $values['total_weight'] = round($values['total_weight'], 2);
+        $values['total_packs_number'] = round($values['total_packs_number'], 2);
+        $values['amount'] = round($values['amount'], 2);
+
+        return ['products' => $products, 'values' => $values];
+    }
 }

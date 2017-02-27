@@ -85,9 +85,9 @@
                             <a class="btn btn-md blue hidden-print margin-15" onclick="javascript:window.print();">
                                 <i class="fa fa-print"></i> Print
                             </a>
-                            <a href="truck/put_to_the_warehouse?truck_id=<?= $this->order['id'] ?>"
-                               onclick="return confirm('Are you sure to put to the warehouse?')"
-                               class="btn btn-md blue">Put to the warehouse</a>
+                            <a data-href="/truck/put_to_the_warehouse?truck_id=<?= $this->order['id'] ?>"
+                               data-toggle="confirmation" data-singleton="true" data-popout="true"
+                               class="btn btn-md blue print-btn-truck">Put to the warehouse</a>
                         </div>
                     </form>
                 </div>
@@ -231,5 +231,20 @@
                 window.location.href = link.attr('href');
             }
         });
+            $('.print-btn-truck').confirmation({
+                singleton: true,
+                popout: true,
+                onConfirm: function () {
+                    var btn = $(this);
+                    $.ajax({
+                        url: btn.attr('data-href'),
+                        success: function(data) {
+                            if (data) {
+                                location.href = data;
+                            }
+                        }
+                    })
+                }
+            });
     });
 </script>

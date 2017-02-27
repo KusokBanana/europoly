@@ -44,10 +44,26 @@
                                 </span>
                             </div>
                             <div class="actions">
-                                <a class="btn green" href="javascript:;">
-                                    <i class="fa fa-print"></i>
-                                    <span class="hidden-xs"> Print </span>
-                                </a>
+                                <div class="btn-group">
+                                    <?php if ($this->access['p']): ?>
+                                        <button type="button" data-toggle="dropdown"
+                                                class="btn green dropdown-toggle">
+                                            <i class="fa fa-print"></i> Print
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="/order/print_payment?order_id=<?= $this->order['order_id'] .
+                                                '&type=payment' ?>"
+                                                   class="print-btn">Check for payment</a></li>
+                                            <li><a href="/order/print_payment?order_id=<?= $this->order['order_id'] .
+                                                '&type=order'?>"
+                                                   class="print-btn">Buyer's order</a></li>
+                                            <li><a href="/order/print_payment?order_id=<?= $this->order['order_id'] .
+                                                '&type=return'?>"
+                                                   class="print-btn">Return of goods</a></li>
+                                        </ul>
+                                    <?php endif; ?>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -205,7 +221,8 @@
                                             <i class="fa fa-cogs"></i>Items
                                         </div>
                                         <div class="actions">
-                                            <a href="javascript:;" class="btn btn-default btn-sm" data-toggle="modal" data-target="#modal_newOrderItem">
+                                            <a href="javascript:;" class="btn btn-default btn-sm"
+                                               data-toggle="modal" data-target="#modal_newOrderItem">
                                                 <i class="fa fa-plus"></i> Add new </a>
                                         </div>
                                     </div>

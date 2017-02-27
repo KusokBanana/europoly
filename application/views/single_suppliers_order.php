@@ -55,7 +55,8 @@
                                 <h3>Production Date:</h3>
                                 <ul class="list-unstyled">
                                     <li>
-                                        <strong> <?= $this->order['production_date'] ?></strong></li>
+                                        <strong> <?= $this->order['production_date'] ?></strong>
+                                    </li>
                                 </ul>
                             </div>
                             <div class="col-xs-4 invoice-block">
@@ -66,9 +67,16 @@
                                            href="javascript:;" data-toggle="modal" data-target="#modal_newOrderItem">
 											<i class="fa fa-plus"></i> Add item
                                         </a>
-										<a class="btn btn-md blue margin-bottom-5" onclick="javascript:window.print();"> Print
-											<i class="fa fa-print"></i>
-										</a>
+<!--										<a class="btn btn-md blue margin-bottom-5" onclick="javascript:window.print();"> Print-->
+<!--											<i class="fa fa-print"></i>-->
+<!--										</a>-->
+                                        <?php if ($this->access['p']): ?>
+                                            <a href="/suppliers_order/print?order_id=<?= $this->order['order_id'] ?>"
+                                               class="print-btn btn btn-md blue margin-bottom-5">
+                                                Print <i class="fa fa-print"></i>
+                                            </a>
+                                        <?php endif; ?>
+
                                         <a class="btn btn-md blue margin-bottom-5"
                                             href="javascript:;"
                                             onclick="return confirm('Are you sure to send order to Supplier?')">

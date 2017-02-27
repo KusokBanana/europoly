@@ -8,6 +8,8 @@ class ControllerSuppliers_order extends Controller
         $this->model = new ModelSuppliers_order();
     }
 
+    public $page = 'suppliers_order';
+
     function action_index($action_param = null, $action_data = null)
     {
         $this->getAccess('suppliers order', 'v');
@@ -17,6 +19,7 @@ class ControllerSuppliers_order extends Controller
         $this->view->title = "Supplier Order #".$this->view->order['order_id'];
         $roles = new Roles();
         $this->view->full_product_column_names = $roles->returnModelNames($this->model->full_product_column_names, 'catalogue');
+        $this->view->access = $roles->getPageAccessAbilities('suppliersOrder');
         $this->view->column_names = $roles->returnModelNames($this->model->suppliers_orders_column_names, 'suppliersOrder');
         $this->view->full_product_hidden_columns = $this->model->full_product_hidden_columns;
         $this->view->clients = $this->model->getClientsIdName();
@@ -105,6 +108,14 @@ class ControllerSuppliers_order extends Controller
             $this->model->deleteFromReserve($order_item_id);
             header("Location: " . $_SERVER['HTTP_REFERER']);
         }
+    }
 
+    function action_print()
+    {
+        if (isset($_GET['order_id'])) {
+            $orderId = $_GET['order_id'];
+            $result = $this->model->printDoc($orderId);
+            echo $result;
+        }
     }
 }

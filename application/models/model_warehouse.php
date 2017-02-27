@@ -209,9 +209,16 @@ class ModelWarehouse extends ModelManagers_orders
         $amount = $amount !== 'null' ? $amount : 0;
         $buy_price = $buy_price !== 'null' ? $buy_price : 0;
 
+        $itemIds = [];
+
         foreach ($product_ids as $product_id) {
-            $this->insert("INSERT INTO `order_items` (`product_id`, `warehouse_id`, `amount`, `buy_price`)
+            $itemIds[] = $this->insert("INSERT INTO `order_items` (`product_id`, `warehouse_id`, `amount`, `buy_price`)
                     VALUES ($product_id, $warehouse_id, $amount, $buy_price)");
+        }
+
+        $roles = new Roles();
+        if ($roles->getPageAccessAbilities('warehouse')['p']) {
+            return $this->printDoc($warehouse_id, $itemIds);
         }
 
 //        $existing_pw = $this->getFirst("SELECT *
@@ -235,6 +242,47 @@ class ModelWarehouse extends ModelManagers_orders
 //            return $this->insert("INSERT INTO `products_warehouses` (`product_id`, `warehouse_id`, `amount`, `buy_price`, `buy_and_taxes`, `sell_price`, `dealer_price`, `total_price`)
 //                    VALUES ($product_id, $warehouse_id, $amount, $buy_price, $buy_and_taxes, $sell_price, $dealer_price, $total_price)");
 //        }
+    }
+
+    public function printDoc($warehouseId, $items)
+    {
+        $fileName = 'warehouse';
+
+        $whereItems = join(',', $items);
+
+        $orderItems = $this->getAssoc("SELECT * FROM order_items WHERE warehouse_id = $warehouseId AND 
+          item_id IN ($whereItems)");
+
+        if (!empty($orderItems)) {
+
+            $array = $this->getProductsDataArrayForDocPrint($orderItems, true);
+
+            $products = $array['products'];
+            $values = $array['values'];
+
+            require dirname(__FILE__) . "/../../assets/PHPWord_CloneRow-master/PHPWord.php";
+            $phpWord =  new PHPWord();
+            $docFile = dirname(__FILE__) . "/../../docs/templates/$fileName.docx";
+
+//            $warehouse = $this->getFirst("SELECT * FROM warehouses WHERE warehouse_id = $warehouseId");
+            $values['date'] = date('d.m.Y');
+            $prodIds = [];
+            foreach ($orderItems as $orderItem) {
+                $prodIds[] = $orderItem['product_id'];
+            }
+            $values['product_id'] = join(', ', $prodIds);
+
+            $templateProcessor = $phpWord->loadTemplate($docFile);
+
+            $templateProcessor->cloneRow('TBL', $products);
+            foreach ($values as $key => $value) {
+                $templateProcessor->setValue($key, $value);
+            }
+
+            $templateProcessor->save(dirname(__FILE__) . "/../../docs/ready/$fileName.docx");
+
+            return "/docs/ready/$fileName.docx";
+        }
     }
 
     function getPrices($warehouse_id)
