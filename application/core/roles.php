@@ -197,6 +197,9 @@ class Roles {
                 'catalogue' => true,
                 'support' => true,
                 'warehouse' => true,
+            ],
+            'p' => [
+                'warehouse' => true,
             ]
         ]
     ];

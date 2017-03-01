@@ -15,7 +15,7 @@ class ControllerWarehouse extends Controller
     {
         $this->getAccess($this->page, 'v');
         $roles = new Roles();
-        $this->view->access = $roles->returnAccessAbilities($this->page, 'ch');
+        $this->view->access = $roles->getPageAccessAbilities($this->page);
         $this->view->warehouses = $this->model->getWarehousesIdNames();
 
         if (isset($_GET["id"])) {
@@ -96,6 +96,15 @@ class ControllerWarehouse extends Controller
             }
         } else {
             http_response_code(400);
+        }
+    }
+
+    function action_print_doc()
+    {
+        if (isset($_GET['warehouse_id'])) {
+            $warehouse_id = $_GET['warehouse_id'];
+            $result = $this->model->printDoc($warehouse_id, $this->model->where_issue, 'expects_issue');
+            echo $result;
         }
     }
 }

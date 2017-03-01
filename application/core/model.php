@@ -426,32 +426,30 @@ abstract class Model extends mysqli
             $brand = $this->getFirst("SELECT name FROM brands WHERE brand_id = $brandId");
             if ($brand) {
                 $rusBrand = $this->getFirst("SELECT name FROM nls_brands WHERE brand_id = $brandId");
-                $brandName = ($rusBrand && $rusBrand['name']) ? $rusBrand['name'] :
-                    ($brand['name'] ? $brand['name'] : '');
+                $brandName = ($rusBrand && $rusBrand['name']) ? $rusBrand['name'] : $brand['name'];
                 if ($brandName)
-                    $name[] = $brandName;
+                    $name[] = htmlspecialchars($brandName);
                 if ($brand['name'])
-                    $enName[] = $brand['name'];
+                    $enName[] = htmlspecialchars($brand['name']);
             }
-
         }
 
         $collection = $rusOrderItem['collection'] ? $rusOrderItem['collection'] : $product['collection'];
         if ($collection)
-            $name[] = $collection;
+            $name[] = htmlspecialchars($collection);
         if ($product['collection'])
-            $enName[] = $product['collection'];
+            $enName[] = htmlspecialchars($product['collection']);
 
         if ($woodId = $product['wood_id']) {
             $wood = $this->getFirst("SELECT * FROM wood WHERE wood_id = $woodId");
             if ($wood) {
-                $rusWood = $this->getFirst("SELECT value FROM nls_resources 
+                $rusWood = $this->getFirst("SELECT value FROM nls_resources
                           WHERE nls_resource_id = ${wood['nls_resource_id']}");
                 $woodName = ($rusWood && $rusWood['value']) ? $rusWood['value'] : $wood['name'];
                 if ($woodName)
-                    $name[] = $woodName;
+                    $name[] = htmlspecialchars($woodName);
                 if ($wood['name'])
-                    $enName[] = $wood['name'];
+                    $enName[] = htmlspecialchars($wood['name']);
             }
         }
         if ($gradingId = $product['grading_id']) {
@@ -461,9 +459,9 @@ abstract class Model extends mysqli
                           WHERE nls_resource_id = ${grading['nls_resource_id']}");
                 $gradingName = ($rusGrading && $rusGrading['value']) ? $rusGrading['value'] : $grading['name'];
                 if ($gradingName)
-                    $name[] = $gradingName;
+                    $name[] = htmlspecialchars($gradingName);
                 if ($grading['name'])
-                    $enName[] = $grading['name'];
+                    $enName[] = htmlspecialchars($grading['name']);
             }
         }
         if ($colorId = $product['color_id']) {
@@ -473,22 +471,22 @@ abstract class Model extends mysqli
                           nls_resource_id = ${color['nls_resource_id']}");
                 $colorName = ($rusColor && $rusColor['value']) ? $rusColor['value'] : $color['name'];
                 if ($colorName)
-                    $name[] = $colorName;
+                    $name[] = htmlspecialchars($colorName);
                 if ($color['name'])
-                    $enName[] = $color['name'];
+                    $enName[] = htmlspecialchars($color['name']);
             }
         }
         $texture = $rusOrderItem['texture'] ? $rusOrderItem['texture'] : $product['texture'];
         if ($texture)
-            $name[] = $texture;
+            $name[] = htmlspecialchars($texture);
         if ($product['texture'])
-            $enName[] = $product['texture'];
+            $enName[] = htmlspecialchars($product['texture']);
 
         $surface = $rusOrderItem['surface'] ? $rusOrderItem['surface'] : $product['surface'];
         if ($surface)
-            $name[] = $surface;
+            $name[] = htmlspecialchars($surface);
         if ($product['surface'])
-            $enName[] = $product['surface'];
+            $enName[] = htmlspecialchars($product['surface']);
 
         $size = '';
         if ($thickness = $product['thickness'])
@@ -505,8 +503,8 @@ abstract class Model extends mysqli
         }
 
         if ($size) {
-            $name[] = $size;
-            $enName[] = $size;
+            $name[] = htmlspecialchars($size);
+            $enName[] = htmlspecialchars($size);
         }
         if (!$isMulti)
             return implode(', ', $name);
@@ -525,7 +523,7 @@ abstract class Model extends mysqli
             'amount' => 0,
             'total' => 0,
             'total_weight' => 0,
-            'packs_number_total' => 0
+            'total_packs_number' => 0
         ];
         $products = [];
 
@@ -538,6 +536,7 @@ abstract class Model extends mysqli
             $units = ($unitsRus && $unitsRus['units']) ? $unitsRus['units'] : $product['units'];
             $reducedPrice = $orderItem['sell_price'] * (100 - $orderItem['discount_rate'])/100;
             $sum = floatval($reducedPrice * $orderItem['amount']);
+            $weight = (is_null($product['weight'])) ? 0 : $product['weight'];
 
             $products['id'][] = $id;
             $products['article'][] = $product['article'];
@@ -552,7 +551,7 @@ abstract class Model extends mysqli
 
             $values['total_packs_number'] += $orderItem['number_of_packs'];
             $values['amount'] += $orderItem['amount'];
-            $values['total_weight'] += floatval($product['weight']);
+            $values['total_weight'] += !is_null($product['weight']) ? floatval($weight) : 0;
             $values['sum'] += $sum;
             $values['total']++;
 

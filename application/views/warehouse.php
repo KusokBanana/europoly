@@ -129,7 +129,7 @@
                                     <div class="portlet-body">
                                         <?php
                                         $buttons = ($this->id) ? ['<button class="btn sbold green" data-toggle="modal" data-target="#modal_newProductWarehouse">Add New <i class="fa fa-plus"></i></button>'] : [];
-                                        if (!$this->access)
+                                        if (!$this->access['ch'])
                                             $buttons = [];
                                         $urlId = ($this->id) ? $this->warehouse['warehouse_id'] : 0;
                                         $table_data = [
@@ -154,8 +154,14 @@
                                     <div class="portlet-body">
                                         <div class="portlet-body">
                                             <?php
+                                            $printBtn = '<a href="/warehouse/print_doc?warehouse_id=' .
+                                                $this->id . '" class="print-btn btn btn-md blue margin-bottom-5">
+                                                    Print <i class="fa fa-print"></i>
+                                                </a>';
+                                            if (!$this->access['p'])
+                                                $printBtn = '';
                                             $table_data = [
-                                                'buttons' => $buttons,
+                                                'buttons' => array_merge($buttons, [$printBtn]),
                                                 'table_id' => "table_warehouses_products_issue",
                                                 'ajax' => [
                                                     'url' => "/warehouse/dt?warehouse_id=$urlId&type=issue",

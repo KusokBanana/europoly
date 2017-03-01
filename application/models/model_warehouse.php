@@ -122,6 +122,15 @@ class ModelWarehouse extends ModelManagers_orders
         'Reserve Period',
     ];
 
+    var $where = 'products_warehouses.manager_order_id IS NULL';
+
+    var $where_issue = '((products_warehouses.manager_order_id IS NOT NULL AND '.
+    'products_warehouses.reserve_since_date IS NULL) AND (products_warehouses.status_id = '.ON_STOCK.' OR '.
+    'products_warehouses.status_id = '.EXPECTS_ISSUE.'))';
+
+    var $where_reserve = '(products_warehouses.manager_order_id IS NOT NULL AND '.
+    'products_warehouses.reserve_since_date IS NOT NULL)';
+
     function getDTProductsForWarehouses($input, $warehouse_id = 0, $type)
     {
         if ($warehouse_id) {
@@ -131,16 +140,13 @@ class ModelWarehouse extends ModelManagers_orders
         }
         switch ($type) {
             case '':
-                $where = '(' . $where . ' AND products_warehouses.manager_order_id IS NULL)';
+                $where = '(' . $where . ' AND '. $this->where . ')';
                 break;
             case 'issue':
-                $where = '(' . $where . ' AND ((products_warehouses.manager_order_id IS NOT NULL AND '.
-                'products_warehouses.reserve_since_date IS NULL) AND (products_warehouses.status_id = '.ON_STOCK.' OR '.
-                'products_warehouses.status_id = '.EXPECTS_ISSUE.')))';
+                $where = '(' . $where . ' AND '. $this->where_issue . ')';
                 break;
             case 'reserve':
-                $where = '(' . $where . ' AND (products_warehouses.manager_order_id IS NOT NULL AND '.
-                'products_warehouses.reserve_since_date IS NOT NULL))';
+                $where = '(' . $where . ' AND ' . $this->where_reserve . ')';
                 break;
         }
 
@@ -218,7 +224,9 @@ class ModelWarehouse extends ModelManagers_orders
 
         $roles = new Roles();
         if ($roles->getPageAccessAbilities('warehouse')['p']) {
-            return $this->printDoc($warehouse_id, $itemIds);
+            $whereItems = join(',', $itemIds);
+            $where = "item_id IN ($whereItems)";
+            return $this->printDoc($warehouse_id, $where, 'warehouse');
         }
 
 //        $existing_pw = $this->getFirst("SELECT *
@@ -244,14 +252,14 @@ class ModelWarehouse extends ModelManagers_orders
 //        }
     }
 
-    public function printDoc($warehouseId, $items)
+    public function printDoc($warehouseId, $where, $type='')
     {
-        $fileName = 'warehouse';
+        $fileName = $type;
+        $whereFull = "warehouse_id = $warehouseId AND $where";
+        if (!$warehouseId)
+            $whereFull = "warehouse_id IS NOT NULL AND $where";
 
-        $whereItems = join(',', $items);
-
-        $orderItems = $this->getAssoc("SELECT * FROM order_items WHERE warehouse_id = $warehouseId AND 
-          item_id IN ($whereItems)");
+        $orderItems = $this->getAssoc("SELECT * FROM order_items products_warehouses WHERE $whereFull");
 
         if (!empty($orderItems)) {
 

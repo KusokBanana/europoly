@@ -14,7 +14,9 @@ class ControllerOrder extends Controller
 
         $this->view->order = $this->model->getOrder($_GET['id']);
 
-        if (($_SESSION["user_role"] == ROLE_SALES_MANAGER && $this->view->order['sales_manager_id'] == $_SESSION['user_id']) || $_SESSION["user_role"] == ROLE_ADMIN) {
+        if (($_SESSION["user_role"] == ROLE_SALES_MANAGER && $this->view->order['sales_manager_id'] == $_SESSION['user_id'])
+            || $_SESSION["user_role"] == ROLE_ADMIN) {
+
             $this->view->order_status = $this->model->getItemStatusName($this->view->order['order_status_id']);
             $this->view->client = $this->model->getClient($this->view->order['client_id']);
             $this->view->sales_manager = $this->model->getUser($this->view->order["sales_manager_id"]);
@@ -22,7 +24,9 @@ class ControllerOrder extends Controller
             $this->view->title = 'Order #' . $this->view->order['order_id'] . ' / ' . $this->view->order['order_items_count'];
 
             $roles = new Roles();
-            $this->view->full_product_column_names = $roles->returnModelNames($this->model->full_product_column_names, 'catalogue');
+            $this->view->full_product_column_names = $this->model->getColumns($this->model->full_product_column_names,
+                'order', 'table_catalogue', 1);
+
             $this->view->column_names = $roles->returnModelNames($this->model->order_columns_names, 'order');
             $this->view->access = $roles->getPageAccessAbilities('order');
 
@@ -31,8 +35,6 @@ class ControllerOrder extends Controller
             $this->view->legalEntities = $this->model->getLegalEntities();
             $this->view->legalEntityName = $this->model->getLegalEntityName($this->view->order['legal_entity_id']);
 
-//        $this->view->commission_agents = $this->model->getCommissionAgentsIdName();
-//        $this->view->clients = $this->model->getClientsIdName();
             $this->view->clients = $this->model->getClientsOfManager($this->view->order["sales_manager_id"]);
             $this->view->commission_agents = $this->model->getCommissionAgentsOfManager($this->view->order["sales_manager_id"]);
             $this->view->statusList = $this->model->getStatusList();
