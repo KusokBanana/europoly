@@ -24,38 +24,16 @@ class ControllerAccountant extends Controller
 
         $parser = [];
 
-//        require dirname(__FILE__) . "/../../assets/phpExcel/Examples/parser.php";
+        require dirname(__FILE__) . "/../../assets/phpExcel/Examples/parser.php";
 
 //        require dirname(__FILE__) . "/../../assets/phpExcel/Examples/expenses_parser.php";
 
-//        $this->model->initCatalogueParser($parser);
+        $this->model->initCatalogueParser($parser);
 
 //        $this->model->initParser($parser);
 
     }
 
-    function action_doc()
-    {
-
-        require dirname(__FILE__) . "/../../assets/PHPWord_CloneRow-master/PHPWord.php";
-//        require dirname(__FILE__) . "/../../vendor/autoload.php";
-        $phpWord =  new PHPWord();
-        $docFile = dirname(__FILE__) . "/../../docs/payment.docx";
-//        $docFile = dirname(__FILE__) . "/../../docs/order.docx";
-
-        $templateProcessor = $phpWord->loadTemplate($docFile);
-
-//        $templateProcessor = new TemplateProcessor($docFile);
-        $data = array(
-            'code' => array(1,2,3),
-            'pay' => array('red', 'blue', 'green'),
-            'code1' => array('a','b','c'),
-            'sum' => array(100,200,300)
-        );
-        $templateProcessor->cloneRow('TBL', $data);
-        $templateProcessor->save(dirname(__FILE__) . "/../../docs/lol.docx");
-
-    }
 
     function action_index($action_param = null, $action_data = null)
     {

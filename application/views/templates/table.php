@@ -558,9 +558,10 @@ if ($hidden_by_default) {
 
         // reorder columns in table
         function reOrderColumns() {
-            var columnsBlock = $('#'+$table.attr('id')+'_columns_choose.order-columns-block');
+            var columnsBlockSelector = '#'+$table.attr('id')+'_columns_choose.order-columns-block';
+            var columnsBlock = $(columnsBlockSelector);
             const CANCEL_CLASS = 'order-columns-button-cancel';
-            columnsBlock.on('click', '.order-columns-button-change', function() {
+            $('body').on('click', '.order-columns-button-change', function(e) {
                 $(this).next('.btn').prop('disabled', false);
                 $(this).addClass(CANCEL_CLASS).text('Cancel');
                 var labels = columnsBlock.find('label:visible');
@@ -571,7 +572,8 @@ if ($hidden_by_default) {
                     axis: 'y',
                     items: '.draggable'
                 });
-            }).on('click', '.'+CANCEL_CLASS, function() {
+                return false;
+            }).on('click', columnsBlockSelector + ' .'+CANCEL_CLASS, function() {
                 var draggable = columnsBlock.find('.draggable');
                 $(this).removeClass(CANCEL_CLASS).text('Change order');
                 columnsBlock.sortable("destroy");
@@ -590,8 +592,7 @@ if ($hidden_by_default) {
                         .css('border', 'none').css('padding', '0').find('input').prop('disabled', false);
                     columnsBlock.append($(this));
                 });
-
-            }).on('click', '.order-columns-button-save', function() {
+            }).on('click', columnsBlockSelector + ' .order-columns-button-save', function() {
                 var draggable = $('.draggable');
                 var columns = [];
                 $.each(draggable, function() {
@@ -599,6 +600,7 @@ if ($hidden_by_default) {
                     columns.push(number);
                 });
                 columns = JSON.stringify(columns);
+
                 $.ajax({
                     url: '/login/save_order_columns',
                     type: 'POST',

@@ -25,7 +25,8 @@ class ControllerOrder extends Controller
 
             $roles = new Roles();
             $this->view->full_product_column_names = $this->model->getColumns($this->model->full_product_column_names,
-                'order', 'table_catalogue', 1);
+                'catalogue', 'table_catalogue', true);
+            $this->view->originalColumns = $roles->returnModelNames($this->model->full_product_column_names, 'catalogue');
 
             $this->view->column_names = $roles->returnModelNames($this->model->order_columns_names, 'order');
             $this->view->access = $roles->getPageAccessAbilities('order');

@@ -210,7 +210,10 @@ require_once 'modals/new_contractor.php';
             var modal = $($(this).attr('data-target')),
                 type = $(this).attr('data-type'),
                 addHref = $(this).attr('data-href-add');
-            modal.find('form').attr('action', modal.find('form').attr('action') + addHref);
+            var href = modal.find('form').attr('action');
+            var array = href.split('type=');
+            href = array[0] + 'type=' + addHref;
+            modal.find('form').attr('action', href);
             modal.find('form').find('.target-name').text(type);
         })
     })

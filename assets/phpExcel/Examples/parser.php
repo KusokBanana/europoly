@@ -82,6 +82,8 @@ function getXLS($xls){
                 'surface_rus' => ['val' => isset($item['surface_rus']) ? $item['surface_rus'] : '', 'type' => 'string'],
                 'units_rus' => ['val' => isset($item['units_rus']) ? $item['units_rus'] : '', 'type' => 'string'],
                 'packing_type_rus' => ['val' => isset($item['packing_type_rus']) ? $item['packing_type_rus'] : '', 'type' => 'string'],
+                'for_check' => ['val' => isset($item['for_check']) ? $item['for_check'] : '', 'type' => 'string'],
+                'sell_price' => ['val' => isset($item['sell_price']) ? $item['sell_price'] : '', 'type' => 'float'],
             ];
 
             //заносим массив со значениями ячеек отдельной строки в "общий массв строк"
@@ -92,11 +94,12 @@ function getXLS($xls){
     return $array;
 }
 global $parser;
-$parser = getXLS(dirname(__FILE__) . '/../base.xlsx'); //извлеаем данные из XLS
+$parser = getXLS(dirname(__FILE__) . '/../BOLON.xlsx'); //извлеаем данные из XLS
 
 function setHeader(&$header, $value, $cellNumber) {
     switch($value) {
         case 'Article':
+        case 'Артикул/Article': // ADDED
             $header[$cellNumber] = 'article';
             break;
         case 'Name/ Wood':
@@ -133,12 +136,15 @@ function setHeader(&$header, $value, $cellNumber) {
             $header[$cellNumber] = 'grading';
             break;
         case 'Thickness':
+        case 'Толщина/Thickness':  // ADDED
             $header[$cellNumber] = 'thickness';
             break;
         case 'Width':
+        case 'Ширина/Width':
             $header[$cellNumber] = 'width';
             break;
         case 'Length':
+        case 'Длина/Length':
             $header[$cellNumber] = 'length';
             break;
         case 'Texture':
@@ -166,15 +172,19 @@ function setHeader(&$header, $value, $cellNumber) {
             $header[$cellNumber] = 'packing_type';
             break;
         case 'Weight of 1 unit':
+        case 'Вес 1 единицы измерения/Weight of 1 unit':
             $header[$cellNumber] = 'weight';
             break;
         case 'Amount of product in 1 pack (in units)':
+        case 'Количество товара в 1 упаковке (в единицах измерения)/Amount of product in 1 pack (in units)':
             $header[$cellNumber] = 'amount_in_pack';
             break;
         case 'Purchase Price':
+        case 'Закупочная цена/Purchase Price':
             $header[$cellNumber] = 'purchase_price';
             break;
         case 'Currency':
+        case 'Валюта/Currency':
             $header[$cellNumber] = 'currency';
             break;
         case "Supplier's Discount":
@@ -212,6 +222,12 @@ function setHeader(&$header, $value, $cellNumber) {
             break;
         case 'Тип упаковки':
             $header[$cellNumber] = 'packing_type_rus';
+            break;
+        case 'Для счета':
+            $header[$cellNumber] = 'for_check';
+            break;
+        case 'Розничная цена':
+            $header[$cellNumber] = 'sell_price';
             break;
     }
 }

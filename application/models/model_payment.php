@@ -42,7 +42,8 @@ class ModelPayment extends Model
                     false;
                 break;
             case 'Other':
-                $select = false;
+                $select = (!$contractorId) ? $this->getOthers() :
+                    false;
                 break;
         }
         return isset($select) ? $select : false;
@@ -68,6 +69,11 @@ class ModelPayment extends Model
     public function getDeliveries()
     {
         return $this->getAssoc("SELECT transportation_company_id as id, name FROM transportation_companies 
+                                    WHERE is_deleted = 0");
+    }
+    public function getOthers()
+    {
+        return $this->getAssoc("SELECT other_id as id, name FROM other 
                                     WHERE is_deleted = 0");
     }
 

@@ -20,10 +20,10 @@ class ModelAccountant extends Model
             'suppliers_order?id=', 'order?id='), payments.order_id, '\"\">', payments.order_id, '</a>')"),
         array('dt' => 7, 'db' => "transfers.name"),
         array('dt' => 8, 'db' => "payments.	currency"),
-        array('dt' => 9, 'db' => "payments.sum"),
+        array('dt' => 9, 'db' => "CAST(payments.sum as decimal(64, 2))"),
         array('dt' => 10, 'db' => "payments.direction"),
-        array('dt' => 11, 'db' => "payments.sum_in_eur"),
-        array('dt' => 12, 'db' => "payments.currency_rate"),
+        array('dt' => 11, 'db' => "payments.currency_rate"),
+        array('dt' => 12, 'db' => "payments.sum_in_eur"),
         array('dt' => 13, 'db' => "payments.purpose_of_payment"),
         array('dt' => 14, 'db' => "CONCAT(users.first_name, ' ', users.last_name)"),
         array('dt' => 15, 'db' => "article_of_expense.name"),
@@ -190,12 +190,15 @@ class ModelAccountant extends Model
             $rusNames = '';
             $values = '';
             $rusValues = '';
+            $empty = count($item) - 1;
 
             foreach ($item as $name => $valsArray) {
                 $value = trim($valsArray['val']);
                 $type = $valsArray['type'];
-                if (!$value)
+                if (!$value) {
+                    $empty--;
                     continue;
+                }
                 $value = mysql_real_escape_string($value);
 
                 if (strpos($name, '_rus') !== false) {
@@ -218,6 +221,9 @@ class ModelAccountant extends Model
                     $values .= "$value, ";
                 }
             }
+
+            if ($empty == 0)
+                continue;
 
             $productId = $this->insert("INSERT INTO products ($names status)
                           VALUES ($values 0)");

@@ -206,6 +206,7 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
 
 
                                                             var newOptions = '<option></option>';
+                                                            console.log(data);
                                                             $.each(data, function() {
                                                                 newOptions +=
                                                                     '<option value="'+ this['id'] +'"' +

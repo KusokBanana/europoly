@@ -159,6 +159,9 @@ class ModelOrder extends Model
         if ($_SESSION['perm'] < ADMIN_PERM) {
             $this->unLinkStrings($columns, [13, 14, 15]);
         }
+        if ($_SESSION['perm'] == ADMIN_PERM) {
+            $this->unLinkStrings($columns, [15]);
+        }
 
         $columns = $roles->returnModelColumns($columns, 'order');
 
