@@ -1087,7 +1087,8 @@ Quick Sidebar Layout
     color: #fff; }
     /*.quick-sidebar-toggler i:before {*/
       /*content: ""!*rtl:""*!; }*/
-    .page-quick-sidebar-open .quick-sidebar-toggler i:before {
+.page-quick-sidebar-open.docs .page-header .top-menu .dropdown-quick-sidebar-toggler[data-id="docs"] > .dropdown-toggle i:before,
+.page-quick-sidebar-open.chat .page-header .top-menu .dropdown-quick-sidebar-toggler[data-id="chat"] > .dropdown-toggle i:before {
       content: ""/*rtl:""*/; }
 
 /* Page Portlet Fullscreen */
@@ -1109,16 +1110,19 @@ Quick Sidebar Layout
   padding-top: 6px; }
   .page-quick-sidebar-toggler:hover {
     background: #303a43; }
-  .page-quick-sidebar-open .page-quick-sidebar-toggler {
+.page-quick-sidebar-open.docs .page-quick-sidebar-toggler[data-id='docs'],
+.page-quick-sidebar-open.chat .page-quick-sidebar-toggler[data-id='chat'] {
     display: inline-block; }
-    .page-quick-sidebar-open .page-quick-sidebar-toggler:hover {
+.page-quick-sidebar-open.docs .page-quick-sidebar-toggler[data-id="docs"]:hover,
+.page-quick-sidebar-open.chat .page-quick-sidebar-toggler[data-id="chat"]:hover {
       background: none; }
   .page-quick-sidebar-toggler > i {
     color: #99a8b5;
     font-size: 17px; }
     .page-quick-sidebar-toggler > i:hover {
       color: #fff !important; }
-    .page-quick-sidebar-open .page-quick-sidebar-toggler > i:before {
+.page-quick-sidebar-open.docs .page-quick-sidebar-toggler[data-id="docs"] > i:before,
+.page-quick-sidebar-open.chat .page-quick-sidebar-toggler[data-id="chat"] > i:before {
       content: ""/*rtl:""*/; }
 
 /* Quick sidebar wrapper */
@@ -1133,7 +1137,8 @@ Quick Sidebar Layout
   overflow: hidden;
   color: #99a8b5;
   background: #21282e; }
-  .page-quick-sidebar-open .page-quick-sidebar-wrapper {
+.page-quick-sidebar-open.docs .page-quick-sidebar-wrapper[data-id='docs'],
+.page-quick-sidebar-open.chat .page-quick-sidebar-wrapper[data-id='chat'] {
     transition: right 0.3s;
     right: 0; }
   .page-quick-sidebar-wrapper .page-quick-sidebar {

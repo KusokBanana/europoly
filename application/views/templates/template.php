@@ -130,7 +130,7 @@
 <div class="container-fluid">
     <div class="page-content page-content-popup">
         <!-- BEGIN QUICK SIDEBAR TOGGLER -->
-        <button type="button" class="quick-sidebar-toggler documents-block" data-toggle="collapse">
+        <button type="button" class="quick-sidebar-toggler documents-block" data-id="docs" data-toggle="collapse">
             <span class="sr-only">Toggle Documents</span>
             <i class="icon-doc"></i>
             <div class="quick-sidebar-notification">
@@ -138,28 +138,27 @@
                         ? count($this->documents) : '' ?></span>
             </div>
         </button>
-        <!-- END QUICK SIDEBAR TOGGLER -->
-<?php include 'application/views/' . $content_view; ?>
-        <!-- BEGIN QUICK SIDEBAR -->
-        <a href="javascript:;" class="page-quick-sidebar-toggler">
-            <i class="icon-docs"></i>
-        </a>
-        <div class="page-quick-sidebar-wrapper" data-close-on-body-click="false">
-            <div class="page-quick-sidebar">
-                <ul class="nav nav-tabs">
-                    <li class="active">
-                        <a href="javascript:;" data-target="#quick_sidebar_tab_2" data-toggle="tab"> Documents
-                            <span class="badge badge-danger"><?= (isset($this->documents) && count($this->documents))
-                                    ? count($this->documents) : '' ?></span>
-                        </a>
-                    </li>
-                </ul>
-                <div class="tab-content">
-                    <?php include 'application/views/templates/documents_tab.php' ?>
-                </div>
+        <button type="button" class="quick-sidebar-toggler" data-id="chat" id="messages-btn-sidebar-open" data-toggle="collapse">
+            <span class="sr-only">Toggle Messenger</span>
+            <i class="icon-logout"></i>
+            <div class="quick-sidebar-notification">
+                <span class="badge badge-danger chat-quick-messages-count"></span>
             </div>
-        </div>
-        <!-- END QUICK SIDEBAR -->
+        </button>
+        <!-- END QUICK SIDEBAR TOGGLER -->
+        <?php include 'application/views/' . $content_view; ?>
+        <p class="copyright-v2">2016 © Europoly.
+        </p>
+        <a href="#index" class="go2top">
+            <i class="icon-arrow-up"></i>
+        </a>
+        <!-- END FOOTER -->
+    </div>
+</div>
+<!-- BEGIN QUICK SIDEBAR -->
+<?php include 'application/views/templates/documents.php' ?>
+<?php include 'application/views/templates/chat.php' ?>
+<!-- END QUICK SIDEBAR -->
 <!-- END CONTAINER -->
 <!--[if lt IE 9]>
 <script src="assets/global/plugins/respond.min.js"></script>
@@ -193,37 +192,45 @@
 <!-- END THEME LAYOUT SCRIPTS -->
 <script>
     $(document).ready(function () {
-     $("#menu-toggler").click(function(){
-         var sidebar = $('#sidebar');
-         var isOpened = sidebar.is(':visible');
-         var mainBlock = $(".page-fixed-main-content");
+         $("#menu-toggler").click(function(){
+             var sidebar = $('#sidebar');
+             var isOpened = sidebar.is(':visible');
+             var mainBlock = $(".page-fixed-main-content");
 
-         if (isOpened) {
-             sidebar.hide();
-             mainBlock.css({'margin-left':'0px'});
-        } else {
-             sidebar.show();
-             mainBlock.css({'margin-left':'255px'});
-        }
+             if (isOpened) {
+                 sidebar.hide();
+                 mainBlock.css({'margin-left':'0px'});
+            } else {
+                 sidebar.show();
+                 mainBlock.css({'margin-left':'255px'});
+            }
 
-         $.ajax({
-             url: '/login/hidden_sidebar',
-             type: "GET",
-             data: {
-                 visible: !isOpened
-             }
+             $.ajax({
+                 url: '/login/hidden_sidebar',
+                 type: "GET",
+                 data: {
+                     visible: !isOpened
+                 }
+             });
+             resizeTopScroll();
          });
-         var topScroll = $('.top-scroll');
-         if (topScroll.length) {
-             $.each(topScroll, function() {
-                 var scroll = $(this);
-                 var fake = scroll.find('.fake');
-                 var tableWrapper = scroll.next('div');
-                 scroll.width(tableWrapper.width());
-                 fake.width(tableWrapper.find('table').width());
-             })
+
+         $(window).on('resize', resizeTopScroll);
+
+         function resizeTopScroll()
+         {
+             var topScroll = $('.top-scroll');
+             if (topScroll.length) {
+                 $.each(topScroll, function() {
+                     var scroll = $(this);
+                     var fake = scroll.find('.fake');
+                     var tableWrapper = scroll.next('div');
+                     scroll.width(tableWrapper.width());
+                     fake.width(tableWrapper.find('table').width());
+                 })
+             }
          }
-     });
+
 
         addTopScroll();
 

@@ -1,142 +1,133 @@
-        <div class="page-content-fixed-header">
-            <!-- BEGIN BREADCRUMBS -->
-            <ul class="page-breadcrumb">
-                <li>
-                    <a href="#">Dashboard</a>
-                </li>
-                <li>Shipment</li>
-                <li><?= $this->title ?></li>
-            </ul>
-            <!-- END BREADCRUMBS -->
-        </div>
-        <div class="page-sidebar-wrapper">
-            <!-- BEGIN SIDEBAR -->
-            <?php include 'application/views/templates/sidebar.php' ?>
-            <!-- END SIDEBAR -->
-        </div>
-        <div class="page-fixed-main-content" <?= $this->isSidebarClosed() ? 'style="margin-left:0"' : '' ?>>
-            <!-- BEGIN PAGE BASE CONTENT -->
-            <div class="invoice">
-                <div class="portlet light portlet-fit portlet-datatable bordered">
-                    <div class="portlet-title">
-                        <div class="caption">
-                            <i class="icon-settings font-dark"></i>
-                            <span class="caption-body font-dark sbold uppercase"><?= $this->title ?></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <form action="/truck/change_truck_select" id="truck-select-form" method="POST">
-                        <div class="col-xs-2">
-                            <h3>Truck status:</h3>
-                            <ul class="list-unstyled">
-                                <li> <span class="label label-sm label-success"><?= $this->status ?></span> </li>
-                            </ul>
-                        </div>
-                        <div class="col-xs-3">
-                            <input type="hidden" name="pk" value="<?= $this->order['id'] ?>">
-                            <h3>Delivery</h3>
-                            <div>
-                                <span class="label label-sm label-success">
-                                    Price: <?= $this->delivery['price'] ?>
-                                </span>
-                            </div>
-                            <br>
-                            <div>
-                                <span>Delivery Service: </span>
-                                <a href="javascript:void;" class="x-editable x-transportation_company_id"
-                                   data-pk="<?= $this->order['id'] ?>" data-name="transportation_company_id"
-                                   data-value="<?= $this->order['transportation_company_id'] ?>"
-                                   data-url="/truck/change_field"
-                                   data-original-title="Select Transportation Company">
-                                    <?= $this->delivery['name'] ?>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-xs-3">
-                            <h3>Customs</h3>
-                            <div>
-                                <span class="label label-sm label-success">
-                                    Price: <?= $this->customs['price'] ?>
-                                </span>
-                            </div>
-                            <br>
-                            <div>
-                                <span>Customs Service: </span>
-                                <a href="javascript:void;" class="x-editable x-custom_id"
-                                   data-pk="<?= $this->order['id'] ?>" data-name="custom_id"
-                                   data-value="<?= $this->order['custom_id'] ?>"
-                                   data-url="/truck/change_field"
-                                   data-original-title="Select Custom">
-                                    <?= $this->customs['name'] ?>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-xs-4">
-                            <h3> Items in this Truck
-                            </h3>
-                            <a class="btn btn-md blue margin-15" href="javascript:;"
-                               data-toggle="modal" data-target="#modal_newTruckItem">
-                                <i class="fa fa-plus"></i> Add item
-                            </a>
-                            <a class="btn btn-md blue hidden-print margin-15" onclick="javascript:window.print();">
-                                <i class="fa fa-print"></i> Print
-                            </a>
-                            <a data-href="/truck/put_to_the_warehouse?truck_id=<?= $this->order['id'] ?>"
-                               data-toggle="confirmation" data-singleton="true" data-popout="true"
-                               class="btn btn-md blue print-btn-truck">Put to the warehouse</a>
-                        </div>
-                    </form>
-                </div>
-                <div class="row">
-                    <div class="col-xs-3">
-                        <div>
-                            Weight Sum: <?= $this->sums['weight'] ?>
-                        </div>
-                        <br>
-                        <div>
-                            # of packs Sum: <?= $this->sums['number_of_packs'] ?>
-                        </div>
-                        <br>
-                        <div>
-                            Total price Sum: <?= $this->sums['totalPrice'] ?>
-                        </div>
-                    </div>
-                </div>
-                <div class="row" >
-                    <div class="col-xs-12 table-scrollable"">
-                        <table class="table table-striped table-hover" id="table_truck_items">
-                            <thead>
-                            <tr>
-                                <?php
-                                $column_name_ids = [];
-                                if (!empty($this->column_names)) {
-                                    foreach ($this->column_names as $key => $column_name) {
-                                        echo '<th>' . $column_name . '</th>';
-                                        if ($key)
-                                            $column_name_ids[] = $key;
-                                    }
-                                }
-                                ?>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td colspan="12" class="dataTables_empty">Loading data from server...</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
+<div class="page-content-fixed-header">
+    <!-- BEGIN BREADCRUMBS -->
+    <ul class="page-breadcrumb">
+        <li>
+            <a href="#">Dashboard</a>
+        </li>
+        <li>Shipment</li>
+        <li><?= $this->title ?></li>
+    </ul>
+    <!-- END BREADCRUMBS -->
+</div>
+<div class="page-sidebar-wrapper">
+    <!-- BEGIN SIDEBAR -->
+    <?php include 'application/views/templates/sidebar.php' ?>
+    <!-- END SIDEBAR -->
+</div>
+<div class="page-fixed-main-content" <?= $this->isSidebarClosed() ? 'style="margin-left:0"' : '' ?>>
+    <!-- BEGIN PAGE BASE CONTENT -->
+    <div class="invoice">
+        <div class="portlet light portlet-fit portlet-datatable bordered">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="icon-settings font-dark"></i>
+                    <span class="caption-body font-dark sbold uppercase"><?= $this->title ?></span>
                 </div>
             </div>
-            <!-- END PAGE BASE CONTENT -->
         </div>
-        <!-- BEGIN FOOTER -->
-
-        <a href="#index" class="go2top">
-            <i class="icon-arrow-up"></i>
-        </a>
-        <!-- END FOOTER -->
+        <div class="row">
+            <form action="/truck/change_truck_select" id="truck-select-form" method="POST">
+                <div class="col-xs-2">
+                    <h3>Truck status:</h3>
+                    <ul class="list-unstyled">
+                        <li> <span class="label label-sm label-success"><?= $this->status ?></span> </li>
+                    </ul>
+                </div>
+                <div class="col-xs-3">
+                    <input type="hidden" name="pk" value="<?= $this->order['id'] ?>">
+                    <h3>Delivery</h3>
+                    <div>
+                        <span class="label label-sm label-success">
+                            Price: <?= $this->delivery['price'] ?>
+                        </span>
+                    </div>
+                    <br>
+                    <div>
+                        <span>Delivery Service: </span>
+                        <a href="javascript:void;" class="x-editable x-transportation_company_id"
+                           data-pk="<?= $this->order['id'] ?>" data-name="transportation_company_id"
+                           data-value="<?= $this->order['transportation_company_id'] ?>"
+                           data-url="/truck/change_field"
+                           data-original-title="Select Transportation Company">
+                            <?= $this->delivery['name'] ?>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-xs-3">
+                    <h3>Customs</h3>
+                    <div>
+                        <span class="label label-sm label-success">
+                            Price: <?= $this->customs['price'] ?>
+                        </span>
+                    </div>
+                    <br>
+                    <div>
+                        <span>Customs Service: </span>
+                        <a href="javascript:void;" class="x-editable x-custom_id"
+                           data-pk="<?= $this->order['id'] ?>" data-name="custom_id"
+                           data-value="<?= $this->order['custom_id'] ?>"
+                           data-url="/truck/change_field"
+                           data-original-title="Select Custom">
+                            <?= $this->customs['name'] ?>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-xs-4">
+                    <h3> Items in this Truck
+                    </h3>
+                    <a class="btn btn-md blue margin-15" href="javascript:;"
+                       data-toggle="modal" data-target="#modal_newTruckItem">
+                        <i class="fa fa-plus"></i> Add item
+                    </a>
+                    <a class="btn btn-md blue hidden-print margin-15" onclick="javascript:window.print();">
+                        <i class="fa fa-print"></i> Print
+                    </a>
+                    <a data-href="/truck/put_to_the_warehouse?truck_id=<?= $this->order['id'] ?>"
+                       data-toggle="confirmation" data-singleton="true" data-popout="true"
+                       class="btn btn-md blue print-btn-truck">Put to the warehouse</a>
+                </div>
+            </form>
+        </div>
+        <div class="row">
+            <div class="col-xs-3">
+                <div>
+                    Weight Sum: <?= $this->sums['weight'] ?>
+                </div>
+                <br>
+                <div>
+                    # of packs Sum: <?= $this->sums['number_of_packs'] ?>
+                </div>
+                <br>
+                <div>
+                    Total price Sum: <?= $this->sums['totalPrice'] ?>
+                </div>
+            </div>
+        </div>
+        <div class="row" >
+            <div class="col-xs-12 table-scrollable"">
+                <table class="table table-striped table-hover" id="table_truck_items">
+                    <thead>
+                    <tr>
+                        <?php
+                        $column_name_ids = [];
+                        if (!empty($this->column_names)) {
+                            foreach ($this->column_names as $key => $column_name) {
+                                echo '<th>' . $column_name . '</th>';
+                                if ($key)
+                                    $column_name_ids[] = $key;
+                            }
+                        }
+                        ?>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td colspan="12" class="dataTables_empty">Loading data from server...</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 
