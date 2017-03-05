@@ -23,6 +23,12 @@ class ControllerTruck extends Controller
         $this->view->delivery = $this->model->getDelivery($_GET['id']);
         $this->view->customs = $this->model->getCustoms($_GET['id']);
         $this->view->sums = $this->model->getSums($_GET['id']);
+
+        $this->view->access = $roles->getPageAccessAbilities('truck');
+        if ($this->view->access['p']) {
+            $this->view->documents = $this->model->getDocuments($_GET['id']);
+        }
+
         $this->view->build('templates/template.php', 'single_truck.php');
     }
 
@@ -45,6 +51,16 @@ class ControllerTruck extends Controller
         $this->getAccess('truck', 'ch');
         echo $this->model->putToTheWarehouse($_GET['truck_id']);
     }
+
+    function action_print_doc()
+    {
+        if (isset($_GET["truck_id"])) {
+            $truck_id = $_GET['truck_id'];
+            $result = $this->model->printDoc($truck_id);
+            echo $result;
+        }
+
+        }
 
     function action_put_item_to_warehouse()
     {

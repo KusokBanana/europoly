@@ -266,9 +266,11 @@
             var element = $(this);
             var elementName = element.attr('name');
             if (!element.hasClass('not-load')) {
-                $.each($selects[elementName], function() {
-                    element.append('<option value="' + this.id + '">' + this.id + '</option>');
-                });
+                if ($selects[elementName] !== undefined) {
+                    $.each($selects[elementName], function() {
+                        element.append('<option value="' + this.id + '">' + this.id + '</option>');
+                    });
+                }
             }
             $(this).editableSelect();
         });

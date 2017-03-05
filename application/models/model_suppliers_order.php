@@ -114,6 +114,9 @@ class ModelSuppliers_order extends ModelOrder
 
         $roles = new Roles();
         $columns = $roles->returnModelColumns($this->suppliers_orders_columns, 'suppliersOrder');
+        if ($_SESSION['perm'] <= ADMIN_PERM) {
+            $this->unLinkStrings($columns, [6]);
+        }
         $this->sspComplex($table, "suppliers_orders_items.item_id", $columns,
             $input, null, "suppliers_orders_items.supplier_order_id = $order_id");
     }
@@ -299,6 +302,17 @@ class ModelSuppliers_order extends ModelOrder
             return "/docs/ready/$fileName.docx";
         }
 
+    }
+
+    public function getDocuments($orderId)
+    {
+        $docs = [
+            [
+                'href' => "/suppliers_order/print?order_id=$orderId",
+                'name' => 'Print'
+            ],
+        ];
+        return $docs;
     }
 
 }

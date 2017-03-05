@@ -1,6 +1,3 @@
-        <!-- BEGIN CONTAINER -->
-        <div class="container-fluid">
-            <div class="page-content page-content-popup">
                 <div class="page-content-fixed-header">
                     <!-- BEGIN BREADCRUMBS -->
                     <ul class="page-breadcrumb">
@@ -70,13 +67,6 @@
 <!--										<a class="btn btn-md blue margin-bottom-5" onclick="javascript:window.print();"> Print-->
 <!--											<i class="fa fa-print"></i>-->
 <!--										</a>-->
-                                        <?php if ($this->access['p']): ?>
-                                            <a href="/suppliers_order/print?order_id=<?= $this->order['order_id'] ?>"
-                                               class="print-btn btn btn-md blue margin-bottom-5">
-                                                Print <i class="fa fa-print"></i>
-                                            </a>
-                                        <?php endif; ?>
-
                                         <a class="btn btn-md blue margin-bottom-5"
                                             href="javascript:;"
                                             onclick="return confirm('Are you sure to send order to Supplier?')">
@@ -245,7 +235,7 @@
                         }
                     });
                     $('.x-supplier_id').editable({
-                        type: "select",
+                        type: "select2",
                         inputclass: 'form-control input-medium',
                         source: suppliers,
                         success: function () {

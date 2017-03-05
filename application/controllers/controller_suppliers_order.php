@@ -20,6 +20,9 @@ class ControllerSuppliers_order extends Controller
         $roles = new Roles();
         $this->view->full_product_column_names = $roles->returnModelNames($this->model->full_product_column_names, 'catalogue');
         $this->view->access = $roles->getPageAccessAbilities('suppliersOrder');
+        if ($this->view->access['p']) {
+            $this->view->documents = $this->model->getDocuments($_GET['id']);
+        }
         $this->view->column_names = $roles->returnModelNames($this->model->suppliers_orders_column_names, 'suppliersOrder');
         $this->view->full_product_hidden_columns = $this->model->full_product_hidden_columns;
         $this->view->clients = $this->model->getClientsIdName();

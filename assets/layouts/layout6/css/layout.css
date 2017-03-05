@@ -1078,12 +1078,15 @@ Quick Sidebar Layout
   background: #009dc7;
   width: 45px;
   height: 45px; }
+.quick-sidebar-toggler.documents-block {
+  top: 40%;
+}
   .quick-sidebar-toggler i {
     padding: 5px;
     font-size: 20px;
     color: #fff; }
-    .quick-sidebar-toggler i:before {
-      content: ""/*rtl:""*/; }
+    /*.quick-sidebar-toggler i:before {*/
+      /*content: ""!*rtl:""*!; }*/
     .page-quick-sidebar-open .quick-sidebar-toggler i:before {
       content: ""/*rtl:""*/; }
 

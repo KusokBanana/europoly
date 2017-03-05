@@ -332,4 +332,15 @@ class ModelWarehouse extends ModelManagers_orders
         return $this->update("UPDATE `order_items` SET `$field` = '$new_value' WHERE item_id = $warehouse_item_id");
 
     }
+
+    public function getDocuments($warehouse_id)
+    {
+        $docs = [
+            [
+                'href' => "/warehouse/print_doc?warehouse_id=$warehouse_id",
+                'name' => 'Print'
+            ],
+        ];
+        return $docs;
+    }
 }

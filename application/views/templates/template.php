@@ -127,7 +127,39 @@
 </header>
 <!-- END HEADER -->
 <!-- BEGIN CONTAINER -->
+<div class="container-fluid">
+    <div class="page-content page-content-popup">
+        <!-- BEGIN QUICK SIDEBAR TOGGLER -->
+        <button type="button" class="quick-sidebar-toggler documents-block" data-toggle="collapse">
+            <span class="sr-only">Toggle Documents</span>
+            <i class="icon-doc"></i>
+            <div class="quick-sidebar-notification">
+                <span class="badge badge-danger"><?= (isset($this->documents) && count($this->documents))
+                        ? count($this->documents) : '' ?></span>
+            </div>
+        </button>
+        <!-- END QUICK SIDEBAR TOGGLER -->
 <?php include 'application/views/' . $content_view; ?>
+        <!-- BEGIN QUICK SIDEBAR -->
+        <a href="javascript:;" class="page-quick-sidebar-toggler">
+            <i class="icon-docs"></i>
+        </a>
+        <div class="page-quick-sidebar-wrapper" data-close-on-body-click="false">
+            <div class="page-quick-sidebar">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="javascript:;" data-target="#quick_sidebar_tab_2" data-toggle="tab"> Documents
+                            <span class="badge badge-danger"><?= (isset($this->documents) && count($this->documents))
+                                    ? count($this->documents) : '' ?></span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <?php include 'application/views/templates/documents_tab.php' ?>
+                </div>
+            </div>
+        </div>
+        <!-- END QUICK SIDEBAR -->
 <!-- END CONTAINER -->
 <!--[if lt IE 9]>
 <script src="assets/global/plugins/respond.min.js"></script>
@@ -220,7 +252,8 @@
                         tableWrapper = tableResponsive;
                     }
                 }
-                if (!tableWrapper.length)
+
+                if (tableWrapper == undefined || !tableWrapper.length)
                     return false;
 
                 var topScrollCode = '<div class="top-scroll"><div class="fake"></div></div>';
@@ -277,7 +310,16 @@
                     }
                 }
             })
-        })
+        });
+
+        var selects = $('.select2-select');
+        if (selects !== undefined && selects.length) {
+            $.each(selects, function() {
+                $(this).select2();
+                $(this).next('.select2').css('width', '100%');
+            });
+
+        }
 });
 
 </script>

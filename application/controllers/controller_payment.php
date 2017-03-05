@@ -24,6 +24,13 @@ class ControllerPayment extends Controller
                 $this->view->contractor = $this->model->getContractorName($this->view->payment['category'],
                     $this->view->payment['contractor_id']);
             }
+
+            $roles = new Roles();
+            $this->view->access = $roles->getPageAccessAbilities('payment');
+            if ($this->view->access['p']) {
+                $this->view->documents = $this->model->getDocuments($_GET['id']);
+            }
+
             $this->view->entities = $this->model->getLegalEntitiesIdName();
             $this->view->transfers = $this->model->getTransferTypesIdName();
             $this->view->managers = $this->model->getSalesManagersIdName();
@@ -75,6 +82,15 @@ class ControllerPayment extends Controller
         }
         else {
             header("Location: " . $_SERVER['HTTP_REFERER']);
+        }
+    }
+
+    function action_print_doc()
+    {
+        if (isset($_GET['payment_id'])) {
+            $orderId = $_GET['payment_id'];
+            $result = $this->model->printDoc($orderId);
+            echo $result;
         }
     }
 

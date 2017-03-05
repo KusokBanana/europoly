@@ -247,6 +247,30 @@ class ModelOrder extends Model
         $result = $this->update("UPDATE `orders` SET `$field` = '$new_value' WHERE order_id = $order_id");
         $new_order = $this->getFirst("SELECT * FROM orders WHERE order_id = $order_id");
 
+        if ($field == 'legal_entity_id') {
+            $currentYear = date('Y');
+            $currentYear = substr($currentYear, -2, 2);
+            $legal = $this->getFirst("SELECT prefix FROM legal_entities WHERE legal_entity_id = $new_value");
+            if ($legal) {
+                $prefix = $legal['prefix'];
+                $likeStr = "^$prefix"."$currentYear";
+                $visibleIds = $this->getAssoc("SELECT visible_order_id FROM orders 
+                  WHERE (legal_entity_id = $new_value && visible_order_id RLIKE '$likeStr')");
+                if ($visibleIds) {
+                    $finalIds = [];
+                    foreach ($visibleIds as $visibleId) {
+                        $array = explode("$currentYear/", $visibleId['visible_order_id']);
+                        $finalIds[] = intval($array[1]);
+                    }
+                    $maxLegalId = !empty($finalIds) ? max($finalIds) + 1 : 1;
+                } else {
+                    $maxLegalId = 1;
+                }
+                $newVisibleId = $prefix . $currentYear . '/' . str_pad($maxLegalId, 5, '0', STR_PAD_LEFT);
+                $this->update("UPDATE orders SET visible_order_id = '$newVisibleId' WHERE order_id = $order_id");
+            }
+        }
+
 //        $total_price = $old_order['total_price'] - $old_order['special_expenses'] + $new_order['special_expenses'];
 //        $total_commission = $new_order['commission_rate'] * $total_price / 100;
 //        $this->update("UPDATE orders
@@ -663,5 +687,24 @@ class ModelOrder extends Model
 
             return "/docs/ready/$fileName.docx";
         }
+    }
+
+    public function getDocuments($orderId)
+    {
+        $docs = [
+            [
+                'href' => "/order/print_payment?order_id=$orderId&type=payment",
+                'name' => 'Check for payment'
+            ],
+            [
+                'href' => "/order/print_payment?order_id=$orderId&type=order",
+                'name' => 'Buyer\'s order'
+            ],
+            [
+                'href' => "/order/print_payment?order_id=$orderId&type=return",
+                'name' => 'Return of goods'
+            ],
+        ];
+        return $docs;
     }
 }

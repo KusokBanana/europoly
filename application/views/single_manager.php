@@ -1,5 +1,4 @@
-<div class="container-fluid">
-    <div class="page-content page-content-popup">
+
         <div class="page-content-fixed-header">
             <!-- BEGIN BREADCRUMBS -->
             <ul class="page-breadcrumb">

@@ -1,5 +1,3 @@
-<div class="container-fluid">
-    <div class="page-content page-content-popup">
         <div class="page-content-fixed-header">
             <!-- BEGIN BREADCRUMBS -->
             <ul class="page-breadcrumb">
@@ -43,28 +41,6 @@
                                     <span class="hidden-xs">| <?= $this->order['start_date'] ?> <span class="label label-warning" style="white-space: normal;"> <?= $this->order_status ?> </span> </span>
                                 </span>
                             </div>
-                            <div class="actions">
-                                <div class="btn-group">
-                                    <?php if ($this->access['p']): ?>
-                                        <button type="button" data-toggle="dropdown"
-                                                class="btn green dropdown-toggle">
-                                            <i class="fa fa-print"></i> Print
-                                            <span class="caret"></span>
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li><a href="/order/print_payment?order_id=<?= $this->order['order_id'] .
-                                                '&type=payment' ?>"
-                                                   class="print-btn">Check for payment</a></li>
-                                            <li><a href="/order/print_payment?order_id=<?= $this->order['order_id'] .
-                                                '&type=order'?>"
-                                                   class="print-btn">Buyer's order</a></li>
-                                            <li><a href="/order/print_payment?order_id=<?= $this->order['order_id'] .
-                                                '&type=return'?>"
-                                                   class="print-btn">Return of goods</a></li>
-                                        </ul>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
                         </div>
                     </div>
                     <div class="portlet-body">
@@ -85,6 +61,17 @@
                                             <div class="col-md-5 name"> Order Status:</div>
                                             <div class="col-md-7 value">
                                                 <span class="label label-warning"><?= $this->order_status ?></span>
+                                            </div>
+                                        </div>
+                                        <div class="row static-info">
+                                            <div class="col-md-5 name"> Order ID: </div>
+                                            <div class="col-md-7 value">
+                                                <a href="javascript:;" id="editable-visible_order_id" class='x-editable'
+                                                   data-pk="<?= $this->order['order_id'] ?>"
+                                                   data-name="visible_order_id" data-value="<?= $this->order['visible_order_id'] ?>"
+                                                   data-url='/order/change_field' data-original-title='Enter Visible ID:'>
+                                                    <?= $this->order['visible_order_id'] !== null ? $this->order['visible_order_id']
+                                                        : ' '?></a>
                                             </div>
                                         </div>
                                         <div class="row static-info">
@@ -490,6 +477,16 @@ require_once 'modals/cancel_order.php';
             }
         });
 
+        <?php if ($_SESSION["user_role"] == ROLE_ADMIN): ?>
+            $('#editable-visible_order_id').editable({
+                type: "text",
+                inputclass: 'form-control input-medium',
+                success: function () {
+                    location.reload();
+                }
+            });
+        <?php endif; ?>
+
         $('#editable-downpayment_rate, #editable-manager_bonus_rate').editable({
             type: "number",
             min: 0,
@@ -502,7 +499,7 @@ require_once 'modals/cancel_order.php';
         $('#editable-commission_rate').editable({
             type: "number",
             min: 0,
-            <?php if ($_SESSION["user_role"] != 'admin'): ?>
+            <?php if ($_SESSION["user_role"] != ROLE_ADMIN): ?>
             max: 10,
             <?php endif ?>
             step: 0.01,
@@ -526,7 +523,7 @@ require_once 'modals/cancel_order.php';
             }
         });
         $('#editable-manager').editable({
-            type: "select",
+            type: "select2",
             inputclass: 'form-control input-medium',
             source: managers,
             success: function () {
@@ -534,7 +531,7 @@ require_once 'modals/cancel_order.php';
             }
         });
         $('#editable-commission_agent').editable({
-            type: "select",
+            type: "select2",
             inputclass: 'form-control input-medium',
             source: commission_agents,
             success: function () {
@@ -542,7 +539,7 @@ require_once 'modals/cancel_order.php';
             }
         });
         $('#editable-client').editable({
-            type: "select",
+            type: "select2",
             inputclass: 'form-control input-medium',
             source: clients,
             success: function () {

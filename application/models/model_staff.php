@@ -26,7 +26,8 @@ class ModelStaff extends Model
 
     function getDTManagers($input)
     {
-        $this->sspComplex("users", "user_id", $this->manager_columns, $input, null, "role_id = " . ROLE_SALES_MANAGER);
+        $this->sspComplex("users", "user_id", $this->manager_columns, $input, null, "role_id IN (" . ROLE_SALES_MANAGER . ', ' .
+            ROLE_ADMIN . ')');
     }
 
     function getDTSupport($input)
@@ -49,6 +50,9 @@ class ModelStaff extends Model
 
     function getRoles()
     {
-        return $this->getAssoc("SELECT role_id as id, name FROM roles WHERE role_id != ".ROLE_ADMIN);
+        $where = "WHERE role_id != ".ROLE_ADMIN;
+        if ($_SESSION['user_role'] == ROLE_ADMIN)
+            $where= '';
+        return $this->getAssoc("SELECT role_id as id, name FROM roles $where");
     }
 }

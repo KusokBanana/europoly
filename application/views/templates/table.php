@@ -5,7 +5,7 @@
     $ajax = $table_data['ajax'];
     $column_names = $table_data['column_names'];
     $hidden_by_default = isset($table_data['hidden_by_default']) ? $table_data['hidden_by_default'] : '';
-    $click_url = $table_data['click_url'];
+    $click_url = isset($table_data['click_url']) ? $table_data['click_url'] : '#';
     $originalColumns = isset($table_data['originalColumns']) ? $table_data['originalColumns'] : [];
     $mustHidden = 0;
     $method = isset($table_data['method']) ? $table_data['method'] : 'GET';
@@ -16,6 +16,7 @@
 
     $sort = (isset($_SESSION['sort_columns']) && isset($_SESSION['sort_columns'][$table_id])) ? $_SESSION['sort_columns'][$table_id] :
         '1-asc';
+
     ?>
     <div id="<?= $table_id ?>_left_buttons" class="btn-group">
         <?php
@@ -272,6 +273,7 @@ if ($hidden_by_default) {
                 }
             });
         }
+
         columnChoose.on('change', 'input', function () {
             var column = table.column($(this).attr('data-column'));
             column.visible(!column.visible());
@@ -618,7 +620,6 @@ if ($hidden_by_default) {
         }
 
         function saveColumnSort($sort) {
-
             var columnId = $sort[0];
             var columnsBlock = $('#'+$table.attr('id')+'_columns_choose.order-columns-block');
             var originalColumnId = columnsBlock.find('input[data-column="'+columnId+'"]').attr('data-original-column-id');

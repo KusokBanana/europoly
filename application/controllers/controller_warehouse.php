@@ -36,6 +36,11 @@ class ControllerWarehouse extends Controller
             $this->view->products_hidden_columns = $this->model->full_product_hidden_columns;
             $this->view->products_originalColumns = $roles->returnModelNames($this->model->full_product_column_names, $this->page);
 
+            $this->view->access = $roles->getPageAccessAbilities('warehouse');
+            if ($this->view->access['p']) {
+                $this->view->documents = $this->model->getDocuments($_GET['id']);
+            }
+
             if ($id == 0) {
                 $this->view->title = "All";
                 $this->view->id = 0;

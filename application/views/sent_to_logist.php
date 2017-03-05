@@ -1,5 +1,3 @@
-<div class="container-fluid">
-	<div class="page-content page-content-popup">
 		<div class="page-content-fixed-header">
 			<!-- BEGIN BREADCRUMBS -->
 			<ul class="page-breadcrumb">
@@ -56,7 +54,7 @@
 										<div class="portlet-body">
 											<script>
 												$('body').on('click', '.modal-new-suppliers-order-btn', function() {
-                                                    var table = $('#table_managers_orders');
+                                                    var table = $('#sent_to_logist');
                                                     var products = table.find('tr.selected .order-item-product').length ?
                                                         table.find('tr.selected .order-item-product') : [];
                                                     var brandStr = '';

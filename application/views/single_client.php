@@ -1,8 +1,6 @@
 <?php
 $isNewClient = !isset($this->client['client_id']);
 ?>
-<div class="container-fluid">
-    <div class="page-content page-content-popup">
         <div class="page-content-fixed-header">
             <!-- BEGIN BREADCRUMBS -->
             <ul class="page-breadcrumb">
@@ -75,7 +73,7 @@ $isNewClient = !isset($this->client['client_id']);
                                             <div class="form-group">
                                                 <label for="commission_agent_id">Commission agent</label>
                                                 <select name="commission_agent_id"
-                                                        id="commission_agent_id" class="form-control">
+                                                        id="commission_agent_id" class="form-control select2-select">
                                                     <option selected value="">no commission agent</option>
                                                     <?php
                                                     foreach ($this->commission_agents as $commission_agent) {
@@ -112,7 +110,7 @@ $isNewClient = !isset($this->client['client_id']);
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="head_contractor_client_id">Head contractor</label>
-                                            <select class="form-control" id="head_contractor_client_id"
+                                            <select class="form-control select2-select" id="head_contractor_client_id"
                                                     name="head_contractor_client_id">
                                                 <?php if (!empty($this->clients)): ?>
                                                     <option disabled selected></option>
@@ -179,7 +177,7 @@ $isNewClient = !isset($this->client['client_id']);
                                         </div>
                                         <div class="form-group">
                                             <label for="sales_manager_id">Responsible Manager</label>
-                                            <select class="form-control" id="sales_manager_id" name="sales_manager_id">
+                                            <select class="form-control select2-select" id="sales_manager_id" name="sales_manager_id">
                                                 <option></option>
                                                 <?php if (!empty($this->managers)): ?>
                                                     <?php foreach ($this->managers as $manager): ?>
@@ -195,7 +193,7 @@ $isNewClient = !isset($this->client['client_id']);
                                         </div>
                                         <div class="form-group">
                                             <label for="operational_manager_id">Operational Manager</label>
-                                            <select class="form-control"
+                                            <select class="form-control select2-select"
                                                     id="operational_manager_id" name="operational_manager_id">
                                                 <option></option>
                                                 <?php if (!empty($this->managers)): ?>

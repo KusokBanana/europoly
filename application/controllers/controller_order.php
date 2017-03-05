@@ -30,6 +30,9 @@ class ControllerOrder extends Controller
 
             $this->view->column_names = $roles->returnModelNames($this->model->order_columns_names, 'order');
             $this->view->access = $roles->getPageAccessAbilities('order');
+            if ($this->view->access['p']) {
+                $this->view->documents = $this->model->getDocuments($_GET['id']);
+            }
 
             $this->view->full_product_hidden_columns = $this->model->full_product_hidden_columns;
             $this->view->managers = $this->model->getSalesManagersIdName();

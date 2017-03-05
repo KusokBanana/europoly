@@ -170,4 +170,48 @@ class ModelPayment extends Model
         }
         return $money;
     }
+
+    public function printDoc($paymentId, $type = '')
+    {
+        $payment = $this->getFirst("SELECT * FROM payments WHERE payment_id = $paymentId");
+        $orderId = $payment['order_id'];
+        $order = $this->getFirst("SELECT * FROM orders WHERE order_id = $orderId");
+        $fileName = 'single_payment';
+
+        if ($payment && $order) {
+
+            $values = [];
+            $values['date'] = $payment['date'];
+            $values['order_date'] = $order['start_date'];
+            $values['vis_order_id'] = $order['visible_order_id'];
+            $values['payment_id'] = $paymentId;
+            $values['sum'] = $payment['sum'];
+
+            require dirname(__FILE__) . '/../classes/NumbersToStrings.php';
+            $values['sum_string'] = NumbersToStrings::num2str($values['sum']);
+
+            require dirname(__FILE__) . "/../../assets/PHPWord_CloneRow-master/PHPWord.php";
+            $phpWord =  new PHPWord();
+            $docFile = dirname(__FILE__) . "/../../docs/templates/$fileName.docx";
+
+            $templateProcessor = $phpWord->loadTemplate($docFile);
+            foreach ($values as $key => $value) {
+                $templateProcessor->setValue($key, $value);
+            }
+            $templateProcessor->save(dirname(__FILE__) . "/../../docs/ready/$fileName.docx");
+
+            return "/docs/ready/$fileName.docx";
+        }
+    }
+
+    public function getDocuments($payment_id)
+    {
+        $docs = [
+            [
+                'href' => "/payment/print_doc?payment_id=$payment_id",
+                'name' => 'Print'
+            ],
+        ];
+        return $docs;
+    }
 }

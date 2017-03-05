@@ -21,7 +21,7 @@
                     </div>
                     <div class="form-group">
                         <label for="modal_new_order_client">Client</label>
-                        <select id="modal_new_order_client" name="client_id" class="form-control" required>
+                        <select id="modal_new_order_client" name="client_id" class="form-control select2-select" required>
                             <option disabled selected value></option>
                             <?php
                             foreach ($this->clients as $client) {

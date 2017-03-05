@@ -1,5 +1,3 @@
-<div class="container-fluid">
-    <div class="page-content page-content-popup">
         <div class="page-content-fixed-header">
             <!-- BEGIN BREADCRUMBS -->
             <ul class="page-breadcrumb">
@@ -154,14 +152,8 @@
                                     <div class="portlet-body">
                                         <div class="portlet-body">
                                             <?php
-                                            $printBtn = '<a href="/warehouse/print_doc?warehouse_id=' .
-                                                $this->id . '" class="print-btn btn btn-md blue margin-bottom-5">
-                                                    Print <i class="fa fa-print"></i>
-                                                </a>';
-                                            if (!$this->access['p'])
-                                                $printBtn = '';
                                             $table_data = [
-                                                'buttons' => array_merge($buttons, [$printBtn]),
+                                                'buttons' => $buttons,
                                                 'table_id' => "table_warehouses_products_issue",
                                                 'ajax' => [
                                                     'url' => "/warehouse/dt?warehouse_id=$urlId&type=issue",

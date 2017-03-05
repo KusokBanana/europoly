@@ -500,4 +500,15 @@ class ModelTruck extends ModelOrder
             'totalPrice' => $totalPrice
         ];
     }
+
+    public function getDocuments($truck_id)
+    {
+        $docs = [
+            [
+                'href' => "/truck/print_doc?truck_id=$truck_id",
+                'name' => 'Print'
+            ],
+        ];
+        return $docs;
+    }
 }

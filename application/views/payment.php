@@ -2,8 +2,6 @@
 $isNewPayment = !isset($this->payment['payment_id']);
 $isPostOrder = isset($this->post_order) ? $this->post_order : false;
 ?>
-<div class="container-fluid">
-    <div class="page-content page-content-popup">
         <div class="page-content-fixed-header">
             <!-- BEGIN BREADCRUMBS -->
             <ul class="page-breadcrumb">
@@ -93,7 +91,8 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                     <div class="form-group">
                                         <label class="col-md-3 control-label" for="legal_entity_id">Legal entity</label>
                                         <div class="col-md-9">
-                                            <select class="form-control" id="legal_entity_id" name="legal_entity_id" required>
+                                            <select class="form-control" id="legal_entity_id"
+                                                    name="legal_entity_id" required>
                                                 <option> </option>
                                                 <?php
                                                 if (!empty($this->entities)):
@@ -206,7 +205,6 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
 
 
                                                             var newOptions = '<option></option>';
-                                                            console.log(data);
                                                             $.each(data, function() {
                                                                 newOptions +=
                                                                     '<option value="'+ this['id'] +'"' +
@@ -215,7 +213,7 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                                                     '</option>'
                                                             });
 
-                                                            selectElement.empty().append(newOptions);
+                                                            selectElement.empty().append(newOptions).select2();
                                                         } else {
                                                             selectElement.empty();
                                                         }
@@ -257,7 +255,7 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                     <div class="form-group">
                                         <label class="col-md-3 control-label" for="order_id">Order</label>
                                         <div class="col-md-9">
-                                            <select name="order_id" id="order_id" class="form-control" required>
+                                            <select name="order_id" id="order_id" class="form-control">
                                                 <option value="0">Please, choose contractor</option>
                                             </select>
                                             <input type="hidden" id="order_id_value"
@@ -402,7 +400,7 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                             <select name="expense_article_id" id="expense_article_id"
                                                     data-value="<?= isset($this->payment['expense_article_id']) ?
                                                                     $this->payment['expense_article_id'] : '' ?>"
-                                                    class="form-control" required>
+                                                    class="form-control " required>
                                                 <option> </option>
                                             </select>
                                         </div>
@@ -436,10 +434,10 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                             });
 
                                             if (currentArticleOptions) {
-                                                expenseArticleSelect.empty().append(currentArticleOptions);
+                                                expenseArticleSelect.empty().append(currentArticleOptions).select2();
                                             }
 
-                                            expenseCategorySelect.empty().append(categoryOptions);
+                                            expenseCategorySelect.empty().append(categoryOptions).select2();
 
                                             expenseCategorySelect.on('change', function() {
                                                 var categoryId = $(this).val();
@@ -449,7 +447,7 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                                         articleOptions += '<option value="' + id + '">' + name + '</option>'
                                                     });
                                                 }
-                                                expenseArticleSelect.empty().append(articleOptions);
+                                                expenseArticleSelect.empty().append(articleOptions).select2();
                                             })
                                         })
                                     </script>
