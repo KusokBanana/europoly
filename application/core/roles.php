@@ -30,7 +30,7 @@ class Roles {
     {
         if ($model = $this->model) {
             switch ($perms = $this->permissions) {
-                case ($perms >= ADMIN_PERM):
+                case ($perms >= OPERATING_MANAGER_PERM):
                     break;
                 case ($perms >= SALES_MANAGER_PERM):
                     $this->tableAccess();
@@ -116,7 +116,7 @@ class Roles {
         $this->page = $page;
         if ($page) {
             switch ($perms = $this->permissions) {
-                case ($perms >= ADMIN_PERM):
+                case ($perms >= OPERATING_MANAGER_PERM):
                     return true;
                 case ($perms >= SALES_MANAGER_PERM):
                     return $this->isCan($page, $action, ROLE_SALES_MANAGER);
@@ -201,19 +201,88 @@ class Roles {
             'p' => [
                 'warehouse' => true,
             ]
-        ]
+        ],
+        ROLE_OPERATING_MANAGER => [
+            'ch' => [ // change
+                'clients' => true,
+                'order' => true,
+                'staff' => true,
+                'brands' => true,
+                'client' => true,
+                'brand' => true,
+                'catalogue' => true,
+                'accountant' => false,
+                'contractors' => false,
+                'managersOrders' => true,
+                'payment' => true,
+                'product' => true,
+                'sentToLogist' => true,
+                'shipment' => true,
+                'suppliersOrders' => true,
+                'suppliersOrder' => true,
+                'truck' => true,
+                'warehouse' => true,
+            ],
+            'd' => [ // delete
+                'order' => true,
+                'brand' => true,
+                'brands' => true,
+                'catalogue' => true,
+                'clients' => true,
+                'accountant' => false,
+                'contractors' => false,
+                'managersOrders' => true,
+                'payment' => true,
+                'product' => true,
+                'sentToLogist' => true,
+                'shipment' => true,
+                'staff' => true,
+                'suppliersOrders' => true,
+                'suppliersOrder' => true,
+                'truck' => true,
+                'warehouse' => true,
+            ],
+            'v' => [ // visit
+                'brands' => true,
+                'brand' => true,
+                'product' => true,
+                'products' => true,
+                'catalogue' => true,
+                'clients' => true,
+                'client' => true,
+                'managersOrders' => true,
+                'order' => true,
+                'sales manager' => true,
+                'staff' => true,
+                'shipment' => true,
+                'suppliersOrders' => true,
+                'warehouse' => true,
+                'sentToLogist' => true,
+                'payment' => true,
+                'accountant' => false,
+                'contractors' => false,
+                'suppliersOrder' => true,
+                'truck' => true,
+            ],
+            'p' => [ // print
+                'order' => true,
+                'suppliersOrder' => true,
+                'truck' => true,
+                'warehouse' => true,
+                'payment' => true,
+            ]
+        ],
     ];
 
     private $actions = ['ch', 'd', 'v', 'p'];
 
     public function getPageAccessAbilities($page)
     {
-//        $this->permissions = (isset($_SESSION['perm']) && $_SESSION['perm']) ? $_SESSION['perm'] : 0;
         $role = (isset($_SESSION['user_role']) && $_SESSION['user_role']) ? $_SESSION['user_role'] : 0;
         $this->page = $page;
         $accessAbilities = [];
         if ($page) {
-            if ($role == ROLE_ADMIN) {
+            if ($role == ROLE_ADMIN || $role == ROLE_OPERATING_MANAGER) {
                 foreach ($this->actions as $key => $val) {
                     $accessAbilities[$val] = true;
                 }

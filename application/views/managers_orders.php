@@ -49,8 +49,14 @@
                             <div class="tab-pane fade active in" id="tab_1_1">
                                 <div class="portlet-body">
                                     <?php
+                                    $buttons = [];
+                                    if ($this->access['ch'])
+                                        $buttons = ['<button class="btn sbold green" data-toggle="modal" 
+                                                            data-target="#modal_newOrder">
+                                                        Add New Order <i class="fa fa-plus"></i>
+                                                    </button>'];
                                     $table_data = [
-                                        'buttons' => [],
+                                        'buttons' => $buttons,
                                         'table_id' => $this->tableNames[0],
                                         'ajax' => [
                                             'url' => "/managers_orders/dt_managers_orders"
@@ -90,3 +96,4 @@
     </div>
     <!-- END PAGE BASE CONTENT -->
 </div>
+<?php require_once 'modals/new_order.php'; ?>

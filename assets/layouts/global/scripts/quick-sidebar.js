@@ -82,21 +82,42 @@ var QuickSidebar = function () {
             success: function(data) {
                 if (data) {
                     data = JSON.parse(data);
+                    console.log(data);
 
                     if (type == 'count_users') {
                         var users = data['users'];
 
                         if (users.length) {
-                            $.each(users, function() {
+                            $.each(users, function(index) {
                                 var userId = this.user_id;
                                 var userMessageBlock = usersList.find('li.media[data-user-id="'+userId+'"]');
                                 if (userMessageBlock.length) {
                                     var newValue = (+this.count_new) ? this.count_new : '';
                                     userMessageBlock.find('.media-status > span').text(newValue);
+                                    var length = users.length - 1;
+                                    userMessageBlock.attr('data-sort', length - index);
+                                    // TODO fix - remove to not append all the chat all the time!
+                                    if (userMessageBlock.index() != length - index) {
+                                        // if (length - index == 0) {
+                                        //     userMessageBlock.parent().prepend(userMessageBlock);
+                                        // }
+                                        // else if (index == 0) {
+                                        //     userMessageBlock.parent().append(userMessageBlock);
+                                        // }
+                                        // else {
+                                        //     userMessageBlock.siblings().eq(length - index).after(userMessageBlock);
+                                        // }
+                                    }
                                 } else {
                                     buildUserRow(this);
                                 }
-                            })
+                            });
+                            usersList.find('li.media[data-sort]').sort(function (a, b) {
+                                a = $(a).attr("data-sort");
+                                b = $(b).attr("data-sort");
+                                return a < b ? -1 : a > b ? 1 : 0
+                            }).appendTo(usersList);
+
                         }
 
                     } else if (type == 'user_chat') {

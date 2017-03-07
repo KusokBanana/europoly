@@ -8,6 +8,12 @@ class ModelClient extends Model
         $this->connect_db();
     }
 
+    var $requests = [
+        'date' => ['type' => 'date', 'cols' => 3, 'label' => 'Date'],
+        'description' => ['type' => 'input', 'cols' => 9, 'label' => 'Description']
+
+    ];
+
     var $contactPersonsNames = [
         'full_name' => ['type' => 'input', 'cols' => 3, 'label' => 'Full Name'],
         'position' => ['type' => 'input', 'cols' => 3, 'label' => 'Position'],
@@ -101,6 +107,12 @@ class ModelClient extends Model
         return $frame;
     }
 
+    public function getRequests($clientId)
+    {
+        return $this->getAssoc("SELECT date, description, id FROM client_additions 
+          WHERE client_id = $clientId AND type = 'Requests'");
+    }
+
     public function getContactPersons($clientId)
     {
         return $this->getAssoc("SELECT full_name, position, phone_number, email, id FROM client_additions 
@@ -138,6 +150,9 @@ class ModelClient extends Model
     {
         $form = [];
         switch ($type) {
+            case 'requests':
+                $form['requests'] = $this->getFrame('requests');
+                break;
             case 'contact-persons':
                 $form['contact-persons'] = $this->getFrame('contactPersonsNames');
                 break;
@@ -148,6 +163,7 @@ class ModelClient extends Model
                 $form['contracts'] = $this->getFrame('contractsNames');
                 break;
             case 'all':
+                $form['requests'] = $this->getFrame('requests');
                 $form['contact-persons'] = $this->getFrame('contactPersonsNames');
                 $form['bank-accounts'] = $this->getFrame('bankAccountsNames');
                 $form['contracts'] = $this->getFrame('contractsNames');
@@ -159,6 +175,7 @@ class ModelClient extends Model
     public function buildPrimaryForm($clientId)
     {
         $base = [
+            'requests' => [$this->getRequests($clientId), 'requests'],
             'contactPersonsNames' => [$this->getContactPersons($clientId), 'contact-persons'],
             'bankAccountsNames' => [$this->getBankAccounts($clientId), 'bank-accounts'],
             'contractsNames' => [$this->getContracts($clientId), 'contracts']
@@ -284,12 +301,16 @@ class ModelClient extends Model
     public function translateType($type)
     {
         switch ($type) {
+            case 'requests':
+                return 'Requests';
             case 'contact-persons':
                 return 'Contact Persons';
             case 'bank-accounts':
                 return 'Bank Accounts';
             case 'contracts':
                 return 'Contracts';
+            case 'Requests':
+                return 'requests';
             case 'Contact Persons':
                 return 'contact-persons';
             case 'Bank Accounts':

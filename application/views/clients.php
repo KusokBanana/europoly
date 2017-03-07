@@ -35,7 +35,8 @@
 </div>
 <div class="page-fixed-main-content" <?= $this->isSidebarClosed() ? 'style="margin-left:0"' : '' ?>>
     <!-- BEGIN PAGE BASE CONTENT -->
-    <div class="row">
+<!--    TODO delete -->
+    <!--<div class="row">
         <div class="col-md-4">
             <div class="dashboard-stat2 bordered">
                 <div class="display">
@@ -116,7 +117,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>-->
 
     <div class="row">
         <div class="col-md-12">

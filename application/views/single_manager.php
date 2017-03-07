@@ -47,6 +47,11 @@
                     <a href="#tab_1_3" data-toggle="tab"> Edit Account </a>
                 </li>
             </ul>
+            <?php if ($this->access['d']): ?>
+                <br>
+                <a href="/sales_manager/delete_user?id=<?= $this->manager['user_id']; ?>"
+                   class="text-right btn btn-danger">Удалить пользователя</a>
+            <?php endif; ?>
             <div class="tab-content">
                 <div class="tab-pane active" id="tab_1_1">
                     <div class="row">
@@ -486,6 +491,23 @@
                                             <label class="control-label">Notes</label>
                                             <textarea id="input_notes" name="notes" class="form-control" rows="3" placeholder="He's working perfect! Add more Bonus next month"><?= $this->manager['notes'] ?></textarea>
                                         </div>
+                                        <?php if ($_SESSION['user_role'] == ROLE_ADMIN): ?>
+                                            <div class="form-group">
+                                                <label class="control-label">User Role</label>
+                                                <select name="role_id" id="role_id" class="form-control">
+                                                    <?php
+                                                    if (!empty($this->roles)) {
+                                                        foreach ($this->roles as $role) {
+                                                            $selected = ($role['id'] == $this->manager['role_id']) ?
+                                                                ' selected ' : '';
+                                                            echo '<option value="'.$role['id'].'"' . $selected . '>'.
+                                                                $role['name'].'</option>';
+                                                        }
+                                                    }
+                                                    ?>
+                                                </select>
+                                            </div>
+                                        <?php endif; ?>
                                         <div class="margiv-top-10">
                                             <button type="submit" class="btn green"> Save Changes</button>
                                             <button type="reset" class="btn default"> Cancel</button>
@@ -521,14 +543,14 @@
                                         <input name="user_id" type="hidden" value="<?= $this->manager['user_id'] ?>"/>
                                         <div class="form-group">
                                             <label class="control-label">Login</label>
-                                            <?php if ($this->access): ?>
+                                            <?php if ($this->access['ch']): ?>
                                                 <input id="input_login" name="login" class="form-control"
                                                                       value="<?= $this->manager['login'] ?>" required/>
                                             <?php else: ?>
                                                 <?= $this->manager['login'] ?>
                                             <?php endif; ?>
                                         </div>
-                                        <?php if ($this->access): ?>
+                                        <?php if ($this->access['ch']): ?>
                                             <div class="form-group">
                                                 <label class="control-label">New Password</label>
                                                 <input id="input_password" name="password" type="password" class="form-control" required/>
@@ -549,7 +571,7 @@
                                         <input name="user_id" type="hidden" value="<?= $this->manager['user_id'] ?>"/>
                                         <div class="form-group">
                                             <label class="control-label">Salary, &euro;</label>
-                                            <?php if ($this->access): ?>
+                                            <?php if ($this->access['ch']): ?>
                                                 <input id="input_salary" name="salary"
                                                        class="form-control" value="<?= $this->manager['salary'] ?>"
                                                        step="0.01" min="0"/>
@@ -559,14 +581,14 @@
                                         </div>
                                         <div class="form-group">
                                             <label class="control-label">Bonus Rate, %</label>
-                                            <?php if ($this->access): ?>
+                                            <?php if ($this->access['ch']): ?>
                                                 <input id="input_manager_bonus_rate" name="manager_bonus_rate" type="number"
                                                        class="form-control" placeholder="1,4" value="<?= $this->manager['salary_bonus_rate'] ?>" step="0.01" min="0" max="100"/>
                                             <?php else: ?>
                                                 <?= $this->manager['salary_bonus_rate'] ?>
                                             <?php endif; ?>
                                         </div>
-                                        <?php if ($this->access): ?>
+                                        <?php if ($this->access['ch']): ?>
                                             <div class="margin-top-10">
                                                 <button type="submit" class="btn green"> Save Changes</button>
                                                 <button type="reset" class="btn default"> Cancel</button>

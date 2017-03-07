@@ -186,8 +186,7 @@ if ($hidden_by_default) {
             orderCellsTop: true,
             select: {
                 style: 'os',
-                selector: 'td:first-child',
-                blurable: true
+                selector: 'td:first-child'
             },
             colReorder: false,
             deferRender: true
@@ -500,6 +499,8 @@ if ($hidden_by_default) {
                 var tableId = $table.attr('id');
                 var fixedTable = tableMainDiv.find('.fixed-table');
                 var tableDad = $table.closest('#'+tableId+'_wrapper');
+                var tableWrapper = $table.closest('.table-scrollable');
+                var fixedTopScroll = $('.fixed-top-scroll');
 
                 // not appear on click tabs
                 if (tableDad.closest('.tab-pane').length && !tableDad.closest('.tab-pane').hasClass('active'))
@@ -513,8 +514,23 @@ if ($hidden_by_default) {
                         fixedTable.css('position', 'absolute').css('top', '20px')
                             .css('background-color', '#ebeaff').addClass('fixed-table');
                         tableDad.children(':first-child').before(fixedTable);
+
+                        var topScroll = tableMainDiv.find('.top-scroll');
+                        if (topScroll.length) {
+                            var cloneTopScroll = topScroll.clone();
+                            fixedTable.before(cloneTopScroll);
+                            cloneTopScroll.css('position', 'absolute').css('top', '20px').addClass('fixed-top-scroll');
+                            fixedTable.css('top', '40px');
+                            cloneTopScroll.on('scroll', function(e){
+                                tableWrapper.scrollLeft($(this).scrollLeft());
+                            });
+                            tableWrapper.on('scroll', function(e){
+                                cloneTopScroll.scrollLeft($(this).scrollLeft());
+                            });
+                            cloneTopScroll.scrollLeft(tableWrapper.scrollLeft());
+                        }
+
                         fixedTable.addClass('fixed-table-head');
-                        var tableWrapper = $table.closest('.table-scrollable');
                         if (tableWrapper.length) {
                             fixedTable.css('left', -tableWrapper.scrollLeft() + 'px');
                         }
@@ -541,6 +557,10 @@ if ($hidden_by_default) {
                             var needOffset = (currentWindowOffset + 60 + fixedTableHeight <= bottomMax) ?
                                 currentWindowOffset + 60 : bottomMax - fixedTableHeight + 30;
 
+                            if (fixedTopScroll.length) {
+                                fixedTopScroll.css('top', (needOffset - topMax + 7) + 'px');
+                                needOffset += 20;
+                            }
                             fixedTable.css('top', (needOffset - topMax) + 'px');
                         }
 
@@ -548,6 +568,9 @@ if ($hidden_by_default) {
                 } else {
                     if (fixedTable.length) {
                         fixedTable.remove();
+                        if (fixedTopScroll.length) {
+                            fixedTopScroll.remove();
+                        }
                     }
                 }
             }

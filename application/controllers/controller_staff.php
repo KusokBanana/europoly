@@ -34,7 +34,7 @@ class ControllerStaff extends Controller
             $this->escape_and_empty_to_null($_POST['role_id']),
             $this->escape_and_empty_to_null($_POST['login']),
             $this->escape_and_empty_to_null($_POST['password']));
-        if ($user_id != false && $_POST['role_id'] == ROLE_SALES_MANAGER) {
+        if ($user_id != false && in_array($_POST['role_id'], [ROLE_ADMIN, ROLE_SALES_MANAGER, ROLE_OPERATING_MANAGER])) {
             header("Location: /sales_manager?id=" . $user_id);
         } else if ($user_id != false && ($_POST['role_id'] == ROLE_ACCOUNTANT || $_POST['role_id'] == ROLE_WAREHOUSE)) {
             header("Location: /support?id=" . $user_id);

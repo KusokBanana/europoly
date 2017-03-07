@@ -337,6 +337,28 @@ $isNewClient = !isset($this->client['client_id']);
                     <?php if (!$isNewClient): ?>
                         <div class="bottom-form-block">
                             <div class="row">
+                                <div class="col-md-12 main-block" data-type="requests">
+                                    <h4 class="sbold">Requests</h4>
+                                    <div class="row">
+                                        <div class="actions" style="padding:10px">
+                                            <div class="btn-group">
+                                                <a id="" class="btn btn blue btn-sm add-btn" href=""> Add new
+                                                    <i class="fa fa-plus"></i>
+                                                </a>
+                                            </div>
+                                            <div class="btn-group">
+                                                <a id="" class="btn btn red btn-sm delete-btn" href="">
+                                                    Delete last
+                                                    <i class="fa fa-minus"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                        <div class="bottom-form-block">
+                            <div class="row">
                                 <div class="col-md-12 main-block" data-type="contact-persons">
                                     <h4 class="sbold">Contact persons</h4>
                                     <div class="row">
@@ -456,11 +478,12 @@ $isNewClient = !isset($this->client['client_id']);
                                                 name="'+name+'" value="'+value+'" data-id="'+current+'">';
                                 return 0;
                             }
-                            if (this.type == 'input') {
+                            if (this.type == 'input' || this.type == 'date') {
+                                var inputType = (this.type == 'date') ? 'date' : 'text';
                                 var placeholder = (this.placeholder !== undefined) ? this.placeholder : '';
                                 build +=
                                     '<label for="' + name + '">' + label + '</label> \
-                                                <input type="text" class="form-control ' + index + '" \
+                                                <input type="'+inputType+'" class="form-control ' + index + '" \
                                                         placeholder="' + placeholder + '" \
                                                         data-id="'+current+'" \
                                                         value="'+value+'"\

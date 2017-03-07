@@ -28,13 +28,19 @@ class ModelChat extends Model
 
                 $newUsersMessages = $this->getAssoc("SELECT 
                   roles.name AS role_name, CONCAT(users.first_name, ' ', users.last_name) AS name,
-                  COUNT(chat.id) AS count_new, users.user_id AS user_id, avatar_url AS avatar
+                  users.user_id AS user_id, avatar_url AS avatar, MAX(last_message.message_date) as last_date, 
+                  COUNT(DISTINCT count_msg.id) as count_new
                   FROM users 
-                  LEFT JOIN roles ON roles.role_id = users.role_id 
-                  LEFT JOIN chat ON (chat.user_id = users.user_id AND chat.to_user_id = $user_id AND chat.is_new = 1) 
+                  LEFT JOIN roles ON roles.role_id = users.role_id              	 
+                  LEFT JOIN chat AS last_message ON (
+                    (last_message.user_id = users.user_id AND last_message.to_user_id = $user_id) OR 
+                    (last_message.user_id = $user_id AND last_message.to_user_id = users.user_id))
+                  LEFT JOIN chat count_msg ON 
+                    (count_msg.user_id = users.user_id AND count_msg.to_user_id = $user_id AND count_msg.is_new = 1)
                   WHERE users.user_id <> $user_id
                   GROUP BY users.user_id
-                  ORDER BY chat.message_date ASC");
+                  ORDER BY last_date ASC");
+
                 if (!empty($newUsersMessages)) {
                     foreach ($newUsersMessages as $newUsersMessage) {
                         $return['total_count_new'] += $newUsersMessage['count_new'];
@@ -42,7 +48,13 @@ class ModelChat extends Model
                     $return['users'] = $newUsersMessages;
                 }
                 break;
-
+            /*
+                              (
+                                  SELECT last_message.message_date FROM chat last_message
+                                  WHERE (last_message.user_id = users.user_id AND last_message.to_user_id = 1)
+                                  ORDER BY last_message.message_date DESC LIMIT 1
+                              )
+            */
             case 'user_chat':
                 $count = $this->getFirst("SELECT COUNT(id) as count FROM chat WHERE to_user_id = $user_id AND is_new = 1");
                 $dialog = $this->getAssoc("SELECT 
@@ -75,7 +87,7 @@ class ModelChat extends Model
 
         $dialog['dir'] = 'out';
         $dialog['time'] = '' . date('m-d-Y H:i:s');
-        $dialog['message'] = $message;
+        $dialog['message'] = stripcslashes($text);
         $dialog['id'] = $messageId;
 
         return json_encode($dialog);
@@ -92,8 +104,11 @@ class ModelChat extends Model
     private function safe_var ($var)
     {
         $var = trim($var);
-        $var = mysql_real_escape_string($var);
+//        $var = mysql_real_escape_string($var);
+//        $var = htmlspecialchars($var);
+        $var = addslashes($var);
         $var = htmlspecialchars($var);
+        $var = strip_tags($var);
         return $var;
     }
 

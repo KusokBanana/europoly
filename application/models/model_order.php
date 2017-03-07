@@ -159,7 +159,7 @@ class ModelOrder extends Model
         if ($_SESSION['perm'] < ADMIN_PERM) {
             $this->unLinkStrings($columns, [13, 14, 15]);
         }
-        if ($_SESSION['perm'] == ADMIN_PERM) {
+        if ($_SESSION['perm'] >= OPERATING_MANAGER_PERM) {
             $this->unLinkStrings($columns, [15]);
         }
 
@@ -647,10 +647,24 @@ class ModelOrder extends Model
     public function printDoc($orderId, $type)
     {
         $orderItems = $this->getAssoc("SELECT * FROM order_items WHERE manager_order_id = $orderId");
+        $order = $this->getFirst("SELECT * FROM orders WHERE order_id = $orderId");
 
+        $additionsArray = [];
         switch ($type) {
             case 'payment':
                 $fileName = 'payment';
+                $additionsArray['current_date'] = date('d-m-Y');
+                $client = $this->getFirst("SELECT * FROM clients WHERE client_id = ${order['client_id']}");
+                if ($client) {
+                    $add[] = $client['name'];
+                    if (!is_null($client['inn']))
+                        $add[] = 'ИНН ' . $client['inn'];
+                    if (!is_null($client['legal_address']))
+                        $add[] = $client['legal_address'];
+                    $additionsArray['client'] = join(', ', $add);
+                }
+                $user = $this->getFirst("SELECT * FROM users WHERE user_id = ".$_SESSION['user_id']);
+                $additionsArray['manager'] = $user ? $user['last_name'] . ' ' . $user['first_name'] : '';
                 break;
             case 'order':
                 $fileName = 'order';
@@ -672,9 +686,9 @@ class ModelOrder extends Model
             $phpWord =  new PHPWord();
             $docFile = dirname(__FILE__) . "/../../docs/templates/$fileName.docx";
 
-            $order = $this->getFirst("SELECT * FROM orders WHERE order_id = $orderId");
             $values['order_id'] = $orderId;
             $values['date'] = date('Y-m-d', strtotime($order['start_date']));
+            $values = array_merge($values, $additionsArray);
 
             $templateProcessor = $phpWord->loadTemplate($docFile);
 

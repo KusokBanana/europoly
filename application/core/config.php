@@ -17,11 +17,13 @@ define('ROLE_ADMIN', 1);
 define('ROLE_SALES_MANAGER', 2);
 define('ROLE_ACCOUNTANT', 3);
 define('ROLE_WAREHOUSE', 4);
+define('ROLE_OPERATING_MANAGER', 5);
 
 define('ADMIN_PERM', 10);
 define('SALES_MANAGER_PERM', 8);
 define('ACCOUNTANT_PERM', 6);
 define('WAREHOUSE_PERM', 4);
+define('OPERATING_MANAGER_PERM', 9);
 
 define('SESSION_SIDEBAR', 'sidebar_is_opened');
 

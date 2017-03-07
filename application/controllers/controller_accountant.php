@@ -45,6 +45,8 @@ class ControllerAccountant extends Controller
         $roles = new Roles();
         $this->view->originalColumns = $roles->returnModelNames($this->model->payments_column_names, $this->page);
 
+        $this->view->access = $roles->getPageAccessAbilities($this->page);
+
         $this->view->build('templates/template.php', 'accountant.php');
     }
 
@@ -66,5 +68,22 @@ class ControllerAccountant extends Controller
             return false;
         $this->model->deletePayment($payment_id);
         header("Location: " . $_SERVER['HTTP_REFERER']);
+    }
+
+    function action_similar_payment()
+    {
+
+        $this->getAccess($this->page, 'ch');
+        $payment_id = isset($_GET['payment_id']) ? $_GET['payment_id'] : false;
+        if (!$payment_id)
+            return false;
+        $payment = $this->model->getPayment($payment_id);
+        if ($payment) {
+            unset($payment['payment_id']);
+            $payment['responsible_person_id'] = $_SESSION['user_id'];
+            $payment['date'] = date('Y-m-d');
+            echo json_encode($payment);
+        }
+        echo false;
     }
 }

@@ -126,6 +126,7 @@ class SSP
             );
         }
 
+        $db->exec("set names utf8");
         return $db;
     }
 

@@ -1,6 +1,12 @@
 <div id="sidebar" class="page-sidebar" <?= $this->isSidebarClosed() ? 'style="display:none;"' : '' ?>>
     <!-- BEGIN SIDEBAR MENU -->
     <ul class="page-sidebar-menu  page-header-fixed " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
+        <li id="nav-lk" class="nav-item">
+            <a href="<?= $lk_url ?>" class="nav-link nav-toggle">
+                <i class="icon-user"></i>
+                <span class="title">My profile</span>
+            </a>
+        </li>
         <li id="nav-catalogue" class="nav-item">
             <a href="javascript:;" class="nav-link nav-toggle">
                 <i class="icon-home"></i>
@@ -31,7 +37,7 @@
                     <span class="title">Clients</span>
                 </a>
             </li>
-            <?php if ($_SESSION['perm'] >= ADMIN_PERM):?>
+            <?php if ($_SESSION['perm'] >= OPERATING_MANAGER_PERM):?>
                 <li id="nav-staff" class="nav-item">
                     <a href="/staff" class="nav-link nav-toggle">
                         <i class="icon-bar-chart"></i>

@@ -50,6 +50,11 @@
                     <a href="#tab_1_3" data-toggle="tab"> Edit Account </a>
                 </li>
             </ul>
+            <?php if ($this->access['d']): ?>
+                <br>
+                <a href="/support/delete_user?id=<?= $this->support['user_id']; ?>"
+                   class="text-right btn btn-danger">Удалить пользователя</a>
+            <?php endif; ?>
             <div class="tab-content">
                 <div class="tab-pane active" id="tab_1_1">
                     <div class="row">
@@ -103,7 +108,8 @@
                             <!--end row-->
                         </div>
                     </div>
-                    <div class="row">
+<!--                    TODO delete -->
+                    <!--<div class="row">
                         <div class="col-md-12">
                             <table class="table table-striped table-bordered table-advance table-hover">
                                 <thead>
@@ -202,7 +208,7 @@
                             </table>
                         </div>
 
-                    </div>
+                    </div>-->
                 </div>
                 <!--tab_1_2-->
                 <div class="tab-pane" id="tab_1_3">
@@ -269,6 +275,23 @@
                                             <label class="control-label">Notes</label>
                                             <textarea id="input_notes" name="notes" class="form-control" rows="3" placeholder="He's working perfect! Add more Bonus next month"><?= $this->support['notes'] ?></textarea>
                                         </div>
+                                        <?php if ($_SESSION['user_role'] == ROLE_ADMIN): ?>
+                                            <div class="form-group">
+                                                <label class="control-label">User Role</label>
+                                                <select name="role_id" id="role_id" class="form-control">
+                                                    <?php
+                                                    if (!empty($this->roles)) {
+                                                        foreach ($this->roles as $role) {
+                                                            $selected = ($role['id'] == $this->support['role_id']) ?
+                                                                ' selected ' : '';
+                                                            echo '<option value="'.$role['id'].'"' . $selected . '>'.
+                                                                $role['name'].'</option>';
+                                                        }
+                                                    }
+                                                    ?>
+                                                </select>
+                                            </div>
+                                        <?php endif; ?>
                                         <div class="margiv-top-10">
                                             <button type="submit" class="btn green"> Save Changes</button>
                                             <button class="btn default" onclick="cancelPersonalInfoChanges(event)"> Cancel</button>
@@ -316,7 +339,7 @@
                                         <input name="user_id" type="hidden" value="<?= $this->support['user_id'] ?>"/>
                                         <div class="form-group">
                                             <label class="control-label">Login</label>
-                                            <?php if ($this->access): ?>
+                                            <?php if ($this->access['ch']): ?>
                                                 <input id="input_login" name="login"
                                                        class="form-control" value="<?= $this->support['login'] ?>"
                                                        required/>
@@ -324,7 +347,7 @@
                                                 <?= $this->support['login'] ?>
                                             <?php endif; ?>
                                         </div>
-                                        <?php if ($this->access): ?>
+                                        <?php if ($this->access['ch']): ?>
                                             <div class="form-group">
                                                 <label class="control-label">New Password</label>
                                                 <input id="input_password" name="password" type="password" class="form-control" required/>
@@ -367,14 +390,14 @@
                                         <input name="user_id" type="hidden" value="<?= $this->support['user_id'] ?>"/>
                                         <div class="form-group">
                                             <label class="control-label">Salary, &euro;</label>
-                                            <?php if ($this->access): ?>
+                                            <?php if ($this->access['ch']): ?>
                                                 <input id="input_salary" name="salary" class="form-control"
                                                        value="<?= $this->support['salary'] ?>"/>
                                             <?php else: ?>
                                                 <?= $this->support['salary'] ?>
                                             <?php endif; ?>
                                         </div>
-                                        <?php if ($this->access): ?>
+                                        <?php if ($this->access['ch']): ?>
                                             <div class="margin-top-10">
                                                 <button type="submit" class="btn green"> Save Changes</button>
                                                 <button type="reset" class="btn default"> Cancel</button>

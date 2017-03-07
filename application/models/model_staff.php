@@ -5,18 +5,13 @@ class ModelStaff extends Model
     var $manager_columns = array(
         array('dt' => 0, 'db' => "users.user_id"),
         array('dt' => 1, 'db' => "CONCAT('<a href=\"\sales_manager?id=', users.user_id, '\">', users.first_name, ' ', users.last_name, '</a>')"),
-        array('dt' => 2, 'db' => "'a'"),
-        array('dt' => 3, 'db' => "'b'"),
-        array('dt' => 4, 'db' => "'c'"),
-        array('dt' => 5, 'db' => "'d'"),
-        array('dt' => 6, 'db' => "'e'")
+        array('dt' => 2, 'db' => "roles.name"),
     );
 
     var $support_columns = array(
         array('dt' => 0, 'db' => "users.user_id"),
         array('dt' => 1, 'db' => "CONCAT('<a href=\"\support?id=', users.user_id, '\">', users.first_name, ' ', users.last_name, '</a>')"),
-        array('dt' => 2, 'db' => "users.position"),
-        array('dt' => 3, 'db' => "users.salary")
+        array('dt' => 2, 'db' => "roles.name"),
     );
 
     public function __construct()
@@ -24,16 +19,20 @@ class ModelStaff extends Model
         $this->connect_db();
     }
 
+    var $table = 'users LEFT JOIN roles ON roles.role_id = users.role_id';
+
     function getDTManagers($input)
     {
-        $this->sspComplex("users", "user_id", $this->manager_columns, $input, null, "role_id IN (" . ROLE_SALES_MANAGER . ', ' .
-            ROLE_ADMIN . ')');
+        $where = "users.role_id IN (" . ROLE_SALES_MANAGER . ', ' . ROLE_OPERATING_MANAGER . ') AND users.is_deleted = 0';
+
+        $this->sspComplex($this->table, "user_id", $this->manager_columns, $input, null, $where);
     }
 
     function getDTSupport($input)
     {
-        $where = "role_id IN (" . ROLE_ACCOUNTANT . ', ' . ROLE_WAREHOUSE . ')';
-        $this->sspComplex("users", "user_id", $this->support_columns, $input, null, $where);
+        $where = "users.role_id IN (" . ROLE_ACCOUNTANT . ', ' . ROLE_WAREHOUSE . ', ' . ROLE_ADMIN .  ') AND users.is_deleted = 0';
+
+        $this->sspComplex($this->table, "user_id", $this->support_columns, $input, null, $where);
     }
 
     function addUser($first_name, $last_name, $role_id, $login, $password)
@@ -46,13 +45,5 @@ class ModelStaff extends Model
             return $this->insert("INSERT INTO users (login, password, first_name, last_name, role_id)
                 VALUES ('$login', '$password', '$first_name', '$last_name', $role_id)");
         }
-    }
-
-    function getRoles()
-    {
-        $where = "WHERE role_id != ".ROLE_ADMIN;
-        if ($_SESSION['user_role'] == ROLE_ADMIN)
-            $where= '';
-        return $this->getAssoc("SELECT role_id as id, name FROM roles $where");
     }
 }

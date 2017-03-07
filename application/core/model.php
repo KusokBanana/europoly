@@ -221,7 +221,7 @@ abstract class Model extends mysqli
     function getSalesManagersIdName()
     {
         return $this->getAssoc("SELECT user_id, CONCAT(first_name, ' ', last_name) AS name
-          FROM users LEFT JOIN roles ON roles.role_id = users.role_id WHERE roles.name = 'Sales Manager'");
+          FROM users LEFT JOIN roles ON roles.role_id = users.role_id WHERE roles.role_id IN (2, 5)");
     }
 
     function getRolePermissions($roleId)
@@ -273,10 +273,28 @@ abstract class Model extends mysqli
         return $this->getById('users', 'user_id', $user_id);
     }
 
+    function deleteUser($user_id)
+    {
+        return $this->update("UPDATE users SET is_deleted = 1 WHERE user_id = $user_id");
+    }
+
+    function getRoles()
+    {
+        $where = "WHERE role_id != ".ROLE_ADMIN;
+        if ($_SESSION['user_role'] == ROLE_ADMIN)
+            $where= '';
+        return $this->getAssoc("SELECT role_id as id, name FROM roles $where");
+    }
+
     function getItemStatusName($status_id)
     {
         $status = $this->getFirst("SELECT name FROM items_status WHERE status_id = $status_id");
         return ($status) ? $status['name'] : '';
+    }
+
+    function getClientsOfSalesManager($sales_manager_id)
+    {
+        return $this->getAssoc("SELECT client_id, name FROM clients WHERE sales_manager_id = $sales_manager_id");
     }
 
     function getCategoryTabs()

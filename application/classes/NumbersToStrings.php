@@ -6,6 +6,9 @@ class NumbersToStrings {
      * Возвращает сумму прописью
      * @author runcore
      * @uses morph(...)
+     * @param $num
+     * @param string $currency
+     * @return string
      */
     public static function num2str($num, $currency = 'RUB') {
         $nul='ноль';
@@ -63,6 +66,7 @@ class NumbersToStrings {
     {
         switch ($currency) {
             case 'RUB':
+            case 'РУБ':
                 return [
                     array('копейка' ,'копейки' ,'копеек',	 1),
                     array('рубль'   ,'рубля'   ,'рублей'    ,0)

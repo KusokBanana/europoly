@@ -31,4 +31,5 @@ class View
     {
         return (isset($_SESSION[SESSION_SIDEBAR]) && $_SESSION[SESSION_SIDEBAR] == 'false') ? true : false;
     }
+
 }

@@ -95,20 +95,21 @@
                     <!-- BEGIN USER PROFILE -->
                     <div class="btn-group-img btn-group">
                         <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                            <img src="assets/layouts/layout5/img/avatar1.jpg" alt=""></button>
+                            <img src="<?= '/../avatars/' . ($_SESSION['avatar'] ? $_SESSION['avatar'] : 'user.png')
+                                ?>" alt=""></button>
                         <ul class="dropdown-menu-v2" role="menu">
                             <li>
                                 <?php
                                 $userRole = $_SESSION['user_role'];
-                                $url = '#';
-                                if (ROLE_SALES_MANAGER == $userRole) {
-                                    $url = '/sales_manager?id=' . $_SESSION['user_id'];
+                                $lk_url = '#';
+                                if (ROLE_SALES_MANAGER == $userRole || $userRole == ROLE_OPERATING_MANAGER) {
+                                    $lk_url = '/sales_manager?id=' . $_SESSION['user_id'];
                                 } else {
 //                                } elseif ($userRole == ROLE_WAREHOUSE || $userRole == ROLE_ACCOUNTANT || $userRole == ROLE_ADMIN) {
-                                    $url = '/support?id=' . $_SESSION['user_id'];
+                                    $lk_url = '/support?id=' . $_SESSION['user_id'];
                                 }
                                 ?>
-                                <a href="<?= $url ?>">
+                                <a href="<?= $lk_url ?>">
                                     <i class="icon-user"></i> My Profile
                                 </a>
                             </li>
@@ -327,6 +328,7 @@
             });
 
         }
+
 });
 
 </script>

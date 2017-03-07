@@ -39,7 +39,7 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
     <?php include 'application/views/templates/sidebar.php' ?>
     <!-- END SIDEBAR -->
 </div>
-<div class="page-fixed-main-content" <?= $this->isSidebarClosed() ? 'style="margin-left:0"' : '' ?>>
+<div class="payment-page page-fixed-main-content" <?= $this->isSidebarClosed() ? 'style="margin-left:0"' : '' ?>>
     <!-- BEGIN PAGE BASE CONTENT -->
     <div class="row">
         <div class="col-md-12 ">
@@ -138,25 +138,28 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                         var sumInput = $('#sum'),
                                             currencyRateInput = $('#currency_rate'),
                                             sumInEurInput = $('#sum_in_eur');
+                                        var sumValue = +sumInput.val().split(',').join('.'),
+                                            currencyRateValue = +currencyRateInput.val().split(',').join('.'),
+                                            sumInEurValue = +sumInEurInput.val().split(',').join('.');
 
                                         if ($(this).attr('id') == 'sum') {
-                                            if (currencyRateInput.val() != 0 && $(this).val() != 0) {
-                                                sumInEurInput.val(sumInput.val() / currencyRateInput.val());
-                                            } else if (sumInEurInput.val() != 0) {
-                                                currencyRateInput.val(sumInput.val() / sumInEurInput.val())
+                                            if (currencyRateValue != 0 && $(this).val() != 0) {
+                                                sumInEurInput.val(sumValue / currencyRateValue);
+                                            } else if (sumInEurValue != 0) {
+                                                currencyRateInput.val(sumValue / sumInEurValue)
                                             }
                                         } else if ($(this).attr('id') == 'currency_rate' && $(this).val() != 0) {
-                                            if (sumInput.val() != 0) {
-                                                sumInEurInput.val(sumInput.val() / currencyRateInput.val());
-                                            } else if (sumInEurInput.val() != 0) {
-                                                sumInput.val(currencyRateInput.val() * sumInEurInput.val());
+                                            if (sumValue != 0) {
+                                                sumInEurInput.val(sumValue / currencyRateValue);
+                                            } else if (sumInEurValue != 0) {
+                                                sumInput.val(currencyRateValue * sumInEurValue);
                                             }
 
                                         } else if ($(this).attr('id') == 'sum_in_eur' && $(this).val() != 0) {
-                                            if (sumInput.val() != 0) {
-                                                currencyRateInput.val(sumInput.val() / sumInEurInput.val())
-                                            } else if (currencyRateInput.val() != 0) {
-                                                sumInput.val(sumInEurInput.val() * currencyRateInput.val())
+                                            if (sumValue != 0) {
+                                                currencyRateInput.val(sumValue / sumInEurValue)
+                                            } else if (currencyRateValue != 0) {
+                                                sumInput.val(sumInEurValue * currencyRateValue)
                                             }
                                         }
 
@@ -194,7 +197,6 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                                     var value = contractorValue,
                                                         selectElement = contractorSelect;
                                                     orderSelect.empty();
-
                                                 } else {
                                                     value = orderValue;
                                                     selectElement = orderSelect;
@@ -202,7 +204,6 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
 
                                                 if (data) {
                                                     data = JSON.parse(data);
-
 
                                                     var newOptions = '<option></option>';
                                                     $.each(data, function() {
@@ -213,8 +214,14 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                                             '</option>'
                                                     });
 
+                                                    if (selectElement.hasClass('select2-hidden-accessible')) {
+                                                        selectElement.select2('val', '');
+                                                    }
                                                     selectElement.empty().append(newOptions).select2();
                                                 } else {
+                                                    if (selectElement.hasClass('select2-hidden-accessible')) {
+                                                        selectElement.select2('val', '');
+                                                    }
                                                     selectElement.empty();
                                                 }
 
@@ -467,3 +474,8 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
     </div>
     <!-- END PAGE BASE CONTENT -->
 </div>
+<style>
+    .payment-page .select2-container {
+        z-index: 9998
+    }
+</style>

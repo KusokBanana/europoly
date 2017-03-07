@@ -7,14 +7,17 @@
                     <h4 class="modal-title">New Order</h4>
                 </div>
                 <div class="modal-body">
-                    <input id="modal_new_order_sales_manager" type="hidden" name="sales_manager_id" class="form-control" required>
+                    <input id="modal_new_order_sales_manager" type="hidden" value="<?= $_SESSION['user_id'] ?>"
+                           name="sales_manager_id" class="form-control" required>
                     <div class="form-group">
                         <label for="modal_new_order_sales_manager_2">Sales Manager</label>
                         <select id="modal_new_order_sales_manager_2" class="form-control" disabled>
                             <option disabled selected value></option>
                             <?php
                             foreach ($this->managers as $manager) {
-                                echo "<option value='{$manager["user_id"]}'>{$manager["name"]}</option>";
+                                echo "<option value='{$manager["user_id"]}' " .
+                                    ($_SESSION['user_id'] == $manager['user_id'] ? 'selected' : '').
+                                    ">{$manager["name"]}</option>";
                             }
                             ?>
                         </select>

@@ -13,8 +13,8 @@ class ControllerPayment extends Controller
         if ($id = $_GET['id']) {
             $this->getAccess('payment', 'v');
             if ($id == 'new') {
-                if (isset($_POST['Order']) && !empty(isset($_POST['Order']))) {
-                    $this->view->payment = $_POST['Order'];
+                if (isset($_POST['Similar']) && !empty($_POST['Similar'])) {
+                    $this->view->payment = $_POST['Similar'];
                     $this->view->post_order = true;
                 }
                 $this->view->title = 'New Payment';

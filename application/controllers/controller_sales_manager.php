@@ -8,23 +8,26 @@ class ControllerSales_manager extends Controller
         $this->model = new ModelSales_manager();
     }
 
+    public $page = 'sales manager';
+
     function action_index($action_param = null, $action_data = null)
     {
         $roles = new Roles();
 
-        if ($roles->returnAccessAbilities('sales manager', 'v')) {
+        if ($roles->returnAccessAbilities($this->page, 'v')) {
             $userId = $_SESSION['user_id'];
             if ($userId !== $_GET['id']) {
                 $this->getAccess('none', 'v');
             }
             $this->getAccess('sales manager', 'v');
-            $this->view->access = $roles->returnAccessAbilities('sales manager', 'ch');
+            $this->view->access = $roles->getPageAccessAbilities($this->page);
 
             $this->view->manager = $this->model->getUser($_GET['id']);
             $this->view->title = $this->view->manager['first_name'] . " " . $this->view->manager['last_name'];
             $this->view->managers = $this->model->getSalesManagersIdName();
             $this->view->clients = $this->model->getClientsOfSalesManager($this->view->manager['user_id']);
             $this->view->commission_agents = $this->model->getCommissionAgentsIdName();
+            $this->view->roles = $this->model->getRoles();
             $this->view->build('templates/template.php', 'single_manager.php');
         } else {
             http_response_code(400);
@@ -43,7 +46,9 @@ class ControllerSales_manager extends Controller
             $this->escape_and_empty_to_null($_POST['mobile_number']),
             $this->escape_and_empty_to_null($_POST['email']),
             $this->escape_and_empty_to_null($_POST['employment_date']),
-            $this->escape_and_empty_to_null($_POST['notes']));
+            $this->escape_and_empty_to_null($_POST['notes']),
+            isset($_POST['role_id']) ?
+                $this->escape_and_empty_to_null($_POST['role_id']) : false);
         header("Location: /sales_manager?id=" . $_POST['user_id'] . "#tab_1-1");
     }
 
@@ -102,5 +107,15 @@ class ControllerSales_manager extends Controller
         $order_id = $this->model->addOrder($this->escape_and_empty_to_null($_POST['sales_manager_id']),
             $this->escape_and_empty_to_null($_POST['client_id']));
         header("Location: /order?id=" . $order_id);
+    }
+
+    function action_delete_user()
+    {
+        if (isset($_GET['id']) && $_GET['id']) {
+            $this->getAccess($this->page, 'v');
+            $user_id = $_GET['id'];
+            $this->model->deleteUser($user_id);
+            header("Location: /staff");
+        }
     }
 }

@@ -8,6 +8,8 @@ class ControllerSupport extends Controller
         $this->model = new ModelSupport();
     }
 
+    public $page = 'support';
+
     function action_index($action_param = null, $action_data = null)
     {
         if (in_array($_SESSION['user_role'], [ROLE_WAREHOUSE, ROLE_ACCOUNTANT, ROLE_ADMIN])) {
@@ -16,10 +18,12 @@ class ControllerSupport extends Controller
             if ($userId !== $_GET['id']) {
                 $this->getAccess('none', 'v');
             }
-            $this->getAccess('support', 'v');
+            $this->getAccess($this->page, 'v');
             $roles = new Roles();
-            $this->view->access = $roles->returnAccessAbilities('support', 'ch');
+            $this->view->access = $roles->getPageAccessAbilities($this->page);
+
             $this->view->title = $this->view->support['first_name'] . " " . $this->view->support['last_name'];
+            $this->view->roles = $this->model->getRoles();
             $this->view->build('templates/template.php', 'single_support.php');
         } else {
             http_response_code(400);
@@ -38,7 +42,9 @@ class ControllerSupport extends Controller
             $this->escape_and_empty_to_null($_POST['mobile_number']),
             $this->escape_and_empty_to_null($_POST['email']),
             $this->escape_and_empty_to_null($_POST['employment_date']),
-            $this->escape_and_empty_to_null($_POST['notes']));
+            $this->escape_and_empty_to_null($_POST['notes']),
+            isset($_POST['role_id']) ?
+                $this->escape_and_empty_to_null($_POST['role_id']) : false);
         header("Location: /support?id=" . $_POST['user_id'] . "#tab_1-1");
     }
 
@@ -77,5 +83,15 @@ class ControllerSupport extends Controller
             $this->escape_and_empty_to_null($_POST['login']),
             md5($this->escape_and_empty_to_null($_POST['password'])));
         header("Location: /support?id=" . $_POST['user_id'] . "#tab_3-3");
+    }
+
+    function action_delete_user()
+    {
+        if (isset($_GET['id']) && $_GET['id']) {
+            $this->getAccess($this->page, 'v');
+            $user_id = $_GET['id'];
+            $this->model->deleteUser($user_id);
+            header("Location: /staff");
+        }
     }
 }

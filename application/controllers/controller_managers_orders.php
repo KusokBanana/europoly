@@ -18,7 +18,7 @@ class ControllerManagers_orders extends Controller
         $this->view->title = "Managers' Orders";
 
         $roles = new Roles();
-        $this->view->access = $roles->returnAccessAbilities($this->page, 'ch');
+        $this->view->access = $roles->getPageAccessAbilities($this->page);
 
         $this->view->tableNames = $this->model->tableNames;
         $this->view->column_names = $this->model->getColumns($this->model->managers_orders_column_names,
@@ -28,6 +28,9 @@ class ControllerManagers_orders extends Controller
 
         $this->view->originalColumns = $roles->returnModelNames($this->model->managers_orders_column_names, $this->page);
         $this->view->originalColumnsReduced = $roles->returnModelNames($this->model->managers_orders_reduced_column_names, $this->page);
+        $this->view->managers = $this->model->getSalesManagersIdName();
+        $this->view->clients = $this->model->getClientsOfSalesManager($_SESSION['user_id']);
+
 
         $cache = new Cache();
         $selectsCache = $cache->read('managers_orders_selects');

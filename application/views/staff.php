@@ -35,7 +35,8 @@
 </div>
 <div class="page-fixed-main-content" <?= $this->isSidebarClosed() ? 'style="margin-left:0"' : '' ?>>
     <!-- BEGIN PAGE BASE CONTENT -->
-    <div class="row">
+<!--    TODO delete -->
+    <!--<div class="row">
         <div class="col-md-7">
             <div class="dashboard-stat2 bordered">
                 <div class="display">
@@ -91,17 +92,23 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>-->
     <div class="row">
-        <div class="col-md-7 col-sm-7">
+        <div class="col-xs-12">
+            <button class="btn sbold green" data-toggle="modal"
+                    data-target="#modal_newUser">
+                New Member <i class="fa fa-plus"></i>
+            </button>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-sm-6">
             <div class="portlet light bordered">
                 <div class="portlet-title" style="margin-bottom: 0;">
                     <div class="caption caption-md">
                         <i class="icon-bar-chart font-green"></i>
                         <span class="caption-subject font-green bold uppercase">Sales Managers</span>
-                    </div>
-                    <div class="actions">
-                        <button class="btn sbold green" data-toggle="modal" data-target="#modal_newUser">New Member <i class="fa fa-plus"></i></button>
                     </div>
                 </div>
                 <div class="portlet-body" style="padding: 0;">
@@ -109,24 +116,20 @@
                         <table id="table_managers" class="table table-hover table-light" style="overflow:hidden; margin: 0 !important;">
                             <thead>
                             <tr class="uppercase">
-                                <th> Id</th>
-                                <th> MEMBER</th>
-                                <th> Turnover</th>
-                                <th> ORDERS</th>
-                                <th> ISSUED</th>
-                                <th> PROFIT</th>
-                                <th> PROFIT RATE</th>
+                                <th> Id </th>
+                                <th> Name </th>
+                                <th> Position </th>
                             </tr>
                             </thead>
                             <tbody>
-                            <td colspan="6" class="dataTables_empty">Loading data from server...</td>
+                            <td colspan="3" class="dataTables_empty">Loading data from server...</td>
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-5 col-sm-5">
+        <div class="col-sm-6">
             <div class="portlet light bordered">
                 <div class="portlet-title" style="margin-bottom: 0;">
                     <div class="caption caption-md">
@@ -140,9 +143,8 @@
                             <thead>
                             <tr class="uppercase">
                                 <th> Id</th>
-                                <th> Member</th>
+                                <th> Name</th>
                                 <th> Position</th>
-                                <th> Salary</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -154,7 +156,8 @@
             </div>
         </div>
     </div>
-    <div class="row col-md-12">
+<!--    TODO delete -->
+    <!--<div class="row col-md-12">
         <table class="table table-striped table-bordered table-advance table-hover">
             <thead>
             <tr>
@@ -265,7 +268,7 @@
             </tr>
             </tbody>
         </table>
-    </div>
+    </div>-->
     <!-- END PAGE BASE CONTENT -->
 </div>
 
@@ -283,7 +286,7 @@ require_once "modals/new_user.php"
             ajax: '/staff/dt_managers',
             dom: '<t>ip',
             columnDefs: [{
-                targets: [1, 2, 3, 4, 5, 6],
+                targets: [1, 2],
                 searchable: false,
                 orderable: false
             }, {
@@ -303,7 +306,7 @@ require_once "modals/new_user.php"
             ajax: '/staff/dt_support',
             dom: '<t>ip',
             columnDefs: [{
-                targets: [1, 2, 3],
+                targets: [1, 2],
                 searchable: false,
                 orderable: false
             }, {

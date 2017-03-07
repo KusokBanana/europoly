@@ -172,15 +172,15 @@ class ModelSuppliers_order extends ModelOrder
 
     public function updateField($order_id, $field, $new_value)
     {
-//        $old_order = $this->getFirst("SELECT * FROM suppliers_orders WHERE order_id = $order_id");
-//        $result = $this->update("UPDATE `suppliers_orders` SET `$field` = '$new_value' WHERE order_id = $order_id");
-//        $new_order = $this->getFirst("SELECT * FROM suppliers_orders WHERE order_id = $order_id");
+        $old_order = $this->getFirst("SELECT * FROM suppliers_orders WHERE order_id = $order_id");
+        $result = $this->update("UPDATE `suppliers_orders` SET `$field` = '$new_value' WHERE order_id = $order_id");
+        $new_order = $this->getFirst("SELECT * FROM suppliers_orders WHERE order_id = $order_id");
 //
 //        $this->update("UPDATE suppliers_orders
 //                SET total_price = $total_price
 //                WHERE order_id = $order_id");
 //
-//        return $result;
+        return $result;
     }
 
     public function updateItemField($order_item_id, $field, $new_value)

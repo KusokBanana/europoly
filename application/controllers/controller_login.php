@@ -25,7 +25,8 @@ class ControllerLogin extends Controller
                 $roleId = $user_exist['role_id'];
                 $_SESSION["user_id"] = $user_exist['user_id'];
                 $_SESSION["user_role"] = $user_exist['role_id'];
-                $_SESSION["perm"] = $this->model->getRolePermissions($roleId);;
+                $_SESSION["perm"] = $this->model->getRolePermissions($roleId);
+                $_SESSION["avatar"] = $user_exist['avatar_url'];
             }
             header("Location: /");
         }

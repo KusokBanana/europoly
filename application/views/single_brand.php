@@ -81,7 +81,7 @@
                             $button = '<button class="btn sbold green" data-toggle="modal" data-target="#modal_newProduct">
                                             Add New Product <i class="fa fa-plus"></i>
                                         </button>';
-                            if (!$this->access)
+                            if (!$this->access['ch'])
                                 $button = '';
                             $table_data = [
                                 'buttons' => [$button],

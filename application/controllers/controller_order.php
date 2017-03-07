@@ -8,14 +8,16 @@ class ControllerOrder extends Controller
         $this->model = new ModelOrder();
     }
 
+    public $page = 'order';
+
     function action_index($action_param = null, $action_data = null)
     {
-        $this->getAccess('order', 'v');
+        $this->getAccess($this->page, 'v');
 
         $this->view->order = $this->model->getOrder($_GET['id']);
 
         if (($_SESSION["user_role"] == ROLE_SALES_MANAGER && $this->view->order['sales_manager_id'] == $_SESSION['user_id'])
-            || $_SESSION["user_role"] == ROLE_ADMIN) {
+            || $_SESSION["perm"] >= OPERATING_MANAGER_PERM) {
 
             $this->view->order_status = $this->model->getItemStatusName($this->view->order['order_status_id']);
             $this->view->client = $this->model->getClient($this->view->order['client_id']);
@@ -28,8 +30,8 @@ class ControllerOrder extends Controller
                 'catalogue', 'table_catalogue', true);
             $this->view->originalColumns = $roles->returnModelNames($this->model->full_product_column_names, 'catalogue');
 
-            $this->view->column_names = $roles->returnModelNames($this->model->order_columns_names, 'order');
-            $this->view->access = $roles->getPageAccessAbilities('order');
+            $this->view->column_names = $roles->returnModelNames($this->model->order_columns_names, $this->page);
+            $this->view->access = $roles->getPageAccessAbilities($this->page);
             if ($this->view->access['p']) {
                 $this->view->documents = $this->model->getDocuments($_GET['id']);
             }
@@ -57,7 +59,7 @@ class ControllerOrder extends Controller
 
     function action_send_to_logist()
     {
-        $this->getAccess('order', 'ch');
+        $this->getAccess($this->page, 'ch');
         $order_item_id = isset($_GET['order_item_id']) ? intval($_GET['order_item_id']) : 0;
         if (!$order_item_id)
             return false;
@@ -67,7 +69,7 @@ class ControllerOrder extends Controller
 
     function action_cancel_order()
     {
-        $this->getAccess('order', 'ch');
+        $this->getAccess($this->page, 'ch');
         $this->model->cancelOrder($this->escape_and_empty_to_null($_POST['order_id']),
             $this->escape_and_empty_to_null($_POST['cancel_reason']));
         header("Location: " . $_SERVER['HTTP_REFERER']);
@@ -75,14 +77,14 @@ class ControllerOrder extends Controller
 
     function action_delete_commission_agent()
     {
-        $this->getAccess('order', 'd');
+        $this->getAccess($this->page, 'd');
         $this->model->deleteCommissionAgent($this->escape_and_empty_to_null($_GET['order_id']));
         header("Location: " . $_SERVER['HTTP_REFERER']);
     }
 
     function action_add_order_item()
     {
-        $this->getAccess('order', 'ch');
+        $this->getAccess($this->page, 'ch');
         $this->model->addOrderItem($this->escape_and_empty_to_null($_POST['order_id']),
             json_decode($_POST['product_ids']));
         header("Location: " . $_SERVER['HTTP_REFERER']);
@@ -90,7 +92,7 @@ class ControllerOrder extends Controller
 
     function action_delete_order_item()
     {
-        $this->getAccess('order', 'd');
+        $this->getAccess($this->page, 'd');
         $this->model->deleteOrderItem($this->escape_and_empty_to_null($_GET['order_id']),
             $this->escape_and_empty_to_null($_GET['order_item_id']));
         header("Location: " . $_SERVER['HTTP_REFERER']);
@@ -98,7 +100,7 @@ class ControllerOrder extends Controller
 
     function action_change_field()
     {
-        $this->getAccess('order', 'ch');
+        $this->getAccess($this->page, 'ch');
         if (isset($_POST["pk"]) && isset($_POST["name"]) && isset($_POST["value"])) {
             $order_id = intval($_POST["pk"]);
             $name = $this->model->escape_string($_POST["name"]);
@@ -115,7 +117,7 @@ class ControllerOrder extends Controller
 
     function action_change_item_field()
     {
-        $this->getAccess('order', 'ch');
+        $this->getAccess($this->page, 'ch');
         if (isset($_POST["pk"]) && isset($_POST["name"]) && isset($_POST["value"])) {
             $order_item_id = intval($_POST["pk"]);
             $name = $this->model->escape_string($_POST["name"]);
@@ -130,23 +132,24 @@ class ControllerOrder extends Controller
         }
     }
 
-    function action_change_contractor_id_to_name()
-    {
-        $tableAndId = (isset($_GET["tableAndId"]) && $_GET["tableAndId"]) ? $_GET["tableAndId"] : false;
-        if ($tableAndId) {
-            $arr = explode('.', $tableAndId);
-            $table = $arr[0];
-            $idName = $arr[1];
-            $id = $arr[2];
-            $contractor = $this->model->getFirst("SELECT `name` FROM $table WHERE `$idName` = $id");
-            echo $contractor['name'];
-            return;
-        }
-    }
+    // TODO remove it
+//    function action_change_contractor_id_to_name()
+//    {
+//        $tableAndId = (isset($_GET["tableAndId"]) && $_GET["tableAndId"]) ? $_GET["tableAndId"] : false;
+//        if ($tableAndId) {
+//            $arr = explode('.', $tableAndId);
+//            $table = $arr[0];
+//            $idName = $arr[1];
+//            $id = $arr[2];
+//            $contractor = $this->model->getFirst("SELECT `name` FROM $table WHERE `$idName` = $id");
+//            echo $contractor['name'];
+//            return;
+//        }
+//    }
 
     function action_hold()
     {
-        $this->getAccess('order', 'ch');
+        $this->getAccess($this->page, 'ch');
         $itemId = (isset($_GET["order_item_id"]) && $_GET["order_item_id"]) ? intval($_GET["order_item_id"]) : false;
         if (!$itemId)
             return;
@@ -156,7 +159,7 @@ class ControllerOrder extends Controller
 
     function action_issue()
     {
-        $this->getAccess('order', 'ch');
+        $this->getAccess($this->page, 'ch');
         $itemId = (isset($_GET["order_item_id"]) && $_GET["order_item_id"]) ? intval($_GET["order_item_id"]) : false;
         if (!$itemId)
             return;
@@ -166,7 +169,7 @@ class ControllerOrder extends Controller
 
     function action_reserve()
     {
-        $this->getAccess('order', 'ch');
+        $this->getAccess($this->page, 'ch');
         $itemId = (isset($_GET["order_item_id"]) && $_GET["order_item_id"]) ? intval($_GET["order_item_id"]) : false;
         $action = (isset($_GET["action"]) && $_GET["action"]) ? $_GET["action"] : false;
         if (!$itemId || !$action)

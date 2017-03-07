@@ -249,14 +249,14 @@
                                     <i class="fa fa-cogs"></i> Payments </div>
                                 <div class="actions">
                                     <form action="payment?id=new" method="POST" id="payment-form">
-                                        <input type="hidden" name="Order[category]" value="Client">
-                                        <input type="hidden" name="Order[contractor_id]"
+                                        <input type="hidden" name="Similar[category]" value="Client">
+                                        <input type="hidden" name="Similar[contractor_id]"
                                                value="<?= $this->client['client_id'] ?>">
-                                        <input type="hidden" name="Order[order_id]"
+                                        <input type="hidden" name="Similar[order_id]"
                                                value="<?= $this->order['order_id'] ?>">
                                         <?php if ($this->order['legal_entity_id'] &&
                                             $this->order['legal_entity_id'] !== null): ?>
-                                        <input type="hidden" name="Order[legal_entity_id]"
+                                        <input type="hidden" name="Similar[legal_entity_id]"
                                                value="<?= $this->order['legal_entity_id'] ?>">
                                         <?php endif; ?>
                                     </form>
@@ -466,7 +466,7 @@ require_once 'modals/cancel_order.php';
             }
         });
 
-        <?php if ($_SESSION["user_role"] == ROLE_ADMIN): ?>
+        <?php if ($_SESSION["perm"] >= OPERATING_MANAGER_PERM): ?>
             $('#editable-visible_order_id').editable({
                 type: "text",
                 inputclass: 'form-control input-medium',
@@ -575,25 +575,26 @@ require_once 'modals/cancel_order.php';
             }]
         });
         tablePay.on('draw', function() {
-            var contractors = $('table').find('.change-me-contractor');
-            $.each(contractors, function() {
-                if ($(this).attr('data-type') && $(this).text()) {
-                    var string = $(this).attr('data-type') + '.' + $(this).text();
-                    var that = $(this);
-                    $.ajax({
-                        url: '/order/change_contractor_id_to_name',
-                        data: {
-                            tableAndId: string
-                        },
-                        type: "GET",
-                        success: function(data) {
-                            if (data) {
-                                that.text(data);
-                            }
-                        }
-                    })
-                }
-            })
+            // TODO remove it
+//            var contractors = $('table').find('.change-me-contractor');
+//            $.each(contractors, function() {
+//                if ($(this).attr('data-type') && $(this).text()) {
+//                    var string = $(this).attr('data-type') + '.' + $(this).text();
+//                    var that = $(this);
+//                    $.ajax({
+//                        url: '/order/change_contractor_id_to_name',
+//                        data: {
+//                            tableAndId: string
+//                        },
+//                        type: "GET",
+//                        success: function(data) {
+//                            if (data) {
+//                                that.text(data);
+//                            }
+//                        }
+//                    })
+//                }
+//            })
         });
     });
 </script>

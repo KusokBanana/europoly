@@ -81,8 +81,15 @@ class ModelPayment extends Model
     {
         $ordersTable = ($by == 'supplier_id') ? 'suppliers_orders' : 'orders';
         $dateField = ($by == 'supplier_id') ? 'supplier_date_of_order' : 'start_date';
-        return $this->getAssoc("SELECT order_id as id, CONCAT(order_id, ', ', $dateField) as name FROM $ordersTable 
+        $category = ($by == 'supplier_id') ? ['Supplier'] : ["'Comission Agent'", "'Client'"];
+        $category = join(',', $category);
+        $return = $this->getAssoc("SELECT DISTINCT $ordersTable.order_id as id, 
+                  CONCAT(entities.prefix, ' ', $ordersTable.order_id, ', ', $dateField) as name 
+                  FROM $ordersTable
+                  LEFT JOIN payments ON (payments.order_id = $ordersTable.order_id AND payments.category IN ($category))
+                  LEFT JOIN legal_entities entities ON (payments.legal_entity_id = entities.legal_entity_id)
                   WHERE $by = $clientId");
+        return $return;
     }
 
     public function getContractorName($category, $contractorId)
@@ -97,8 +104,10 @@ class ModelPayment extends Model
     public function getExpenses()
     {
         $expenses = [];
-        $expenseCategories = $this->getAssoc("SELECT category_id as id, name FROM category_of_expense");
-        $expenseArticles = $this->getAssoc("SELECT article_id as id, name, category_id FROM article_of_expense");
+        $expenseCategories = $this->getAssoc("SELECT category_id as id, name FROM category_of_expense 
+                ORDER BY name ASC");
+        $expenseArticles = $this->getAssoc("SELECT article_id as id, name, category_id FROM article_of_expense 
+                ORDER BY name ASC");
         if (!empty($expenseCategories)) {
             foreach ($expenseCategories as $expenseCategory) {
                 $id = $expenseCategory['id'];
@@ -120,7 +129,7 @@ class ModelPayment extends Model
             }
         }
 
-        return $expenses;
+        return array_values($expenses);
     }
 
     public function savePayment($form, $paymentId)
@@ -131,6 +140,9 @@ class ModelPayment extends Model
             $fieldsArray = [];
             foreach ($form as $field => $value) {
                 $value = $value != "" ? $this->escape_string($value) : '';
+                if (in_array($field, ['sum', 'sum_in_eur', 'currency_rate'])) {
+                    $value = +str_replace(',', '.', $value);
+                }
                 $fieldsArray[] = "$field";
                 $valuesArray[] = "'$value'";
             }
@@ -185,10 +197,11 @@ class ModelPayment extends Model
             $values['order_date'] = $order['start_date'];
             $values['vis_order_id'] = $order['visible_order_id'];
             $values['payment_id'] = $paymentId;
-            $values['sum'] = $payment['sum'];
+            $values['sum'] = round($payment['sum'], 2);
+            $values['currency'] = $payment['currency'];
 
             require dirname(__FILE__) . '/../classes/NumbersToStrings.php';
-            $values['sum_string'] = NumbersToStrings::num2str($values['sum']);
+            $values['sum_string'] = NumbersToStrings::num2str($values['sum'], $payment['currency']);
 
             require dirname(__FILE__) . "/../../assets/PHPWord_CloneRow-master/PHPWord.php";
             $phpWord =  new PHPWord();
