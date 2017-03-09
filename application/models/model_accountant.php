@@ -20,10 +20,10 @@ class ModelAccountant extends Model
             IF(payments.category = 'Delivery', 
                 CONCAT('<a href=\"/transportation?id=', payments.contractor_id, '\">', transport.name, '</a>'), ''))"),
         array('dt' => 6, 'db' => "CONCAT('<a href=\"/', IF(payments.category = 'Supplier', 
-            'suppliers_order?id=', 'order?id='), payments.order_id, '\"\">', CONCAT(entities.prefix, ' ', payments.order_id), 
+            'suppliers_order?id=', 'order?id='), payments.order_id, '\"\">', orders.visible_order_id, 
             '</a>')"),
         array('dt' => 7, 'db' => "transfers.name"),
-        array('dt' => 8, 'db' => "payments.	currency"),
+        array('dt' => 8, 'db' => "payments.currency"),
         array('dt' => 9, 'db' => "CAST(payments.sum as decimal(64, 2))"),
         array('dt' => 10, 'db' => "payments.direction"),
         array('dt' => 11, 'db' => "payments.currency_rate"),
@@ -68,7 +68,7 @@ class ModelAccountant extends Model
         'Actions'
     ];
 
-    var $payments_table = 'payments
+    var $payments_table = "payments
                             left join legal_entities as entities on entities.legal_entity_id = payments.legal_entity_id
                             left join transfers on transfers.transfer_id = payments.transfer_type_id
                             left join users on users.user_id = payments.responsible_person_id
@@ -79,7 +79,8 @@ class ModelAccountant extends Model
                             left join customs on payments.contractor_id = customs.custom_id
                             left join transportation_companies as transport on 
                                 payments.contractor_id = transport.transportation_company_id
-                            ';
+                            left join orders ON (payments.order_id = orders.order_id AND payments.category = 'Client')
+                            ";
 
     public function __construct()
     {
@@ -116,7 +117,7 @@ class ModelAccountant extends Model
                 CONCAT('<a href=\"/custom?id=', payments.contractor_id, '\">', customs.name, '</a>'), ''),
             IF(payments.category = 'Delivery', 
                 CONCAT('<a href=\"/transportation?id=', payments.contractor_id, '\">', transport.name, '</a>'), ''))"),
-            array('dt' => 6, 'db' => "CONCAT(entities.prefix, ' ', payments.order_id)"),
+            array('dt' => 6, 'db' => "orders.visible_order_id"),
             array('dt' => 7, 'db' => "transfers.name"),
             array('dt' => 8, 'db' => "CAST(payments.sum as decimal(64, 2))"),
             array('dt' => 9, 'db' => "payments.currency"),

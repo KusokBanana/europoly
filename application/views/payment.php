@@ -128,42 +128,81 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                             </div>
                             <script>
                                 $(document).ready(function() {
+                                    var body = $('body');
 
-                                    $('body').on('change', 'select', function() {
+                                    body.on('change', 'select', function() {
                                         var selectType = $(this).attr('id');
                                         if (selectType != 'contractor' && selectType != 'category')
                                             return false;
                                         changeSelects(selectType);
-                                    }).on('change', '#sum, #currency_rate, #sum_in_eur', function() {
+                                    }).on('change', '#sum, #currency_rate, #sum_in_eur, #course, ' +
+                                        '#exchange_commission', function() {
                                         var sumInput = $('#sum'),
                                             currencyRateInput = $('#currency_rate'),
-                                            sumInEurInput = $('#sum_in_eur');
-                                        var sumValue = +sumInput.val().split(',').join('.'),
-                                            currencyRateValue = +currencyRateInput.val().split(',').join('.'),
-                                            sumInEurValue = +sumInEurInput.val().split(',').join('.');
+                                            sumInEurInput = $('#sum_in_eur'),
+                                            courseInput = $('#course'),
+                                            exchangeCommissionInput = $('#exchange_commission');
+                                        var sumValue = +sumInput.val().split(',').join('.').split(' ').join(''),
+                                            currencyRateValue = +currencyRateInput.val().split(',').join('.').split(' ').join(''),
+                                            sumInEurValue = +sumInEurInput.val().split(',').join('.').split(' ').join(''),
+                                            courseValue = +courseInput.val().split(',').join('.').split(' ').join(''),
+                                            exchangeCommissionValue = +exchangeCommissionInput.val().split(',').join('.').split(' ').join('');
+                                        var id = $(this).attr('id');
+                                        var value = 0;
 
-                                        if ($(this).attr('id') == 'sum') {
-                                            if (currencyRateValue != 0 && $(this).val() != 0) {
-                                                sumInEurInput.val(sumValue / currencyRateValue);
-                                            } else if (sumInEurValue != 0) {
-                                                currencyRateInput.val(sumValue / sumInEurValue)
-                                            }
-                                        } else if ($(this).attr('id') == 'currency_rate' && $(this).val() != 0) {
-                                            if (sumValue != 0) {
-                                                sumInEurInput.val(sumValue / currencyRateValue);
-                                            } else if (sumInEurValue != 0) {
-                                                sumInput.val(currencyRateValue * sumInEurValue);
-                                            }
-
-                                        } else if ($(this).attr('id') == 'sum_in_eur' && $(this).val() != 0) {
-                                            if (sumValue != 0) {
-                                                currencyRateInput.val(sumValue / sumInEurValue)
-                                            } else if (currencyRateValue != 0) {
-                                                sumInput.val(sumInEurValue * currencyRateValue)
-                                            }
+                                        switch (id) {
+                                            case 'sum':
+                                                if (currencyRateValue != 0 && $(this).val() != 0) {
+                                                    value = (sumValue / currencyRateValue).format(2);
+                                                    sumInEurInput.val(value);
+                                                } else if (sumInEurValue != 0) {
+                                                    value = (sumValue / sumInEurValue).format(4);
+                                                    currencyRateInput.val(value);
+                                                    value = (courseValue) ? ((currencyRateValue / courseValue - 1) * 100).format(2) : 0;
+                                                    exchangeCommissionInput.val(value);
+                                                }
+                                                sumInput.val(sumValue.format(2));
+                                                break;
+                                            case 'currency_rate':
+                                                if (sumValue != 0) {
+                                                    value = (currencyRateValue) ? (sumValue / currencyRateValue).format(2) : 0;
+                                                    sumInEurInput.val(value);
+                                                } else if (sumInEurValue != 0) {
+                                                    value = (currencyRateValue * sumInEurValue).format(2);
+                                                    sumInput.val(value);
+                                                }
+                                                value = (courseValue) ? ((currencyRateValue / courseValue - 1) * 100).format(2) : 0;
+                                                exchangeCommissionInput.val(value);
+                                                currencyRateInput.val(currencyRateValue.format(4));
+                                                break;
+                                            case 'sum_in_eur':
+                                                if (sumValue != 0) {
+                                                    value = (sumInEurValue) ? (sumValue / sumInEurValue).format(4) : 0;
+                                                    currencyRateInput.val(value);
+                                                    value = (courseValue) ? ((currencyRateValue / courseValue - 1) * 100).format(2) : 0;
+                                                    exchangeCommissionInput.val(value);
+                                                } else if (currencyRateValue != 0) {
+                                                    value = (sumInEurValue * currencyRateValue).format(2);
+                                                    sumInput.val(value);
+                                                }
+                                                sumInEurInput.val(sumInEurValue.format(2));
+                                                break;
+                                            case 'course':
+                                            case 'exchange_commission':
+                                                /*official_currency * (1+exchange_comission/100) = final currency rate*/
+                                                value = (courseValue * (1 + exchangeCommissionValue / 100)).format(4);
+                                                currencyRateInput.val(value);
+                                                currencyRateInput.trigger('change');
+                                                courseInput.val(courseValue.format(4));
+                                                exchangeCommissionInput.val(exchangeCommissionValue.format(2));
+                                                break;
                                         }
-
                                     });
+
+                                    Number.prototype.format = function(n, x) {
+                                        var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
+                                        return this.toFixed(Math.max(0, ~~n)).replace(new RegExp(re, 'g'), '$& ');
+                                    };
 
                                     var isNew = '<?= $isNewPayment && !$isPostOrder ? 'new' : 'not'; ?>';
                                     if (isNew !== 'new') {
@@ -216,12 +255,22 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
 
                                                     if (selectElement.hasClass('select2-hidden-accessible')) {
                                                         selectElement.select2('val', '');
-                                                    }
-                                                    selectElement.empty().append(newOptions).select2();
+                                                    } /*else {
+                                                        selectElement.editableSelect('remove');
+                                                    }*/
+                                                    selectElement.empty().append(newOptions);
+                                                    /*if (select == 'category')
+                                                        selectElement.editableSelect();
+                                                    else*/
+                                                    if (selectElement.is(':visible'))
+                                                        selectElement.select2();
+
                                                 } else {
                                                     if (selectElement.hasClass('select2-hidden-accessible')) {
                                                         selectElement.select2('val', '');
-                                                    }
+                                                    } /*else {
+                                                        selectElement.editableSelect('remove');
+                                                    }*/
                                                     selectElement.empty();
                                                 }
 
@@ -238,7 +287,7 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                                             break;
                                                         default:
                                                             contractorSelect.attr('required', 'required');
-                                                            orderSelect.attr('required', 'required');
+//                                                            orderSelect.attr('required', 'required');
                                                             break;
                                                     }
                                                 }
@@ -246,10 +295,31 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                         })
                                     }
 
+                                    body.on('click', '.add-new-contractor-toggle', function() {
+                                        var newContractorInput = $('#new_contractor'),
+                                            selectContractor = $('#contractor'),
+                                            orderSelect = $('#order_id');
+                                        if (!$(this).hasClass('new')) {
+                                            newContractorInput.show().attr('required', true);
+                                            selectContractor.select2('destroy').hide().removeAttr('required');
+                                            orderSelect.attr('disabled', true);
+                                            $(this).text('Select');
+                                        } else {
+                                            newContractorInput.hide().val('').removeAttr('required');
+                                            selectContractor.show().select2().attr('required', true);
+                                            orderSelect.attr('disabled', false);
+                                            $(this).text('New');
+                                        }
+                                        $(this).toggleClass('new');
+                                    })
+
                                 })
                             </script>
                             <div class="form-group">
-                                <label class="col-md-3 control-label" for="contractor">Contractor</label>
+                                <label class="col-md-3 control-label" for="contractor">
+                                    <button class="btn btn-info add-new-contractor-toggle" type="button">New</button>
+                                    Contractor
+                                </label>
                                 <div class="col-md-9">
                                     <select name="contractor_id" id="contractor" class="form-control" required>
                                         <option value="0">Please, choose category</option>
@@ -257,6 +327,7 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                     <input type="hidden" id="contractor_id_value"
                                            value="<?= isset($this->payment['contractor_id']) ?
                                                $this->payment['contractor_id'] : '' ?>">
+                                    <input type="text" name="new_contractor" id="new_contractor" style="display: none" class="form-control">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -312,9 +383,25 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                 <div class="col-md-9">
                                     <input type="text" id="sum" name="sum" required
                                            value="<?= isset($this->payment['sum']) ?
-                                               $this->payment['sum'] : '' ?>"
+                                               number_format($this->payment['sum'], 2, '.', ' ') : '' ?>"
                                            class="form-control" placeholder="Enter Sum">
                                     <span class="help-block"> Enter Sum with 2 decimal places. </span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label" for="course">Course CB</label>
+                                <div class="col-md-9">
+                                    <input type="text" id="course"
+                                           value=""
+                                           class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label" for="exchange_commission">Exchange Commission</label>
+                                <div class="col-md-9">
+                                    <input type="text" id="exchange_commission"
+                                           value=""
+                                           class="form-control">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -322,7 +409,7 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                 <div class="col-md-9">
                                     <input type="text" id="currency_rate" name="currency_rate" required
                                            value="<?= isset($this->payment['currency_rate']) ?
-                                               $this->payment['currency_rate'] : '' ?>"
+                                               number_format($this->payment['currency_rate'], 4, '.', ' ') : '' ?>"
                                            class="form-control">
                                 </div>
                             </div>
@@ -331,7 +418,7 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                 <div class="col-md-9">
                                     <input type="text" id="sum_in_eur" name="sum_in_eur" required
                                            value="<?= isset($this->payment['sum_in_eur']) ?
-                                               $this->payment['sum_in_eur'] : '' ?>"
+                                               number_format($this->payment['sum_in_eur'], 2, '.', ' ') : '' ?>"
                                            class="form-control">
                                 </div>
                             </div>
@@ -361,8 +448,7 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                               placeholder="Enter description"
                                               name="purpose_of_payment"
                                               id="purpose_of_payment"
-                                              rows="3"><?= isset($this->payment['purpose_of_payment']) ?
-                                            $this->payment['purpose_of_payment'] : '' ?></textarea>
+                                              rows="3"><?= $this->purpose ?></textarea>
                                 </div>
                             </div>
                             <div class="form-group">

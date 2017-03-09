@@ -515,7 +515,7 @@ $isNewClient = !isset($this->client['client_id']);
                     });
                 }
 
-                $('.bottom-form-block .actions').on('click', 'a', function(e) {
+                $('.bottom-form-block .actions').on('click', 'a.add-btn', function(e) {
                     e.preventDefault();
                     var btn = $(this);
                     var block = btn.closest('.main-block'),
@@ -523,11 +523,15 @@ $isNewClient = !isset($this->client['client_id']);
                     if (btn.hasClass('add-btn')) {
                         buildFormAjax(type);
                     }
-                    if (btn.hasClass('delete-btn')) {
-                        var answer = confirm('Are you sure to delete the last row?');
-                        if (!answer)
-                            return;
+                });
 
+                $('a.delete-btn').confirmation({
+                    singleton: true,
+                    popout: true,
+                    placement: 'right',
+                    onConfirm: function () {
+                        var btn = $(this);
+                        var block = btn.closest('.main-block');
                         var removingBlock = block.find('.form-row').last();
 
                         if (!removingBlock.length)
@@ -547,6 +551,7 @@ $isNewClient = !isset($this->client['client_id']);
                         });
                     }
                 });
+
                 var needToSave = false;
                 window.onbeforeunload = function (e) {
                     // Ловим событие для Interner Explorer

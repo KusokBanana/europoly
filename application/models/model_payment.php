@@ -81,14 +81,18 @@ class ModelPayment extends Model
     {
         $ordersTable = ($by == 'supplier_id') ? 'suppliers_orders' : 'orders';
         $dateField = ($by == 'supplier_id') ? 'supplier_date_of_order' : 'start_date';
-        $category = ($by == 'supplier_id') ? ['Supplier'] : ["'Comission Agent'", "'Client'"];
-        $category = join(',', $category);
+        $idField = ($by == 'supplier_id') ? 'order_id' : 'visible_order_id';
         $return = $this->getAssoc("SELECT DISTINCT $ordersTable.order_id as id, 
-                  CONCAT(entities.prefix, ' ', $ordersTable.order_id, ', ', $dateField) as name 
+                  CONCAT($idField, ', ', $dateField) as name 
                   FROM $ordersTable
-                  LEFT JOIN payments ON (payments.order_id = $ordersTable.order_id AND payments.category IN ($category))
-                  LEFT JOIN legal_entities entities ON (payments.legal_entity_id = entities.legal_entity_id)
                   WHERE $by = $clientId");
+        // TODO delete
+//        $return = $this->getAssoc("SELECT DISTINCT $ordersTable.order_id as id,
+//                  CONCAT(entities.prefix, ' ', $ordersTable.order_id, ', ', $dateField) as name
+//                  FROM $ordersTable
+//                  LEFT JOIN payments ON (payments.order_id = $ordersTable.order_id AND payments.category IN ($category))
+//                  LEFT JOIN legal_entities entities ON (payments.legal_entity_id = entities.legal_entity_id)
+//                  WHERE $by = $clientId");
         return $return;
     }
 
@@ -132,9 +136,50 @@ class ModelPayment extends Model
         return array_values($expenses);
     }
 
+    public function addNewContractorByCategory($category, $name)
+    {
+
+        switch ($category) {
+            case 'Client':
+                $base = ['clients'];
+                break;
+            case 'Comission Agent':
+                $base = ['clients', COMISSION_AGENT];
+                break;
+            case 'Supplier':
+                $base = [ 'suppliers'];
+                break;
+            case 'Customs':
+                $base = ['customs'];
+                break;
+            case 'Delivery':
+                $base = ['transportation_companies'];
+                break;
+            case 'Other':
+                $base = ['other'];
+                break;
+        }
+
+        if (empty($base))
+            return false;
+
+        $valuesNames = "`name`";
+        $values = "'$name'";
+        if (isset($base[1])) {
+            $valuesNames .= ", `type`";
+            $values .= ", '$base[1]'";
+        }
+
+        return $this->insert("INSERT INTO $base[0] ($valuesNames) VALUES ($values)");
+    }
+
     public function savePayment($form, $paymentId)
     {
         $result = false;
+        if (isset($form['new_contractor']) && $form['new_contractor']) {
+            $form['contractor_id'] = $this->addNewContractorByCategory($form['category'], $form['new_contractor']);
+            unset($form['new_contractor']);
+        }
         if ($paymentId == 'new') {
             $valuesArray = [];
             $fieldsArray = [];
@@ -158,6 +203,9 @@ class ModelPayment extends Model
                 if (!$value)
                     continue;
                 $value = $value != "" ? $this->escape_string($value) : '';
+                if (in_array($name, ['sum', 'sum_in_eur', 'currency_rate'])) {
+                    $value = +str_replace(',', '.', $value);
+                }
                 $setArray[] = "`$name` = '$value'";
             }
             $set = join(', ', $setArray);
@@ -226,5 +274,30 @@ class ModelPayment extends Model
             ],
         ];
         return $docs;
+    }
+
+    public function getPurpose($paymentArray)
+    {
+
+        $purpose = '';
+        if (!empty($paymentArray)) {
+            if (isset($paymentArray['order_id']) && $orderId = $paymentArray['order_id']) {
+                if (isset($paymentArray['category']) && $paymentArray['category'] == 'Client') {
+                    $order = $this->getFirst("SELECT visible_order_id, start_date, total_downpayment 
+                                                FROM orders WHERE order_id = $orderId");
+                    if ($order && $order['visible_order_id'] && isset($order['total_downpayment']) &&
+                        isset($order['start_date'])) {
+                        $date = date('d-m-Y', strtotime($order['start_date']));
+                        $visible = $order['visible_order_id'];
+                        $downpayment_rate = round($order['total_downpayment']);
+                        $purpose = "Order $visible on $date client downpayment $downpayment_rate%";
+                    }
+                }
+            }
+            if (isset($paymentArray['purpose_of_payment']) && $paymentArray['purpose_of_payment'])
+                $purpose = $paymentArray['purpose_of_payment'];
+        }
+        return $purpose;
+
     }
 }

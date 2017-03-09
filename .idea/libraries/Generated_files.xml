@@ -2,10 +2,12 @@
   <library name="Generated files" type="javaScript">
     <properties>
       <sourceFilesUrls>
+        <item url="file://$PROJECT_DIR$/assets/pages/scripts/login-5.min.js" />
         <item url="file://$PROJECT_DIR$/assets/layouts/global/scripts/quick-sidebar.min.js" />
       </sourceFilesUrls>
     </properties>
     <CLASSES>
+      <root url="file://$PROJECT_DIR$/assets/pages/scripts/login-5.min.js" />
       <root url="file://$PROJECT_DIR$/assets/layouts/global/scripts/quick-sidebar.min.js" />
     </CLASSES>
     <SOURCES />

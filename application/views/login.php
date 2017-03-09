@@ -48,7 +48,7 @@
         </div>
         <div class="col-md-6 login-container bs-reset">
             <div class="login-content">
-                <h1>Evropoly Administrating System</h1>
+                <h1>Пусть этот день, 8 Марта, подарит вам прекрасное настроение, исполнение всех сокровенных желаний! Пусть он станет стартом для новых начинаний, которые принесут только радость! Искренних вам комплиментов и добрых слов всегда!</h1>
                 <form action="/login/login" class="login-form" method="post">
                     <div class="alert alert-danger display-hide">
                         <button class="close" data-close="alert"></button>
