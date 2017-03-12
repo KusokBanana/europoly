@@ -34,6 +34,7 @@
                         <i class="icon-settings font-dark"></i>
                         <span class="caption-subject bold uppercase"> Warehouse: <?= $this->title ?> </span>
                     </div>
+                    <a class="btn dark btn-outline sbold pull-right" data-toggle="modal" href="#assemble-set"> Assemble Set </a>
                 </div>
                 <div class="tabbable-line tabbable-custom-profile">
                     <ul class="nav nav-tabs" style="padding:10px">
@@ -51,9 +52,15 @@
                         <div class="tab-pane active" id="tab_1_1">
                             <div class="portlet-body">
                                 <?php
-                                $buttons = ($this->id) ? ['<button class="btn sbold green" data-toggle="modal" data-target="#modal_newProductWarehouse">Add New <i class="fa fa-plus"></i></button>'] : [];
+                                $buttons = ['<button class="btn sbold green" data-toggle="modal" data-target="#modal_newProductWarehouse">Add New <i class="fa fa-plus"></i></button>'];
                                 if (!$this->access['ch'])
                                     $buttons = [];
+                                if ($this->access['d'])
+                                    $buttons[] = '<button data-link="/warehouse/discard_products" 
+                                                        class="btn sbold red discard-products-btn"
+                                                        data-sel=".tab-pane.active table">
+                                                            Discard Goods <i class="fa fa-minus"></i>
+                                                   </button>';
                                 $urlId = ($this->id) ? $this->warehouse['warehouse_id'] : 0;
                                 $table_data = [
                                     'buttons' => $buttons,
@@ -77,6 +84,18 @@
                             <div class="portlet-body">
                                 <div class="portlet-body">
                                     <?php
+                                    $buttons = [];
+                                    if ($this->access['ch'])
+                                        $buttons[] =
+                                            '<button data-link="/warehouse/issue_products" 
+                                                        class="btn sbold green issue-products-btn"
+                                                        data-sel="#table_warehouses_products_issue">Issue</button>';
+                                    if ($this->access['d'])
+                                        $buttons[] = '<button data-link="/warehouse/discard_products" 
+                                                        class="btn sbold red discard-products-btn"
+                                                        data-sel=".tab-pane.active table">
+                                                            Discard Goods <i class="fa fa-minus"></i>
+                                                        </button>';
                                     $table_data = [
                                         'buttons' => $buttons,
                                         'table_id' => "table_warehouses_products_issue",
@@ -100,6 +119,13 @@
                             <div class="portlet-body">
                                 <div class="portlet-body">
                                     <?php
+                                    $buttons = [];
+                                    if ($this->access['d'])
+                                        $buttons[] = '<button data-link="/warehouse/discard_products" 
+                                                        class="btn sbold red discard-products-btn"
+                                                        data-sel=".tab-pane.active table">
+                                                            Discard Goods <i class="fa fa-minus"></i>
+                                                        </button>';
                                     $table_data = [
                                         'buttons' => $buttons,
                                         'table_id' => "table_warehouses_products_reserved",
@@ -128,9 +154,7 @@
 </div>
 
 <?php
-if ($this->id != 0) {
     require_once 'modals/new_product_warehouse.php';
-}
 ?>
 <script>
     $(document).ready(function () {
@@ -150,5 +174,50 @@ if ($this->id != 0) {
             var url = location.href.replace(re,'');
             history.pushState({}, '', url);
         <?php endif; ?>
+
+        $('.issue-products-btn, .discard-products-btn').confirmation({
+            singleton: true,
+            popout: true,
+            placement: 'right',
+            onConfirm: function () {
+                var btn = $(this);
+                var tableSelector = btn.attr('data-sel');
+                console.log(tableSelector);
+                var table = $(tableSelector).DataTable();
+                console.log(table);
+                var selected = table.rows('.selected').data(),
+                    selectedCount = selected.length;
+                if (selectedCount) {
+                    var ids = [];
+                    $.each(selected, function() {
+                        ids.push(this[0]);
+                    });
+                    window.location.href = btn.attr('data-link') + '?products=' + ids.join();
+                } else {
+                    $('#modal_warehouse_error').modal('show')/*.find('.modal-body h4').text(errorMessage)*/;
+                }
+            }
+        });
+
     });
 </script>
+
+<div class="modal fade" id="modal_warehouse_error" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Issue</h4>
+            </div>
+            <div class="modal-body">
+                <h4 class="modal-title text-danger text-center">Select one of the items!</h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+</div>
+<?php include_once ('modals/assemble_set.php'); ?>

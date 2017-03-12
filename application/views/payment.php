@@ -292,7 +292,21 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                                     }
                                                 }
                                             }
+                                        });
+
+
+                                        $.ajax({
+                                            url: '/payment/get_purpose',
+                                            type: "POST",
+                                            data: {
+                                                order_id: $('#order_id').val(),
+                                                category: category
+                                            },
+                                            success: function(data) {
+                                                $('#purpose_of_payment').val(data);
+                                            }
                                         })
+
                                     }
 
                                     body.on('click', '.add-new-contractor-toggle', function() {
@@ -311,7 +325,7 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                             $(this).text('New');
                                         }
                                         $(this).toggleClass('new');
-                                    })
+                                    });
 
                                 })
                             </script>
@@ -389,24 +403,20 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-md-3 control-label" for="course">Course CB</label>
-                                <div class="col-md-9">
+                                <label class="col-md-2 col-md-offset-1 control-label" for="course">Official Currency Rate</label>
+                                <div class="col-md-1">
                                     <input type="text" id="course"
                                            value=""
                                            class="form-control">
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-3 control-label" for="exchange_commission">Exchange Commission</label>
-                                <div class="col-md-9">
+                                <label class="col-md-2 control-label" for="exchange_commission">Exchange Commission, %</label>
+                                <div class="col-md-1">
                                     <input type="text" id="exchange_commission"
                                            value=""
                                            class="form-control">
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-3 control-label" for="currency_rate">Currency Rate</label>
-                                <div class="col-md-9">
+                                <label class="col-md-2 control-label" for="currency_rate">Final Currency Rate</label>
+                                <div class="col-md-1">
                                     <input type="text" id="currency_rate" name="currency_rate" required
                                            value="<?= isset($this->payment['currency_rate']) ?
                                                number_format($this->payment['currency_rate'], 4, '.', ' ') : '' ?>"

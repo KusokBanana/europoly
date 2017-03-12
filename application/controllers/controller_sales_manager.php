@@ -23,6 +23,12 @@ class ControllerSales_manager extends Controller
             $this->view->access = $roles->getPageAccessAbilities($this->page);
 
             $this->view->manager = $this->model->getUser($_GET['id']);
+
+            if ($this->view->manager['is_deleted']) {
+                http_response_code(400);
+                die();
+            }
+
             $this->view->title = $this->view->manager['first_name'] . " " . $this->view->manager['last_name'];
             $this->view->managers = $this->model->getSalesManagersIdName();
             $this->view->clients = $this->model->getClientsOfSalesManager($this->view->manager['user_id']);

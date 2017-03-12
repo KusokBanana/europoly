@@ -4,7 +4,8 @@
             <form method="POST" action="/warehouse/add_product">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                    <h4 class="modal-title">Put product to <?= $this->warehouse['name'] ?> </h4>
+                    <h4 class="modal-title">Put product to <?= isset($this->warehouse['name']) ?
+                            $this->warehouse['name'] : 'Warehouse' ?> </h4>
                 </div>
                 <div class="modal-body">
                     <?php
@@ -19,10 +20,29 @@
                         'column_names' => $this->products_column_names,
                         'hidden_by_default' => $this->products_hidden_columns,
                         'click_url' => "#",
-                        'originalColumns' => $this->products_originalColumns
+                        'originalColumns' => $this->products_originalColumns,
+                        'selectSearch' => $this->catalogue_selects,
+                        'filterSearchValues' => $this->catalogue_rows,
                     ];
                     include 'application/views/templates/table.php'
                     ?>
+                    <?php if(!$this->id): ?>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Warehouse</label>
+                                    <select name="warehouse_id" class="form-control">
+                                        <?php foreach ($this->warehouses as $warehouse):
+                                            echo '<option value="'.$warehouse['value'].'">'.$warehouse['text'].'</option>';
+                                        endforeach;
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    <?php else: ?>
+                    <input type="hidden" name="warehouse_id" value="<?= $this->warehouse['warehouse_id'] ?>">
+                    <?php endif; ?>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -37,7 +57,6 @@
                             </div>
                         </div>
                         <input id="field_product_id" type="hidden" name="product_ids">
-                        <input type="hidden" name="warehouse_id" value="<?= $this->warehouse['warehouse_id'] ?>">
                     </div>
                 </div>
                 <div class="modal-footer">

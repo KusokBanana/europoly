@@ -191,7 +191,7 @@ class Roles {
                 'warehouse' => true,
             ],
             'd' => [
-                'warehouse' => true,
+
             ],
             'v' => [
                 'catalogue' => true,
@@ -221,7 +221,6 @@ class Roles {
                 'suppliersOrders' => true,
                 'suppliersOrder' => true,
                 'truck' => true,
-                'warehouse' => true,
             ],
             'd' => [ // delete
                 'order' => true,
@@ -240,7 +239,6 @@ class Roles {
                 'suppliersOrders' => true,
                 'suppliersOrder' => true,
                 'truck' => true,
-                'warehouse' => true,
             ],
             'v' => [ // visit
                 'brands' => true,

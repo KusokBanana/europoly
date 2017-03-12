@@ -16,6 +16,9 @@
 
     $sort = (isset($_SESSION['sort_columns']) && isset($_SESSION['sort_columns'][$table_id])) ? $_SESSION['sort_columns'][$table_id] :
         '1-asc';
+    $select = (isset($table_data['select']) && $table_data['select']) ? json_encode($table_data['select'])
+        : json_encode(['style' => 'os', 'selector' => 'td:first-child']);
+    $globalTable = isset($table_data['global']) && $table_data['global'] ? $table_data['global'] : false;
 
     ?>
     <div id="<?= $table_id ?>_left_buttons" class="btn-group">
@@ -137,6 +140,10 @@ if ($hidden_by_default) {
 
 ?>
 <script>
+    <?php if ($globalTable): ?>
+        var <?= $globalTable ?>;
+    <?php endif; ?>
+
     $(document).ready(function () {
         var $table = $('#<?= $table_id ?>');
         var hiddenByDefault = <?= $hidden_by_default ? $hidden_by_default : 'false'; ?>;
@@ -148,6 +155,7 @@ if ($hidden_by_default) {
         var $filterSearchValues = <?= json_encode($filterSearchValues); ?>;
         var $clickUrl = "<?= $click_url == 'javascript:;' ? false : $click_url; ?>";
         var $sort = <?= json_encode(explode('-', $sort)); ?>;
+        var $select = <?= $select; ?>;
         <?php
         if (isset($ajax['data']) && $ajax['data'] != "") {
             echo "var ajax = { url: '" . $ajax['url'] . "', 
@@ -184,13 +192,14 @@ if ($hidden_by_default) {
                 $sort
             ],
             orderCellsTop: true,
-            select: {
-                style: 'os',
-                selector: 'td:first-child'
-            },
+            select: $select,
             colReorder: false,
             deferRender: true
         });
+
+        <?php if ($globalTable): ?>
+        <?= $globalTable ?> = table;
+        <?php endif; ?>
 
         $table.on('draw.dt', function () {
             var tableConfirmBtn = $('.table-confirm-btn');

@@ -11,6 +11,7 @@ define('CONFIRMED_BY_SUPPLIER', 5);
 define('ON_THE_WAY', 8);
 define('ON_STOCK', 9);
 define('EXPECTS_ISSUE', 10);
+define('ISSUED', 11);
 
 // Roles
 define('ROLE_ADMIN', 1);

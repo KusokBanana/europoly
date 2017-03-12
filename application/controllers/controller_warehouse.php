@@ -41,20 +41,35 @@ class ControllerWarehouse extends Controller
                 $this->view->documents = $this->model->getDocuments($_GET['id']);
             }
 
+            $cache = new Cache();
+            $selectsCache = $cache->read('catalogue_selects');
+            if (!empty($selectsCache)) {
+                $array = $selectsCache;
+                $selects = $array['selects'];
+                $rows = $array['rows'];
+            } else {
+                $array = $this->model->getSelects();
+                $selects = $array['selects'];
+                $rows = $array['rows'];
+                $cache->write('catalogue_selects', $array);
+            }
+            $this->view->catalogue_selects = $selects;
+            $this->view->catalogue_rows = $rows;
+
+
             if ($id == 0) {
                 $this->view->title = "All";
                 $this->view->id = 0;
-                $this->view->build('templates/template.php', 'warehouse.php');
             } else {
                 $this->view->warehouse = $this->model->getById("warehouses", "warehouse_id", $id);
                 if ($this->view->warehouse != NULL) {
                     $this->view->id = $this->view->warehouse["warehouse_id"];
                     $this->view->title = $this->view->warehouse["name"];
-                    $this->view->build('templates/template.php', 'warehouse.php');
                 } else {
                     http_response_code(400);
                 }
             }
+            $this->view->build('templates/template.php', 'warehouse.php');
         } else {
             http_response_code(400);
         }
@@ -111,5 +126,46 @@ class ControllerWarehouse extends Controller
             $result = $this->model->printDoc($warehouse_id, $this->model->where_issue, 'expects_issue');
             echo $result;
         }
+    }
+
+    function action_issue_products()
+    {
+
+        if (isset($_GET['products'])) {
+            $products = $_GET['products'];
+            $this->model->issueProducts($products);
+            header("Location: " . $_SERVER['HTTP_REFERER']);
+        }
+
+    }
+    function action_discard_products()
+    {
+
+        if (isset($_GET['products'])) {
+            $products = $_GET['products'];
+            $this->model->discardProducts($products);
+            header("Location: " . $_SERVER['HTTP_REFERER']);
+        }
+
+    }
+
+    function action_assemble_set_submit()
+    {
+        if (isset($_POST['Assemble']) && isset($_POST['Assemble']['warehouse']) && isset($_POST['Assemble']['product'])) {
+            $assembleWarehouseProducts = $_POST['Assemble']['warehouse'];
+            $assembleProduct = $_POST['Assemble']['product'];
+            $warehouseId = $_POST['warehouse_id'];
+            $this->model->submitAssemble($assembleWarehouseProducts, $assembleProduct, $warehouseId);
+            header("Location: " . $_SERVER['HTTP_REFERER']);
+        }
+    }
+
+    function action_dt_assemble()
+    {
+
+        if (isset($_GET['items'])) {
+            $this->model->getDTProductsAssembleSource($_GET, $_GET['items']);
+        }
+
     }
 }

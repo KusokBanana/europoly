@@ -138,6 +138,7 @@ class ModelWarehouse extends ModelManagers_orders
         } else {
             $where = 'products_warehouses.warehouse_id IS NOT NULL';
         }
+        $where .= " AND products_warehouses.status_id <> " . ISSUED;
         switch ($type) {
             case '':
                 $where = '(' . $where . ' AND '. $this->where . ')';
@@ -343,4 +344,136 @@ class ModelWarehouse extends ModelManagers_orders
         ];
         return $docs;
     }
+
+    public function issueProducts($items)
+    {
+        if ($items) {
+            $items = explode(',', $items);
+            foreach ($items as $item) {
+                $this->update("UPDATE order_items SET status_id = " . ISSUED . " WHERE item_id = $item");
+            }
+            return true;
+        }
+    }
+
+    public function discardProducts($items)
+    {
+        if ($items) {
+            $warehouse_products = $this->getAssoc("SELECT * FROM order_items WHERE item_id IN ($items)");
+            if (!empty($warehouse_products)) {
+                foreach ($warehouse_products as $warehouse_product) {
+                    $itemId = $warehouse_product['item_id'];
+                    unset($warehouse_product['item_id']);
+                    $names = $values = [];
+                    foreach ($warehouse_product as $name => $value) {
+                        $value = trim($value);
+                        if (!$value)
+                            continue;
+                        $value = mysql_escape_string($value);
+                        $names[] = "`$name`";
+                        $values[] = "'$value'";
+                    }
+                    $names = implode(',', $names);
+                    $values = implode(',', $values);
+                    $result = $this->insert("INSERT INTO discarded_goods ($names) VALUES ($values)");
+                    if ($result) {
+                        $this->delete("DELETE FROM order_items WHERE item_id = $itemId");
+                    } // TODO maybe add here update of orders for count and other
+                }
+                return true;
+            }
+        }
+    }
+
+    public function getDTProductsAssembleSource($input, $items)
+    {
+
+        $columns = [
+            array('dt' => 0, 'db' => 'products_warehouses.item_id'),
+            array('dt' => 1, 'db' => "CONCAT('<a href=\"/product?id=',
+                products.product_id,
+                '\">', 
+                    IFNULL(CONCAT(brands.name, ', '), ''),
+                    IFNULL(CONCAT(products.collection, ', '), ''),
+                    IFNULL(CONCAT(wood.name, ', '), ''),
+                    IFNULL(CONCAT(grading.name, ', '), ''),
+                    IFNULL(CONCAT(colors.name, ', '), ''),
+                    IFNULL(CONCAT(products.texture, ', '), ''),
+                    IFNULL(CONCAT(products.surface, ', '), ''),
+                    IFNULL(CONCAT(products.thickness, 'x', products.width, 'x', products.length), ''),
+                '</a>')"),
+            array('dt' => 2, 'db' => "CONCAT('<span class=\"assemble-source-price\">', 
+                CAST((IFNULL(products_warehouses.purchase_price, 0) + IFNULL(products_warehouses.import_VAT, 0) + 
+                IFNULL(products_warehouses.import_brokers_price, 0) + IFNULL(products_warehouses.import_tax, 0) + 
+                IFNULL(products_warehouses.delivery_price, 0)) as decimal(64, 2)),
+                '</span>', ', ', products.currency)"),
+            array('dt' => 3, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-assemble-amount\" data-pk=\"',
+                products_warehouses.item_id, '\" data-name=\"assemble-amount\" data-value=\"',products_warehouses.amount,'\" 
+                data-original-title=\"Enter Quantity\" data-max=\"', products_warehouses.amount, '\">', 
+                products_warehouses.amount, '</a>',
+                ', ', products.packing_type)"),
+            array('dt' => 4, 'db' => "CONCAT('<span class=\"assemble-source-price-total\">', 
+                CAST(((IFNULL(products_warehouses.purchase_price, 0) + IFNULL(products_warehouses.import_VAT, 0) + 
+                IFNULL(products_warehouses.import_brokers_price, 0) + IFNULL(products_warehouses.import_tax, 0) + 
+                IFNULL(products_warehouses.delivery_price, 0)) * products_warehouses.amount) as decimal(64, 2)), 
+                '</span>', ', ', products.currency)"),
+        ];
+
+        $where = "products_warehouses.item_id IN ($items)";
+
+        $table = $this->products_warehouses_table . " left join wood on products.wood_id = wood.wood_id " .
+            "left join grading on products.grading_id = grading.grading_id ".
+            "left join patterns on products.pattern_id = patterns.pattern_id ".
+            "left join colors on products.color_id = colors.color_id ".
+            "left join colors as colors2 on products.color2_id = colors2.color_id ";
+
+        $this->sspComplex($table, "products_warehouses.item_id", $columns,
+            $input, null, $where);
+    }
+
+    public function submitAssemble($assembleWarehouseProducts, $assembleProduct, $warehouseId)
+    {
+
+        if (!empty($assembleWarehouseProducts) && !empty($assembleProduct)) {
+
+            $pks = array_keys($assembleWarehouseProducts);
+            $pks = implode(',', $pks);
+            $items = $this->getAssoc("SELECT * FROM order_items WHERE item_id IN ($pks)");
+            foreach ($items as $item) {
+                $itemId = $item['item_id'];
+                $enteredAmount = $assembleWarehouseProducts[$itemId];
+                $realAmount = $item['amount'];
+                if ($realAmount >= $enteredAmount && $enteredAmount) {
+                    unset($item['item_id']);
+                    $item['status_id'] = ISSUED;
+                    $item['amount'] = $enteredAmount;
+                    $valuesArray = [];
+                    $fieldsArray = [];
+                    foreach ($item as $field => $value) {
+                        $value = $value != "" ? $this->escape_string($value) : '';
+                        if (!$value)
+                            continue;
+                        $fieldsArray[] = "$field";
+                        $valuesArray[] = "'$value'";
+                    }
+                    $values = join(', ', $valuesArray);
+                    $fieldsString = join(', ', $fieldsArray);
+                    $id = $this->insert("INSERT INTO order_items ($fieldsString) VALUES ($values)");
+                    if ($id) {
+                        $newAmount = $realAmount - $enteredAmount;
+                        $this->update("UPDATE order_items SET amount = $newAmount WHERE item_id = $itemId");
+                    }
+                }
+            }
+
+            $pk = key($assembleProduct);
+            $amount = $assembleProduct[$pk];
+
+            $this->insert("INSERT INTO order_items (`product_id`, `amount`, `warehouse_id`, `status_id`) 
+                VALUES ($pk, $amount, $warehouseId, ".ON_STOCK.")");
+
+        }
+
+    }
+
 }

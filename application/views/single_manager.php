@@ -50,7 +50,10 @@
             <?php if ($this->access['d']): ?>
                 <br>
                 <a href="/sales_manager/delete_user?id=<?= $this->manager['user_id']; ?>"
-                   class="text-right btn btn-danger">Удалить пользователя</a>
+                   class="text-right btn btn-danger" data-placement="top" data-popout="true"
+                   data-singleton="true" data-toggle="confirmation" data-title="Are you sure to delete this user?">
+                        Удалить пользователя
+                </a>
             <?php endif; ?>
             <div class="tab-content">
                 <div class="tab-pane active" id="tab_1_1">

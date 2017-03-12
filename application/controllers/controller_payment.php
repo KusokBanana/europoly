@@ -95,4 +95,13 @@ class ControllerPayment extends Controller
         }
     }
 
+    function action_get_purpose()
+    {
+
+        if (isset($_POST['order_id']) && isset($_POST['category'])) {
+            echo $this->model->getPurpose($_POST);
+        }
+
+    }
+
 }

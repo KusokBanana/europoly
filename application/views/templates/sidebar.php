@@ -113,16 +113,6 @@
                         </a>
                     </li>
                     <li class="nav-item start ">
-                        <a href="/warehouse?id=5" class="nav-link ">
-                            <span class="title">Upcoming Delivery</span>
-                        </a>
-                    </li>
-                    <li class="nav-item start ">
-                        <a href="/warehouse?id=6" class="nav-link ">
-                            <span class="title">Expects Issue</span>
-                        </a>
-                    </li>
-                    <li class="nav-item start ">
                         <a href="/warehouse?id=7" class="nav-link ">
                             <span class="title">Other</span>
                         </a>

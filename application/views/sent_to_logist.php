@@ -59,9 +59,9 @@
                                                 table.find('tr.selected .order-item-product') : [];
                                             var brandStr = '';
                                             var error = '';
-                                            var ids = {};
+                                            var ids = [];
                                             if (table.attr('data-selected') !== undefined)
-                                                ids = table.attr('data-selected').split();
+                                                ids = table.attr('data-selected').split(',');
 
                                             var brandError = false;
                                             if (products.length) {
@@ -75,6 +75,7 @@
                                             }
                                             if (brandError)
                                                 error = 'Items must have the same brands';
+
                                             $.ajax({
                                                 type: "POST",
                                                 url: "application/views/modals/new_supplier_order.php",
