@@ -17,6 +17,7 @@ class ControllerWarehouse extends Controller
         $roles = new Roles();
         $this->view->access = $roles->getPageAccessAbilities($this->page);
         $this->view->warehouses = $this->model->getWarehousesIdNames();
+        $this->view->logs = $this->model->getLogs();
 
         if (isset($_GET["id"])) {
             $id = intval($_GET["id"]);
@@ -89,17 +90,24 @@ class ControllerWarehouse extends Controller
     function action_add_product()
     {
         $this->getAccess($this->page, 'ch');
-        $docName = $this->model->addProductsWarehouse(
-            $this->escape_and_empty_to_null($_POST['product_ids']),
-            $this->escape_and_empty_to_null($_POST['warehouse_id']),
-            $this->escape_and_empty_to_null($_POST['amount']),
-            $this->escape_and_empty_to_null($_POST['buy_price']));
-        $url = "Location: /warehouse?id=" . $_POST['warehouse_id'];
-        $roles = new Roles();
-        if ($roles->getPageAccessAbilities('warehouse')['p']) {
-            $url .= '&documentPath=' . $docName;
+        if (isset($_POST['NewWarehouseProduct']) && isset($_POST['warehouse_id'])) {
+            $products = $_POST['NewWarehouseProduct'];
+            $warehouse_id = $_POST['warehouse_id'];
+            $this->model->addProductsWarehouse($products, $warehouse_id);
+
+            $url = "Location: /warehouse?id=" . $warehouse_id;
+            header($url);
         }
-        header($url);
+
+//        $docName = $this->model->addProductsWarehouse(
+//            $this->escape_and_empty_to_null($_POST['product_ids']),
+//            $this->escape_and_empty_to_null($_POST['warehouse_id']),
+//            $this->escape_and_empty_to_null($_POST['amount']),
+//            $this->escape_and_empty_to_null($_POST['buy_price']));
+//        $roles = new Roles();
+//        if ($roles->getPageAccessAbilities('warehouse')['p']) {
+//            $url .= '&documentPath=' . $docName;
+//        }
     }
 
     function action_change_item_field()
@@ -140,17 +148,17 @@ class ControllerWarehouse extends Controller
     }
     function action_discard_products()
     {
-
+        $this->getAccess($this->page, 'ch');
         if (isset($_GET['products'])) {
             $products = $_GET['products'];
             $this->model->discardProducts($products);
             header("Location: " . $_SERVER['HTTP_REFERER']);
         }
-
     }
 
     function action_assemble_set_submit()
     {
+        $this->getAccess($this->page, 'ch');
         if (isset($_POST['Assemble']) && isset($_POST['Assemble']['warehouse']) && isset($_POST['Assemble']['product'])) {
             $assembleWarehouseProducts = $_POST['Assemble']['warehouse'];
             $assembleProduct = $_POST['Assemble']['product'];
@@ -167,5 +175,12 @@ class ControllerWarehouse extends Controller
             $this->model->getDTProductsAssembleSource($_GET, $_GET['items']);
         }
 
+    }
+
+    function action_print_log_doc()
+    {
+        if (isset($_GET['id'])) {
+            echo $this->model->printLogDoc($_GET['id']);
+        }
     }
 }

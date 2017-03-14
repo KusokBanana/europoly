@@ -85,7 +85,9 @@
                                                 ],
                                                 'column_names' => $this->clients_column_names,
                                                 'click_url' => "client?id=",
-                                                'originalColumns' => $this->originalColumns
+                                                'originalColumns' => $this->originalColumns,
+                                                'selectSearch' => $this->selects,
+                                                'filterSearchValues' => $this->rows,
                                             ];
                                             include 'application/views/templates/table.php'
                                             ?>

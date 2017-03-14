@@ -158,7 +158,7 @@
 ?>
 <script>
     $(document).ready(function () {
-        var $tables_warehouses = $('#table_warehouses_products');
+        var $tables_warehouses = $('#table_warehouses_products, #table_warehouses_products_issue, #table_warehouses_products_reserved');
         var warehouses = <?= json_encode($this->warehouses); ?>;
         $tables_warehouses.on('draw.dt', function () {
             $('.x-warehouse_id').editable({
@@ -167,6 +167,7 @@
                 source: warehouses
             });
         });
+        // TODO remove it
         <?php if (isset($_GET['documentPath']) && $_GET['documentPath']): ?>
             var path = '<?= $_GET['documentPath']; ?>';
             location.href = path;

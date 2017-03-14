@@ -5,7 +5,11 @@ class ModelClients extends Model
     var $client_columns = [
         array('dt' => 0, 'db' => "clients.client_id"),
         array('dt' => 1, 'db' => "clients.name"),
-        array('dt' => 2, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-sales_manager\" data-pk=\"', clients.client_id ,'\" data-name=\"sales_manager_id\" data-value=\"', clients.sales_manager_id, '\" data-url=\"/clients/change_item_field\" data-original-title=\"Change Manager\">', managers.first_name, ' ', managers.last_name, '<a href=\"/sales_manager?id=', clients.sales_manager_id, '\"><i class=\"glyphicon glyphicon-link\"></i></a></a>')"),
+        array('dt' => 2, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-sales_manager\" data-pk=\"', 
+            clients.client_id ,'\" data-name=\"sales_manager_id\" data-value=\"', clients.sales_manager_id, '\"
+            data-url=\"/clients/change_item_field\" data-original-title=\"Change Manager\">', managers.first_name, ' ', 
+            managers.last_name, '</a><a href=\"/sales_manager?id=', clients.sales_manager_id, '\">
+            <i class=\"glyphicon glyphicon-link\"></i></a>')"),
         array('dt' => 3, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-commission_agent\" data-pk=\"', clients.client_id ,'\" data-name=\"commission_agent_id\" data-value=\"', IFNULL(clients.commission_agent_id, ''), '\" data-url=\"/clients/change_item_field\" data-original-title=\"Change Commission Agent\">', IFNULL(commission_agents.name, ''), '</a>')"),
         array('dt' => 4, 'db' => "clients.city"),
         array('dt' => 5, 'db' => "clients.turnover"),
@@ -31,6 +35,7 @@ class ModelClients extends Model
         array('dt' => 24, 'db' => "clients.samples_position"),
         array('dt' => 25, 'db' => "clients.needful_actions"),
         array('dt' => 26, 'db' => "clients.comments"),
+        array('dt' => 27, 'db' => "clients.type"),
 
     ];
 
@@ -62,6 +67,7 @@ class ModelClients extends Model
         'Samples Position',
         'Needful Actions',
         'Comments',
+        '_type'
     ];
 
     var $client_table = 'clients
@@ -83,7 +89,7 @@ class ModelClients extends Model
         $columns = $this->client_columns;
 
         array_push($columns,
-            array('dt' => 27, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
+            array('dt' => 28, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
                         CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to delete the client?\" 
                                    href=\"/contractors/delete?id=', clients.client_id, '&type=clients', '\" 
                                    class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" 
@@ -98,9 +104,9 @@ class ModelClients extends Model
         $this->sspComplex($this->client_table, "clients.client_id", $columns, $input, null, 'clients.is_deleted = 0');
     }
 
-    function getDTEndCustomers($input)
+    function getDTAllClients($input)
     {
-        $where = "clients.type = 'End-Customer' AND clients.is_deleted = 0";
+        $where = "clients.is_deleted = 0";
         if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
             $where .= " AND clients.sales_manager_id = " . $_SESSION['user_id'];
             $this->unLinkStrings($this->client_columns, [17]);
@@ -112,32 +118,46 @@ class ModelClients extends Model
             $where);
     }
 
-    function getDTCommissionAgents($input)
-    {
-        $where = "clients.type = '".COMISSION_AGENT."' AND clients.is_deleted = 0";
-        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
-            $where .= " AND clients.sales_manager_id = " . $_SESSION['user_id'];
-            $this->unLinkStrings($this->client_columns, [17]);
-        }
-
-        $columns = $this->getColumns($this->client_columns, 'clients', 'table_clients');
-
-        $this->sspComplex($this->client_table, "clients.client_id", $columns, $input, null,
-            $where);
-    }
-
-    function getDTDealers($input)
-    {
-        $where = "clients.type = 'Dealer' AND clients.is_deleted = 0";
-        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
-            $where .= " AND clients.sales_manager_id = " . $_SESSION['user_id'];
-            $this->unLinkStrings($this->client_columns, [17]);
-        }
-
-        $columns = $this->getColumns($this->client_columns, 'clients', 'table_clients');
-
-        $this->sspComplex($this->client_table, "clients.client_id", $columns, $input, null, $where);
-    }
+//    function getDTEndCustomers($input)
+//    {
+//        $where = "clients.type = '".CLIENT_TYPE_END_CUSTOMER."' AND clients.is_deleted = 0";
+//        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
+//            $where .= " AND clients.sales_manager_id = " . $_SESSION['user_id'];
+//            $this->unLinkStrings($this->client_columns, [17]);
+//        }
+//
+//        $columns = $this->getColumns($this->client_columns, 'clients', 'table_clients');
+//
+//        $this->sspComplex($this->client_table, "clients.client_id", $columns, $input, null,
+//            $where);
+//    }
+//
+//    function getDTCommissionAgents($input)
+//    {
+//        $where = "clients.type = '".CLIENT_TYPE_COMISSION_AGENT."' AND clients.is_deleted = 0";
+//        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
+//            $where .= " AND clients.sales_manager_id = " . $_SESSION['user_id'];
+//            $this->unLinkStrings($this->client_columns, [17]);
+//        }
+//
+//        $columns = $this->getColumns($this->client_columns, 'clients', 'table_clients');
+//
+//        $this->sspComplex($this->client_table, "clients.client_id", $columns, $input, null,
+//            $where);
+//    }
+//
+//    function getDTDealers($input)
+//    {
+//        $where = "clients.type = '".CLIENT_TYPE_DEALER."' AND clients.is_deleted = 0";
+//        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
+//            $where .= " AND clients.sales_manager_id = " . $_SESSION['user_id'];
+//            $this->unLinkStrings($this->client_columns, [17]);
+//        }
+//
+//        $columns = $this->getColumns($this->client_columns, 'clients', 'table_clients');
+//
+//        $this->sspComplex($this->client_table, "clients.client_id", $columns, $input, null, $where);
+//    }
 
     function addClient($name, $type, $manager_id, $commission_agent_id, $country_id, $region_id, $city)
     {
@@ -151,19 +171,22 @@ class ModelClients extends Model
         return $result;
     }
 
-    function getSelects()
+    public function getSelects()
     {
-        $where = "clients.type = '".COMISSION_AGENT."' AND clients.is_deleted = 0";
-        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER)
+        $where = "clients.is_deleted = 0";
+        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
             $where .= " AND clients.sales_manager_id = " . $_SESSION['user_id'];
-        $ssp = $this->sspComplex($this->client_table, "clients.client_id", $this->client_columns, null, null,
+            $this->unLinkStrings($this->client_columns, [17]);
+        }
+        $role = new Roles();
+        $cols = $role->returnModelColumns($this->client_columns, 'clients');
+        $columns = $role->returnModelNames($this->client_column_names, 'clients');
+
+        $ssp = $this->getSspComplexJson($this->client_table, "clients.client_id", $cols, null, null,
             $where);
 
-        $columns = $this->client_column_names;
         $rowValues = json_decode($ssp, true)['data'];
-        $ignoreArray = ['_client_id', 'Turnover', 'Profit', 'Discount Rate'];
-
-
+        $ignoreArray = ['_client_id', 'Turnover', 'Profit', 'Discount Rate', 'Change Type'];
 
         if (!empty($rowValues)) {
             $selects = [];
@@ -179,7 +202,6 @@ class ModelClients extends Model
                     if (!empty($match) && isset($match[1])) {
                         $value = $match[1];
                     }
-
                     if ((isset($selects[$name]) && !in_array($value, $selects[$name])) || !isset($selects[$name]))
                         $selects[$name][] = $value;
                 }

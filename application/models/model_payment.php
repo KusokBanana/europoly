@@ -26,7 +26,7 @@ class ModelPayment extends Model
                     $this->getOrdersBy($contractorId, 'client_id');
                 break;
             case 'Comission Agent':
-                $select = (!$contractorId) ? $this->getClientsByType(COMISSION_AGENT) :
+                $select = (!$contractorId) ? $this->getClientsByType(CLIENT_TYPE_COMISSION_AGENT) :
                     $this->getOrdersBy($contractorId, 'commission_agent_id');
                 break;
             case 'Supplier':
@@ -144,7 +144,7 @@ class ModelPayment extends Model
                 $base = ['clients'];
                 break;
             case 'Comission Agent':
-                $base = ['clients', COMISSION_AGENT];
+                $base = ['clients', CLIENT_TYPE_COMISSION_AGENT];
                 break;
             case 'Supplier':
                 $base = [ 'suppliers'];
@@ -298,6 +298,110 @@ class ModelPayment extends Model
                 $purpose = $paymentArray['purpose_of_payment'];
         }
         return $purpose;
+
+    }
+
+    public function getCurDataForDate($for_date = false)
+    {
+
+        $url = "http://www.cbr.ru/scripts/XML_daily.asp"; // URL, XML документ, всегда содержит актуальные данные
+
+        if ($for_date) {
+            $for_date = date('d.m.Y', is_int($for_date) ? $for_date : strtotime($for_date));
+            $url .= '?date_req=' . $for_date;
+        }
+
+        $curs = array(); // массив с данными
+        $curTypes = ['GBP', 'USD', 'EUR', 'SEK', 'AED'];
+
+        if(!$xml=simplexml_load_file($url)) die('Error load XML'); // загружаем полученный документ в дерево XML
+
+        $curDate = self::get_timestamp($xml->attributes()->Date); // получаем текущую дату
+
+        foreach($xml->Valute as $m){ // перебор всех значений
+            if(in_array($m->CharCode, $curTypes)){
+                $curs[(string)$m->CharCode]=(float)str_replace(",", ".", (string)$m->Value); // запись значений в массив
+            }
+        }
+
+        $euro = $curs['EUR'];
+        if (!$euro)
+            die('EURO not found');
+        unset($curs['EUR']);
+        $curs['РУБ'] = 1;
+
+        foreach ($curs as $name => $cur) {
+            if ($cur) {
+                $curs[$name] = $cur/$euro;
+            }
+        }
+        return $curs;
+    }
+
+    public function cbrParser($for_date = false)
+    {
+        $curs = $this->getCurDataForDate($for_date);
+
+        $names = '';
+        $values = '';
+        foreach ($curs as $name => $cur) {
+            if ($cur) {
+                $name .= '_value';
+                $names .= "`$name`, ";
+                $values .= "$cur, ";
+            }
+        }
+        if ($names && $values) {
+            if ($for_date)
+                $cbr_date = date('Y-m-d', strtotime($for_date));
+            else
+                $cbr_date = date('Y-m-d');
+            $this->insert("INSERT INTO official_currency ($names date) VALUES ($values '$cbr_date')");
+
+//            try {
+//                $this->insert("INSERT INTO official_currency ($names date) VALUES ($values '$cbr_date')");
+//            } catch (Exception $e) {
+//                if ($for_date)
+//                    $for_date = date('Y-m-d', strtotime($for_date));
+//                else
+//                    $for_date = date('Y-m-d');
+//                echo '<br>';
+//                echo $for_date;
+//                $this->insert("INSERT INTO official_currency ($names date) VALUES ($values '$for_date')");
+//            }
+        }
+
+    }
+
+    private static function get_timestamp($date)
+    {
+        list($d, $m, $y) = explode('.', $date);
+        return mktime(0, 0, 0, $m, $d, $y);
+    }
+
+    public function getOfficialCurrency($date, $currency)
+    {
+
+        if ($date && $currency) {
+            if ($currency == 'EUR')
+                return 1;
+
+            $date = date('Y-m-d', strtotime($date));
+            $cur = $currency . '_value';
+            $value = $this->getFirst("SELECT `$currency` FROM official_currency WHERE date = $date");
+
+            if (!$value) {
+                $value = $this->getCurDataForDate($date);
+                if (!$value)
+                    return 0;
+                $value = $value[$currency];
+            }
+            else {
+                $value = $value[$cur];
+            }
+
+            return floatval($value);
+        }
 
     }
 }

@@ -236,6 +236,7 @@ class ModelSuppliers_orders extends ModelManagers_orders
                               order_items_count = $order_items_count WHERE order_id = $suppliers_order");
 
             $this->updateItemsStatus($suppliers_order);
+            $this->clearCache(['managers_orders_selects', 'sent_to_logist']);
         }
         return $suppliers_order;
     }

@@ -77,9 +77,6 @@
                                             ?>
                                         </div>
                                         <div class="tab-pane" id="tab2">
-                                            <div class="form-group">
-                                                Здесь должна располагаться таблица с номенклатурой с возможностью выбора только 1 товара
-                                            </div>
                                             <?php
                                             $table_data = [
                                                 'buttons' => [

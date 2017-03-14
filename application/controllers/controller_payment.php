@@ -104,4 +104,24 @@ class ControllerPayment extends Controller
 
     }
 
+    function action_parse_cbr()
+    {
+        $this->model->cbrParser();
+    }
+
+    function action_get_currency()
+    {
+        if (isset($_POST['date']) && isset($_POST['currency'])) {
+            echo $this->model->getOfficialCurrency($_POST['date'], $_POST['currency']);
+        }
+    }
+
+//    function action_parse_all()
+//    {
+//        for ($day=30; $day>=0; $day--) {
+//            $date = mktime(0, 0, 0, date("m"), +date("d")-$day, +date("Y"));
+//            $this->model->cbrParser($date);
+//        }
+//    }
+
 }

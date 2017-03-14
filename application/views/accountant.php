@@ -62,7 +62,9 @@
                                         ],
                                         'column_names' => $this->column_names,
                                         'click_url' => "javascript:;",
-                                        'originalColumns' => $this->originalColumns
+                                        'originalColumns' => $this->originalColumns,
+                                        'selectSearch' => $this->selects,
+                                        'filterSearchValues' => $this->rows,
                                     ];
                                     include 'application/views/templates/table.php'
                                     ?>

@@ -22,6 +22,13 @@ class ControllerContractors extends Controller
         $roles = new Roles();
         $this->view->originalColumns = $roles->returnModelNames($this->model->client_column_names, $this->page);
 
+        $array = $this->model->getSelects();
+        $selects = $array['selects'];
+        $rows = $array['rows'];
+
+        $this->view->selects = $selects;
+        $this->view->rows = $rows;
+
         $this->view->managers = $this->model->getSalesManagersIdName();
         $this->view->commission_agents = $this->model->getCommissionAgentsIdName();
         $this->view->build('templates/template.php', 'contractors.php');

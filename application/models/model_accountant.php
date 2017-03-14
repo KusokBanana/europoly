@@ -151,6 +151,45 @@ class ModelAccountant extends Model
 
     }
 
+    function getSelects()
+    {
+        if ($_SESSION['perm'] <= SALES_MANAGER_PERM) {
+            $this->unLinkStrings($this->payments_columns, [5, 6]);
+        }
+
+        $role = new Roles();
+
+        $cols = $role->returnModelColumns($this->payments_columns, 'accountant');
+        $columns = $role->returnModelNames($this->payments_column_names, 'accountant');
+
+        $ssp = $this->getSspComplexJson($this->payments_table, "payments.payment_id", $cols, null, null,
+            "payments.is_deleted = 0");
+
+        $rowValues = json_decode($ssp, true)['data'];
+        $ignoreArray = ['_payment_id', 'Payment Id', 'Actions'];
+
+        if (!empty($rowValues)) {
+            $selects = [];
+            foreach ($rowValues as $product) {
+                foreach ($product as $key => $value) {
+                    if (!$value || $value == null)
+                        continue;
+                    $name = $columns[$key];
+                    if (in_array($name, $ignoreArray))
+                        continue;
+
+                    preg_match('/<\w+[^>]+?[^>]+>(.*?)<\/\w+>/i', $value, $match);
+                    if (!empty($match) && isset($match[1])) {
+                        $value = $match[1];
+                    }
+                    if ((isset($selects[$name]) && !in_array($value, $selects[$name])) || !isset($selects[$name]))
+                        $selects[$name][] = $value;
+                }
+            }
+            return ['selects' => $selects, 'rows' => $rowValues];
+        }
+    }
+
     function initCatalogueParser($array)
     {
 

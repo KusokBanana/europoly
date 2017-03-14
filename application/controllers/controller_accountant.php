@@ -47,6 +47,13 @@ class ControllerAccountant extends Controller
 
         $this->view->access = $roles->getPageAccessAbilities($this->page);
 
+        $array = $this->model->getSelects();
+        $selects = $array['selects'];
+        $rows = $array['rows'];
+
+        $this->view->selects = $selects;
+        $this->view->rows = $rows;
+
         $this->view->build('templates/template.php', 'accountant.php');
     }
 

@@ -43,13 +43,25 @@ class ModelProduct extends Model
 //            if ($type == 'id' || $type == 'float' || $type = 'int') {
 //                $new_value = floatval($new_value);
 //            } elseif ($type == '')
-            return $this->update("UPDATE `products` SET `$name` = '$new_value' WHERE product_id = $product_id");
+            $result = $this->update("UPDATE `products` SET `$name` = '$new_value' WHERE product_id = $product_id");
+            if ($result) {
+                $this->clearCache('catalogue_selects');
+            }
+            return $result;
         } elseif ($table == 'nls_products') {
             $row = $this->getFirst("SELECT * FROM $table WHERE product_id = $product_id");
             if ($row) {
-                return $this->update("UPDATE $table SET `$name` = '$new_value' WHERE product_id = $product_id");
+                $result = $this->update("UPDATE $table SET `$name` = '$new_value' WHERE product_id = $product_id");
+                if ($result) {
+                    $this->clearCache(['catalogue_selects', 'new_product_selects', 'product_selects']);
+                }
+                return $result;
             } else {
-                return $this->insert("INSERT INTO $table (`product_id`, `$name`) VALUES ($product_id, '$new_value')");
+                $result = $this->insert("INSERT INTO $table (`product_id`, `$name`) VALUES ($product_id, '$new_value')");
+                if ($result) {
+                    $this->clearCache(['catalogue_selects', 'new_product_selects', 'product_selects']);
+                }
+                return $result;
             }
         }
         else {
@@ -57,11 +69,19 @@ class ModelProduct extends Model
             $idName = $idName['Field'];
             $row = $this->getFirst("SELECT $idName FROM $table WHERE name = '$new_value'");
             if ($row && $rowId = $row[$idName]) {
-                return $this->update("UPDATE products SET `$name` = $rowId WHERE product_id = $product_id");
+                $result = $this->update("UPDATE products SET `$name` = $rowId WHERE product_id = $product_id");
+                if ($result) {
+                    $this->clearCache(['catalogue_selects', 'new_product_selects', 'product_selects']);
+                }
+                return $result;
             } else {
                 $newRowId = $this->insert("INSERT INTO $table (name) VALUES ('$new_value')");
                 if ($newRowId) {
-                    return $this->update("UPDATE products SET `$name` = $newRowId WHERE product_id = $product_id");
+                    $result = $this->update("UPDATE products SET `$name` = $newRowId WHERE product_id = $product_id");
+                    if ($result) {
+                        $this->clearCache(['catalogue_selects', 'new_product_selects', 'product_selects']);
+                    }
+                    return $result;
                 }
             }
         }
@@ -69,7 +89,11 @@ class ModelProduct extends Model
 
     public function deleteProduct($product_id)
     {
-        return $this->delete("DELETE FROM products WHERE product_id = $product_id");
+        $result = $this->delete("DELETE FROM products WHERE product_id = $product_id");
+        if ($result) {
+            $this->clearCache(['catalogue_selects', 'new_product_selects', 'product_selects']);
+        }
+        return $result;
     }
 
     public function getPhotos($product_id)
@@ -204,6 +228,5 @@ class ModelProduct extends Model
         'margin' => ['label' => "Margin", 'table' => 'products', 'type' => 'int', 'isSelect' => false],
         'pattern_id' => ['label' => "Pattern", 'table' => 'patterns', 'type' => 'id', 'isSelect' => true],
     ];
-
 
 }

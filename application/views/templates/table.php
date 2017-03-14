@@ -45,7 +45,7 @@
             echo '<button class="btn btn-warning order-columns-button-change">Change Order</button>';
             echo '<button class="btn btn-warning order-columns-button-save" disabled>Save</button>';
             echo '<label style="display: none;"><input type="checkbox" data-column="0">Id</label>';
-            $category_column_id = 0;
+            $hiddenTabFilters = [];
             foreach ($column_names as $column_id => $column_name) {
                 $originalColumnId = array_search($column_name, $originalColumns);
                 $sortCol = explode('-', $sort);
@@ -53,11 +53,13 @@
                     $sort = $column_id . '-' . $sortCol[1];
                 }
 
-                if ($column_name == '_category_id') {
-                    $category_column_id = $column_id;
+                if ($column_name[0] == '_') {
+                    $column_name = substr($column_name, 1);
+                    $hiddenTabFilters[$column_name] = $column_id;
                     $mustHidden = $originalColumnId;
+                    continue;
                 }
-                if ($column_name[0] == '_') continue;
+//                if ($column_name[0] == '_') continue;
                 echo '<label><input type="checkbox" data-original-column-id="'.$originalColumnId.'" 
                                     data-column="' . $column_id . '" checked>' . $column_name . '</label>';
             }
@@ -140,6 +142,7 @@ if ($hidden_by_default) {
 
 ?>
 <script>
+    // TODO remove it and change into warehouse
     <?php if ($globalTable): ?>
         var <?= $globalTable ?>;
     <?php endif; ?>
@@ -149,7 +152,7 @@ if ($hidden_by_default) {
         var hiddenByDefault = <?= $hidden_by_default ? $hidden_by_default : 'false'; ?>;
         var $mustHidden = <?= $mustHidden ? $mustHidden : 'false' ?>;
         hiddenByDefault = getHiddenColumns('<?= $table_id ?>');
-        if ($mustHidden && hiddenByDefault.indexOf($mustHidden) === -1) {
+        if ($mustHidden && hiddenByDefault && hiddenByDefault.indexOf($mustHidden) === -1) {
             hiddenByDefault.push($mustHidden);
         }
         var $filterSearchValues = <?= json_encode($filterSearchValues); ?>;
@@ -197,6 +200,7 @@ if ($hidden_by_default) {
             deferRender: true
         });
 
+        // TODO remove it and change into warehouse
         <?php if ($globalTable): ?>
         <?= $globalTable ?> = table;
         <?php endif; ?>
@@ -361,30 +365,41 @@ if ($hidden_by_default) {
         }
 
         //    If category tabs exist on page
-        var categoryTabsBlock = $('.category-tabs');
-        var $category_column_id = <?= $category_column_id ?>;
-        if (categoryTabsBlock.length && $category_column_id) {
+        var filterTabsBlock = $('.filter-tabs');
+        var hiddenTabFilters = <?= json_encode($hiddenTabFilters); ?>;
+        if (filterTabsBlock.length) {
 
-            categoryTabsBlock.on('click', 'a[data-toggle="tab"]', function() {
-                var categoryId = $(this).attr('data-category-id');
-                if (categoryId == '0') {
-                    location.reload();
+            filterTabsBlock.on('click', 'a.tab-filter', function() {
+                var filterName = $(this).attr('data-filter-name');
+                var filterValue = $(this).attr('data-filter-value');
+                if (hiddenTabFilters[filterName] !== undefined) {
+                    table.columns(hiddenTabFilters[filterName]).search(filterValue).draw();
+                    if (filterName == 'category_id' && filterValue == '0')
+                        location.reload();
                 }
-                table.columns($category_column_id).search(categoryId).draw();
-                $table.attr('data-category', categoryId);
-            })
+            });
+
+            var filterFirst = $('.tab-filter-filter-first');
+            if (filterFirst.length) {
+                filterFirst.click().removeClass('tab-filter-filter-first');
+            }
+
         }
 
-        function getCategoryId() {
-            if (categoryTabsBlock.length && $category_column_id) {
-                var currentCategory = $table.attr('data-category');
-                if (currentCategory !== undefined) {
-                    return currentCategory;
-                } else {
-                    return false;
+        function addTabsFilters(filter) {
+            if (filterTabsBlock.length) {
+                var activeTab = filterTabsBlock.find('li:not(.dropdown).active a.tab-filter');
+                if (activeTab.length) {
+                    var filterName = activeTab.attr('data-filter-name');
+                    var filterValue = activeTab.attr('data-filter-value');
+                    if (filterName == 'category_id' && filterValue == '0')
+                        return;
+
+                    var filterId = hiddenTabFilters[filterName];
+                    filter[filterId] = filterValue;
                 }
             }
-            return false;
+
         }
 
         // replace selects by editable selects
@@ -426,27 +441,24 @@ if ($hidden_by_default) {
             $.each(editableSelects, function() {
                 if ($(this).val()) {
                     var index = $(this).closest('th').attr('data-header-id');
-//                    var index = $(this).closest('th').attr('data-column-index');
                     filter[index] = $(this).val();
                 }
             });
-            var catId = getCategoryId();
-            if (catId) {
-                filter[$category_column_id] = catId;
-            }
+            addTabsFilters(filter);
             if ($filterSearchValues && filter.length) {
+                console.log($filterSearchValues);
                 $.each($filterSearchValues, function() {
                     var row = this;
                     for (var key in filter) {
                         var value = row[key];
                         if (value) {
-                            if (value.indexOf('glyphicon') !== -1) {
-                                value = value.replace(/<a \w+[^>]+?[^>]+>(.*?)<\/a>/i, '');
-                            } else {
+//                            if (value.indexOf('glyphicon') !== -1) {
+//                                value = value.replace(/<a \w+[^>]+?[^>]+>(.*?)<\/a>/i, '');
+//                            } else {
                                 var result = value.match(/<\w+[^>]+?[^>]+>(.*?)<\/\w+>/i);
                                 if (result !== null && result.length && result[1] !== undefined) {
                                     value = result[1];
-                                }
+//                                }
                             }
                         }
                         if (filter[key] != value) {
@@ -456,14 +468,17 @@ if ($hidden_by_default) {
                     if (row[currentIndex]) {
                         var currentValue = row[currentIndex];
                         if (currentValue !== null) {
-                            if (currentValue.indexOf('glyphicon') !== -1) {
-                                currentValue = currentValue.replace(/<a \w+[^>]+?[^>]+>(.*?)<\/a>/i, '');
-                            } else {
+//                            if (currentValue.indexOf('glyphicon') !== -1) {
+//                                console.log(currentValue, 1);
+//                                currentValue = currentValue.replace(/<a \w+[^>]+?[^>]+>(.*?)<\/a>/i, '');
+//                                console.log(currentValue, 2);
+//                            } else {
                                 result = currentValue.match(/<\w+[^>]+?[^>]+>(.*?)<\/\w+>/i);
                                 if (result !== null && result.length && result[1] !== undefined) {
                                     currentValue = result[1];
+                                    console.log(currentValue, '2');
                                 }
-                            }
+//                            }
                         }
                         if (values.indexOf(currentValue) === -1) {
                             values.push(currentValue);

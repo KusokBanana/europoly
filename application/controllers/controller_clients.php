@@ -22,7 +22,13 @@ class ControllerClients extends Controller
         $this->view->hidden_columns = $this->model->full_product_hidden_columns;
         $this->view->originalColumns = $roles->returnModelNames($this->model->client_column_names, $this->page);
 
-//        $this->view->column_names = $this->model->client_column_names;
+        $array = $this->model->getSelects();
+        $selects = $array['selects'];
+        $rows = $array['rows'];
+
+        $this->view->selects = $selects;
+        $this->view->rows = $rows;
+
         $this->view->managers = $this->model->getSalesManagersIdName();
         $this->view->commission_agents = $this->model->getCommissionAgentsIdName();
         $this->view->build('templates/template.php', 'clients.php');
@@ -33,20 +39,25 @@ class ControllerClients extends Controller
         $this->model->getDTClients($_GET);
     }
 
-    function action_dt_end_customers()
+    function action_dt_all_clients()
     {
-        $this->model->getDTEndCustomers($_GET);
+        $this->model->getDTAllClients($_GET);
     }
 
-    function action_dt_commission_agents()
-    {
-        $this->model->getDTCommissionAgents($_GET);
-    }
-
-    function action_dt_dealers()
-    {
-        $this->model->getDTDealers($_GET);
-    }
+//    function action_dt_end_customers()
+//    {
+//        $this->model->getDTEndCustomers($_GET);
+//    }
+//
+//    function action_dt_commission_agents()
+//    {
+//        $this->model->getDTCommissionAgents($_GET);
+//    }
+//
+//    function action_dt_dealers()
+//    {
+//        $this->model->getDTDealers($_GET);
+//    }
 
     function action_get_countries()
     {

@@ -142,6 +142,14 @@ class ModelOrder extends Model
                                     <span class=\'fa fa-share\' title=\'Issue\'></span>
                                 </a>'),
                         ''),
+                    IF(order_items.status_id = ".ISSUED.",
+                        CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to return the item?\" 
+                                   href=\"/order/return_item?order_item_id=', order_items.item_id, '\" 
+                                   class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" 
+                                   data-singleton=\"true\">
+                                    <span class=\'glyphicon glyphicon-repeat\' title=\'Return\'></span>
+                                </a>'),
+                        ''),
                 '</div>')"),
         ];
 
@@ -400,6 +408,7 @@ class ModelOrder extends Model
         if ($field == 'status_id') {
             $this->updateItemsStatus($orderId);
         }
+        $this->clearCache(['managers_orders_selects', 'sent_to_logist']);
         return true;
     }
 
@@ -411,6 +420,7 @@ class ModelOrder extends Model
         $orderStatus = $status ? $status['status_id'] : DRAFT;
         $this->update("UPDATE `orders` 
                 SET order_status_id = $orderStatus WHERE order_id = $orderId");
+        $this->clearCache(['managers_orders_selects', 'sent_to_logist']);
     }
 
     public function updateOrderPrice($orderId)
@@ -644,9 +654,14 @@ class ModelOrder extends Model
         return false;
     }
 
-    public function printDoc($orderId, $type)
+    public function printDoc($orderId, $type, $items = false)
     {
-        $orderItems = $this->getAssoc("SELECT * FROM order_items WHERE manager_order_id = $orderId");
+        $where = "manager_order_id = $orderId";
+        if ($items) {
+            $where .= " AND item_id IN ($items)";
+        }
+
+        $orderItems = $this->getAssoc("SELECT * FROM order_items WHERE $where");
         $order = $this->getFirst("SELECT * FROM orders WHERE order_id = $orderId");
 
         switch ($type) {
@@ -721,4 +736,39 @@ class ModelOrder extends Model
         ];
         return $docs;
     }
+
+    function getSelects()
+    {
+        $role = new Roles();
+        $cols = $role->returnModelColumns($this->full_product_columns, 'catalogue');
+        $ssp = $this->getSspComplexJson($this->full_products_table, "product_id", $cols, null);
+        $columns = $role->returnModelNames($this->full_product_column_names, 'catalogue');
+        $rowValues = json_decode($ssp, true)['data'];
+        $ignoreArray = ['_product_id', 'Name', 'Article', 'Thickness', 'Width', 'Length',
+            'Weight', 'Quantity in 1 Pack', 'Purchase price', 'Supplier\'s discount',
+            'Margin', 'Sell'];
+
+        if (!empty($rowValues)) {
+            $selects = [];
+            foreach ($rowValues as $product) {
+                foreach ($product as $key => $value) {
+                    if (!$value || $value == null)
+                        continue;
+                    $name = $columns[$key];
+                    if (in_array($name, $ignoreArray))
+                        continue;
+
+                    preg_match('/<\w+[^>]+?[^>]+>(.*?)<\/\w+>/i', $value, $match);
+                    if (!empty($match) && isset($match[1])) {
+                        $value = $match[1];
+                    }
+
+                    if ((isset($selects[$name]) && !in_array($value, $selects[$name])) || !isset($selects[$name]))
+                        $selects[$name][] = $value;
+                }
+            }
+            return ['selects' => $selects, 'rows' => $rowValues];
+        }
+    }
+
 }

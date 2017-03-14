@@ -1,7 +1,5 @@
 <?php
 
-define('COMISSION_AGENT', 'Comission Agent');
-
 // Order Item Status
 define('DRAFT', 1);
 define('HOLD', 2);
@@ -12,6 +10,7 @@ define('ON_THE_WAY', 8);
 define('ON_STOCK', 9);
 define('EXPECTS_ISSUE', 10);
 define('ISSUED', 11);
+define('RETURNED', 12);
 
 // Roles
 define('ROLE_ADMIN', 1);
@@ -36,3 +35,13 @@ define('MANAGER_MAX_SELL_VALUE_INPUT', 10);
 define('MANAGER_MAX_COMMISSION_RATE_INPUT', 10);
 define('MANAGER_MAX_COMMISSION_AGENT_BONUS_INPUT', 10);
 
+define('CLIENT_TYPE_END_CUSTOMER', 'End-Customer');
+define('CLIENT_TYPE_DEALER', 'Dealer');
+define('CLIENT_TYPE_COMISSION_AGENT', 'Comission Agent');
+
+// Logs Names
+define('LOG_ADD_TO_WAREHOUSE', 'New products added in warehouse');
+define('LOG_RETURN_TO_WAREHOUSE', 'Product was returned to warehouse');
+define('LOG_ISSUE_FROM_WAREHOUSE', 'Products was issued from warehouse');
+define('LOG_ASSEMBLING_PRODUCT_WAREHOUSE', 'Product was assembled in warehouse');
+define('LOG_CHANGE_WAREHOUSE', 'Product changed warehouse');

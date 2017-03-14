@@ -36,6 +36,21 @@ class ControllerOrder extends Controller
                 $this->view->documents = $this->model->getDocuments($_GET['id']);
             }
 
+            $cache = new Cache();
+            $selectsCache = $cache->read('catalogue_selects');
+            if (!empty($selectsCache)) {
+                $array = $selectsCache;
+                $selects = $array['selects'];
+                $rows = $array['rows'];
+            } else {
+                $array = $this->model->getSelects();
+                $selects = $array['selects'];
+                $rows = $array['rows'];
+                $cache->write('catalogue_selects', $array);
+            }
+            $this->view->selects = $selects;
+            $this->view->rows = $rows;
+
             $this->view->full_product_hidden_columns = $this->model->full_product_hidden_columns;
             $this->view->managers = $this->model->getSalesManagersIdName();
             $this->view->legalEntities = $this->model->getLegalEntities();
@@ -63,17 +78,17 @@ class ControllerOrder extends Controller
         $order_item_id = isset($_GET['order_item_id']) ? intval($_GET['order_item_id']) : 0;
         if (!$order_item_id)
             return false;
-        $this->model->updateItemField($order_item_id, 'status_id', 3);
+        $this->model->updateItemField($order_item_id, 'status_id', SENT_TO_LOSIGT);
         header("Location: " . $_SERVER['HTTP_REFERER']);
     }
 
-    function action_cancel_order()
-    {
-        $this->getAccess($this->page, 'ch');
-        $this->model->cancelOrder($this->escape_and_empty_to_null($_POST['order_id']),
-            $this->escape_and_empty_to_null($_POST['cancel_reason']));
-        header("Location: " . $_SERVER['HTTP_REFERER']);
-    }
+//    function action_cancel_order()
+//    {
+//        $this->getAccess($this->page, 'ch');
+//        $this->model->cancelOrder($this->escape_and_empty_to_null($_POST['order_id']),
+//            $this->escape_and_empty_to_null($_POST['cancel_reason']));
+//        header("Location: " . $_SERVER['HTTP_REFERER']);
+//    }
 
     function action_delete_commission_agent()
     {
@@ -132,28 +147,13 @@ class ControllerOrder extends Controller
         }
     }
 
-    // TODO remove it
-//    function action_change_contractor_id_to_name()
-//    {
-//        $tableAndId = (isset($_GET["tableAndId"]) && $_GET["tableAndId"]) ? $_GET["tableAndId"] : false;
-//        if ($tableAndId) {
-//            $arr = explode('.', $tableAndId);
-//            $table = $arr[0];
-//            $idName = $arr[1];
-//            $id = $arr[2];
-//            $contractor = $this->model->getFirst("SELECT `name` FROM $table WHERE `$idName` = $id");
-//            echo $contractor['name'];
-//            return;
-//        }
-//    }
-
     function action_hold()
     {
         $this->getAccess($this->page, 'ch');
         $itemId = (isset($_GET["order_item_id"]) && $_GET["order_item_id"]) ? intval($_GET["order_item_id"]) : false;
         if (!$itemId)
             return;
-        $this->model->updateItemField($itemId, 'status_id', 2);
+        $this->model->updateItemField($itemId, 'status_id', HOLD);
         header("Location: " . $_SERVER['HTTP_REFERER']);
     }
 
@@ -163,7 +163,19 @@ class ControllerOrder extends Controller
         $itemId = (isset($_GET["order_item_id"]) && $_GET["order_item_id"]) ? intval($_GET["order_item_id"]) : false;
         if (!$itemId)
             return;
-        $this->model->updateItemField($itemId, 'status_id', 10);
+        $this->model->updateItemField($itemId, 'status_id', EXPECTS_ISSUE);
+        header("Location: " . $_SERVER['HTTP_REFERER']);
+    }
+
+    function action_return_item()
+    {
+        $this->getAccess($this->page, 'ch');
+        $itemId = (isset($_GET["order_item_id"]) && $_GET["order_item_id"]) ? intval($_GET["order_item_id"]) : false;
+        if (!$itemId)
+            return;
+        $this->model->updateItemField($itemId, 'status_id', RETURNED);
+        $this->model->addLog(LOG_RETURN_TO_WAREHOUSE, ['items' => [$itemId]]);
+
         header("Location: " . $_SERVER['HTTP_REFERER']);
     }
 
@@ -207,7 +219,8 @@ class ControllerOrder extends Controller
         if (isset($_GET['order_id'])) {
             $orderId = $_GET['order_id'];
             $type = $_GET['type'];
-            $result = $this->model->printDoc($orderId, $type);
+            $items = isset($_GET['items']) && $_GET['items'] ? $_GET['items'] : '';
+            $result = $this->model->printDoc($orderId, $type, $items);
             echo $result;
         }
     }

@@ -133,19 +133,28 @@
                                 </div>
                             </div>
                             <div class="tabbable-line tabbable-custom-profile">
-                                <ul class="nav nav-tabs">
+                                <ul class="nav nav-tabs filter-tabs">
                                     <li class="active">
-                                        <a href="#tab_1_11" data-toggle="tab"> End-Customers </a>
+                                        <a data-toggle="tab"
+                                           class="tab-filter tab-filter-filter-first"
+                                           data-filter-value="<?= CLIENT_TYPE_END_CUSTOMER ?>"
+                                           data-filter-name="type"> End-Customers </a>
                                     </li>
                                     <li>
-                                        <a href="#tab_1_22" data-toggle="tab"> Commission Agents </a>
+                                        <a data-toggle="tab"
+                                           class="tab-filter"
+                                           data-filter-value="<?= CLIENT_TYPE_COMISSION_AGENT ?>"
+                                           data-filter-name="type"> Commission Agents </a>
                                     </li>
                                     <li>
-                                        <a href="#tab_1_33" data-toggle="tab"> Dealers </a>
+                                        <a data-toggle="tab"
+                                           class="tab-filter"
+                                           data-filter-value="<?= CLIENT_TYPE_DEALER ?>"
+                                           data-filter-name="type"> Dealers </a>
                                     </li>
                                 </ul>
                                 <div class="tab-content" style="padding: 10px;">
-                                    <div class="tab-pane active" id="tab_1_11">
+                                    <div class="tab-pane active">
                                         <div class="portlet-body">
                                             <?php
                                             $buttons = [
@@ -158,57 +167,15 @@
                                                 $buttons = [];
                                             $table_data = [
                                                 'buttons' => $buttons,
-                                                'table_id' => "table_end_customers",
+                                                'table_id' => "table_clients",
                                                 'ajax' => [
-                                                    'url' => "/clients/dt_end_customers"
+                                                    'url' => "/clients/dt_all_clients"
                                                 ],
                                                 'column_names' => $this->column_names,
                                                 'click_url' => "client?id=",
-                                                'originalColumns' => $this->originalColumns
-                                            ];
-                                            include 'application/views/templates/table.php'
-                                            ?>
-                                        </div>
-                                    </div>
-                                    <div class="tab-pane" id="tab_1_22">
-                                        <div class="portlet-body">
-                                            <?php
-                                            $buttons = [
-                                                '<button class="btn sbold green" data-toggle="modal" data-target="#modal_newClient">Add Client <i class="fa fa-plus"></i></button>'
-                                            ];
-                                            if (!$this->access)
-                                                $buttons = [];
-                                            $table_data = [
-                                                'buttons' => $buttons,
-                                                'table_id' => "table_commission_agents",
-                                                'ajax' => [
-                                                    'url' => "/clients/dt_commission_agents"
-                                                ],
-                                                'column_names' => $this->column_names,
-                                                'click_url' => "client?id=",
-                                                'originalColumns' => $this->originalColumns
-                                            ];
-                                            include 'application/views/templates/table.php'
-                                            ?>
-                                        </div>
-                                    </div>
-                                    <div class="tab-pane" id="tab_1_33">
-                                        <div class="portlet-body">
-                                            <?php
-                                            $buttons = [
-                                                '<button class="btn sbold green" data-toggle="modal" data-target="#modal_newClient">Add Client <i class="fa fa-plus"></i></button>'
-                                            ];
-                                            if (!$this->access)
-                                                $buttons = [];
-                                            $table_data = [
-                                                'buttons' => $buttons,
-                                                'table_id' => "table_dealers",
-                                                'ajax' => [
-                                                    'url' => "/clients/dt_dealers"
-                                                ],
-                                                'column_names' => $this->column_names,
-                                                'click_url' => "client?id=",
-                                                'originalColumns' => $this->originalColumns
+                                                'originalColumns' => $this->originalColumns,
+                                                'selectSearch' => $this->selects,
+                                                'filterSearchValues' => $this->rows,
                                             ];
                                             include 'application/views/templates/table.php'
                                             ?>
@@ -230,17 +197,17 @@
 <script>
     var managers = <?= $this->toJsList($this->managers, "user_id") ?>;
     var commission_agents = <?= $this->toJsList($this->commission_agents, "client_id") ?>;
-
-    var $tables_clients = $("#table_end_customers, #table_commission_agents, #table_dealers");
+    var $table_clients = $("#table_clients");
     <?php if ($this->access): ?>
-        $tables_clients.on('draw.dt', function () {
+        $table_clients.on('draw.dt', function () {
             $('.x-type').editable({
                 type: "select",
                 inputclass: 'form-control input-medium',
                 source: [
-                    {"value": "End Customer", "text": "End Customer"},
-                    {"value": "Comission Agent", "text": "Comission Agent"}, // TODO commission or comission ?
-                    {"value": "Dealer", "text": "Dealer"}
+                    {"value": "<?= CLIENT_TYPE_END_CUSTOMER ?>", "text": "<?= CLIENT_TYPE_END_CUSTOMER ?>"},
+                    {"value": "<?= CLIENT_TYPE_COMISSION_AGENT ?>",
+                        "text": "<?= CLIENT_TYPE_COMISSION_AGENT ?>"}, // TODO commission or comission ?
+                    {"value": "<?= CLIENT_TYPE_DEALER ?>", "text": "<?= CLIENT_TYPE_DEALER ?>"}
                 ],
                 success: function () {
                     location.reload();

@@ -21,6 +21,8 @@
                         ],
                         'column_names' => $this->full_product_column_names,
                         'hidden_by_default' => $this->full_product_hidden_columns,
+                        'selectSearch' => $this->selects,
+                        'filterSearchValues' => $this->rows,
                         'originalColumns' => $this->originalColumns,
                         'click_url' => "#"
                     ];

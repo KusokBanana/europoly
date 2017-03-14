@@ -161,8 +161,10 @@ class ModelCatalogue extends Model
             $rusNames = trim($rusNames);
             $rusValues = trim($rusValues);
 
-            $this->insert("INSERT INTO nls_products ($rusNames language_id, product_id) 
+            $result = $this->insert("INSERT INTO nls_products ($rusNames language_id, product_id) 
                                             VALUES ($rusValues 2, $productId)");
+            if ($result)
+                $this->clearCache(['catalogue_selects', 'new_product_selects', 'product_selects']);
         }
 
     }

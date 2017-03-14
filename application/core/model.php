@@ -235,7 +235,7 @@ abstract class Model extends mysqli
 
     function getCommissionAgentsIdName()
     {
-        return $this->getAssoc("SELECT client_id, name FROM clients WHERE type = '" . COMISSION_AGENT . "'");
+        return $this->getAssoc("SELECT client_id, name FROM clients WHERE type = '" . CLIENT_TYPE_COMISSION_AGENT . "'");
     }
 
     function getClientsIdName()
@@ -359,7 +359,7 @@ abstract class Model extends mysqli
                 }
             }
         $rate = $totalSum / $order['total_price'] * 100;
-        if ($category == 'Client' || $category == COMISSION_AGENT) {
+        if ($category == 'Client' || $category == CLIENT_TYPE_COMISSION_AGENT) {
             $this->update("UPDATE orders SET total_downpayment = $totalSum, downpayment_rate = $rate 
                                   WHERE order_id = $orderId");
         } else if ($category == 'Supplier') {
@@ -590,5 +590,48 @@ abstract class Model extends mysqli
         $values['amount'] = round($values['amount'], 2);
 
         return ['products' => $products, 'values' => $values];
+    }
+
+    public function clearCache($names)
+    {
+        $cache = new Cache();
+        if (is_array($names) && !empty($names)) {
+            foreach ($names as $name) {
+                $cache->delete($name);
+            }
+        } else {
+            $cache->delete($names);
+        }
+    }
+
+    public function getLogs()
+    {
+
+        $logs = $this->getAssoc("SELECT CONCAT(logging.action, ' - ', users.first_name, ' ', users.last_name, ' - ',
+          logging.date) as name, CONCAT('/warehouse/print_log_doc?id=', logging.log_id) as href 
+          FROM logging LEFT JOIN users ON (logging.user_id = users.user_id)");
+
+        return $logs;
+
+    }
+
+    public function addLog($name, $info)
+    {
+
+        if ($name && $info) {
+
+            if (is_array($info)) {
+                if (empty($info))
+                    return false;
+
+                $info = json_encode($info);
+            }
+
+            $userId = $_SESSION['user_id'];
+
+            $this->insert("INSERT INTO logging (action, info, user_id) VALUES ('$name', '$info', $userId)");
+
+        }
+
     }
 }

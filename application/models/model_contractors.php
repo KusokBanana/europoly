@@ -1,13 +1,9 @@
 <?php
 
-class ModelContractors extends Model
+include_once ('model_clients.php');
+
+class ModelContractors extends ModelClients
 {
-
-    public function __construct()
-    {
-        $this->connect_db();
-    }
-
     var $client_column_names = [
         '_client_id',
         'Name',
@@ -153,6 +149,5 @@ class ModelContractors extends Model
                               SET `is_deleted` = 1 WHERE `$idName` = $id");
 
     }
-
 
 }

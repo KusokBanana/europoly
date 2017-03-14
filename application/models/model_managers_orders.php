@@ -198,12 +198,10 @@ class ModelManagers_orders extends Model
                     if (in_array($name, $ignoreArray))
                         continue;
 
-
                     preg_match('/<\w+[^>]+?[^>]+>(.*?)<\/\w+>/i', $value, $match);
                     if (!empty($match) && isset($match[1])) {
                         $value = $match[1];
                     }
-
 
                     if ((isset($selects[$name]) && !in_array($value, $selects[$name])) || !isset($selects[$name]))
                         $selects[$name][] = $value;

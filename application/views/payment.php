@@ -199,11 +199,6 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                         }
                                     });
 
-                                    Number.prototype.format = function(n, x) {
-                                        var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
-                                        return this.toFixed(Math.max(0, ~~n)).replace(new RegExp(re, 'g'), '$& ');
-                                    };
-
                                     var isNew = '<?= $isNewPayment && !$isPostOrder ? 'new' : 'not'; ?>';
                                     if (isNew !== 'new') {
                                         changeSelects('category');
@@ -327,7 +322,13 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                         $(this).toggleClass('new');
                                     });
 
-                                })
+                                });
+
+                                Number.prototype.format = function(n, x) {
+                                    var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
+                                    return this.toFixed(Math.max(0, ~~n)).replace(new RegExp(re, 'g'), '$& ');
+                                };
+
                             </script>
                             <div class="form-group">
                                 <label class="col-md-3 control-label" for="contractor">
@@ -551,7 +552,36 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                             });
                                         }
                                         expenseArticleSelect.empty().append(articleOptions).select2();
-                                    })
+                                    });
+
+                                    $('#date, #currency').on('change', getOfficialCurrency);
+
+                                    getOfficialCurrency();
+                                    function getOfficialCurrency() {
+
+                                        var date = $('#date').val();
+                                        var currency = $('#currency').val();
+                                        var course = $('#course');
+                                        if (date && currency) {
+                                            $.ajax({
+                                                url: '/payment/get_currency',
+                                                type: "POST",
+                                                data: {
+                                                    date: date,
+                                                    currency: currency
+                                                },
+                                                success: function(data) {
+                                                    var value = 0;
+                                                    if (data) {
+                                                        value = parseFloat(data).format(4);
+                                                    }
+                                                    course.val(value);
+                                                    course.trigger('change');
+                                                }
+                                            })
+                                        }
+
+                                    }
                                 })
                             </script>
 

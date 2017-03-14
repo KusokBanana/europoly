@@ -26,7 +26,7 @@ class ModelWarehouse extends ModelManagers_orders
         array('dt' => 4, 'db' => 'CONCAT(\'<a href="javascript:;" class="x-editable x-warehouse_id" 
             data-pk="\', products_warehouses.item_id ,\'" 
             data-name="warehouse_id" data-value="\', products_warehouses.warehouse_id, \'" data-url="/warehouse/change_item_field" 
-            data-original-title="Change Warehouse">\', IFNULL(warehouses.name, \'no name\'), \'</a>,
+            data-original-title="Change Warehouse">\', IFNULL(warehouses.name, \'no name\'), \'</a>
             <a href="/warehouse?id=\', products_warehouses.warehouse_id, \'"><i class="glyphicon glyphicon-link"></i></a>\')'),
         array('dt' => 5, 'db' => 'products_warehouses.amount'),
         array('dt' => 6, 'db' => 'products.units'),
@@ -189,13 +189,9 @@ class ModelWarehouse extends ModelManagers_orders
                     if (in_array($name, $ignoreArray))
                         continue;
 
-                    if (strpos($value, 'glyphicon') !== false) {
-                        $value = preg_replace('/<a \w+[^>]+?[^>]+>(.*?)<\/a>/i', '', $value);
-                    } else {
-                        preg_match('/<\w+[^>]+?[^>]+>(.*?)<\/\w+>/i', $value, $match);
-                        if (!empty($match) && isset($match[1])) {
-                            $value = $match[1];
-                        }
+                    preg_match('/<\w+[^>]+?[^>]+>(.*?)<\/\w+>/i', $value, $match);
+                    if (!empty($match) && isset($match[1])) {
+                        $value = $match[1];
                     }
 
                     if ((isset($selects[$name]) && !in_array($value, $selects[$name])) || !isset($selects[$name]))
@@ -206,29 +202,36 @@ class ModelWarehouse extends ModelManagers_orders
         }
     }
 
-    function addProductsWarehouse($product_ids, $warehouse_id, $amount, $buy_price)
+    function addProductsWarehouse($products, $warehouse_id)
     {
-        if ($product_ids)
-            $product_ids = explode(',', $product_ids);
-        else
-            return false;
+//        if ($product_ids)
+//            $product_ids = explode(',', $product_ids);
+//        else
+//            return false;
 
-        $amount = $amount !== 'null' ? $amount : 0;
-        $buy_price = $buy_price !== 'null' ? $buy_price : 0;
+//        $amount = $amount !== 'null' ? $amount : 0;
+//        $buy_price = $buy_price !== 'null' ? $buy_price : 0;
 
-        $itemIds = [];
+//        $itemIds = [];
 
-        foreach ($product_ids as $product_id) {
-            $itemIds[] = $this->insert("INSERT INTO `order_items` (`product_id`, `warehouse_id`, `amount`, `buy_price`)
-                    VALUES ($product_id, $warehouse_id, $amount, $buy_price)");
+        $items = [];
+        foreach ($products as $product_id => $product) {
+
+            $amount = isset($product['amount']) && $product['amount'] ? $product['amount'] : 0;
+            $buy_price = isset($product['buy_price']) && $product['buy_price'] ? $product['buy_price'] : 0;
+
+            $items[] = $this->insert("INSERT INTO `order_items` (`product_id`, `warehouse_id`, `amount`, `buy_price`,
+              `status_id`) VALUES ($product_id, $warehouse_id, $amount, $buy_price, ".ON_STOCK.")");
         }
 
-        $roles = new Roles();
-        if ($roles->getPageAccessAbilities('warehouse')['p']) {
-            $whereItems = join(',', $itemIds);
-            $where = "item_id IN ($whereItems)";
-            return $this->printDoc($warehouse_id, $where, 'warehouse');
-        }
+        $this->addLog(LOG_ADD_TO_WAREHOUSE, ['warehouse_id' => $warehouse_id, 'items' => $items]);
+
+//        $roles = new Roles();
+//        if ($roles->getPageAccessAbilities('warehouse')['p']) {
+//            $whereItems = join(',', $itemIds);
+//            $where = "item_id IN ($whereItems)";
+//            return $this->printDoc($warehouse_id, $where, 'warehouse');
+//        }
 
 //        $existing_pw = $this->getFirst("SELECT *
 //                FROM products_warehouses
@@ -251,6 +254,27 @@ class ModelWarehouse extends ModelManagers_orders
 //            return $this->insert("INSERT INTO `products_warehouses` (`product_id`, `warehouse_id`, `amount`, `buy_price`, `buy_and_taxes`, `sell_price`, `dealer_price`, `total_price`)
 //                    VALUES ($product_id, $warehouse_id, $amount, $buy_price, $buy_and_taxes, $sell_price, $dealer_price, $total_price)");
 //        }
+    }
+
+    public function printLogDoc($logId)
+    {
+        if ($logId) {
+
+            $log = $this->getFirst("SELECT * FROM logging WHERE log_id = $logId");
+            if ($log) {
+                $action = $log['action'];
+                switch ($action) {
+                    case LOG_ADD_TO_WAREHOUSE:
+                        $info = json_decode($log['info'], true);
+                        $warehouseId = $info['warehouse_id'];
+                        $items = $info['items'];
+                        $items = implode(',', $items);
+                        $where = "item_id IN ($items)";
+                        return $this->printDoc($warehouseId, $where, 'warehouse');
+                }
+            }
+
+        }
     }
 
     public function printDoc($warehouseId, $where, $type='')
@@ -330,8 +354,13 @@ class ModelWarehouse extends ModelManagers_orders
     {
         $old_order_item = $this->getFirst("SELECT * FROM order_items WHERE item_id = $warehouse_item_id");
 
-        return $this->update("UPDATE `order_items` SET `$field` = '$new_value' WHERE item_id = $warehouse_item_id");
+        $result = $this->update("UPDATE `order_items` SET `$field` = '$new_value' WHERE item_id = $warehouse_item_id");
 
+        if ($field == 'warehouse_id' && $result)
+            $this->addLog(LOG_CHANGE_WAREHOUSE, ['items' => [$warehouse_item_id],
+                'old_warehouse_id' => $old_order_item['warehouse_id'], 'warehouse_id' => $new_value]);
+
+        return $result;
     }
 
     public function getDocuments($warehouse_id)
@@ -349,9 +378,13 @@ class ModelWarehouse extends ModelManagers_orders
     {
         if ($items) {
             $items = explode(',', $items);
+            $successItems = [];
             foreach ($items as $item) {
-                $this->update("UPDATE order_items SET status_id = " . ISSUED . " WHERE item_id = $item");
+                $result = $this->update("UPDATE order_items SET status_id = " . ISSUED . " WHERE item_id = $item");
+                if ($result)
+                    $successItems[] = $item;
             }
+            $this->addLog(LOG_ISSUE_FROM_WAREHOUSE, ['items' => $successItems]);
             return true;
         }
     }
@@ -439,6 +472,7 @@ class ModelWarehouse extends ModelManagers_orders
             $pks = array_keys($assembleWarehouseProducts);
             $pks = implode(',', $pks);
             $items = $this->getAssoc("SELECT * FROM order_items WHERE item_id IN ($pks)");
+            $issuedProducts = [];
             foreach ($items as $item) {
                 $itemId = $item['item_id'];
                 $enteredAmount = $assembleWarehouseProducts[$itemId];
@@ -462,18 +496,24 @@ class ModelWarehouse extends ModelManagers_orders
                     if ($id) {
                         $newAmount = $realAmount - $enteredAmount;
                         $this->update("UPDATE order_items SET amount = $newAmount WHERE item_id = $itemId");
+                        $issuedProducts[] = $id;
                     }
                 }
             }
 
+            $this->addLog(LOG_ISSUE_FROM_WAREHOUSE, ['items' => $issuedProducts]);
+
             $pk = key($assembleProduct);
             $amount = $assembleProduct[$pk];
 
-            $this->insert("INSERT INTO order_items (`product_id`, `amount`, `warehouse_id`, `status_id`) 
+            $assembleItem = $this->insert("INSERT INTO order_items (`product_id`, `amount`, `warehouse_id`, `status_id`) 
                 VALUES ($pk, $amount, $warehouseId, ".ON_STOCK.")");
 
-        }
+            if ($assembleItem)
+                $this->addLog(LOG_ASSEMBLING_PRODUCT_WAREHOUSE, ['items' => [$assembleItem]]);
 
+        }
     }
+
 
 }

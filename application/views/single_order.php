@@ -222,6 +222,8 @@
                                             $column_name_ids = [];
                                             if (!empty($this->column_names)) {
                                                 foreach ($this->column_names as $key => $column_name) {
+                                                    if (!$key)
+                                                        $column_name = '';
                                                     echo '<th>' . $column_name . '</th>';
                                                     if ($key)
                                                         $column_name_ids[] = $key;
@@ -359,7 +361,7 @@ require_once 'modals/cancel_order.php';
         item_statuses[6] = undefined;
         <?php endif; ?>
         var $table_order_items = $("#table_order_items");
-        $table_order_items.DataTable({
+        var table_order_items = $table_order_items.DataTable({
             processing: true,
             serverSide: true,
             ajax: {
@@ -369,15 +371,25 @@ require_once 'modals/cancel_order.php';
                 }
             },
             dom: '<t>ip',
-            columnDefs: [{
-                targets: $column_name_ids,
-                searchable: false,
-                orderable: false
-            }, {
-                targets: [0],
-                visible: false,
-                searchable: false
-            }]
+            columnDefs: [
+                {
+                    targets: [0],
+                    searchable: false,
+                    className: 'dt-body-center select-checkbox',
+                    render: function (data, type, full, meta) {
+                        return '';
+                    }
+                },
+                {
+                    targets: $column_name_ids,
+                    searchable: false,
+                    orderable: false
+                }
+            ],
+            select: {
+                style: 'os',
+                selector: 'td:first-child'
+            }
         });
         $table_order_items.on('draw.dt', function () {
             $('.table-confirm-btn').confirmation({
@@ -455,6 +467,24 @@ require_once 'modals/cancel_order.php';
                 success: function () {
                     location.reload();
                 }
+            });
+
+            $table_order_items.find('tbody').on('click', 'tr td:first-child', function (e) {
+                var selectedRows = table_order_items.rows('.selected').data(),
+                    ids = [];
+                $.each(selectedRows, function() {
+                    ids.push(this[0]);
+                });
+                ids = ids.join();
+                var docsBtns = $('div[data-id="docs"]').find('.list-items').find('.print-btn');
+                const delimiter = '&items=';
+                $.each(docsBtns, function() {
+                    var href = $(this).attr('href');
+                    var hrefArray = href.split(delimiter);
+                    hrefArray[1] = delimiter + ids;
+                    console.log(href, hrefArray);
+                    $(this).attr('href', hrefArray.join(''));
+                })
             });
         });
 
