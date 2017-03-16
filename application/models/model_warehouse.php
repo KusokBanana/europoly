@@ -260,24 +260,74 @@ class ModelWarehouse extends ModelManagers_orders
     {
         if ($logId) {
 
-            $log = $this->getFirst("SELECT * FROM logging WHERE log_id = $logId");
+            $log = $this->getFirst("SELECT logging.action, logging.info, logging.date, logging.user_id,
+                      COUNT(type_log.log_id) as log_number FROM logging
+                      LEFT JOIN logging AS type_log ON (type_log.action = logging.action AND type_log.log_id <= logging.log_id)
+                      WHERE logging.log_id = $logId");
             if ($log) {
                 $action = $log['action'];
+                $logData = [
+                    'merge' => [
+                        'log_date' => $log['date'],
+                        'log_id' => $log['log_number']
+                    ]
+                ];
+                $info = json_decode($log['info'], true);
+                $items = $info['items'];
+                $items = implode(',', $items);
                 switch ($action) {
                     case LOG_ADD_TO_WAREHOUSE:
-                        $info = json_decode($log['info'], true);
                         $warehouseId = $info['warehouse_id'];
-                        $items = $info['items'];
-                        $items = implode(',', $items);
                         $where = "item_id IN ($items)";
-                        return $this->printDoc($warehouseId, $where, 'warehouse');
+                        return $this->printDoc($warehouseId, $where, 'warehouse', $logData);
+                    case LOG_DELIVERY_TO_WAREHOUSE:
+                        $warehouseId = $info['warehouse_id'];
+                        $where = "item_id IN ($items)";
+                        return $this->printDoc($warehouseId, $where, 'truck_to_warehouse', $logData);
+                    case LOG_RETURN_TO_WAREHOUSE:
+                        $orderId = $this->getFirst("SELECT manager_order_id as id FROM order_items 
+                            WHERE item_id = ${items[0]}")['id'];
+                        $logData['order_id'] = $orderId;
+                        $warehouseId = $info['warehouse_id'];
+                        $where = "item_id IN ($items)";
+                        return $this->printDoc($warehouseId, $where, 'return', $logData);
+                    case LOG_ISSUE_FROM_WAREHOUSE:
+                        $where = "item_id IN ($items)";
+                        return $this->printDoc(false, $where, 'issue', $logData);
+                    case LOG_ASSEMBLING_PRODUCT_WAREHOUSE:
+                        $where = "item_id IN ($items)";
+                        $logData['items_replace'] = $info['items_detail'];
+                        $assProductId = $info['product'];
+                        $product = $this->getFirst("SELECT * FROM products WHERE product_id = $assProductId");
+                        $userId = $log['user_id'];
+                        $user = $this->getFirst("SELECT * FROM users WHERE user_id = $userId");
+                        $merge = [
+                            'assemble_product_article' => $product['article'],
+                            'assemble_product_name' => $this->getProductName($assProductId, $product),
+                            'assemble_product_amount' => $info['product_amount'],
+                            'assemble_product_units' => $product['units'],
+                            'manager' => $user ? $user['last_name'] . ' ' . $user['first_name'] : '',
+                        ];
+                        $logData['merge'] = array_merge($logData['merge'], $merge);
+                        return $this->printDoc(false, $where, 'assemble', $logData);
+                    CASE LOG_CHANGE_WAREHOUSE:
+                        $where = "item_id IN ($items)";
+                        $oldWarehouse = $info['old_warehouse_id'];
+                        $warehouse = $info['warehouse_id'];
+                        $warehouses = $this->getFirst("SELECT new_warehouse.name as warehouse_to, 
+                              old_warehouse.name as warehouse_from
+                            FROM warehouses new_warehouse
+                            LEFT JOIN warehouses old_warehouse ON (old_warehouse.warehouse_id = $oldWarehouse)
+                            WHERE new_warehouse.warehouse_id = $warehouse");
+                        $logData['merge'] = array_merge($logData['merge'], $warehouses);
+                        return $this->printDoc(false, $where, 'change_warehouse', $logData);
                 }
             }
 
         }
     }
 
-    public function printDoc($warehouseId, $where, $type='')
+    public function printDoc($warehouseId, $where, $type='', $log = [])
     {
         $fileName = $type;
         $whereFull = "warehouse_id = $warehouseId AND $where";
@@ -285,6 +335,7 @@ class ModelWarehouse extends ModelManagers_orders
             $whereFull = "warehouse_id IS NOT NULL AND $where";
 
         $orderItems = $this->getAssoc("SELECT * FROM order_items products_warehouses WHERE $whereFull");
+//        $warehouse = $this->getFirst("SELECT * FROM warehouses WHERE warehouse_id = $warehouseId");
 
         if (!empty($orderItems)) {
 
@@ -297,13 +348,53 @@ class ModelWarehouse extends ModelManagers_orders
             $phpWord =  new PHPWord();
             $docFile = dirname(__FILE__) . "/../../docs/templates/$fileName.docx";
 
-//            $warehouse = $this->getFirst("SELECT * FROM warehouses WHERE warehouse_id = $warehouseId");
             $values['date'] = date('d.m.Y');
             $prodIds = [];
             foreach ($orderItems as $orderItem) {
                 $prodIds[] = $orderItem['product_id'];
             }
             $values['product_id'] = join(', ', $prodIds);
+
+            if (!empty($log)) {
+
+                if (isset($log['items_replace']) && !empty($log['items_replace'])) {
+                    $itemsReplace = $log['items_replace'];
+//                    foreach ($products as $key => $product) {
+////                        foreach ($log['items_replace'] as $item_replace_id => $item_replace) {
+////
+////                        }
+//                        $prodId = $product['product_id'];
+//                        if (isset($itemsReplace[$prodId]))
+//                            $products[$key] = array_merge($products[$key], $itemsReplace[$prodId]);
+//                    }
+                    $products = array_merge($products, $itemsReplace);
+                }
+
+                if (isset($log['order_id'])) {
+                    $orderId = $log['order_id'];
+                    $client = $this->getFirst("SELECT clients.*, legal_entities.visual_name as vis_ent,
+                                              orders.visible_order_id as visible_order_id
+                                                        FROM clients 
+                                                        RIGHT JOIN orders ON (order_id = $orderId) 
+                                                        LEFT JOIN legal_entities ON 
+                                                        (legal_entities.legal_entity_id = orders.legal_entity_id)
+                                                        WHERE clients.client_id = orders.client_id");
+                    if ($client) {
+                        $add[] = $client['name'];
+                        if (!is_null($client['inn']))
+                            $add[] = 'ИНН ' . $client['inn'];
+                        if (!is_null($client['legal_address']))
+                            $add[] = $client['legal_address'];
+                        $values['client'] = join(', ', $add);
+                        $values['visual_legal_entity_name'] = $client['vis_ent'];
+                        $values['visible_order_id'] = $client['visible_order_id'];
+                    }
+                }
+
+                if (isset($log['merge']))
+                    $values = array_merge($values, $log['merge']);
+            }
+
 
             $templateProcessor = $phpWord->loadTemplate($docFile);
 
@@ -343,11 +434,6 @@ class ModelWarehouse extends ModelManagers_orders
             'dealer' => $dealerPrice,
             'sellPrice' => $sellPrice,
         ];
-    }
-
-    public function getWarehousesIdNames()
-    {
-        return $this->getAssoc("SELECT warehouse_id as value, name as text FROM warehouses");
     }
 
     public function updateItemField($warehouse_item_id, $field, $new_value)
@@ -413,6 +499,7 @@ class ModelWarehouse extends ModelManagers_orders
                         $this->delete("DELETE FROM order_items WHERE item_id = $itemId");
                     } // TODO maybe add here update of orders for count and other
                 }
+                $this->addLog(LOG_DISCARD_FROM_WAREHOUSE, ['items' => explode(',', $items)]);
                 return true;
             }
         }
@@ -439,17 +526,17 @@ class ModelWarehouse extends ModelManagers_orders
                 CAST((IFNULL(products_warehouses.purchase_price, 0) + IFNULL(products_warehouses.import_VAT, 0) + 
                 IFNULL(products_warehouses.import_brokers_price, 0) + IFNULL(products_warehouses.import_tax, 0) + 
                 IFNULL(products_warehouses.delivery_price, 0)) as decimal(64, 2)),
-                '</span>', ', ', products.currency)"),
+                '</span>', ' ', products.currency)"),
             array('dt' => 3, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-assemble-amount\" data-pk=\"',
                 products_warehouses.item_id, '\" data-name=\"assemble-amount\" data-value=\"',products_warehouses.amount,'\" 
                 data-original-title=\"Enter Quantity\" data-max=\"', products_warehouses.amount, '\">', 
                 products_warehouses.amount, '</a>',
-                ', ', products.packing_type)"),
+                ' ', products.packing_type)"),
             array('dt' => 4, 'db' => "CONCAT('<span class=\"assemble-source-price-total\">', 
                 CAST(((IFNULL(products_warehouses.purchase_price, 0) + IFNULL(products_warehouses.import_VAT, 0) + 
                 IFNULL(products_warehouses.import_brokers_price, 0) + IFNULL(products_warehouses.import_tax, 0) + 
                 IFNULL(products_warehouses.delivery_price, 0)) * products_warehouses.amount) as decimal(64, 2)), 
-                '</span>', ', ', products.currency)"),
+                '</span>', ' ', products.currency)"),
         ];
 
         $where = "products_warehouses.item_id IN ($items)";
@@ -473,6 +560,7 @@ class ModelWarehouse extends ModelManagers_orders
             $pks = implode(',', $pks);
             $items = $this->getAssoc("SELECT * FROM order_items WHERE item_id IN ($pks)");
             $issuedProducts = [];
+            $assembledSourcesDetail = [];
             foreach ($items as $item) {
                 $itemId = $item['item_id'];
                 $enteredAmount = $assembleWarehouseProducts[$itemId];
@@ -497,6 +585,7 @@ class ModelWarehouse extends ModelManagers_orders
                         $newAmount = $realAmount - $enteredAmount;
                         $this->update("UPDATE order_items SET amount = $newAmount WHERE item_id = $itemId");
                         $issuedProducts[] = $id;
+                        $assembledSourcesDetail['amount'][] = $enteredAmount;
                     }
                 }
             }
@@ -506,11 +595,20 @@ class ModelWarehouse extends ModelManagers_orders
             $pk = key($assembleProduct);
             $amount = $assembleProduct[$pk];
 
-            $assembleItem = $this->insert("INSERT INTO order_items (`product_id`, `amount`, `warehouse_id`, `status_id`) 
-                VALUES ($pk, $amount, $warehouseId, ".ON_STOCK.")");
+            $product = $this->getFirst("SELECT * FROM products WHERE product_id = $pk");
+            $productPrice = $product['purchase_price'] != null ? $product['purchase_price'] : 0;
+
+            $assembleItem = $this->insert("INSERT INTO order_items (`product_id`, `amount`, `warehouse_id`, `status_id`,
+              `purchase_price`, sell_price) 
+                VALUES ($pk, $amount, $warehouseId, ".ON_STOCK.", $productPrice, ${product['sell_price']})");
 
             if ($assembleItem)
-                $this->addLog(LOG_ASSEMBLING_PRODUCT_WAREHOUSE, ['items' => [$assembleItem]]);
+                $this->addLog(LOG_ASSEMBLING_PRODUCT_WAREHOUSE, [
+                        'items' => $issuedProducts,
+                        'items_detail' => $assembledSourcesDetail,
+                        'product' => $pk,
+                        'product_amount' => $amount
+                    ]);
 
         }
     }

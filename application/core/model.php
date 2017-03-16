@@ -233,6 +233,12 @@ abstract class Model extends mysqli
 
     }
 
+    public function getWarehousesIdNames()
+    {
+        return $this->getAssoc("SELECT warehouse_id as value, name as text FROM warehouses");
+    }
+
+
     function getCommissionAgentsIdName()
     {
         return $this->getAssoc("SELECT client_id, name FROM clients WHERE type = '" . CLIENT_TYPE_COMISSION_AGENT . "'");
@@ -533,10 +539,11 @@ abstract class Model extends mysqli
             ];
     }
 
-    protected function getProductsDataArrayForDocPrint($items, $multi_lang_name = false)
+    protected function getProductsDataArrayForDocPrint($items, $multi_lang_name = false, $additions = [])
     {
         $values = [
             'sum' => 0,
+            'opt_sum' => 0,
             'currency' => 'EUR',
             'amount' => 0,
             'total' => 0,
@@ -549,7 +556,9 @@ abstract class Model extends mysqli
             $id++;
             $productId = $orderItem['product_id'];
             $product = $this->getFirst("SELECT * FROM products WHERE product_id = $productId");
+            $warehouseId = $orderItem['warehouse_id'] ? $orderItem['warehouse_id'] : 0;
             $unitsRus = $this->getFirst("SELECT units FROM nls_products WHERE product_id = $productId");
+            $warehouse = $this->getFirst("SELECT * FROM warehouses WHERE warehouse_id = $warehouseId");
 
             $units = ($unitsRus && $unitsRus['units']) ? $unitsRus['units'] : $product['units'];
             $reducedPrice = $orderItem['sell_price'] * (100 - $orderItem['discount_rate'])/100;
@@ -557,20 +566,30 @@ abstract class Model extends mysqli
             $weight = (is_null($product['weight'])) ? 0 : $product['weight'];
 
             $products['id'][] = $id;
+            $products['product_id'][] = $productId;
             $products['article'][] = $product['article'];
             $products['units'][] = $units;
             $products['price'][] = round(floatval($reducedPrice), 2);
+            $products['opt_price'][] = round(floatval($reducedPrice) * 0.7, 2);
             $products['sum'][] = round($sum, 2);
+            $products['opt_sum'][] = round($sum * 0.7, 2);
             $products['pack_type'][] = $product['packing_type'];
             $products['weight'][] = $product['weight'];
             $products['amount'][] = round($orderItem['amount'], 2);
             $products['packs_number'][] = round($orderItem['number_of_packs'], 2);
             $products['production_date'][] = $orderItem['production_date'];
+            $products['warehouse'][] = isset($warehouse) && $warehouse ? $warehouse['name'] : ' ';
+
+            if (!empty($additions))
+                foreach ($additions as $name => $addition) {
+                    $products[$name][] = $addition;
+                }
 
             $values['total_packs_number'] += $orderItem['number_of_packs'];
             $values['amount'] += $orderItem['amount'];
             $values['total_weight'] += !is_null($product['weight']) ? floatval($weight) : 0;
             $values['sum'] += $sum;
+            $values['opt_sum'] += $sum * 0.7;
             $values['total']++;
 
             if ($multi_lang_name) {
@@ -582,9 +601,12 @@ abstract class Model extends mysqli
             }
         }
 
+        $values['nds'] = round($values['sum'] * 0.18, 2);
         $values['sum'] = round($values['sum'], 2);
+        $values['opt_sum'] = round($values['opt_sum'], 2);
         require dirname(__FILE__) . '/../classes/NumbersToStrings.php';
         $values['sum_string'] = NumbersToStrings::num2str($values['sum'], $values['currency']);
+        $values['opt_sum_string'] = NumbersToStrings::num2str($values['opt_sum'], $values['currency']);
         $values['total_weight'] = round($values['total_weight'], 2);
         $values['total_packs_number'] = round($values['total_packs_number'], 2);
         $values['amount'] = round($values['amount'], 2);

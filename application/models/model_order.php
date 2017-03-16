@@ -143,10 +143,7 @@ class ModelOrder extends Model
                                 </a>'),
                         ''),
                     IF(order_items.status_id = ".ISSUED.",
-                        CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to return the item?\" 
-                                   href=\"/order/return_item?order_item_id=', order_items.item_id, '\" 
-                                   class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" 
-                                   data-singleton=\"true\">
+                        CONCAT('<a class=\"return-item-btn\" data-item_id=\"', order_items.item_id, '\">
                                     <span class=\'glyphicon glyphicon-repeat\' title=\'Return\'></span>
                                 </a>'),
                         ''),
@@ -664,6 +661,11 @@ class ModelOrder extends Model
         $orderItems = $this->getAssoc("SELECT * FROM order_items WHERE $where");
         $order = $this->getFirst("SELECT * FROM orders WHERE order_id = $orderId");
 
+//        $order = $this->getFirst("SELECT *
+//                                            FROM orders
+//                                            LEFT JOIN clients ON (clients.client_id = orders.client_id)
+//                                            LEFT JOIN legal_entities ON (orders.legal_entity_id = legal_entities.legal_entity_id)
+
         switch ($type) {
             case 'payment':
                 $fileName = 'payment';
@@ -679,7 +681,12 @@ class ModelOrder extends Model
         if (!empty($orderItems)) {
 
             $multi = ($type == 'return') ? true : false;
-            $array = $this->getProductsDataArrayForDocPrint($orderItems, $multi);
+
+            $additions = [
+                'visible_order_id' => $order['visible_order_id']
+            ];
+
+            $array = $this->getProductsDataArrayForDocPrint($orderItems, $multi, $additions);
 
             $products = $array['products'];
             $values = $array['values'];
@@ -701,6 +708,11 @@ class ModelOrder extends Model
                     $add[] = $client['legal_address'];
                 $values['client'] = join(', ', $add);
             }
+
+            $legalEntity = $this->getFirst("SELECT * FROM legal_entities 
+                  WHERE legal_entity_id = ${order['legal_entity_id']}");
+            $values['visual_legal_entity_name'] = $legalEntity['visual_name'];
+
             $user = $this->getFirst("SELECT * FROM users WHERE user_id = ".$_SESSION['user_id']);
             $values['manager'] = $user ? $user['last_name'] . ' ' . $user['first_name'] : '';
             $values['visible_order_id'] = $order['visible_order_id'];

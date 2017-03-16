@@ -366,26 +366,38 @@
                                         <?php endif; ?>
                                     </form>
                                     <script>
-                                        function cancelAccountChanges(event) {
-                                            event.stopPropagation();
-                                            event.preventDefault();
-                                            $("#input_login").val("<?= $this->support['login'] ?>");
-                                            $("#input_password").val("");
-                                            $("#input_retype_password").val("");
-                                            return false;
-                                        }
-
-                                        var password = document.getElementById("input_password");
-                                        var confirm_password = document.getElementById("input_retype_password");
-                                        function validatePassword() {
-                                            if (password.value != confirm_password.value) {
-                                                confirm_password.setCustomValidity("Passwords Don't Match");
-                                            } else {
-                                                confirm_password.setCustomValidity('');
+                                        $(document).ready(function() {
+                                            function cancelAccountChanges(event) {
+                                                event.stopPropagation();
+                                                event.preventDefault();
+                                                $("#input_login").val("<?= $this->support['login'] ?>");
+                                                $("#input_password").val("");
+                                                $("#input_retype_password").val("");
+                                                return false;
                                             }
-                                        }
-                                        password.onchange = validatePassword;
-                                        confirm_password.onkeyup = validatePassword;
+
+                                            var password = document.getElementById("input_password");
+                                            var confirm_password = document.getElementById("input_retype_password");
+
+                                            function validatePassword() {
+                                                if (password.value != confirm_password.value) {
+                                                    confirm_password.setCustomValidity("Passwords Don't Match");
+                                                } else {
+                                                    confirm_password.setCustomValidity('');
+                                                }
+                                            }
+
+                                            password.onchange = validatePassword;
+                                            confirm_password.onkeyup = validatePassword;
+
+                                            $('form').keydown(function(event){
+                                                if(event.keyCode == 13) {
+                                                    $(event.target).trigger('change');
+                                                    event.preventDefault();
+                                                    return false;
+                                                }
+                                            });
+                                        })
                                     </script>
                                 </div>
                                 <div id="tab_4-4" class="tab-pane">

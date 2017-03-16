@@ -152,11 +152,14 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
 
                                         switch (id) {
                                             case 'sum':
-                                                if (currencyRateValue != 0 && $(this).val() != 0) {
+                                                if (currencyRateValue != 0) {
+//                                                if (currencyRateValue != 0 && $(this).val() != 0) {
                                                     value = (sumValue / currencyRateValue).format(2);
+//                                                    value = (sumValue / currencyRateValue).format(2);
                                                     sumInEurInput.val(value);
                                                 } else if (sumInEurValue != 0) {
-                                                    value = (sumValue / sumInEurValue).format(4);
+                                                    value = (sumValue) ? (sumInEurValue / sumValue).format(4) : 0;
+//                                                    value = (sumValue / sumInEurValue).format(4);
                                                     currencyRateInput.val(value);
                                                     value = (courseValue) ? ((currencyRateValue / courseValue - 1) * 100).format(2) : 0;
                                                     exchangeCommissionInput.val(value);
@@ -166,23 +169,29 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                             case 'currency_rate':
                                                 if (sumValue != 0) {
                                                     value = (currencyRateValue) ? (sumValue / currencyRateValue).format(2) : 0;
+//                                                    value = (currencyRateValue) ? (sumValue / currencyRateValue).format(2) : 0;
                                                     sumInEurInput.val(value);
                                                 } else if (sumInEurValue != 0) {
-                                                    value = (currencyRateValue * sumInEurValue).format(2);
+                                                    value = (sumInEurValue / currencyRateValue).format(2);
+//                                                    value = (currencyRateValue * sumInEurValue).format(2);
                                                     sumInput.val(value);
                                                 }
+//                                                value = (courseValue) ? ((1 / (courseValue - 1) * currencyRateValue ) * 100).format(2) : 0;
                                                 value = (courseValue) ? ((currencyRateValue / courseValue - 1) * 100).format(2) : 0;
                                                 exchangeCommissionInput.val(value);
                                                 currencyRateInput.val(currencyRateValue.format(4));
                                                 break;
                                             case 'sum_in_eur':
                                                 if (sumValue != 0) {
+//                                                    value = (sumInEurValue) ? (sumInEurValue / sumValue).format(4) : 0;
                                                     value = (sumInEurValue) ? (sumValue / sumInEurValue).format(4) : 0;
                                                     currencyRateInput.val(value);
+//                                                    value = (courseValue) ? ((1 / (courseValue - 1) * currencyRateValue) * 100).format(2) : 0;
                                                     value = (courseValue) ? ((currencyRateValue / courseValue - 1) * 100).format(2) : 0;
                                                     exchangeCommissionInput.val(value);
                                                 } else if (currencyRateValue != 0) {
                                                     value = (sumInEurValue * currencyRateValue).format(2);
+//                                                    value = (sumInEurValue * currencyRateValue).format(2);
                                                     sumInput.val(value);
                                                 }
                                                 sumInEurInput.val(sumInEurValue.format(2));
@@ -191,6 +200,7 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                             case 'exchange_commission':
                                                 /*official_currency * (1+exchange_comission/100) = final currency rate*/
                                                 value = (courseValue * (1 + exchangeCommissionValue / 100)).format(4);
+//                                                value = (courseValue * (1 + exchangeCommissionValue / 100)).format(4);
                                                 currencyRateInput.val(value);
                                                 currencyRateInput.trigger('change');
                                                 courseInput.val(courseValue.format(4));
@@ -377,8 +387,16 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-md-3 control-label" for="currency">Currency</label>
-                                <div class="col-md-9">
+                                <label class="col-md-1 col-md-offset-2 control-label" for="sum">Sum</label>
+                                <div class="col-md-3">
+                                    <input type="text" id="sum" name="sum" required
+                                           value="<?= isset($this->payment['sum']) ?
+                                               number_format($this->payment['sum'], 2, '.', ' ') : '' ?>"
+                                           class="form-control" placeholder="Enter Sum">
+                                    <span class="help-block"> Enter Sum with 2 decimal places. </span>
+                                </div>
+                                <label class="col-md-1 control-label" for="currency">Currency</label>
+                                <div class="col-md-3">
                                     <select name="currency" id="currency" class="form-control" required>
                                         <option> </option>
                                         <?php $currencies = ['USD', 'EUR', 'РУБ', 'GBP', 'SEK', 'AED'] ?>
@@ -392,22 +410,13 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-3 control-label" for="sum">Sum</label>
-                                <div class="col-md-9">
-                                    <input type="text" id="sum" name="sum" required
-                                           value="<?= isset($this->payment['sum']) ?
-                                               number_format($this->payment['sum'], 2, '.', ' ') : '' ?>"
-                                           class="form-control" placeholder="Enter Sum">
-                                    <span class="help-block"> Enter Sum with 2 decimal places. </span>
-                                </div>
+
                             </div>
                             <div class="form-group">
                                 <label class="col-md-2 col-md-offset-1 control-label" for="course">Official Currency Rate</label>
                                 <div class="col-md-1">
                                     <input type="text" id="course"
-                                           value=""
+                                           value="" readonly
                                            class="form-control">
                                 </div>
                                 <label class="col-md-2 control-label" for="exchange_commission">Exchange Commission, %</label>
@@ -556,8 +565,8 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
 
                                     $('#date, #currency').on('change', getOfficialCurrency);
 
-                                    getOfficialCurrency();
-                                    function getOfficialCurrency() {
+                                    getOfficialCurrency(true);
+                                    function getOfficialCurrency(isFirst = false) {
 
                                         var date = $('#date').val();
                                         var currency = $('#currency').val();
@@ -573,15 +582,26 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                                 success: function(data) {
                                                     var value = 0;
                                                     if (data) {
-                                                        value = parseFloat(data).format(4);
+                                                        value = parseFloat(1/data).format(4);
                                                     }
                                                     course.val(value);
+                                                    if (isFirst) {
+                                                        value = ($('#currency_rate').val() / $('#course').val() - 1) * 100;
+                                                        $('#exchange_commission').val(value.format(2))
+                                                    }
                                                     course.trigger('change');
                                                 }
                                             })
                                         }
 
                                     }
+                                    $('form').keydown(function(event){
+                                        if(event.keyCode == 13) {
+                                            $(event.target).trigger('change');
+                                            event.preventDefault();
+                                            return false;
+                                        }
+                                    });
                                 })
                             </script>
 

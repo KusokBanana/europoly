@@ -34,7 +34,6 @@
                         <i class="icon-settings font-dark"></i>
                         <span class="caption-subject bold uppercase"> Warehouse: <?= $this->title ?> </span>
                     </div>
-                    <a class="btn dark btn-outline sbold pull-right" data-toggle="modal" href="#assemble-set"> Assemble Set </a>
                 </div>
                 <div class="tabbable-line tabbable-custom-profile">
                     <ul class="nav nav-tabs" style="padding:10px">
@@ -52,7 +51,11 @@
                         <div class="tab-pane active" id="tab_1_1">
                             <div class="portlet-body">
                                 <?php
-                                $buttons = ['<button class="btn sbold green" data-toggle="modal" data-target="#modal_newProductWarehouse">Add New <i class="fa fa-plus"></i></button>'];
+                                $buttons[] = '<button class="btn sbold green" data-toggle="modal" 
+                                    data-target="#modal_newProductWarehouse">Add New <i class="fa fa-plus"></i></button>';
+                                $buttons[] =
+                                    '<a class="btn dark btn-outline sbold disabled assemble-btn" data-toggle="modal" 
+                                        href="#assemble-set"> Assemble Set </a>';
                                 if (!$this->access['ch'])
                                     $buttons = [];
                                 if ($this->access['d'])
@@ -91,11 +94,6 @@
                                                         class="btn sbold green issue-products-btn"
                                                         data-sel="#table_warehouses_products_issue">Issue</button>';
                                     if ($this->access['d'])
-                                        $buttons[] = '<button data-link="/warehouse/discard_products" 
-                                                        class="btn sbold red discard-products-btn"
-                                                        data-sel=".tab-pane.active table">
-                                                            Discard Goods <i class="fa fa-minus"></i>
-                                                        </button>';
                                     $table_data = [
                                         'buttons' => $buttons,
                                         'table_id' => "table_warehouses_products_issue",
@@ -120,12 +118,6 @@
                                 <div class="portlet-body">
                                     <?php
                                     $buttons = [];
-                                    if ($this->access['d'])
-                                        $buttons[] = '<button data-link="/warehouse/discard_products" 
-                                                        class="btn sbold red discard-products-btn"
-                                                        data-sel=".tab-pane.active table">
-                                                            Discard Goods <i class="fa fa-minus"></i>
-                                                        </button>';
                                     $table_data = [
                                         'buttons' => $buttons,
                                         'table_id' => "table_warehouses_products_reserved",
@@ -183,9 +175,7 @@
             onConfirm: function () {
                 var btn = $(this);
                 var tableSelector = btn.attr('data-sel');
-                console.log(tableSelector);
                 var table = $(tableSelector).DataTable();
-                console.log(table);
                 var selected = table.rows('.selected').data(),
                     selectedCount = selected.length;
                 if (selectedCount) {

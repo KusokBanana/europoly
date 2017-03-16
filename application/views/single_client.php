@@ -669,6 +669,14 @@ $isNewClient = !isset($this->client['client_id']);
                 },
                 width: '100%'
             });
+
+            $('form').keydown(function(event){
+                if(event.keyCode == 13) {
+                    $(event.target).trigger('change');
+                    event.preventDefault();
+                    return false;
+                }
+            });
         });
     </script>
     <!-- END PAGE BASE CONTENT -->

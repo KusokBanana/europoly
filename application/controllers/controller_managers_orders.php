@@ -31,7 +31,6 @@ class ControllerManagers_orders extends Controller
         $this->view->managers = $this->model->getSalesManagersIdName();
         $this->view->clients = $this->model->getClientsOfSalesManager($_SESSION['user_id']);
 
-
         $cache = new Cache();
         $selectsCache = $cache->read('managers_orders_selects');
         if (!empty($selectsCache)) {

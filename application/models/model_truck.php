@@ -228,8 +228,9 @@ class ModelTruck extends ModelOrder
         $truckItems = $this->getAssoc("SELECT * FROM order_items WHERE truck_id = $truckId");
         foreach ($truckItems as $truckItem) {
             if ($truckItem['warehouse_arrival_date'] == null)
-                $this->putItemToWarehouse($truckItem['item_id']);
+                $this->putItemToWarehouse($truckItem['item_id'], true);
         }
+        $this->addLog(LOG_DELIVERY_TO_WAREHOUSE, ['items' => $truckItems]);
         return $this->printDoc($truckId);
     }
 
@@ -261,7 +262,7 @@ class ModelTruck extends ModelOrder
         }
     }
 
-    function putItemToWarehouse($itemId)
+    function putItemToWarehouse($itemId, $isLogged = false)
     {
         if (!$itemId)
             return false;
@@ -281,6 +282,9 @@ class ModelTruck extends ModelOrder
  	      buy_and_taxes = $buyAndExpenses, warehouse_arrival_date = NOW(), status_id = ".ON_STOCK." WHERE item_id = $itemId");
 
         $this->updateItemsStatus($truckItem['truck_id']);
+
+        if (!$isLogged)
+            $this->addLog(LOG_DELIVERY_TO_WAREHOUSE, ['items' => [$itemId]]);
 
         return $warehouseId;
     }

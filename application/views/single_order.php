@@ -488,6 +488,12 @@ require_once 'modals/cancel_order.php';
             });
         });
 
+        $table_order_items.on('click', '.return-item-btn', function() {
+            var itemId = $(this).attr('data-item_id');
+            $("#modal_return").modal('show');
+            $('#item_id_return_input').val(itemId);
+        });
+
         $table_order_items.find('tbody').on('click', 'tr td:not(:first-child)', function (e) {
             var target = e.target;
             var link = $(target).find('a').not('.table-confirm-btn, .x-editable, .reserve-product-btn');
@@ -604,28 +610,6 @@ require_once 'modals/cancel_order.php';
                 searchable: false
             }]
         });
-        tablePay.on('draw', function() {
-            // TODO remove it
-//            var contractors = $('table').find('.change-me-contractor');
-//            $.each(contractors, function() {
-//                if ($(this).attr('data-type') && $(this).text()) {
-//                    var string = $(this).attr('data-type') + '.' + $(this).text();
-//                    var that = $(this);
-//                    $.ajax({
-//                        url: '/order/change_contractor_id_to_name',
-//                        data: {
-//                            tableAndId: string
-//                        },
-//                        type: "GET",
-//                        success: function(data) {
-//                            if (data) {
-//                                that.text(data);
-//                            }
-//                        }
-//                    })
-//                }
-//            })
-        });
     });
 </script>
 <style>
@@ -635,4 +619,6 @@ require_once 'modals/cancel_order.php';
 </style>
 <?php
 include_once 'application/views/modals/reserve.php';
+include_once 'application/views/modals/return.php';
 ?>
+

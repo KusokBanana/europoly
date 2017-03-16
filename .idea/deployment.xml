@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData">
+  <component name="PublishConfigData" serverName="europoly">
     <serverData>
       <paths name="arkham">
         <serverdata>
@@ -12,11 +12,46 @@
       <paths name="europoly">
         <serverdata>
           <mappings>
+            <mapping deploy="/www" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+          <excludedPaths>
+            <excludedPath local="true" path="$PROJECT_DIR$/node_modules" />
+            <excludedPath local="true" path="$PROJECT_DIR$/vendor" />
+            <excludedPath local="true" path="$PROJECT_DIR$/dump_db" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cache" />
+            <excludedPath local="true" path="$PROJECT_DIR$/assets" />
+            <excludedPath local="true" path="$PROJECT_DIR$/application/core/mysql_config.php" />
+            <excludedPath local="true" path="$PROJECT_DIR$/photos" />
+            <excludedPath local="true" path="$PROJECT_DIR$/images" />
+            <excludedPath local="true" path="$PROJECT_DIR$/avatars" />
+            <excludedPath local="true" path="$PROJECT_DIR$/.idea" />
+            <excludedPath path="/www/assets" />
+            <excludedPath path="/www/cache" />
+            <excludedPath path="/www/node_modules" />
+            <excludedPath path="/www/photos" />
+            <excludedPath path="/www/imgs" />
+            <excludedPath path="/www/images" />
+            <excludedPath path="/www/dump_db" />
+            <excludedPath path="/www/avatars" />
+            <excludedPath path="/www/application/core/mysql_config.php" />
+          </excludedPaths>
+        </serverdata>
+      </paths>
+      <paths name="europoly (project level)">
+        <serverdata>
+          <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>
       <paths name="europolyServer">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="evropoly">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />

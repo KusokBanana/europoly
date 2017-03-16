@@ -245,8 +245,22 @@ class ModelPayment extends Model
             $values['order_date'] = $order['start_date'];
             $values['vis_order_id'] = $order['visible_order_id'];
             $values['payment_id'] = $paymentId;
+            $values['nds'] = round($payment['sum'] * 0.18, 2);
             $values['sum'] = round($payment['sum'], 2);
             $values['currency'] = $payment['currency'];
+
+            $legalEntity = $this->getFirst("SELECT * FROM legal_entities WHERE legal_entity_id = ${order['legal_entity_id']}");
+            $values['visual_legal_entity_name'] = $legalEntity['visual_name'];
+
+            $client = $this->getFirst("SELECT * FROM clients WHERE client_id = ${order['client_id']}");
+            if ($client) {
+                $add[] = $client['name'];
+                if (!is_null($client['inn']))
+                    $add[] = 'ИНН ' . $client['inn'];
+                if (!is_null($client['legal_address']))
+                    $add[] = $client['legal_address'];
+                $values['client'] = join(', ', $add);
+            }
 
             require dirname(__FILE__) . '/../classes/NumbersToStrings.php';
             $values['sum_string'] = NumbersToStrings::num2str($values['sum'], $payment['currency']);

@@ -687,5 +687,13 @@ require_once 'modals/new_order.php';
         $("#modal_new_client_manager_id").val(<?= $this->manager["user_id"] ?>);
         $("#modal_new_order_sales_manager").val(<?= $this->manager["user_id"] ?>);
         $("#modal_new_order_sales_manager_2").val(<?= $this->manager["user_id"] ?>);
+
+        $('form').keydown(function(event){
+            if(event.keyCode == 13) {
+                $(event.target).trigger('change');
+                event.preventDefault();
+                return false;
+            }
+        });
     });
 </script>

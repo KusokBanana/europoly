@@ -22,26 +22,19 @@
                                             <a href="#tab1" data-toggle="tab" class="step active">
                                                 <span class="number"> 1 </span>
                                                 <span class="desc">
-                                                                <i class="fa fa-check"></i> Source Products </span>
+                                                                <i class="fa fa-check"></i> Result Product </span>
                                             </a>
                                         </li>
                                         <li>
                                             <a href="#tab2" data-toggle="tab" class="step">
                                                 <span class="number"> 2 </span>
                                                 <span class="desc">
-                                                                <i class="fa fa-check"></i> Result Product </span>
+                                                                <i class="fa fa-check"></i> Quantity </span>
                                             </a>
                                         </li>
                                         <li>
                                             <a href="#tab3" data-toggle="tab" class="step">
                                                 <span class="number"> 3 </span>
-                                                <span class="desc">
-                                                                <i class="fa fa-check"></i> Quantity </span>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#tab4" data-toggle="tab" class="step">
-                                                <span class="number"> 4 </span>
                                                 <span class="desc">
                                                                 <i class="fa fa-check"></i> Confirmation </span>
                                             </a>
@@ -52,31 +45,10 @@
                                     </div>
                                     <div class="tab-content">
                                         <div class="alert alert-danger error-choose-products display-none">
-                                            <button class="close" data-dismiss="alert"></button> Please choose at least 1 product below. </div>
+                                            <button class="close" data-dismiss="alert"></button> Please choose 1 product below. </div>
                                         <div class="alert alert-success /*display-none*/">
                                             <button class="close" data-dismiss="alert"></button> Your have chosen # products. </div>
                                         <div class="tab-pane active" id="tab1">
-                                            <?php
-                                            $table_data = [
-                                                'buttons' => [
-                                                    'Select products in the table above:'
-                                                ],
-                                                'table_id' => "table_product_assemble_set",
-                                                'ajax' => [
-                                                    'url' => "/warehouse/dt?warehouse_id=0"
-                                                ],
-                                                'column_names' => $this->column_names,
-                                                'hidden_by_default' => "[]",
-                                                'click_url' => "javascript:;",
-                                                'selectSearch' => $this->selects,
-                                                'filterSearchValues' => $this->rows,
-                                                'method' => 'POST',
-                                                'originalColumns' => $this->originalColumns
-                                            ];
-                                            include 'application/views/templates/table.php'
-                                            ?>
-                                        </div>
-                                        <div class="tab-pane" id="tab2">
                                             <?php
                                             $table_data = [
                                                 'buttons' => [
@@ -98,13 +70,12 @@
                                             include 'application/views/templates/table.php'
                                             ?>
                                         </div>
-                                        <div class="tab-pane" id="tab3">
+                                        <div class="tab-pane" id="tab2">
                                             <h4 class="form-section">Source Products</h4>
                                             <div class="portlet-body">
                                                 <div class="table-responsive">
                                                     <table class="table table-hover table-bordered table-striped
-                                                    table_assemble_set" data-products-table="#table_product_assemble_set"
-                                                           id="table_assemble_set_source">
+                                                    table_assemble_set" id="table_assemble_set_source">
                                                         <thead>
                                                         <tr>
                                                             <th></th>
@@ -129,8 +100,7 @@
                                             <div class="portlet-body">
                                                 <div class="table-responsive">
                                                     <table class="table table-hover table-bordered table-striped
-                                                    table_assemble_set" data-products-table="#table_assembles_assemble_set"
-                                                           id="table_assemble_set_result">
+                                                    table_assemble_set" id="table_assemble_set_result">
                                                         <thead>
                                                         <tr>
                                                             <th>Product</th>
@@ -149,7 +119,7 @@
 <!--                                                Здесь должна располагаться таблица из 1 строки, выбранной на втором шаге, столбцы: Product(название по стандартной форме), Purchase Price + Expenses(цифра и валюта, вычисляем, (сумма всех Total Price из Source Products) / Quantity), Quantity (редактируемое X-editable поле, в котором указаны Units), Total Price (сумма всех Total Price из Source Products)-->
                                             </div>
                                         </div>
-                                        <div class="tab-pane" id="tab4">
+                                        <div class="tab-pane" id="tab3">
                                             <h3 class="block">Confirm your assemble</h3>
 
                                             <h4 class="form-section">Source Products</h4>
@@ -197,25 +167,34 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
-
 <script>
     $(document).ready(function() {
         $('.progress-bar-success').width(25 + '%');
 
+        $('#table_warehouses_products').find('tbody').on('click', 'tr td:first-child', function (e) {
+            var selectedRows = $('#table_warehouses_products').find('.selected');
+            if (selectedRows.length) {
+                $('.assemble-btn').removeClass('disabled');
+            } else {
+                $('.assemble-btn').addClass('disabled');
+            }
+        });
+
         $('#assemble-set').on('click', '.form-actions .button-next', function() {
-            var active = $('.nav-pills').find('li.active');
-            if (active.index() < 3) {
+            var active = $('#assemble-set').find('.nav-pills').find('li.active');
+            if (active.index() < 2) {
                 active.next().find('a[data-toggle="tab"]').tab('show');
             }
         }).on('click', '.form-actions .button-previous', function() {
-            var active = $('.nav-pills').find('li.active');
+            var active = $('#assemble-set').find('.nav-pills').find('li.active');
+            console.log(active.index())
             if (active.index() > 0) {
                 active.prev().find('a[data-toggle="tab"]').tab('show');
             }
         }).find('.nav-pills .step').on('show.bs.tab', function() {
             var selectorTab = $(this).attr('href');
             var can = 1;
-            var firstTable = $('#table_product_assemble_set');
+            var firstTable = $('#table_warehouses_products');
             var secondTable = $('#table_assembles_assemble_set');
             var $table_source = $("#table_assemble_set_source");
             var $table_result = $("#table_assemble_set_result");
@@ -226,23 +205,16 @@
                 can = 2;
             if (resultProduct !== undefined && resultProduct)
                 can = 3;
-            if ($table_source.hasClass('dataTable'))
+            if ($table_source.hasClass('dataTable') && can == 3)
                 can = 4;
 
             if (selectorTab == '#tab1') {
-                if (can < 1)
-                    return false;
-                $('.progress-bar-success').width(25 + '%');
-            } else if (selectorTab == '#tab2') {
                 if (can < 2) {
-                    $('.error-choose-products').show();
                     return false;
                 } else {
-
-                    $('.error-choose-products').hide();
-                    $('.progress-bar-success').width(50 + '%');
+                    $('.progress-bar-success').width(33 + '%');
                 }
-            } else if (selectorTab == '#tab3') {
+            } else if (selectorTab == '#tab2') {
                 if (can < 3) {
                     $('.error-choose-products').show();
                     return false;
@@ -335,7 +307,7 @@
                                     currency + '</td>';
                                 tr += '<td><a href="javascript:;" class="x-editable x-assemble-amount-result-total"' +
                                     ' data-original-title="Enter Quantity" data-name="assemble-result-amount" ' +
-                                    'data-pk="'+pk+'" data-value="'+resultTotalAmount+'">' + resultTotalAmount + '</a>, ' +
+                                    'data-pk="'+pk+'" data-value="'+resultTotalAmount+'">' + resultTotalAmount + '</a> ' +
                                     units + '</td>';
                                 tr += '<td>' + (resultTotalAmount * allPrices).toFixed(2) + ', ' + currency + '</td>';
                                 $table_result.find('tbody tr').empty().append(tr);
@@ -356,14 +328,15 @@
                         function getColumnValue(name) {
                             var index =$('#table_assembles_assemble_set_columns_choose').find(':contains('+name+')')
                                 .closest('label').find('input').attr('data-column');
+                            // TODO change this from global
                             return assembleGlobalTable.rows('.selected').data()[0][index];
                         }
 
                     }
-                    $('.progress-bar-success').width(75 + '%');
+                    $('.progress-bar-success').width(66 + '%');
                 }
 
-            } else if (selectorTab == '#tab4') {
+            } else if (selectorTab == '#tab3') {
                 if (can < 4) {
                     return false;
                 } else {
@@ -380,7 +353,7 @@
                     $('.progress-bar-success').width(100 + '%');
 
                     var sourceAnchors = $table_source.find('.x-assemble-amount');
-                    var inputsBlock = $('#tab4').find('.assemble-inputs-block');
+                    var inputsBlock = $('#tab3').find('.assemble-inputs-block');
                     inputsBlock.empty();
                     $.each(sourceAnchors, function() {
                         var name = 'Assemble[warehouse][' + $(this).attr('data-pk') + ']',

@@ -24,6 +24,7 @@ class ControllerOrder extends Controller
             $this->view->sales_manager = $this->model->getUser($this->view->order["sales_manager_id"]);
             $this->view->commission_agent = $this->model->getClient($this->view->order["commission_agent_id"]);
             $this->view->title = 'Order #' . $this->view->order['order_id'] . ' / ' . $this->view->order['order_items_count'];
+            $this->view->warehouses = $this->model->getWarehousesIdNames();
 
             $roles = new Roles();
             $this->view->full_product_column_names = $this->model->getColumns($this->model->full_product_column_names,
@@ -170,11 +171,14 @@ class ControllerOrder extends Controller
     function action_return_item()
     {
         $this->getAccess($this->page, 'ch');
-        $itemId = (isset($_GET["order_item_id"]) && $_GET["order_item_id"]) ? intval($_GET["order_item_id"]) : false;
+        $itemId = (isset($_GET["item_id"]) && $_GET["item_id"]) ? intval($_GET["item_id"]) : false;
         if (!$itemId)
             return;
+        $warehouse_id = (isset($_GET['warehouse_id'])) ? $_GET['warehouse_id'] : 1;
         $this->model->updateItemField($itemId, 'status_id', RETURNED);
-        $this->model->addLog(LOG_RETURN_TO_WAREHOUSE, ['items' => [$itemId]]);
+        $this->model->updateItemField($itemId, 'warehouse_id', $warehouse_id);
+        // here we can return only one item for once
+        $this->model->addLog(LOG_RETURN_TO_WAREHOUSE, ['items' => [$itemId], 'warehouse_id' => $warehouse_id]);
 
         header("Location: " . $_SERVER['HTTP_REFERER']);
     }

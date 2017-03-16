@@ -275,6 +275,14 @@
             $(this).editableSelect();
         });
         editableSelects.attr('placeholder', 'Did not find the desired item? - Enter new one here');
+
+        $('form').keydown(function(event){
+            if(event.keyCode == 13) {
+                $(event.target).trigger('change');
+                event.preventDefault();
+                return false;
+            }
+        });
     });
 </script>
 

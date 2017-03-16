@@ -126,15 +126,18 @@
         <!--/container-->
     </nav>
 </header>
+<?php $isLogVisible = (isset($this->logs)); ?>
 <!-- END HEADER -->
 <!-- BEGIN CONTAINER -->
 <div class="container-fluid">
     <div class="page-content page-content-popup">
         <!-- BEGIN QUICK SIDEBAR TOGGLER -->
-        <button type="button" class="quick-sidebar-toggler logging-block" data-id="logging" data-toggle="collapse">
-            <span class="sr-only">Toggle Logging</span>
-            <i class="icon-notebook"></i>
-        </button>
+        <?php if ($isLogVisible): ?>
+            <button type="button" class="quick-sidebar-toggler logging-block" data-id="logging" data-toggle="collapse">
+                <span class="sr-only">Toggle Logging</span>
+                <i class="icon-notebook"></i>
+            </button>
+        <?php endif; ?>
         <button type="button" class="quick-sidebar-toggler documents-block" data-id="docs" data-toggle="collapse">
             <span class="sr-only">Toggle Documents</span>
             <i class="icon-doc"></i>
@@ -161,7 +164,9 @@
     </div>
 </div>
 <!-- BEGIN QUICK SIDEBAR -->
-<?php include 'application/views/templates/logging.php' ?>
+<?php if ($isLogVisible): ?>
+    <?php include 'application/views/templates/logging.php' ?>
+<?php endif; ?>
 <?php include 'application/views/templates/documents.php' ?>
 <?php include 'application/views/templates/chat.php' ?>
 <!-- END QUICK SIDEBAR -->

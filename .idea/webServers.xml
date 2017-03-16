@@ -42,7 +42,7 @@
           <option name="port" value="21" />
         </fileTransfer>
       </webServer>
-      <webServer id="e50b3108-8b1b-4f4f-9a94-8f92af030bac" name="europoly" url="http://europoly/">
+      <webServer id="e50b3108-8b1b-4f4f-9a94-8f92af030bac" name="europoly (project level)" url="http://europoly/">
         <fileTransfer port="0" accessType="LOCAL" />
       </webServer>
       <webServer id="8d14c8c5-e900-4274-911e-2a8d0338d1c9" name="europolyServer" url="http://u470791.ftp.masterhost.ru">
