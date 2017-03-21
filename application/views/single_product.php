@@ -29,7 +29,7 @@
                 <strong>Status: Active.</strong>
                 <div style="float:right" class="action btn-group ">
                     <?php
-                    if ($this->access) {
+                    if ($this->access['ch']) {
                         echo <<<END
                     <button class="btn green btn-sm dropdown-toggle" data-toggle="dropdown">Change Status
                         <i class="fa fa-angle-down"></i>
@@ -48,6 +48,14 @@
                     </ul>
 END;
                     }
+                    if ($this->access['d']) {
+                        echo '<a class="btn red btn-sm" '.
+                                'href="/product/delete?product_id='.$this->product['product_id'].'"'.
+                                 'data-placement="top" data-popout="true" data-singleton="true" '.
+                                 'data-toggle="confirmation" data-title="Are you sure to delete this product?">'.
+                                    'Delete Product'.
+                             '</a>';
+                    }
                     ?>
                 </div>
                 <br/>
@@ -59,7 +67,7 @@ END;
                 <strong>Status: Limited Edition.</strong>
                 <div style="float:right" class="action btn-group ">
                     <?php
-                    if ($this->access) {
+                    if ($this->access['ch']) {
                         echo <<<END
                     <button class="btn yellow btn-sm dropdown-toggle" data-toggle="dropdown">Change Status
                         <i class="fa fa-angle-down"></i>
@@ -87,7 +95,7 @@ END;
                 <strong>Status: Out of Production.</strong>
                 <div style="float:right" class="action btn-group ">
                     <?php
-                    if ($this->access) {
+                    if ($this->access['ch']) {
                         echo <<<END
                     <button class="btn red btn-sm dropdown-toggle" data-toggle="dropdown">Change Status
                         <i class="fa fa-angle-down"></i>
@@ -121,7 +129,7 @@ END;
                     </div>
                     <div class="actions">
                         <?php
-                        if ($this->access) {
+                        if ($this->access['ch']) {
                             echo '<a href="javascript:;" class="btn btn-default btn-sm" data-toggle="modal" data-target="#modal_uploadImage"><i class="fa fa-pencil"></i> Add </a>';
                         }
                         ?>
@@ -136,7 +144,7 @@ END;
                                 <a href="{$photo['path']}" class="fancybox-button" data-rel="fancybox-button" style="position:relative">
                                     <img class="img-responsive" src="{$photo['path']}" alt="" style="float: left; padding:10px;">
 END;
-                            if ($this->access) {
+                            if ($this->access['ch']) {
                                 echo "<span class='glyphicon glyphicon-remove-circle' style='position:absolute;top:15px;right:15px;font-size:20px' onclick='showDeleteModal(event, {$photo['photo_id']})'></span>";
                             }
                             echo "</a></div>";
@@ -160,12 +168,18 @@ END;
                         $label = $column['label'];
                         $isSelect = $column['isSelect'] ? 1 : '';
                         $formName = $column['table'];
+
                         if (strpos($name, '_rus') !== false) {
+                            echo ' / ';
                             $column_name_rus = str_replace('_rus', '', $name);
                             $value = $this->orEmpty($this->rus[$column_name_rus]);
                             $text = $value;
                             $formName .= '.' . $column_name_rus;
                         } else {
+                            echo '<div class="row static-info">';
+                            echo '<div class="col-md-4 name">' . $label . ':</div>
+                                    <div class="col-md-8 value">';
+
                             $value = $text = $this->orEmpty($this->product[$name]);
                             if ($column['type'] == 'id') {
                                 // TODO remove please
@@ -179,19 +193,19 @@ END;
                             }
                             $formName .= '.' . $name;
                         }
-                        $formName .= '.' . $column['type'];
-                        echo <<<END
-                    <div class="row static-info">
-                        <div class="col-md-5 name"> $label:</div>
-                        <div class="col-md-7 value">
-                            <a href="javascript:;" id="editable-$name" class='x-editable' data-pk="{$this->product["product_id"]}" data-name="$formName" 
-                            data-value="$value" data-sourceName="$name" data-isSelect="$isSelect" data-url='/product/change_field' data-original-title='Enter $label'>
-                                $text 
-                            </a>
 
-                        </div>
-                    </div>
-END;
+                        $formName .= '.' . $column['type'];
+                        echo '<a href="javascript:;" id="editable-$name" class=\'x-editable\' data-pk="'.
+                            $this->product["product_id"].'" data-name="'.$formName.'" data-value="'.$value.'"'.
+                            'data-sourceName="'.$name.'" data-isSelect="'.$isSelect.'" '.
+                            'data-url=\'/product/change_field\' data-original-title=\'Enter '.$label.'\'>'.
+                            $text.
+                            '</a>';
+
+                        if (!isset($this->columns[$name . '_rus'])) {
+                            echo '</div></div>';
+                        }
+
                     }
                     ?>
                 </div>
@@ -385,7 +399,7 @@ require_once "modals/upload_image.php"
     });
 
     <?php
-    if (!$this->access) {
+    if (!$this->access['ch']) {
         echo "$('.x-editable').editable('toggleDisabled');";
     }
     ?>

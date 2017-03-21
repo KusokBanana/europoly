@@ -10,7 +10,7 @@ class ModelShipment extends ModelManagers_orders
         array('dt' => 0, 'db' => "trucks_items.item_id"),
         array('dt' => 1, 'db' => "CONCAT('<a href=\"/truck?id=', trucks.id,  '\">', trucks.id, '</a>')"),
         array('dt' => 2, 'db' => "CONCAT('<a href=\"/product?id=', products.product_id,  '\"
-            class=\"order-item-product\" data-id=\"', trucks_items.item_id ,'\">', products.name, '</a>')"),
+            class=\"order-item-product\" data-id=\"', trucks_items.item_id ,'\">', IFNULL(products.visual_name, 'Enter Visual Name!'), '</a>')"),
         array('dt' => 3, 'db' => "suppliers_orders.supplier_date_of_order"),
         array('dt' => 4, 'db' => "suppliers_orders.release_date"),
         array('dt' => 5, 'db' => "suppliers_orders.departure_date"),

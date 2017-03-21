@@ -150,17 +150,22 @@ abstract class Model extends mysqli
         array('dt' => 23, 'db' => 'products.weight'),
         array('dt' => 24, 'db' => 'CAST(products.amount_in_pack as decimal(64, 2))'),
         array('dt' => 25, 'db' => 'products.purchase_price'),
-        array('dt' => 26, 'db' => 'products.currency'),
+        array('dt' => 26, 'db' => 'products.purchase_price_currency'),
         array('dt' => 27, 'db' => 'products.suppliers_discount'),
         array('dt' => 28, 'db' => 'products.margin'),
         array('dt' => 29, 'db' => 'patterns.name'),
-        array('dt' => 30, 'db' => 'CONCAT(IF(products.status=0, "Active", IF(products.status=1, "Limited Edition", IF(products.status=2, "Out Of Production", ""))))'),
+        array('dt' => 30, 'db' => 'products.grading'),
         array('dt' => 31, 'db' => 'products.sell_price'),
-        array('dt' => 32, 'db' => '"N/A"'),
-        array('dt' => 33, 'db' => 'products.category_id')
+        array('dt' => 32, 'db' => 'products.category_id'),
+        array('dt' => 33, 'db' => 'products.pattern'),
+        array('dt' => 34, 'db' => 'products.amount_of_units_in_pack'),
+        array('dt' => 35, 'db' => 'products.amount_of_packs_in_pack'),
+        array('dt' => 36, 'db' => 'products.sell_price_currency'),
+        array('dt' => 37, 'db' => 'products.supplier'),
+        array('dt' => 38, 'db' => 'products.visual_name'),
     );
 
-    var $full_product_hidden_columns = "[4, 5, 6, 10, 12, 14, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 32, 33]";
+    var $full_product_hidden_columns = "[4, 5, 6, 10, 12, 14, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 32]";
 
     var $full_product_column_names = array(
         '_product_id',
@@ -193,10 +198,15 @@ abstract class Model extends mysqli
         'Supplier\'s discount',
         'Margin',
         'Pattern',
-        'Status',
+        'Grading 1',
         'Sell Price',
-        'Price',
-        '_category_id'
+        '_category_id',
+        'Pattern 1',
+        'Q-ty of units in 1 pc.',
+        'Number of pcs in 1 pack',
+        'Retail Currency',
+        'Supplier 1',
+        'Visual Name',
     );
 
     var $full_products_table = "products ".
@@ -446,6 +456,17 @@ abstract class Model extends mysqli
         $enName = [];
         $rusOrderItem = $this->getFirst("SELECT * FROM nls_products WHERE product_id = $productId");
 
+        if (isset($product['visual_name']) && $product['visual_name'] &&
+            isset($rusOrderItem['visual_name']) && $rusOrderItem['visual_name']) {
+            if (!$isMulti)
+                return $rusOrderItem['visual_name'];
+            else
+                return [
+                    'en' => $product['visual_name'],
+                    'rus' => $rusOrderItem['visual_name']
+                ];
+        }
+
         if ($brandId = $product['brand_id']) {
             $brand = $this->getFirst("SELECT name FROM brands WHERE brand_id = $brandId");
             if ($brand) {
@@ -629,7 +650,7 @@ abstract class Model extends mysqli
     public function getLogs()
     {
 
-        $logs = $this->getAssoc("SELECT CONCAT(logging.action, ' - ', users.first_name, ' ', users.last_name, ' - ',
+        $logs = $this->getAssoc("SELECT CONCAT('# ',logging.log_id, ' ', logging.action, ' - ', users.first_name, ' ', users.last_name, ' - ',
           logging.date) as name, CONCAT('/warehouse/print_log_doc?id=', logging.log_id) as href 
           FROM logging LEFT JOIN users ON (logging.user_id = users.user_id)");
 

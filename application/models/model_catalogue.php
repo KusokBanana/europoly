@@ -25,8 +25,9 @@ class ModelCatalogue extends Model
                 if (!$value || $value == null)
                     continue;
                 if (in_array($key, ['product_id', 'article', 'name', 'width', 'length', 'weight',
-                    'amount_in_pack', 'purchase_price', 'dealer_price', 'currency', 'suppliers_discount', 'margin',
-                    'status', 'sell_price', 'thickness']))
+                    'amount_in_pack', 'purchase_price', 'dealer_price', 'purchase_price_currency', 'suppliers_discount', 'margin',
+                    'sell_price', 'thickness', 'image_id_A', 'image_id_B', 'image_id_V', 'amount_of_units_in_pack',
+                    'visual_name', 'amount_of_packs_in_pack']))
                     continue;
                 $selects[$key][] = $value;
             }
@@ -53,7 +54,8 @@ class ModelCatalogue extends Model
         $rowValues = json_decode($ssp, true)['data'];
         $ignoreArray = ['_product_id', 'Name', 'Article', 'Thickness', 'Width', 'Length',
             'Weight', 'Quantity in 1 Pack', 'Purchase price', 'Supplier\'s discount',
-            'Margin', 'Sell'];
+            'Margin', 'Sell',/* TODO */ 'image_id_A', 'image_id_B', 'image_id_V', 'amount_of_units_in_pack',
+            'visual_name', 'amount_of_packs_in_pack'];
 
         if (!empty($rowValues)) {
             $selects = [];

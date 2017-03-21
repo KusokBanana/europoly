@@ -65,7 +65,8 @@
                                                 'selectSearch' => $this->catalogue_selects,
                                                 'filterSearchValues' => $this->catalogue_rows,
                                                 'select' => 'single',
-                                                'global' => 'assembleGlobalTable'
+                                                'global' => 'assembleGlobalTable',
+                                                'method' => 'POST',
                                             ];
                                             include 'application/views/templates/table.php'
                                             ?>
@@ -169,14 +170,21 @@
 </div>
 <script>
     $(document).ready(function() {
-        $('.progress-bar-success').width(25 + '%');
+        var progressBar = $('#assemble-set').find('.progress-bar-success');
+        progressBar.width(33 + '%');
 
         $('#table_warehouses_products').find('tbody').on('click', 'tr td:first-child', function (e) {
             var selectedRows = $('#table_warehouses_products').find('.selected');
             if (selectedRows.length) {
-                $('.assemble-btn').removeClass('disabled');
+                $('.assemble-btn').removeClass('disable');
             } else {
-                $('.assemble-btn').addClass('disabled');
+                $('.assemble-btn').addClass('disable');
+            }
+        });
+        $('.assemble-btn').on('click', function() {
+            if ($(this).hasClass('disable')) {
+                $('#modal_warehouse_error').modal('show');
+                return false;
             }
         });
 
@@ -212,7 +220,7 @@
                 if (can < 2) {
                     return false;
                 } else {
-                    $('.progress-bar-success').width(33 + '%');
+                    progressBar.width(33 + '%');
                 }
             } else if (selectorTab == '#tab2') {
                 if (can < 3) {
@@ -350,7 +358,7 @@
                     });
                     $('.assemble-final-source').empty().append(tableSource);
                     $('.assemble-final-result').empty().append(tableResult);
-                    $('.progress-bar-success').width(100 + '%');
+                    progressBar.width(100 + '%');
 
                     var sourceAnchors = $table_source.find('.x-assemble-amount');
                     var inputsBlock = $('#tab3').find('.assemble-inputs-block');

@@ -8,16 +8,7 @@ class ModelTruck extends ModelOrder
         array('dt' => 0, 'db' => "trucks_items.item_id"),
         array('dt' => 1, 'db' => "CONCAT('<a href=\"/product?id=',
                 trucks_items.product_id,
-                '\">', 
-                    IFNULL(CONCAT(brands.name, ', '), ''),
-                    IFNULL(CONCAT(products.collection, ', '), ''),
-                    IFNULL(CONCAT(wood.name, ', '), ''),
-                    IFNULL(CONCAT(grading.name, ', '), ''),
-                    IFNULL(CONCAT(colors.name, ', '), ''),
-                    IFNULL(CONCAT(products.texture, ', '), ''),
-                    IFNULL(CONCAT(products.surface, ', '), ''),
-                    IFNULL(CONCAT(products.thickness, 'x', products.width, 'x', products.length), ''),
-                '</a>')"),
+                '\">', IFNULL(products.visual_name, 'Enter Visual Name!'), '</a>')"),
         array('dt' => 2, 'db' => "IF(trucks_items.status_id > 8, 
                 CONCAT(trucks_items.amount, ' ', IFNULL(products.units, '')),
                 CONCAT('<a href=\"javascript:;\" class=\"x-editable x-amount\" data-pk=\"',
@@ -230,7 +221,7 @@ class ModelTruck extends ModelOrder
             if ($truckItem['warehouse_arrival_date'] == null)
                 $this->putItemToWarehouse($truckItem['item_id'], true);
         }
-        $this->addLog(LOG_DELIVERY_TO_WAREHOUSE, ['items' => $truckItems]);
+        $this->addLog(LOG_DELIVERY_TO_WAREHOUSE, ['items' => $truckItems, 'warehouse_id' => 1]);
         return $this->printDoc($truckId);
     }
 

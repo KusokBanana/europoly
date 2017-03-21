@@ -54,7 +54,8 @@
                                 $buttons[] = '<button class="btn sbold green" data-toggle="modal" 
                                     data-target="#modal_newProductWarehouse">Add New <i class="fa fa-plus"></i></button>';
                                 $buttons[] =
-                                    '<a class="btn dark btn-outline sbold disabled assemble-btn" data-toggle="modal" 
+                                    '<a class="btn dark btn-outline sbold disable assemble-btn" 
+                                        data-toggle="modal" 
                                         href="#assemble-set"> Assemble Set </a>';
                                 if (!$this->access['ch'])
                                     $buttons = [];
@@ -93,7 +94,6 @@
                                             '<button data-link="/warehouse/issue_products" 
                                                         class="btn sbold green issue-products-btn"
                                                         data-sel="#table_warehouses_products_issue">Issue</button>';
-                                    if ($this->access['d'])
                                     $table_data = [
                                         'buttons' => $buttons,
                                         'table_id' => "table_warehouses_products_issue",
@@ -146,7 +146,9 @@
 </div>
 
 <?php
+if ($this->access['ch']) {
     require_once 'modals/new_product_warehouse.php';
+}
 ?>
 <script>
     $(document).ready(function () {
@@ -168,27 +170,29 @@
             history.pushState({}, '', url);
         <?php endif; ?>
 
-        $('.issue-products-btn, .discard-products-btn').confirmation({
-            singleton: true,
-            popout: true,
-            placement: 'right',
-            onConfirm: function () {
-                var btn = $(this);
-                var tableSelector = btn.attr('data-sel');
-                var table = $(tableSelector).DataTable();
-                var selected = table.rows('.selected').data(),
-                    selectedCount = selected.length;
-                if (selectedCount) {
-                    var ids = [];
-                    $.each(selected, function() {
-                        ids.push(this[0]);
-                    });
-                    window.location.href = btn.attr('data-link') + '?products=' + ids.join();
-                } else {
-                    $('#modal_warehouse_error').modal('show')/*.find('.modal-body h4').text(errorMessage)*/;
-                }
+        $('.issue-products-btn, .discard-products-btn').on('click', function() {
+            var btn = $(this);
+            var tableSelector = btn.attr('data-sel');
+            var table = $(tableSelector).DataTable();
+            var selected = table.rows('.selected').data(),
+                selectedCount = selected.length;
+            if (selectedCount) {
+                var ids = [];
+                $.each(selected, function() {
+                    ids.push(this[0]);
+                });
+                btn.confirmation({
+                    singleton: true,
+                    popout: true,
+                    placement: 'right',
+                    onConfirm: function () {
+                        window.location.href = btn.attr('data-link') + '?products=' + ids.join();
+                    }
+                });
+            } else {
+                $('#modal_warehouse_error').modal('show')/*.find('.modal-body h4').text(errorMessage)*/;
             }
-        });
+        })
 
     });
 </script>
@@ -198,7 +202,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Issue</h4>
+                <h4 class="modal-title" id="myModalLabel"></h4>
             </div>
             <div class="modal-body">
                 <h4 class="modal-title text-danger text-center">Select one of the items!</h4>

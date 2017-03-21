@@ -40,7 +40,7 @@
                         ],
                         'column_names' => $this->column_names,
                         'click_url' => "/brand?id=",
-                        'originalColumns' => $this->originalColumns
+                        'originalColumns' => $this->originalColumns,
                     ];
                     include 'application/views/templates/table.php'
                     ?>

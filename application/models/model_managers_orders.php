@@ -13,7 +13,7 @@ class ModelManagers_orders extends Model
             managers.first_name, ' ', managers.last_name, '</a>')"),
         array('dt' => 3, 'db' => "CONCAT('<a href=\"/product?id=', order_items.product_id, '\"',
                                  'target=\"_blank\" data-id=\"', order_items.item_id, '\"',
-                                 'class=\"order-item-product\">', products.name, '</a>')"),
+                                 'class=\"order-item-product\">', IFNULL(products.visual_name, 'Enter Visual Name!'), '</a>')"),
         array('dt' => 4, 'db' => "CONCAT('<span class=\"brand-cell', '\">', brands.name, '</span>')"),
         array('dt' => 5, 'db' => "orders.start_date"),
         array('dt' => 6, 'db' => "status.name"),

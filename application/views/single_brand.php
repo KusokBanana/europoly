@@ -97,7 +97,8 @@
                                 'click_url' => "/product?id=",
                                 'selectSearch' => $this->selects,
                                 'filterSearchValues' => $this->rows,
-                                'originalColumns' => $this->originalColumns
+                                'originalColumns' => $this->originalColumns,
+                                'method' => 'POST',
                             ];
                             include 'application/views/templates/table.php'
                             ?>

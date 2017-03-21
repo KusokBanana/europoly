@@ -61,7 +61,7 @@
                     <li id="nav-managers-order" class="nav-item">
                         <a href="/sent_to_logist" class="nav-link nav-toggle">
                             <i class="icon-bar-chart"></i>
-                            <span class="title">Managers Order</span>
+                            <span class="title">Requests to Logist</span>
                         </a>
                     </li>
                     <li id="nav-suppliers-orders" class="nav-item">

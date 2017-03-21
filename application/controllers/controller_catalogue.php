@@ -29,6 +29,7 @@ class ControllerCatalogue extends Controller
         $this->view->grading = $this->model->getAll("grading");
         $this->view->patterns = $this->model->getAll("patterns");
         $this->view->tabs = $this->model->getCategoryTabs();
+        $this->view->categories = $this->model->getAll('category');
 
         $this->view->access = $roles->returnAccessAbilities('catalogue', 'ch');
 
@@ -62,8 +63,8 @@ class ControllerCatalogue extends Controller
 
     function action_dt()
     {
-        $id = isset($_GET['products']['id']) ? $_GET['products']['id'] : false;
-        $this->model->getDTProducts($_GET, $id);
+        $id = isset($_POST['products']['id']) ? $_POST['products']['id'] : false;
+        $this->model->getDTProducts($_POST, $id);
     }
 
     function action_add()

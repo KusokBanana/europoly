@@ -203,16 +203,6 @@ class ModelAccountant extends Model
             return null;
         }
 
-        $gradings = $this->getAssoc("SELECT * FROM grading");
-
-        function getGradingId($gradingStr, $gradings) {
-            foreach ($gradings as $grading) {
-                if ($grading['name'] == $gradingStr)
-                    return $grading['grading_id'];
-            }
-            return null;
-        }
-
         foreach ($array as $item) {
 
             $brand = $item['brand']['val'];
@@ -221,12 +211,7 @@ class ModelAccountant extends Model
                 'type' => 'int'
             ];
             unset($item['brand']);
-            $grading = $item['grading']['val'];
-            $item['grading_id'] = [
-                'val' => getGradingId($grading, $gradings),
-                'type' => 'int'
-            ];
-            unset($item['grading']);
+
 
             $names = '';
             $rusNames = '';
@@ -264,7 +249,7 @@ class ModelAccountant extends Model
                 }
             }
 
-            if ($empty == 0)
+            if ($empty <= 0)
                 continue;
 
             $productId = $this->insert("INSERT INTO products ($names status)

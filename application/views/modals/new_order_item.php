@@ -24,7 +24,8 @@
                         'selectSearch' => $this->selects,
                         'filterSearchValues' => $this->rows,
                         'originalColumns' => $this->originalColumns,
-                        'click_url' => "#"
+                        'click_url' => "#",
+                        'method' => 'POST'
                     ];
                     include 'application/views/templates/table.php'
                     ?>

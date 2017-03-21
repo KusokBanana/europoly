@@ -12,7 +12,7 @@ class ModelSuppliers_orders extends ModelManagers_orders
         array('dt' => 2, 'db' => "CONCAT('<a href=\"/suppliers_order?id=', 
             suppliers_orders.order_id,'\">', suppliers_orders.order_id, '</a>')"),
         array('dt' => 3, 'db' => "CONCAT('<a href=\"/product?id=', suppliers_orders_items.product_id,  '\"',
-            'class=\"order-item-product\" data-id=\"', suppliers_orders_items.supplier_order_id ,'\">', products.name, '</a>')"),
+            'class=\"order-item-product\" data-id=\"', suppliers_orders_items.supplier_order_id ,'\">', IFNULL(products.visual_name, 'Enter Visual Name!'), '</a>')"),
         array('dt' => 4, 'db' => "suppliers_orders.supplier_date_of_order"),
         array('dt' => 5, 'db' => "suppliers_orders.release_date"),
         array('dt' => 6, 'db' => "suppliers_orders.departure_date"),

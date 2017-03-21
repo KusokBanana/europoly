@@ -21,7 +21,8 @@ class ModelWarehouse extends ModelManagers_orders
     var $product_warehouses_columns = array(
         array('dt' => 0, 'db' => 'products_warehouses.item_id'),
         array('dt' => 1, 'db' => 'products.article'),
-        array('dt' => 2, 'db' => 'CONCAT(\'<a href="/product?id=\', products.product_id, \'">\', IFNULL(products.name, \'no name\'), \'</a>\')'),
+        array('dt' => 2, 'db' => 'CONCAT(\'<a href="/product?id=\', products.product_id, \'">\', 
+            IFNULL(products.visual_name, \'Enter Visual Name!\'), \'</a>\')'),
         array('dt' => 3, 'db' => 'CONCAT(\'<a href="/brand?id=\', brands.brand_id, \'">\', IFNULL(brands.name, \'no name\'), \'</a>\')'),
         array('dt' => 4, 'db' => 'CONCAT(\'<a href="javascript:;" class="x-editable x-warehouse_id" 
             data-pk="\', products_warehouses.item_id ,\'" 
@@ -526,7 +527,7 @@ class ModelWarehouse extends ModelManagers_orders
                 CAST((IFNULL(products_warehouses.purchase_price, 0) + IFNULL(products_warehouses.import_VAT, 0) + 
                 IFNULL(products_warehouses.import_brokers_price, 0) + IFNULL(products_warehouses.import_tax, 0) + 
                 IFNULL(products_warehouses.delivery_price, 0)) as decimal(64, 2)),
-                '</span>', ' ', products.currency)"),
+                '</span>', ' ', products.purchase_price_currency)"),
             array('dt' => 3, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-assemble-amount\" data-pk=\"',
                 products_warehouses.item_id, '\" data-name=\"assemble-amount\" data-value=\"',products_warehouses.amount,'\" 
                 data-original-title=\"Enter Quantity\" data-max=\"', products_warehouses.amount, '\">', 
@@ -536,7 +537,7 @@ class ModelWarehouse extends ModelManagers_orders
                 CAST(((IFNULL(products_warehouses.purchase_price, 0) + IFNULL(products_warehouses.import_VAT, 0) + 
                 IFNULL(products_warehouses.import_brokers_price, 0) + IFNULL(products_warehouses.import_tax, 0) + 
                 IFNULL(products_warehouses.delivery_price, 0)) * products_warehouses.amount) as decimal(64, 2)), 
-                '</span>', ' ', products.currency)"),
+                '</span>', ' ', products.purchase_price_currency)"),
         ];
 
         $where = "products_warehouses.item_id IN ($items)";

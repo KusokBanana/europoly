@@ -163,7 +163,7 @@ if ($hidden_by_default) {
         if (isset($ajax['data']) && $ajax['data'] != "") {
             echo "var ajax = { url: '" . $ajax['url'] . "', 
                                 data: { products:" . json_encode($ajax['data']) . "}, 
-                                type: 'GET' 
+                                type: '$method'
                               };";
         } else {
             echo "var ajax = '" . $ajax['url'] . "';";

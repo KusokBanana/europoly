@@ -94,7 +94,8 @@ data-target="#modal_newProduct">Add Similar Product <i class="fa fa-plus"></i></
                                 'click_url' => "/product?id=",
                                 'selectSearch' => $this->selects,
                                 'filterSearchValues' => $this->rows,
-                                'originalColumns' => $this->originalColumns
+                                'originalColumns' => $this->originalColumns,
+                                'method' => "POST",
                             ];
                             include 'application/views/templates/table.php'
                             ?>

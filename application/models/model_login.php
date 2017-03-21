@@ -9,7 +9,8 @@ class ModelLogin extends Model
 
     function getUserByEmailAndPassword($login, $hash)
     {
-        return $this->getFirst("SELECT * FROM users WHERE login = '" . $this->escape_string($login) . "' AND password = '" . $this->escape_string($hash) . "'");
+        return $this->getFirst("SELECT * FROM users WHERE is_deleted = 0 AND login = '" . $this->escape_string($login) .
+            "' AND password = '" . $this->escape_string($hash) . "'");
     }
 
     function saveOrderColumns($columns, $userId, $tableId)

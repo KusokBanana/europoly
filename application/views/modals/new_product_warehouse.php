@@ -24,6 +24,9 @@
                                     </a>
                                 </li>
                             </ul>
+                            <div id="bar" class="progress progress-striped" role="progressbar">
+                                <div class="progress-bar progress-bar-success" style="width:50%"> </div>
+                            </div>
                             <div class="tab-content">
                                 <div class="alert alert-danger error-choose-products display-none">
                                     <button class="close" data-dismiss="alert"></button> Please choose at least 1 product below.
@@ -43,7 +46,8 @@
                                         'click_url' => "#",
                                         'originalColumns' => $this->products_originalColumns,
                                         'selectSearch' => $this->catalogue_selects,
-                                        'filterSearchValues' => $this->catalogue_rows
+                                        'filterSearchValues' => $this->catalogue_rows,
+                                        'method' => "POST",
                                     ];
                                     include 'application/views/templates/table.php'
                                     ?>
@@ -103,10 +107,18 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <div class="form-actions right">
-                                <button type="button" class="btn default" data-dismiss="modal">Cancel</button>
-                                <button id="modal_pw_create" class="btn green disabled">Create</button>
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="col-md-offset-3 col-md-9">
+                                    <a href="javascript:;" class="btn default button-previous">
+                                        <i class="fa fa-angle-left"></i> Back </a>
+                                    <a href="javascript:;" class="btn btn-outline green button-next"> Continue
+                                        <i class="fa fa-angle-right"></i>
+                                    </a>
+                                    <button type="button" class="btn green button-submit disabled"> Confirm
+                                        <i class="fa fa-check"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -120,12 +132,26 @@
 
 <script>
     $(document).ready(function() {
-        $table_product_warehouse = $('#table_product_warehouse_modal');
         var modal = $('#modal_newProductWarehouse');
-        modal.find('.nav-pills .step').on('show.bs.tab', function () {
+        var progressBar = modal.find('.progress-bar-success');
+        var submitBtn = modal.find('form').find('.button-submit');
+        $table_product_warehouse = $('#table_product_warehouse_modal');
+        modal.on('click', '.form-actions .button-next', function() {
+            var active = modal.find('.nav-pills').find('li.active');
+            if (active.index() < 2) {
+                active.next().find('a[data-toggle="tab"]').tab('show');
+            }
+        }).on('click', '.form-actions .button-previous', function() {
+            var active = modal.find('.nav-pills').find('li.active');
+            console.log(active.index())
+            if (active.index() > 0) {
+                active.prev().find('a[data-toggle="tab"]').tab('show');
+            }
+        }).find('.nav-pills .step').on('show.bs.tab', function () {
             var selectorTab = $(this).attr('href');
             if (selectorTab == '#newProductWarehouseTab1') {
-                $("#modal_pw_create").addClass('disabled');
+                submitBtn.addClass('disabled');
+                progressBar.width(50 + '%');
             } else if (selectorTab == '#newProductWarehouseTab2') {
                 if (!$table_product_warehouse.find(".selected").length) {
                     $('.error-choose-products').show();
@@ -166,11 +192,12 @@
                             success: function () {}
                         })
                     }
-                $("#modal_pw_create").removeClass('disabled');
+                    submitBtn.removeClass('disabled');
+                    progressBar.width(100 + '%');
                 }
             }
         });
-        $('#modal_pw_create').on('click', function() {
+        submitBtn.on('click', function() {
             var tableChange = $('#table_newProductWarehouse_change');
             var inputsBlock = $('.new-product-warehouse-inputs-block');
             inputsBlock.empty();

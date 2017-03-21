@@ -13,7 +13,7 @@ class ModelProduct extends Model
             SELECT `product_id`, `sell_price`, `article`, suppliers.`name` as `supplier`, brands.`name` as 'brand', `country`, `collection`, wood.`name` as 'wood', `color`, `construction`,
                 products.`name` as 'name', `additional_info`, colors.`name` as 'color_id', colors2.name as 'color2', grading.name as 'grading',
                 `thickness`, `width`, `length`, `texture`, `layer`, `installation`, `surface`, constructions.name as 'construction_id',
-                `units`, `packing_type`, `weight`, `amount_in_pack`, `purchase_price`, `currency`, `suppliers_discount`, `margin`,
+                `units`, `packing_type`, `weight`, `amount_in_pack`, `purchase_price`, `purchase_price_currency`, `suppliers_discount`, `margin`,
                 patterns.name as 'pattern', `sheet`, products.status as 'status'
             FROM products
                 left join brands on products.brand_id = brands.brand_id
@@ -91,6 +91,7 @@ class ModelProduct extends Model
     {
         $result = $this->delete("DELETE FROM products WHERE product_id = $product_id");
         if ($result) {
+            $this->delete("DELETE FROM nls_products WHERE product_id = $product_id");
             $this->clearCache(['catalogue_selects', 'new_product_selects', 'product_selects']);
         }
         return $result;
@@ -115,7 +116,7 @@ class ModelProduct extends Model
 
     public function getBalances($product_id) // TODO fix it
     {
-        return $this->getAssoc("SELECT pw.warehouse_id as 'warehouse_id', w.name as 'name', CONCAT(SUM(pw.amount), ' ', p.units) as 'amount', CONCAT(SUM(pw.total_price), ' ', p.currency) as 'total_price'
+        return $this->getAssoc("SELECT pw.warehouse_id as 'warehouse_id', w.name as 'name', CONCAT(SUM(pw.amount), ' ', p.units) as 'amount', CONCAT(SUM(pw.total_price), ' ', p.purchase_price_currency) as 'total_price'
                 FROM `order_items` pw JOIN `products` p ON pw.product_id = p.product_id JOIN `warehouses` w ON pw.warehouse_id = w.warehouse_id
                 WHERE p.product_id = $product_id
                 GROUP BY pw.product_id, pw.warehouse_id
@@ -124,7 +125,7 @@ class ModelProduct extends Model
 
     public function getAllWarehousesBalance($product_id)
     {
-        return $this->getFirst("SELECT CONCAT(SUM(pw.amount), ' ', p.units) as 'amount', CONCAT(SUM(pw.total_price), ' ', p.currency) as 'total_price'
+        return $this->getFirst("SELECT CONCAT(SUM(pw.amount), ' ', p.units) as 'amount', CONCAT(SUM(pw.total_price), ' ', p.purchase_price_currency) as 'total_price'
                 FROM `products_warehouses` pw JOIN `products` p ON pw.product_id = p.product_id
                 WHERE p.product_id = $product_id
                 GROUP BY pw.product_id");
@@ -190,7 +191,9 @@ class ModelProduct extends Model
     var $columns = [
         'article' => ['label' => "Article", 'table' => 'products', 'type' => 'string', 'isSelect' => true],
         'name' => ['label' => "Name", 'table' => 'products', 'type' => 'string', 'isSelect' => true],
+        'name_rus' => ['label' => "Name RUS", 'table' => 'nls_products', 'type' => 'string', 'isSelect' => false],
         'brand_id' => ['label' => "Brand", 'table' => 'brands', 'type' => 'id', 'isSelect' => true],
+        'category_id' => ['label' => "Category", 'table' => 'category', 'type' => 'id', 'isSelect' => true],
         'country' => ['label' => "Country", 'table' => 'products', 'type' => 'string', 'isSelect' => true],
         'country_rus' => ['label' => "Country RUS", 'table' => 'nls_products', 'type' => 'string', 'isSelect' => false],
         'collection' => ['label' => "Collection", 'table' => 'products', 'type' => 'string', 'isSelect' => true],
@@ -201,12 +204,14 @@ class ModelProduct extends Model
         'color_id' => ['label' => "Color1", 'table' => 'colors', 'type' => 'id', 'isSelect' => true],
         'color2_id' => ['label' => "Color2", 'table' => 'colors', 'type' => 'id', 'isSelect' => true],
         'color' => ['label' => "Color", 'table' => 'products', 'type' => 'string', 'isSelect' => true],
+        'color_rus' => ['label' => "Color RUS", 'table' => 'nls_products', 'type' => 'string', 'isSelect' => true],
         'grading_id' => ['label' => "Grading", 'table' => 'grading', 'type' => 'id', 'isSelect' => true],
         'thickness' => ['label' => "Thickness", 'table' => 'products', 'type' => 'int', 'isSelect' => false],
         'width' => ['label' => "Width", 'table' => 'products', 'type' => 'string', 'isSelect' => false],
         'length' => ['label' => "Length", 'table' => 'products', 'type' => 'string', 'isSelect' => false],
         'construction_id' => ['label' => "Construction1", 'table' => 'constructions', 'type' => 'id', 'isSelect' => true],
         'construction' => ['label' => "Construction2", 'table' => 'products', 'type' => 'string', 'isSelect' => true],
+        'construction_rus' => ['label' => "Construction2 RUS", 'table' => 'nls_products', 'type' => 'string', 'isSelect' => false],
         'texture' => ['label' => "Texture", 'table' => 'products', 'type' => 'string', 'isSelect' => true],
         'texture_rus' => ['label' => "Texture RUS", 'table' => 'nls_products', 'type' => 'string', 'isSelect' => false],
         'layer' => ['label' => "Bottom layer/ Middle layer (for Admonter panels)", 'table' => 'products', 'type' => 'string', 'isSelect' => true],
@@ -219,7 +224,7 @@ class ModelProduct extends Model
         'units_rus' => ['label' => "Units RUS", 'table' => 'nls_products', 'type' => 'string', 'isSelect' => false],
         'sell_price' => ['label' => "Sell Price", 'table' => 'products', 'type' => 'float', 'isSelect' => false],
         'purchase_price' => ['label' => "Purchase Price", 'table' => 'products', 'type' => 'float', 'isSelect' => false],
-        'currency' => ['label' => "Currency", 'table' => 'products', 'type' => 'string', 'isSelect' => true],
+        'purchase_price_currency' => ['label' => "Currency", 'table' => 'products', 'type' => 'string', 'isSelect' => true],
         'packing_type' => ['label' => "Packing Type", 'table' => 'products', 'type' => 'string', 'isSelect' => true],
         'packing_type_rus' => ['label' => "Packing Type RUS", 'table' => 'nls_products', 'type' => 'string', 'isSelect' => false],
         'weight' => ['label' => "Weight of 1 unit", 'table' => 'products', 'type' => 'float', 'isSelect' => false],
@@ -227,6 +232,21 @@ class ModelProduct extends Model
         'suppliers_discount' => ['label' => "Supplier's Discount", 'table' => 'products', 'type' => 'int', 'isSelect' => false],
         'margin' => ['label' => "Margin", 'table' => 'products', 'type' => 'int', 'isSelect' => false],
         'pattern_id' => ['label' => "Pattern", 'table' => 'patterns', 'type' => 'id', 'isSelect' => true],
+        'image_id_A' => ['label' => "Image A", 'table' => 'products', 'type' => 'id', 'isSelect' => false],
+        'image_id_B' => ['label' => "Image B", 'table' => 'products', 'type' => 'id', 'isSelect' => false],
+        'image_id_V' => ['label' => "Image V", 'table' => 'products', 'type' => 'id', 'isSelect' => false],
+        'grading' => ['label' => "Grading", 'table' => 'products', 'type' => 'string', 'isSelect' => true],
+        'grading_rus' => ['label' => "Grading RUS", 'table' => 'nls_products', 'type' => 'string', 'isSelect' => true],
+        'texture_id' => ['label' => "Surface Texture", 'table' => 'products', 'type' => 'id', 'isSelect' => true],
+        'texture2_id' => ['label' => "Surface Texture 2", 'table' => 'products', 'type' => 'id', 'isSelect' => true],
+        'pattern' => ['label' => "Pattern 2", 'table' => 'products', 'type' => 'string', 'isSelect' => true],
+        'pattern_rus' => ['label' => "Pattern 2", 'table' => 'nls_products', 'type' => 'string', 'isSelect' => true],
+        'amount_of_units_in_pack' => ['label' => "Q-ty of units in 1 pc.", 'table' => 'products', 'type' => 'float', 'isSelect' => false],
+        'amount_of_packs_in_pack' => ['label' => "Number of pcs in 1 pack", 'table' => 'products', 'type' => 'float', 'isSelect' => false],
+        'sell_price_currency' => ['label' => "Retail Currency", 'table' => 'products', 'type' => 'string', 'isSelect' => true],
+        'supplier' => ['label' => "Supplier", 'table' => 'products', 'type' => 'string', 'isSelect' => true],
+        'visual_name' => ['label' => "Visual Name", 'table' => 'products', 'type' => 'string', 'isSelect' => false],
+        'visual_name_rus' => ['label' => "Visual Name RUS", 'table' => 'nls_products', 'type' => 'string', 'isSelect' => false],
     ];
 
 }

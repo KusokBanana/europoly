@@ -72,11 +72,11 @@ class ControllerBrand extends Controller
 
     function action_dt()
     {
-        if (isset($_GET["products"])) {
-            $data = $_GET["products"];
+        if (isset($_POST["products"])) {
+            $data = $_POST["products"];
             $brand_id = intval($data['brand_id']);
 
-            $this->model->getDTProductsForBrand($brand_id, $_GET);
+            $this->model->getDTProductsForBrand($brand_id, $_POST);
         } else {
             http_response_code(400);
         }

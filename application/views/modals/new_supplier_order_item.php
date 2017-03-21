@@ -32,7 +32,8 @@
                         ],
                         'column_names' => $this->full_product_column_names,
                         'hidden_by_default' => $this->full_product_hidden_columns,
-                        'click_url' => "#"
+                        'click_url' => "#",
+                        'method' => "POST",
                     ];
                     include 'application/views/templates/table.php'
                     ?>
