@@ -42,3 +42,4 @@
         </div>
     </div>
 </div>
+<?php // chat js is into layouts/global/scripts/quick-sidebar.js ?>

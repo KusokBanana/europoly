@@ -82,7 +82,6 @@ var QuickSidebar = function () {
             success: function(data) {
                 if (data) {
                     data = JSON.parse(data);
-                    console.log(data);
 
                     if (type == 'count_users') {
                         var users = data['users'];

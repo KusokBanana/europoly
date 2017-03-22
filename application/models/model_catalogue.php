@@ -24,7 +24,7 @@ class ModelCatalogue extends Model
             foreach ($product as $key => $value) {
                 if (!$value || $value == null)
                     continue;
-                if (in_array($key, ['product_id', 'article', 'name', 'width', 'length', 'weight',
+                if (in_array($key, ['product_id', 'article', 'width', 'length', 'weight',
                     'amount_in_pack', 'purchase_price', 'dealer_price', 'purchase_price_currency', 'suppliers_discount', 'margin',
                     'sell_price', 'thickness', 'image_id_A', 'image_id_B', 'image_id_V', 'amount_of_units_in_pack',
                     'visual_name', 'amount_of_packs_in_pack']))
@@ -55,7 +55,7 @@ class ModelCatalogue extends Model
         $ignoreArray = ['_product_id', 'Name', 'Article', 'Thickness', 'Width', 'Length',
             'Weight', 'Quantity in 1 Pack', 'Purchase price', 'Supplier\'s discount',
             'Margin', 'Sell',/* TODO */ 'image_id_A', 'image_id_B', 'image_id_V', 'amount_of_units_in_pack',
-            'visual_name', 'amount_of_packs_in_pack'];
+            'visual_name', 'amount_of_packs_in_pack', 'Visual Name'];
 
         if (!empty($rowValues)) {
             $selects = [];

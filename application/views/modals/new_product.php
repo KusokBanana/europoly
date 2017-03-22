@@ -22,7 +22,7 @@
                                 <select class="select-editable form-control" name="collection" id="collection"></select>
                             </div>
                             <div class="form-group">
-                                <label for="wood_id_fix_wood">Wood</label>
+                                <label for="wood_id_fix_wood">Wood (numbered)</label>
                                 <select name="wood_id_fix_wood"
                                         class="select-editable not-load form-control" id="wood_id_fix_wood">
                                     <option selected value></option>
@@ -34,7 +34,7 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Name</label>
+                                <label>Name/ Wood</label>
                                 <input name="name" class="form-control" placeholder="Enter Name" required>
                             </div>
                             <div class="form-group">
@@ -46,7 +46,7 @@
                                 <select name="additional_info" class="select-editable form-control" id="additional_info"></select>
                             </div>
                             <div class="form-group">
-                                <label for="color_id_fix_colors">Color 1</label>
+                                <label for="color_id_fix_colors">Color (numbered)</label>
                                 <select name="color_id_fix_colors" id="color_id_fix_colors"
                                         class="select-editable not-load form-control">
                                     <option selected value></option>
@@ -58,7 +58,7 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="color2_id_fix_colors">Color 2</label>
+                                <label for="color2_id_fix_colors">Color 2 (numbered)</label>
                                 <select name="color2_id_fix_colors" id="color2_id_fix_colors"
                                         class="select-editable not-load form-control">
                                     <option selected value></option>
@@ -74,7 +74,7 @@
                                 <input name="color" class="select-editable form-control" placeholder="Enter Color">
                             </div>
                             <div class="form-group">
-                                <label for="grading_id_fix_grading">Grading</label>
+                                <label for="grading_id_fix_grading">Grading (numbered)</label>
                                 <select name="grading_id_fix_grading" id="grading_id_fix_grading"
                                         class="select-editable not-load form-control">
                                     <option selected value></option>
@@ -86,7 +86,7 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="grading">Grading 1</label>
+                                <label for="grading">Grading</label>
                                 <select name="grading" class="select-editable form-control" id="grading"></select>
                             </div>
                             <div class="form-group">
@@ -110,7 +110,7 @@
                                 <select name="packing_type" class="select-editable form-control" id="packing_type"></select>
                             </div>
                             <div class="form-group">
-                                <label for="construction_id_fix_constructions">Construction</label>
+                                <label for="construction_id_fix_constructions">Construction (numbered)</label>
                                 <select name="construction_id_fix_constructions" id="construction_id_fix_constructions"
                                         class="select-editable not-load form-control">
                                     <option selected value></option>
@@ -122,11 +122,11 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="pattern">Construction 1</label>
+                                <label for="pattern">Construction</label>
                                 <input name="construction" class="select-editable form-control" placeholder="Enter Construction">
                             </div>
                             <div class="form-group">
-                                <label for="pattern_id_fix_patterns">Pattern</label>
+                                <label for="pattern_id_fix_patterns">Pattern (numbered)</label>
                                 <select name="pattern_id_fix_patterns" id="pattern_id_fix_patterns"
                                         class="select-editable not-load form-control">
                                     <option selected value></option>
@@ -138,7 +138,7 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="pattern">Pattern 1</label>
+                                <label for="pattern">Collection section/Pattern</label>
                                 <input name="pattern" class="select-editable form-control" placeholder="Enter Pattern">
                             </div>
                             <div class="form-group">
@@ -162,8 +162,9 @@
                                 <input name="sell_price" class="form-control" placeholder="Enter Retail Price">
                             </div>
                             <div class="form-group">
-                                <label>Retail price Currency</label>
-                                <input name="sell_price_currency" class="form-control" placeholder="Enter Retail Price Currency">
+                                <label>Retail Currency</label>
+                                <input name="sell_price_currency" class="select-editable form-control"
+                                       placeholder="Enter Retail Currency">
                             </div>
                             <div class="form-group">
                                 <label>Brand</label>
@@ -184,7 +185,7 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="category_id">Category</label>
+                                <label for="category_id">Category (numbered)</label>
                                 <select name="category_id" class="form-control" required>
                                     <?php
                                     foreach ($this->categories as $category) {
@@ -217,7 +218,7 @@
                                 <input class="form-control" name="RUS[wood_id]" id="wood_id_fix_wood_rus">
                             </div>
                             <div class="form-group">
-                                <label>Name RUS</label>
+                                <label>Name/ Wood RUS</label>
                                 <input name="RUS[name]" class="form-control" placeholder="Enter Name Rus">
                             </div>
                             <div class="form-group">
@@ -229,11 +230,11 @@
                                 <input class="form-control" name="RUS[additional_info]" id="additional_info_rus">
                             </div>
                             <div class="form-group">
-                                <label for="color_id_fix_colors_rus">Color 1 RUS</label>
+                                <label for="color_id_fix_colors_rus">Color (numbered) RUS</label>
                                 <input class="form-control" name="RUS[color_id]" id="color_id_fix_colors_rus">
                             </div>
                             <div class="form-group">
-                                <label for="color2_id_fix_colors_rus">Color 2 RUS</label>
+                                <label for="color2_id_fix_colors_rus">Color 2 (numbered) RUS</label>
                                 <input class="form-control" name="RUS[color2_id]" id="color2_id_fix_colors_rus">
                             </div>
                             <div class="form-group">
@@ -241,7 +242,7 @@
                                 <input class="form-control" name="RUS[color]" id="color_rus">
                             </div>
                             <div class="form-group">
-                                <label for="grading_id_fix_grading_rus">Grading RUS</label>
+                                <label for="grading_id_fix_grading_rus">Grading (numbered) RUS</label>
                                 <input class="form-control" name="RUS[grading_id]" id="grading_id_fix_grading_rus">
                             </div>
                             <div class="form-group">
@@ -269,19 +270,19 @@
                                 <input class="form-control" name="RUS[packing_type]" id="packing_type_rus">
                             </div>
                             <div class="form-group">
-                                <label for="construction_id_fix_constructions_rus">Construction RUS</label>
+                                <label for="construction_id_fix_constructions_rus">Construction (numbered) RUS</label>
                                 <input class="form-control" name="RUS[construction_id]" id="construction_id_fix_constructions_rus">
                             </div>
                             <div class="form-group">
-                                <label for="pattern">Construction 1 RUS</label>
+                                <label for="pattern">Construction RUS</label>
                                 <input name="RUS[construction]" class="form-control" placeholder="Enter Construction RUS">
                             </div>
                             <div class="form-group">
-                                <label for="pattern_id_fix_patterns_rus">Pattern RUS</label>
+                                <label for="pattern_id_fix_patterns_rus">Pattern (numbered) RUS</label>
                                 <input class="form-control" name="RUS[pattern_id]" id="pattern_id_fix_patterns_rus">
                             </div>
                             <div class="form-group">
-                                <label for="pattern_rus">Pattern 1 RUS</label>
+                                <label for="pattern_rus">Collection section/Pattern RUS</label>
                                 <input name="RUS[pattern]" id="pattern_rus" class="form-control">
                             </div>
                             <div class="form-group">

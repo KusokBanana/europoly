@@ -52,15 +52,17 @@
                 if ($sortCol[0] == $originalColumnId) {
                     $sort = $column_id . '-' . $sortCol[1];
                 }
+                $class = 'class="columns-reorder"';
 
                 if ($column_name[0] == '_') {
                     $column_name = substr($column_name, 1);
                     $hiddenTabFilters[$column_name] = $column_id;
                     $mustHidden = $originalColumnId;
-                    continue;
+                    $class = 'class="hidden"';
+//                    continue;
                 }
 //                if ($column_name[0] == '_') continue;
-                echo '<label><input type="checkbox" data-original-column-id="'.$originalColumnId.'" 
+                echo '<label '.$class.'><input type="checkbox" data-original-column-id="'.$originalColumnId.'" 
                                     data-column="' . $column_id . '" checked>' . $column_name . '</label>';
             }
             ?>
@@ -386,6 +388,7 @@ if ($hidden_by_default) {
 
         }
 
+        // TODO maybe replace this 'cause this doesn't need because of we use all labels
         function addTabsFilters(filter) {
             if (filterTabsBlock.length) {
                 var activeTab = filterTabsBlock.find('li:not(.dropdown).active a.tab-filter');
@@ -438,35 +441,46 @@ if ($hidden_by_default) {
             var ul = select.next('ul');
             var lis = ul.find('li');
             var currentIndex = select.closest('th').attr('data-header-id');
+
             $.each(editableSelects, function() {
                 if ($(this).val()) {
                     var index = $(this).closest('th').attr('data-header-id');
-                    filter[index] = $(this).val();
+                    var realIndex = $('#'+$table.attr('id')+'_columns_choose.order-columns-block')
+                        .find('label input[data-column="'+index+'"]').attr('data-original-column-id');
+                    filter[realIndex] = $(this).val();
                 }
             });
             addTabsFilters(filter);
             if ($filterSearchValues && filter.length) {
-                console.log($filterSearchValues);
                 $.each($filterSearchValues, function() {
                     var row = this;
                     for (var key in filter) {
-                        var value = row[key];
-                        if (value) {
+                        var rowValue = row[key];
+                        var filterValue = filter[key];
+                        if (rowValue && rowValue !== undefined) {
 //                            if (value.indexOf('glyphicon') !== -1) {
 //                                value = value.replace(/<a \w+[^>]+?[^>]+>(.*?)<\/a>/i, '');
 //                            } else {
-                                var result = value.match(/<\w+[^>]+?[^>]+>(.*?)<\/\w+>/i);
+                                var result = rowValue.match(/<\w+[^>]+?[^>]+>(.*?)<\/\w+>/i);
                                 if (result !== null && result.length && result[1] !== undefined) {
-                                    value = result[1];
+                                    rowValue = result[1];
 //                                }
                             }
-                        }
-                        if (filter[key] != value) {
+                            if (rowValue.toUpperCase().indexOf(filterValue.toUpperCase()) === -1 &&
+                                rowValue !== filterValue) {
+//                            if (filter[key] != value) {
+                                return;
+                            } else {
+                            }
+                        } else {
                             return;
                         }
                     }
-                    if (row[currentIndex]) {
-                        var currentValue = row[currentIndex];
+                    var realIndex = $('#'+$table.attr('id')+'_columns_choose.order-columns-block')
+                        .find('label input[data-column="'+currentIndex+'"]').attr('data-original-column-id');
+
+                    if (row[realIndex]) {
+                        var currentValue = row[realIndex];
                         if (currentValue !== null) {
 //                            if (currentValue.indexOf('glyphicon') !== -1) {
 //                                console.log(currentValue, 1);
@@ -476,7 +490,6 @@ if ($hidden_by_default) {
                                 result = currentValue.match(/<\w+[^>]+?[^>]+>(.*?)<\/\w+>/i);
                                 if (result !== null && result.length && result[1] !== undefined) {
                                     currentValue = result[1];
-                                    console.log(currentValue, '2');
                                 }
 //                            }
                         }
@@ -489,9 +502,9 @@ if ($hidden_by_default) {
                     $.each(lis, function() {
                         var value = $(this).attr('value');
                         if (values.indexOf(value) === -1) {
-                            $(this).hide();
+                            $(this).removeClass('es-visible').hide();
                         } else {
-                            $(this).show();
+                            $(this).addClass('es-visible').show();
                         }
                     });
                     $('.filtered-select').removeClass('filtered-select');
@@ -500,7 +513,7 @@ if ($hidden_by_default) {
             } else {
                 if (ul.length) {
                     $.each(lis, function() {
-                        $(this).show();
+                        $(this).addClass('es-visible').show();
                     })
                 }
             }
@@ -613,7 +626,7 @@ if ($hidden_by_default) {
             $('body').on('click', '.order-columns-button-change', function(e) {
                 $(this).next('.btn').prop('disabled', false);
                 $(this).addClass(CANCEL_CLASS).text('Cancel');
-                var labels = columnsBlock.find('label:visible');
+                var labels = columnsBlock.find('label.columns-reorder:visible');
                 labels.addClass('draggable').css('border', 'solid 1px green').css('padding', '1px')
                     .find('input').prop('disabled', true);
                 columnsBlock.sortable({
