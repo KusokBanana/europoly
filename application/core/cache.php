@@ -25,13 +25,16 @@ class Cache {
     }
 
     function delete($fileName) {
-        $this->setName($fileName);
-        @unlink($this->fileName);
+        for ($i=0; $i < 10; $i++) {
+            $this->setName($fileName, $i);
+            if (file_exists($this->fileName));
+                @unlink($this->fileName);
+        }
     }
 
-    private function setName($fileName)
+    private function setName($fileName, $roleId = false)
     {
-        $roleId = $_SESSION['user_role'];
+        $roleId = $roleId ? $roleId : $_SESSION['user_role'];
         $this->fileName = __DIR__ . '/../../cache/' . $roleId . '_' . $fileName;
     }
 

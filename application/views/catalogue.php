@@ -124,26 +124,36 @@ data-target="#modal_newProduct">Add Similar Product <i class="fa fa-plus"></i></
                             if (data) {
                                 var product = JSON.parse(data);
 
-                                var inputs = $('#modal_newProduct').find('.form-group input');
+                                var inputs = $('#modal_newProduct').find('.form-group input, .form-group select');
                                 $.each(inputs, function() {
                                     var name = $(this).attr('name');
-                                    if (name.indexOf('RUS') !== -1) {
-                                        name = name.slice(4, -1) + '_rus';
-                                    } else if (name.indexOf('_fix_') !== -1) {
-                                        name = name.replace(/_fix_.+/g, '');
+                                    switch (this.tagName) {
+                                        case 'INPUT':
+                                            if (name.indexOf('RUS') !== -1) {
+                                                name = name.slice(4, -1) + '_rus';
+                                            } else if (name.indexOf('_fix_') !== -1) {
+                                                name = name.replace(/_fix_.+/g, '');
+                                            }
+
+                                            if (product[name] !== undefined) {
+                                                var value = product[name];
+                                                if (value == 'NULL')
+                                                    return;
+                                                if ($(this).hasClass('select-editable')) {
+                                                    var valueOption = $(this).next('ul').find('li[value="' + value + '"]');
+                                                    $(this).editableSelect('select', valueOption).editableSelect('hide');
+                                                } else {
+                                                    $(this).val(product[name]);
+                                                }
+                                            }
+                                            break;
+                                        case 'SELECT':
+                                            if (product[name] !== undefined) {
+                                                $(this).val(parseInt(product[name]))
+                                            }
+                                            break;
                                     }
 
-                                    if (product[name] !== undefined) {
-                                        var value = product[name];
-                                        if (value == 'NULL')
-                                            return;
-                                        if ($(this).hasClass('select-editable')) {
-                                            var valueOption = $(this).next('ul').find('li[value="' + value + '"]');
-                                            $(this).editableSelect('select', valueOption).editableSelect('hide');
-                                        } else {
-                                            $(this).val(product[name]);
-                                        }
-                                    }
                                 })
                             }
                         }
@@ -194,6 +204,7 @@ require_once 'modals/new_product.php';
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         <!-- /.modal-content -->
-    </div>
+        </div>
     <!-- /.modal-dialog -->
+    </div>
 </div>

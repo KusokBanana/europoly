@@ -90,11 +90,8 @@ class ModelProduct extends Model
     public function deleteProduct($product_id)
     {
         $result = $this->delete("DELETE FROM products WHERE product_id = $product_id");
-        if ($result) {
-            $this->delete("DELETE FROM nls_products WHERE product_id = $product_id");
-            $this->clearCache(['catalogue_selects', 'new_product_selects', 'product_selects']);
-        }
-        return $result;
+        $this->delete("DELETE FROM nls_products WHERE product_id = $product_id");
+        $this->clearCache(['catalogue_selects', 'new_product_selects', 'product_selects']);
     }
 
     public function getPhotos($product_id)
