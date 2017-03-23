@@ -2,11 +2,13 @@
 
 class Cache {
 
+    private $fileName;
+
     function read($fileName) {
-        $fileName = __DIR__ . '/../../cache/' . $fileName;
-        if (file_exists($fileName)) {
-            $handle = fopen($fileName, 'rb');
-            $variable = fread($handle, filesize($fileName));
+        $this->setName($fileName);
+        if (file_exists($this->fileName)) {
+            $handle = fopen($this->fileName, 'rb');
+            $variable = fread($handle, filesize($this->fileName));
             fclose($handle);
             return unserialize($variable);
         } else {
@@ -14,16 +16,23 @@ class Cache {
         }
     }
 
-    function write($fileName,$variable) {
-        $fileName = __DIR__ . '/../../cache/' . $fileName;
-        $handle = fopen($fileName, 'a');
+    function write($fileName,$variable)
+    {
+        $this->setName($fileName);
+        $handle = fopen($this->fileName, 'a');
         fwrite($handle, serialize($variable));
         fclose($handle);
     }
 
     function delete($fileName) {
-        $fileName = __DIR__ . '/../../cache/' . $fileName;
-        @unlink($fileName);
+        $this->setName($fileName);
+        @unlink($this->fileName);
+    }
+
+    private function setName($fileName)
+    {
+        $roleId = $_SESSION['user_role'];
+        $this->fileName = __DIR__ . '/../../cache/' . $roleId . '_' . $fileName;
     }
 
 }

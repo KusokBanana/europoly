@@ -32,12 +32,14 @@
 	}
 	EditableSelect.DEFAULTS = { filter: true, effects: 'default', duration: 'fast', trigger: 'focus' };
 	EditableSelect.prototype.filter = function () {
+
 		var hiddens = 0;
 		var search  = this.$input.val().toLowerCase().trim();
-		
-		this.$list.find('li').addClass('es-visible').show();
+		this.$list.find('li.filtered-li').addClass('es-visible').show();
 		if (this.options.filter) {
-			hiddens = this.$list.find('li').filter(function (i, li) { return $(li).text().toLowerCase().indexOf(search) < 0; }).hide().removeClass('es-visible').length;
+			hiddens = this.$list.find('li').filter(function (i, li) {
+				return $(li).text().toLowerCase().indexOf(search) < 0;
+			}).hide().removeClass('es-visible').length;
 			if (this.$list.find('li').length == hiddens) this.hide();
 		}
 	};

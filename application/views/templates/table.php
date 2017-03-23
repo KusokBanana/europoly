@@ -271,6 +271,9 @@ if ($hidden_by_default) {
             function keyUpChangeHandler(event) {
                 if (event.data.column.search() !== this.value) {
                     event.data.column.search(this.value).draw();
+                    if (!this.value) {
+                        filterSelectsValues($(this))
+                    }
                 }
             }
         }
@@ -290,7 +293,21 @@ if ($hidden_by_default) {
 
         columnChoose.on('change', 'input', function () {
             var column = table.column($(this).attr('data-column'));
-            column.visible(!column.visible());
+            var isVisible = column.visible();
+            var thId = column[0][0];
+            var $column = $table.find('th[data-header-id="'+thId+'"]');
+            var select = $column.find('.column-filter-select.es-input');
+
+            if (isVisible) {
+                select.val('').change();
+            }
+
+            column.visible(!isVisible);
+
+            if (!isVisible) {
+                select = $table.find('th[data-header-id="'+thId+'"]').find('.column-filter-select');
+                select.on('click', replaceSelectsByEditable);
+            }
 
             var topScroll = $('.top-scroll');
             if (topScroll.length) {
@@ -407,29 +424,37 @@ if ($hidden_by_default) {
 
         // replace selects by editable selects
         $.each($table.find('.column-filter-input'), function() {
-            $(this).on('click', function(event) {
-                event.stopPropagation();
-                var nextSelect = $(this).next('.column-filter-select');
-                if (nextSelect.length) {
-                    var parent = $(this).parent();
-                    $(this).remove();
-                    nextSelect.removeClass('hidden').editableSelect('show');
-                    var select = parent.find('.es-input');
-                    select.focus();
-                    select.on('select.editable-select', function (e, li) {
-                        e.stopPropagation();
-                        if (li == undefined)
-                            return false;
-                        var value = $(this).val();
-                        var index = $(this).closest('th').attr('data-column-index');
-                        if (table.column(index).search() !== value) {
-                            $(this).val(value);
-                            $(this).change();
-                        }
-                    })
-                }
-            })
+            $(this).on('click', replaceSelectsByEditable);
         });
+
+        function onSelectEditable(e, li) {
+            e.stopPropagation();
+            if (li == undefined)
+                return false;
+            var value = $(this).val();
+            var index = $(this).closest('th').attr('data-column-index');
+            if (table.column(index).search() !== value) {
+                $(this).val(value);
+                $(this).change();
+            }
+        }
+
+        function replaceSelectsByEditable(event) {
+            event.stopPropagation();
+            var nextSelect = $(this).next('.column-filter-select');
+            var isAlreadyBuild = $(this).hasClass('es-input');
+
+            if (nextSelect.length && !isAlreadyBuild) {
+                var parent = $(this).parent();
+                $(this).remove();
+                nextSelect.removeClass('hidden').editableSelect('show');
+                var select = parent.find('.es-input');
+                select.focus();
+                select.on('select.editable-select', onSelectEditable)
+            } else if (isAlreadyBuild) {
+                $(this).on('select.editable-select', onSelectEditable)
+            }
+        }
 
         // to filter values in selects
         function filterSelectsValues(select) {
@@ -502,9 +527,9 @@ if ($hidden_by_default) {
                     $.each(lis, function() {
                         var value = $(this).attr('value');
                         if (values.indexOf(value) === -1) {
-                            $(this).removeClass('es-visible').hide();
+                            $(this).removeClass('filtered-li').removeClass('es-visible').hide();
                         } else {
-                            $(this).addClass('es-visible').show();
+                            $(this).addClass('filtered-li').addClass('es-visible').show();
                         }
                     });
                     $('.filtered-select').removeClass('filtered-select');
@@ -513,7 +538,7 @@ if ($hidden_by_default) {
             } else {
                 if (ul.length) {
                     $.each(lis, function() {
-                        $(this).addClass('es-visible').show();
+                        $(this).addClass('es-visible').addClass('filtered-li').show();
                     })
                 }
             }
