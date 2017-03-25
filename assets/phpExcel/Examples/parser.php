@@ -210,7 +210,7 @@ function setHeader(&$header, $value, $cellNumber) {
         case "Скидка от производителя/Supplier's Discount":
             $header[$cellNumber] = 'suppliers_discount';
             break;
-        case 'Коэффициент наценки/Margin':
+        case 'Коэффициент для расчета себестоимости/for calculating the cost price':
             $header[$cellNumber] = 'margin';
             break;
         case 'Паттерн КОД':

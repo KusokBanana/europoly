@@ -72,7 +72,6 @@ $objPHPExcel->getActiveSheet()->setCellValue('A1', "Cell B3 and B5 contain data 
                               ->setCellValue('D6', "Item #5")
                               ;
 
-
 // Set data validation
 echo date('H:i:s') , " Set data validation" , EOL;
 $objValidation = $objPHPExcel->getActiveSheet()->getCell('B3')->getDataValidation();

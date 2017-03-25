@@ -153,8 +153,11 @@ class ModelWarehouse extends ModelManagers_orders
         }
 
         if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
-            $where = '(' . $where . ") AND (orders.sales_manager_id = " . $_SESSION['user_id'] . ' OR 
-                products_warehouses.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
+            $userId = $_SESSION['user_id'];
+            $where = '(' . $where . ") AND (orders.sales_manager_id = " . $userId . ' OR '.
+                " client.sales_manager_id = $userId ".
+                " OR client.operational_manager_id = $userId " .
+                ' OR products_warehouses.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
         }
         if ($_SESSION['perm'] <= SALES_MANAGER_PERM) {
             $this->unLinkStrings($this->product_warehouses_columns, [27, 30, 33, 34]);
@@ -173,9 +176,24 @@ class ModelWarehouse extends ModelManagers_orders
         } else {
             $where = "products_warehouses.warehouse_id = $warehouse_id";
         }
+
+        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
+            $userId = $_SESSION['user_id'];
+            $where = '(' . $where . ") AND (orders.sales_manager_id = " . $userId . ' OR '.
+                " client.sales_manager_id = $userId ".
+                " OR client.operational_manager_id = $userId " .
+                ' OR products_warehouses.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
+        }
+        if ($_SESSION['perm'] <= SALES_MANAGER_PERM) {
+            $this->unLinkStrings($this->product_warehouses_columns, [27, 30, 33, 34]);
+        }
+        $columns = $this->getColumns($this->product_warehouses_columns, 'warehouse', $this->tableName);
+
         $ssp = $this->getSspComplexJson($this->products_warehouses_table, "products_warehouses.item_id",
-            $this->product_warehouses_columns, null, null, $where);
-        $columns = $this->product_warehouses_column_names;
+            $columns, null, null, $where);
+
+        $columnNames = $this->getColumns($this->product_warehouses_column_names, 'warehouse', $this->tableName, true);
+
         $rowValues = json_decode($ssp, true)['data'];
         $ignoreArray = ['Id', 'Quantity', 'Buy Price', 'Buy + Transport + Taxes', 'Sell Price',
             'Dealer Price (-30%)', 'Total Price'];
@@ -186,7 +204,7 @@ class ModelWarehouse extends ModelManagers_orders
                 foreach ($product as $key => $value) {
                     if (!$value || $value == null)
                         continue;
-                    $name = $columns[$key];
+                    $name = $columnNames[$key];
                     if (in_array($name, $ignoreArray))
                         continue;
 

@@ -107,8 +107,10 @@ class ModelClients extends Model
     function getDTAllClients($input)
     {
         $where = "clients.is_deleted = 0";
+        $userId = $_SESSION['user_id'];
         if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
-            $where .= " AND clients.sales_manager_id = " . $_SESSION['user_id'];
+            $where .= " AND (clients.sales_manager_id = " . $userId;
+            $where .=  " OR clients.operational_manager_id = " . $userId . ')';
             $this->unLinkStrings($this->client_columns, [17]);
         }
 
@@ -116,6 +118,51 @@ class ModelClients extends Model
 
         $this->sspComplex($this->client_table, "clients.client_id", $columns, $input, null,
             $where);
+    }
+
+    function printTable($input, $visible, $selected = [], $filters = [])
+    {
+        $where = [];
+        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
+            $userId = $_SESSION['user_id'];
+            $where = [
+                'clients.is_deleted = 0',
+                "(clients.sales_manager_id = " . $userId .
+                " OR clients.operational_manager_id = " . $userId . ")"
+            ];
+            $this->unLinkStrings($this->client_columns, [17]);
+        }
+
+        $columns = $this->getColumns($this->client_columns, 'clients', 'table_clients');
+        $names = $this->getColumns($this->client_column_names, 'clients', 'table_clients', true);
+
+        if (empty($selected)) {
+
+            if (!empty($filters)) {
+                foreach ($filters as $colId => $value) {
+                    if (!$value || $value == null)
+                        continue;
+
+                    if (is_int($value))
+                        $where[] = $columns[$colId]['db'] . ' = ' . $value;
+                    elseif (is_string($value))
+                        $where[] = $columns[$colId]['db'] . " LIKE '%$value%'";
+                }
+            }
+
+            $where = join(' AND ', $where);
+            $ssp = $this->getSspComplexJson($this->client_table, "client_id", $columns, $input, null, $where);
+            $values = json_decode($ssp, true)['data'];
+        } else {
+            $values = $selected;
+        }
+
+        require_once dirname(__FILE__) . '/../classes/Excel.php';
+        $excel = new Excel();
+
+        $data = array_merge([$names], $values);
+        return $excel->printTable($data, $visible, 'clients');
+
     }
 
 //    function getDTEndCustomers($input)
@@ -175,7 +222,8 @@ class ModelClients extends Model
     {
         $where = "clients.is_deleted = 0";
         if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
-            $where .= " AND clients.sales_manager_id = " . $_SESSION['user_id'];
+            $userId = $_SESSION['user_id'];
+            $where .= " AND (clients.sales_manager_id = " . $userId . " OR clients.operational_manager_id = " . $userId . ")";
             $this->unLinkStrings($this->client_columns, [17]);
         }
         $role = new Roles();

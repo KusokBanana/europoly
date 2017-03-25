@@ -18,14 +18,17 @@ class ControllerClient extends Controller
             } else {
                 $this->view->client = $this->model->getClient($id);
                 $this->view->title = $this->view->client['name'];
-                $salesManagerId = $this->view->client['sales_manager_id'];
+                $client = $this->view->client;
                 $this->view->primaryForm = $this->model->buildPrimaryForm($id);
                 $this->view->countryAndRegion = $this->model->getCountryAndRegionNamesByIds($this->view->client['country_id'],
                     $this->view->client['region_id']);
             }
             if (ROLE_SALES_MANAGER == $_SESSION['user_role']) {
-                if ((isset($salesManagerId) && $salesManagerId != $_SESSION['user_id']))
+                $userId = $_SESSION['user_id'];
+                if ((isset($client) && $client['sales_manager_id'] != $userId
+                    && $client['operational_manager_id'] != $userId)) {
                     $this->getAccess('none', 'v');
+                }
             }
             $this->view->managers = $this->model->getSalesManagersIdName();
             $this->view->clients = $this->model->getClientsIdName();

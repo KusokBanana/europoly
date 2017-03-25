@@ -94,6 +94,11 @@ class Roles {
         $names = $returnNames ? $returnNames : $this->names;
         $model = $model ? $model : $this->model;
         $modelColumnsClosed = $model . 'ModelColumns';
+
+        $this->permissions = (isset($_SESSION['perm']) && $_SESSION['perm']) ? $_SESSION['perm'] : 0;
+        if ($this->permissions >= OPERATING_MANAGER_PERM)
+            return $returnNames;
+
         if (isset($this->$modelColumnsClosed)) {
             if (!empty($names)) {
                 foreach ($names as $key => $name) {
@@ -143,6 +148,7 @@ class Roles {
             'ch' => [ // change
                 'clients' => true,
                 'order' => true,
+                'managersOrders' => true,
                 'staff' => true,
                 'brands' => true,
                 'client' => true,

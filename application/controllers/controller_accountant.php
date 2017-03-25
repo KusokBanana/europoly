@@ -59,6 +59,15 @@ class ControllerAccountant extends Controller
 
     function action_dt_payments()
     {
+        $print = isset($_GET['print']) ? $_GET['print'] : false;
+        if ($print) {
+            $visible = isset($_GET['visible']) ? $_GET['visible'] : false;
+            $selected = isset($_GET['selected']) && $_GET['selected'] ? json_decode($_GET['selected'], true) : [];
+            $filters = isset($_GET['filters']) && $_GET['filters'] ? json_decode($_GET['filters'], true) : [];
+            echo $this->model->printTable($_GET, $visible, $selected, $filters);
+            return true;
+        }
+
         $this->model->getDTPayments($_GET);
     }
 

@@ -100,6 +100,45 @@ class ModelAccountant extends Model
             "payments.is_deleted = 0");
     }
 
+    function printTable($input, $visible, $selected = [], $filters = [])
+    {
+
+        if ($_SESSION['perm'] <= SALES_MANAGER_PERM) {
+            $this->unLinkStrings($this->payments_columns, [5, 6]);
+        }
+
+        $columns = $this->getColumns($this->payments_columns, 'accountant', $this->tableName);
+        $names = $this->getColumns($this->payments_column_names, 'accountant', $this->tableName, true);
+
+        if (empty($selected)) {
+            $where = ["payments.is_deleted = 0"];
+            if (!empty($filters)) {
+                foreach ($filters as $colId => $value) {
+                    if (!$value || $value == null)
+                        continue;
+
+                    if (is_int($value))
+                        $where[] = $columns[$colId]['db'] . ' = ' . $value;
+                    elseif (is_string($value))
+                        $where[] = $columns[$colId]['db'] . " LIKE '%$value%'";
+                }
+            }
+            $where = join(' AND ', $where);
+            $ssp = $this->getSspComplexJson($this->payments_table, "payments.payment_id",
+                $columns, $input, null, $where);
+            $values = json_decode($ssp, true)['data'];
+        } else {
+            $values = $selected;
+        }
+
+        require_once dirname(__FILE__) . '/../classes/Excel.php';
+        $excel = new Excel();
+
+        $data = array_merge([$names], $values);
+        return $excel->printTable($data, $visible, 'accountant');
+
+    }
+
     function getDTOrderPayments($order_id, $type, $input)
     {
         $columns = [

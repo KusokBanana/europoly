@@ -25,103 +25,23 @@
     <!-- BEGIN PAGE BASE CONTENT -->
     <div class="row">
         <div class="col-md-12">
-            <div id="status_0" class="alert alert-success" style="display: <?= $this->product["status"] == 0 ? "block" : "none" ?>">
-                <strong>Status: Active.</strong>
-                <div style="float:right" class="action btn-group ">
-                    <?php
-                    if ($this->access['ch']) {
-                        echo <<<END
-                    <button class="btn green btn-sm dropdown-toggle" data-toggle="dropdown">Change Status
-                        <i class="fa fa-angle-down"></i>
-                    </button>
-                    
-                    <ul class="dropdown-menu pull-right">
-                        <li>
-                            <a href="javascript:;" onclick="changeProductStatus(0)"> Active </a>
-                        </li>
-                        <li>
-                            <a href="javascript:;" onclick="changeProductStatus(1)"> Limited Edition </a>
-                        </li>
-                        <li>
-                            <a href="javascript:;" onclick="changeProductStatus(2)"> Out of Production </a>
-                        </li>
-                    </ul>
-END;
-                    }
-                    if ($this->access['d']) {
-                        echo '<a class="btn red btn-sm" '.
-                                'href="/product/delete?product_id='.$this->product['product_id'].'"'.
-                                 'data-placement="top" data-popout="true" data-singleton="true" '.
-                                 'data-toggle="confirmation" data-title="Are you sure to delete this product?">'.
-                                    'Delete Product'.
-                             '</a>';
-                    }
-                    ?>
-                </div>
-                <br/>
-                This product is in production.
-            </div>
-
-
-            <div id="status_1" class="alert alert-warning" style="display: <?= $this->product["status"] == 1 ? "block" : "none" ?>">
-                <strong>Status: Limited Edition.</strong>
-                <div style="float:right" class="action btn-group ">
-                    <?php
-                    if ($this->access['ch']) {
-                        echo <<<END
-                    <button class="btn yellow btn-sm dropdown-toggle" data-toggle="dropdown">Change Status
-                        <i class="fa fa-angle-down"></i>
-                    </button>
-                    
-                    <ul class="dropdown-menu pull-right">
-                        <li>
-                            <a href="javascript:;" onclick="changeProductStatus(0)"> Active </a>
-                        </li>
-                        <li>
-                            <a href="javascript:;" onclick="changeProductStatus(1)"> Limited Edition </a>
-                        </li>
-                        <li>
-                            <a href="javascript:;" onclick="changeProductStatus(2)"> Out of Production </a>
-                        </li>
-                    </ul>
-END;
-                    }
-                    ?>
-                </div>
-                <br/>Limited ammount is left. Contact supplier before making order
-            </div>
-
-            <div id="status_2" class="alert alert-danger" style="display: <?= $this->product["status"] == 2 ? "block" : "none" ?>">
-                <strong>Status: Out of Production.</strong>
-                <div style="float:right" class="action btn-group ">
-                    <?php
-                    if ($this->access['ch']) {
-                        echo <<<END
-                    <button class="btn red btn-sm dropdown-toggle" data-toggle="dropdown">Change Status
-                        <i class="fa fa-angle-down"></i>
-                    </button>
-                    <ul class="dropdown-menu pull-right">
-                        <li>
-                            <a href="javascript:;" onclick="changeProductStatus(0)"> Active </a>
-                        </li>
-                        <li>
-                            <a href="javascript:;" onclick="changeProductStatus(1)"> Limited Edition </a>
-                        </li>
-                        <li>
-                            <a href="javascript:;" onclick="changeProductStatus(2)"> Out of Production </a>
-                        </li>
-                    </ul>
-END;
-                    }
-                    ?>
-                </div>
-                <br/>This product is not produced any more. Warehouse remainings only
+            <div style="float:right" class="action btn-group ">
+                <?php
+                if ($this->access['d']) {
+                    echo '<a class="btn red btn-sm" '.
+                            'href="/product/delete?product_id='.$this->product['product_id'].'"'.
+                             'data-placement="top" data-popout="true" data-singleton="true" '.
+                             'data-toggle="confirmation" data-title="Are you sure to delete this product?">'.
+                                'Delete Product'.
+                         '</a>';
+                }
+                ?>
             </div>
         </div>
     </div>
-
+    <br>
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-12">
             <div class="portlet green-meadow box">
                 <div class="portlet-title">
                     <div class="caption">
@@ -154,7 +74,7 @@ END;
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-12">
             <div class="portlet blue-hoki box">
                 <div class="portlet-title">
                     <div class="caption">
@@ -162,169 +82,66 @@ END;
                     </div>
                 </div>
                 <div class="portlet-body">
-                    <?php
-                    foreach ($this->columns as $name => $column) {
+                    <div class="row">
+                        <div>
+                        <?php
+                        foreach ($this->columns as $name => $column) {
 
-                        $label = $column['label'];
-                        $isSelect = $column['isSelect'] ? 1 : '';
-                        $formName = $column['table'];
+                            $label = $column['label'];
+                            $isSelect = $column['isSelect'] ? 1 : '';
+                            $formName = $column['table'];
+                            $blockHeader = isset($column['blockHeader']) && $column['blockHeader']
+                                ? $column['blockHeader'] : false;
 
-                        if (strpos($name, '_rus') !== false) {
-                            echo ' / ';
-                            $column_name_rus = str_replace('_rus', '', $name);
-                            $value = $this->orEmpty($this->rus[$column_name_rus]);
-                            $text = $value;
-                            $formName .= '.' . $column_name_rus;
-                        } else {
-                            echo '<div class="row static-info">';
-                            echo '<div class="col-md-4 name">' . $label . ':</div>
-                                    <div class="col-md-8 value">';
+                            if ($blockHeader)
+                                echo '</div><div class="col-md-3"><h2>'.$blockHeader.'</h2><br>';
 
-                            $value = $text = $this->orEmpty($this->product[$name]);
-                            if ($column['type'] == 'id') {
-                                // TODO remove please
-                                if (isset($this->selects[$name]))
-                                    foreach ($this->selects[$name] as $select) {
-                                        if (intval($select['id']) == intval($value)) {
-                                            $text = $select['text'];
-                                            break;
+                            if (strpos($name, '_rus') !== false) {
+                                echo ' / ';
+                                $column_name_rus = str_replace('_rus', '', $name);
+                                $value = $this->orEmpty($this->rus[$column_name_rus]);
+                                $text = $value;
+                                $formName .= '.' . $column_name_rus;
+                            } else {
+                                echo '<div class="row static-info">';
+                                echo '<div class="col-md-4 name">' . $label . ':</div>
+                                        <div class="col-md-8 value">';
+
+                                $value = $text = $this->orEmpty($this->product[$name]);
+                                if ($column['type'] == 'id') {
+                                    // TODO remove please
+                                    if (isset($this->selects[$name]))
+                                        foreach ($this->selects[$name] as $select) {
+                                            if (intval($select['id']) == intval($value)) {
+                                                $text = $select['text'];
+                                                break;
+                                            }
                                         }
-                                    }
-                            }
-                            $formName .= '.' . $name;
-                        }
-
-                        $formName .= '.' . $column['type'];
-                        echo '<a href="javascript:;" id="editable-$name" class=\'x-editable\' data-pk="'.
-                            $this->product["product_id"].'" data-name="'.$formName.'" data-value="'.$value.'"'.
-                            'data-sourceName="'.$name.'" data-isSelect="'.$isSelect.'" '.
-                            'data-url=\'/product/change_field\' data-original-title=\'Enter '.$label.'\'>'.
-                            $text.
-                            '</a>';
-
-                        if (!isset($this->columns[$name . '_rus'])) {
-                            echo '</div></div>';
-                        }
-
-                    }
-                    ?>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-12">
-        <!-- BEGIN EXAMPLE TABLE PORTLET-->
-        <div class="portlet grey-cascade box">
-            <div class="portlet-title">
-                <div class="caption ">
-                    <i class="icon-settings "></i>
-                    <span class="caption-subject "> Balances</span>
-                </div>
-            </div>
-            <div class="portlet-body">
-                <div class="tabbable-line">
-                    <ul class="nav nav-tabs nav-tabs-lg col-md-6">
-                        <li class="active">
-                            <a href="#tab_1" data-toggle="tab"> Available</a>
-                        </li>
-                        <li>
-                            <a href="#tab_2" data-toggle="tab"> Reserved </a>
-                        </li>
-                        <li>
-                            <a href="#tab_3" data-toggle="tab"> Current Orders </a>
-                        </li>
-                    </ul>
-                    <div class="actions pull-right " style="margin:10px">
-                        <div class="btn-group ">
-                            <button class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" disabled>Transfer between warehouses
-                            </button>
-                            <ul class="dropdown-menu pull-right">
-                                <li>
-                                    <a href="javascript:;"><i class="fa fa-print"></i> Print </a>
-                                </li>
-                                <li>
-                                    <a href="javascript:;"><i class="fa fa-file-pdf-o"></i> Save as PDF </a>
-                                </li>
-                                <li>
-                                    <a href="javascript:;"><i class="fa fa-file-excel-o"></i> Export to Excel </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="btn-group ">
-                            <button class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">Export
-                                <i class="fa fa-angle-down"></i>
-                            </button>
-                            <ul class="dropdown-menu pull-right">
-                                <li>
-                                    <a href="javascript:;"><i class="fa fa-print"></i> Print </a>
-                                </li>
-                                <li>
-                                    <a href="javascript:;"><i class="fa fa-file-pdf-o"></i> Save as PDF </a>
-                                </li>
-                                <li>
-                                    <a href="javascript:;"><i class="fa fa-file-excel-o"></i> Export to Excel </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="tab-content">
-                        <div class="tab-pane active" id="tab_1">
-                            <br/>
-                            <br/>
-                            <table class="table table-hover table-bordered table-striped">
-                                <thead>
-                                <tr>
-                                    <th> Warehouse Type</th>
-                                    <th> Quantity</th>
-                                    <th> Total Price</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <?php
-                                foreach ($this->balances as $balance) {
-                                    echo <<<END
-                                <tr>
-                                    <td>
-                                        <a href="/warehouse?id=${balance['warehouse_id']}">${balance['name']}</a>
-                                    </td>
-                                    <td>${balance['amount']}</td>
-                                    <td>${balance['total_price']}</td>
-                                </tr>
-END;
                                 }
-                                ?>
-                                </tbody>
-                            </table>
-                            <div class="row">
-                                <div class="col-md-8">
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="well">
-                                        <div class="row static-info align-reverse">
-                                            <div class="col-md-7 name"> Total Quantity:</div>
-                                            <div class="col-md-5 value"><?= $this->all_warehouces_balance['amount'] ?></div>
-                                        </div>
-                                        <div class="row static-info align-reverse">
-                                            <div class="col-md-7 name"> Total Price:</div>
-                                            <div class="col-md-5 value"><?= $this->all_warehouces_balance['total_price'] ?></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane" id="tab_2">
+                                $formName .= '.' . $name;
+                            }
 
-                        </div>
-                        <div class="tab-pane" id="tab_3">
+                            $formName .= '.' . $column['type'];
+                            echo '<a href="javascript:;" id="editable-$name" class=\'x-editable\' data-pk="'.
+                                $this->product["product_id"].'" data-name="'.$formName.'" data-value="'.$value.'"'.
+                                'data-sourceName="'.$name.'" data-isSelect="'.$isSelect.'" '.
+                                'data-url=\'/product/change_field\' data-original-title=\'Enter '.$label.'\'>'.
+                                $text.
+                                '</a>';
 
+                            if (!isset($this->columns[$name . '_rus'])) {
+                                echo '</div></div>';
+                            }
+
+                        }
+                        ?>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- END EXAMPLE TABLE PORTLET-->
     </div>
+
     <!-- END PAGE BASE CONTENT -->
 </div>
 

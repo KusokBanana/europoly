@@ -99,9 +99,23 @@ class ModelShipment extends ModelManagers_orders
 
     function getSelects()
     {
-        $ssp = $this->getSspComplexJson($this->suppliers_orders_table, "trucks_items.item_id", $this->suppliers_orders_columns,
+        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
+            $userId = $_SESSION['user_id'];
+            $this->filterWhere .= " AND (orders.sales_manager_id = " . $userId . ' OR '.
+                " client.sales_manager_id = $userId ".
+                " OR client.operational_manager_id = $userId " .
+                ' OR trucks_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
+            $this->unLinkStrings($this->suppliers_orders_columns, [1, 7, 27, 28]);
+        }
+
+        $columns = $this->getColumns($this->suppliers_orders_columns, 'shipment', $this->suppliers_orders_table);
+
+        $ssp = $this->getSspComplexJson($this->suppliers_orders_table, "trucks_items.item_id", $columns,
             null, null, $this->filterWhere);
-        $columns = $this->suppliers_orders_column_names;
+
+        $columnNames = $this->getColumns($this->suppliers_orders_column_names, 'shipment', $this->suppliers_orders_table, true);
+
+
         $rowValues = json_decode($ssp, true)['data'];
         $ignoreArray = ['Supplier Order ID', 'Truck ID', 'Quantity', 'Number of Packs', 'Total weight',
             'Purchase Price / Unit', 'Total Purchase Price', 'Sell Price / Unit', 'Total Sell Price', 'Downpayment',
@@ -113,7 +127,7 @@ class ModelShipment extends ModelManagers_orders
                 foreach ($product as $key => $value) {
                     if (!$value || $value == null)
                         continue;
-                    $name = $columns[$key];
+                    $name = $columnNames[$key];
                     if (in_array($name, $ignoreArray))
                         continue;
 
@@ -149,6 +163,7 @@ class ModelShipment extends ModelManagers_orders
     var $suppliers_orders_table_reduce = 'trucks 
                                           left join order_items on trucks.id = order_items.truck_id
                                           left join orders on orders.order_id = order_items.manager_order_id
+                                          left join clients client on orders.client_id = client.client_id 
                                           left join items_status as status on trucks.status_id = status.status_id';
 
     var $filterWhere = "(trucks_items.truck_id IS NOT NULL AND trucks_items.warehouse_id IS NULL)";
@@ -156,8 +171,11 @@ class ModelShipment extends ModelManagers_orders
     function getDTSuppliersOrders($input)
     {
         if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
-            $this->filterWhere .= " AND (orders.sales_manager_id = " . $_SESSION['user_id'] . ' OR 
-                trucks_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
+            $userId = $_SESSION['user_id'];
+            $this->filterWhere .= " AND (orders.sales_manager_id = " . $userId . ' OR '.
+                " client.sales_manager_id = $userId ".
+                " OR client.operational_manager_id = $userId " .
+                ' OR trucks_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
             $this->unLinkStrings($this->suppliers_orders_columns, [1, 7, 27, 28]);
         }
 
@@ -189,8 +207,11 @@ class ModelShipment extends ModelManagers_orders
     {
         $where = '';
         if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
-            $where .= "(orders.sales_manager_id = " . $_SESSION['user_id'] . ' OR 
-                order_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
+            $userId = $_SESSION['user_id'];
+            $where .= "(orders.sales_manager_id = " . $userId . ' OR '.
+                " client.sales_manager_id = $userId ".
+                " OR client.operational_manager_id = $userId " .
+                ' OR order_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
 
             $this->unLinkStrings($this->suppliers_orders_columns_reduce, [1]);
         }

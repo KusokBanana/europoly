@@ -319,12 +319,12 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                             selectContractor = $('#contractor'),
                                             orderSelect = $('#order_id');
                                         if (!$(this).hasClass('new')) {
-                                            newContractorInput.show().attr('required', true);
+                                            newContractorInput.show().attr('required', true).attr('disabled', false);
                                             selectContractor.select2('destroy').hide().removeAttr('required');
                                             orderSelect.attr('disabled', true);
                                             $(this).text('Select');
                                         } else {
-                                            newContractorInput.hide().val('').removeAttr('required');
+                                            newContractorInput.hide().val('').removeAttr('required').attr('disabled', true);
                                             selectContractor.show().select2().attr('required', true);
                                             orderSelect.attr('disabled', false);
                                             $(this).text('New');
@@ -352,7 +352,8 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                     <input type="hidden" id="contractor_id_value"
                                            value="<?= isset($this->payment['contractor_id']) ?
                                                $this->payment['contractor_id'] : '' ?>">
-                                    <input type="text" name="new_contractor" id="new_contractor" style="display: none" class="form-control">
+                                    <input type="text" name="new_contractor" id="new_contractor"
+                                           style="display: none" class="form-control" disabled>
                                 </div>
                             </div>
                             <div class="form-group">

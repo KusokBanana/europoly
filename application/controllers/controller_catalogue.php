@@ -64,6 +64,15 @@ class ControllerCatalogue extends Controller
     function action_dt()
     {
         $id = isset($_POST['products']['id']) ? $_POST['products']['id'] : false;
+        $print = isset($_POST['print']) ? $_POST['print'] : false;
+        if ($print) {
+            $visible = isset($_POST['visible']) ? $_POST['visible'] : false;
+            $selected = isset($_POST['selected']) && $_POST['selected'] ? json_decode($_POST['selected'], true) : [];
+            $filters = isset($_POST['filters']) && $_POST['filters'] ? json_decode($_POST['filters'], true) : [];
+            echo $this->model->printTable($_POST, $visible, $selected, $filters);
+            return true;
+        }
+
         $this->model->getDTProducts($_POST, $id);
     }
 

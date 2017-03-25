@@ -16,6 +16,42 @@ class ModelBrand extends ModelCatalogue
             $columns, $input, null, $where);
     }
 
+    function printTable($input, $visible, $selected = [], $filters = [])
+    {
+
+        $columns = $this->getColumns($this->full_product_columns, 'brand', $this->tableName);
+
+        $names = $this->getColumns($this->full_product_column_names, 'brand', $this->tableName, true);
+        if (empty($selected)) {
+            $brand_id = $_POST["products"]['brand_id'];
+            $where = ["brands.brand_id = " . $brand_id];
+            if (!empty($filters)) {
+                foreach ($filters as $colId => $value) {
+                    if (!$value || $value == null)
+                        continue;
+
+                    if (is_int($value))
+                        $where[] = $columns[$colId]['db'] . ' = ' . $value;
+                    elseif (is_string($value))
+                        $where[] = $columns[$colId]['db'] . " LIKE '%$value%'";
+                }
+            }
+            $where = join(' AND ', $where);
+            $ssp = $this->getSspComplexJson($this->full_products_table, "product_id",
+                $columns, $input, null, $where);
+            $values = json_decode($ssp, true)['data'];
+        } else {
+            $values = $selected;
+        }
+
+        require_once dirname(__FILE__) . '/../classes/Excel.php';
+        $excel = new Excel();
+
+        $data = array_merge([$names], $values);
+        return $excel->printTable($data, $visible, 'brand');
+
+    }
+
     function getSelectsBrand($brand_id)
     {
         $where = "brands.brand_id = " . $brand_id;

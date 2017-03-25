@@ -14,7 +14,7 @@ class ControllerProduct extends Controller
             $this->getAccess('product', 'v');
             $id = intval($_GET["id"]);
             $this->view->product = $this->model->getById("products", "product_id", $id);
-            if ($this->view->product != NULL) {
+            if ($this->view->product != NULL && $this->view->product['is_deleted'] == 0) {
                 $this->view->rus = $this->model->getRus($id);
                 $this->view->brand = $this->model->getById("brands", "brand_id", $this->view->product["brand_id"]);
                 $this->view->title = $this->view->product["name"];
@@ -22,8 +22,8 @@ class ControllerProduct extends Controller
 
                 $roles = new Roles();
                 $this->view->access = $roles->getPageAccessAbilities('product');
-                $this->view->balances = $this->model->getBalances($id);
-                $this->view->all_warehouces_balance = $this->model->getAllWarehousesBalance($id);
+//                $this->view->balances = $this->model->getBalances($id);
+//                $this->view->all_warehouces_balance = $this->model->getAllWarehousesBalance($id);
 
                 // try to read cache
                 $cache = new Cache();

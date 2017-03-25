@@ -29,11 +29,13 @@
         ?>
     </div>
     <div id="<?= $table_id ?>_right_buttons" class="btn-group pull-right">
-        <button class="btn green  btn-outline dropdown-toggle" data-toggle="dropdown">Export <i class="fa fa-angle-down"></i></button>
+        <button class="btn blue dropdown-toggle" data-toggle="dropdown">Export <i class="fa fa-angle-down"></i></button>
         <ul class="dropdown-menu pull-right">
-            <li><a href="javascript:;"><i class="fa fa-print"></i> Print </a></li>
-            <li><a href="javascript:;"><i class="fa fa-file-pdf-o"></i> PDF </a></li>
-            <li><a href="javascript:;"><i class="fa fa-file-excel-o"></i> Excel </a></li>
+            <li>
+                <a href="#" class="table-export-btn" data-export="excel">
+                    <i class="fa fa-file-excel-o"></i> Excel
+                </a>
+            </li>
         </ul>
     </div>
 
@@ -199,7 +201,7 @@ if ($hidden_by_default) {
             orderCellsTop: true,
             select: $select,
             colReorder: false,
-            deferRender: true
+            deferRender: true,
         });
 
         // TODO remove it and change into warehouse
@@ -215,6 +217,7 @@ if ($hidden_by_default) {
                 });
             }
             reOrderColumns();
+
         });
 
         $table.on( 'order.dt', function () {
@@ -305,7 +308,7 @@ if ($hidden_by_default) {
             column.visible(!isVisible);
 
             if (!isVisible) {
-                select = $table.find('th[data-header-id="'+thId+'"]').find('.column-filter-select');
+                select = $table.find('th[data-header-id="'+thId+'"]').find('.column-filter-input');
                 select.on('click', replaceSelectsByEditable);
             }
 
@@ -456,17 +459,9 @@ if ($hidden_by_default) {
             }
         }
 
-        // to filter values in selects
-        function filterSelectsValues(select) {
-            if (!select.hasClass('column-filter-select'))
-                return false;
-            var editableSelects = $table.find('.es-input');
+        function getTableFilters() {
+            var editableSelects = $table.find('.es-input, .column-filter-input');
             var filter = [];
-            var values = [];
-            var ul = select.next('ul');
-            var lis = ul.find('li');
-            var currentIndex = select.closest('th').attr('data-header-id');
-
             $.each(editableSelects, function() {
                 if ($(this).val()) {
                     var index = $(this).closest('th').attr('data-header-id');
@@ -476,6 +471,19 @@ if ($hidden_by_default) {
                 }
             });
             addTabsFilters(filter);
+            return filter;
+        }
+
+        // to filter values in selects
+        function filterSelectsValues(select) {
+            if (!select.hasClass('column-filter-select'))
+                return false;
+            var values = [];
+            var ul = select.next('ul');
+            var lis = ul.find('li');
+            var currentIndex = select.closest('th').attr('data-header-id');
+            var filter = getTableFilters();
+
             if ($filterSearchValues && filter.length) {
                 $.each($filterSearchValues, function() {
                     var row = this;
@@ -726,8 +734,59 @@ if ($hidden_by_default) {
 
                 }
             }
-
         }
+
+        $('#'+$table.attr('id')+'_right_buttons').on('click', '.table-export-btn', function(e) {
+            e.preventDefault();
+            var type = $(this).attr('data-export');
+            var columnChoose = $('#'+tableId+'_columns_choose');
+            var labels = columnChoose.find('.columns-reorder');
+            var visible = [];
+            $.each(labels, function() {
+                var checked = $(this).find(':checked');
+                if (checked.length) {
+                    visible.push(+checked.attr('data-original-column-id'));
+                }
+            });
+            if (!visible.length)
+                return false;
+
+            var selectedRows = table.rows('.selected').data().toArray();
+            selectedRows = JSON.stringify(selectedRows);
+
+            var filters = JSON.stringify(getTableFilters());
+
+            if (ajax.url == undefined) {
+                $.ajax({
+                    url: ajax,
+                    type: '<?= $method; ?>',
+                    data: {
+                        print: type,
+                        visible: visible,
+                        selected: selectedRows,
+                        filters: filters
+                    },
+                    success: function(data) {
+                        if (data) {
+                            location.href = data;
+                        }
+                    }
+                })
+            } else {
+                ajax.data.print = type;
+                ajax.data.selected = selectedRows;
+                ajax.data.filters = filters;
+                ajax.data.visible = visible;
+                ajax.type = '<?= $method; ?>';
+                ajax.success = function(data) {
+                    if (data) {
+                        location.href = data;
+                    }
+                };
+                $.ajax(ajax);
+            }
+
+        })
 
     });
 

@@ -125,88 +125,92 @@ abstract class Model extends mysqli
 
     var $full_product_columns = array(
         array('dt' => 0, 'db' => 'products.product_id'),
-        array('dt' => 1, 'db' => 'products.article'),
-        array('dt' => 2, 'db' => "CONCAT('<a href=\"/product?id=', products.product_id, '\">', IFNULL(products.name, 'no name'), '</a>')"),
-        array('dt' => 3, 'db' => "CONCAT('<a href=\"/brand?id=', brands.brand_id, '\">', IFNULL(brands.name, 'no name'), '</a>')"),
-        array('dt' => 4, 'db' => 'suppliers.name'),
-        array('dt' => 5, 'db' => 'products.country'),
-        array('dt' => 6, 'db' => 'products.collection'),
-        array('dt' => 7, 'db' => 'wood.name'),
-        array('dt' => 8, 'db' => 'products.additional_info'),
-        array('dt' => 9, 'db' => "CONCAT(colors.name, ', ', colors2.name)"),
-        array('dt' => 10, 'db' => "products.color"),
-        array('dt' => 11, 'db' => 'grading.name'),
-        array('dt' => 12, 'db' => 'products.thickness'),
-        array('dt' => 13, 'db' => 'products.width'),
-        array('dt' => 14, 'db' => 'products.length'),
-        array('dt' => 15, 'db' => 'products.texture'),
-        array('dt' => 16, 'db' => 'products.layer'),
-        array('dt' => 17, 'db' => 'products.installation'),
-        array('dt' => 18, 'db' => 'products.surface'),
-        array('dt' => 19, 'db' => 'constructions.name'),
-        array('dt' => 20, 'db' => 'products.construction'),
-        array('dt' => 21, 'db' => 'products.units'),
-        array('dt' => 22, 'db' => 'products.packing_type'),
-        array('dt' => 23, 'db' => 'products.weight'),
-        array('dt' => 24, 'db' => 'CAST(products.amount_in_pack as decimal(64, 2))'),
-        array('dt' => 25, 'db' => 'products.purchase_price'),
-        array('dt' => 26, 'db' => 'products.purchase_price_currency'),
-        array('dt' => 27, 'db' => 'products.suppliers_discount'),
-        array('dt' => 28, 'db' => 'products.margin'),
-        array('dt' => 29, 'db' => 'patterns.name'),
-        array('dt' => 30, 'db' => 'products.grading'),
-        array('dt' => 31, 'db' => 'products.sell_price'),
-        array('dt' => 32, 'db' => 'products.category_id'),
-        array('dt' => 33, 'db' => 'products.pattern'),
-        array('dt' => 34, 'db' => 'products.amount_of_units_in_pack'),
-        array('dt' => 35, 'db' => 'products.amount_of_packs_in_pack'),
-        array('dt' => 36, 'db' => 'products.sell_price_currency'),
-        array('dt' => 37, 'db' => 'products.supplier'),
-        array('dt' => 38, 'db' => 'products.visual_name'),
+        array('dt' => 1, 'db' => 'category.name'),
+        array('dt' => 2, 'db' => 'products.article'),
+        array('dt' => 3, 'db' => "CONCAT('<a href=\"/product?id=', products.product_id, '\">', IFNULL(products.name, 'no name'), '</a>')"),
+        array('dt' => 4, 'db' => 'products.visual_name'),
+        array('dt' => 5, 'db' => "CONCAT('<a href=\"/brand?id=', brands.brand_id, '\">', IFNULL(brands.name, 'no name'), '</a>')"),
+        array('dt' => 6, 'db' => 'suppliers.name'),
+        array('dt' => 7, 'db' => 'products.country'),
+        array('dt' => 8, 'db' => 'products.collection'),
+        array('dt' => 9, 'db' => 'products.pattern'),
+        array('dt' => 10, 'db' => 'patterns.name'),
+        array('dt' => 11, 'db' => "CONCAT(colors.name, ', ', colors2.name)"),
+        array('dt' => 12, 'db' => "products.color"),
+        array('dt' => 13, 'db' => 'wood.name'),
+        array('dt' => 14, 'db' => 'constructions.name'),
+        array('dt' => 15, 'db' => 'products.construction'),
+        array('dt' => 16, 'db' => 'grading.name'),
+        array('dt' => 17, 'db' => 'products.grading'),
+        array('dt' => 18, 'db' => 'textures1.name'), // TODO add texture
+        array('dt' => 19, 'db' => 'textures2.name'), // TODO add texture
+        array('dt' => 20, 'db' => 'products.texture'),
+        array('dt' => 21, 'db' => 'products.surface'),
+        array('dt' => 22, 'db' => 'products.installation'),
+        array('dt' => 23, 'db' => 'products.layer'),
+        array('dt' => 24, 'db' => 'products.additional_info'),
+        array('dt' => 25, 'db' => 'products.thickness'),
+        array('dt' => 26, 'db' => 'products.width'),
+        array('dt' => 27, 'db' => 'products.length'),
+        array('dt' => 28, 'db' => 'products.amount_of_units_in_pack'),
+        array('dt' => 29, 'db' => 'products.amount_of_packs_in_pack'),
+        array('dt' => 30, 'db' => 'CAST(products.amount_in_pack as decimal(64, 2))'),
+        array('dt' => 31, 'db' => 'products.weight'),
+        array('dt' => 32, 'db' => 'products.units'),
+        array('dt' => 33, 'db' => 'products.packing_type'),
+        array('dt' => 34, 'db' => 'products.purchase_price'),
+        array('dt' => 35, 'db' => 'products.purchase_price_currency'),
+        array('dt' => 36, 'db' => 'products.suppliers_discount'),
+        array('dt' => 37, 'db' => 'products.margin'),
+        array('dt' => 38, 'db' => 'products.sell_price'),
+        array('dt' => 39, 'db' => 'products.sell_price_currency'),
+        array('dt' => 40, 'db' => 'products.category_id'),
     );
 
     var $full_product_hidden_columns = "[4, 5, 6, 10, 12, 14, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 32]";
 
     var $full_product_column_names = array(
         '_product_id',
+        'Category',
         'Article',
         'Name/ Wood',
+        'Visual Name',
         'Brand',
         'Supplier',
         'Country',
         'Collection',
-        'Wood (numbered)',
-        'Additional characteristics',
+        'Collection section/Pattern',
+        'Pattern (numbered)',
         'Color (numbered)',
         'Color',
+        'Wood (numbered)',
+        'Construction (numbered)',
+        'Construction',
         'Grading (numbered)',
+        'Grading',
+        'Texture 1 (numbered)',
+        'Texture 2 (numbered)',
+        'Texture',
+        'Surface',
+        'Installation',
+        'Bottom layer/ Middle layer (for Admonter panels)',
+        'Additional characteristics',
         'Thickness',
         'Width',
         'Length',
-        'Texture',
-        'Bottom layer/ Middle layer (for Admonter panels)',
-        'Installation',
-        'Surface',
-        'Construction (numbered)',
-        'Construction',
+        'Q-ty of units in 1 piece',
+        'Number of piece in 1 pack',
+        'Quantity of product in 1 pack (in units)',
+        'Weight of 1 unit',
         'Units',
         'Packing Type',
-        'Weight',
-        'Quantity of product in 1 pack (in units)',
         'Purchase price',
         'Purchase Currency',
         'Supplier\'s discount',
-        'Margin',
-        'Collection section/Pattern',
-        'Grading',
+        'For calculating the cost price',
         'Retail Price',
-        '_category_id',
-        'Pattern (numbered)',
-        'Q-ty of units in 1 pc.',
-        'Number of pcs in 1 pack',
         'Retail Currency',
-        'Supplier 1',
-        'Visual Name',
+        '_category_id',
     );
 
     var $full_products_table = "products ".
@@ -217,7 +221,10 @@ abstract class Model extends mysqli
             "left join constructions on products.construction_id = constructions.construction_id ".
             "left join wood on products.wood_id = wood.wood_id ".
             "left join grading on products.grading_id = grading.grading_id ".
-            "left join patterns on products.pattern_id = patterns.pattern_id";
+            "left join patterns on products.pattern_id = patterns.pattern_id ".
+            "left join textures as textures1 on products.texture_id = textures1.texture_id ".
+            "left join textures as textures2 on products.texture2_id = textures2.texture_id " .
+            "left join category on products.category_id = category.category_id";
 
     var $full_products_table_addition = 'left join brands on products.brand_id = brands.brand_id
                                         left join suppliers on (brands.supplier_id = suppliers.supplier_id)
@@ -310,7 +317,7 @@ abstract class Model extends mysqli
 
     function getClientsOfSalesManager($sales_manager_id)
     {
-        return $this->getAssoc("SELECT client_id, name FROM clients WHERE sales_manager_id = $sales_manager_id");
+        return $this->getAssoc("SELECT client_id, name FROM clients WHERE sales_manager_id = $sales_manager_id OR operational_manager_id = $sales_manager_id");
     }
 
     function getCategoryTabs()

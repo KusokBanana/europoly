@@ -121,19 +121,40 @@
             </li>
         <?php endif; ?>
         <?php if ($_SESSION['perm'] >= ADMIN_PERM || $_SESSION['user_role'] == ROLE_ACCOUNTANT): ?>
-            <li id="nav-accountant" class="nav-item">
-                <a href="/accountant" class="nav-link nav-toggle">
-                    <i class="icon-bar-chart"></i>
-                    <span class="title">Accountant</span>
+            <li id="nav-book_keeping" class="nav-item">
+                <a href="javascript:;" class="nav-link nav-toggle">
+                    <i class="icon-pointer"></i>
+                    <span class="title">Finance</span>
+                    <span class="arrow"></span>
                 </a>
-            </li>
-        <?php endif; ?>
-        <?php if ($_SESSION['perm'] >= ADMIN_PERM): ?>
-            <li id="nav-contractors" class="nav-item">
-                <a href="/contractors" class="nav-link nav-toggle">
-                    <i class="icon-bar-chart"></i>
-                    <span class="title">Contractors</span>
-                </a>
+                <ul class="sub-menu">
+                    <li id="nav-payments" class="nav-item">
+                        <a href="/accountant" class="nav-link nav-toggle">
+                            <i class="icon-bar-chart"></i>
+                            <span class="title">Payments</span>
+                        </a>
+                    </li>
+                    <li id="nav-monthly_payments" class="nav-item">
+                        <a href="" class="nav-link nav-toggle">
+                            <i class="icon-bar-chart"></i>
+                            <span class="title">Monthly payments</span>
+                        </a>
+                    </li>
+                    <?php if ($_SESSION['perm'] >= ADMIN_PERM): ?>
+                        <li id="nav-contractors" class="nav-item">
+                            <a href="/contractors" class="nav-link nav-toggle">
+                                <i class="icon-bar-chart"></i>
+                                <span class="title">Contractors</span>
+                            </a>
+                        </li>
+                    <?php endif; ?>
+                    <li id="nav-finance_reports" class="nav-item">
+                        <a href="" class="nav-link nav-toggle">
+                            <i class="icon-bar-chart"></i>
+                            <span class="title">Financial Reports</span>
+                        </a>
+                    </li>
+                </ul>
             </li>
         <?php endif; ?>
     </ul>

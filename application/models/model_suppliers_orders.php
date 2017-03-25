@@ -128,6 +128,7 @@ class ModelSuppliers_orders extends ModelManagers_orders
     var $suppliers_orders_table_reduce = 'suppliers_orders ' .
         'left join order_items on order_items.supplier_order_id = suppliers_orders.order_id '.
         'left join orders on orders.order_id = order_items.manager_order_id '.
+        'left join clients client on orders.client_id = client.client_id ' .
         'left join items_status as status on (suppliers_orders.status_id = status.status_id)';
 
     var $suppliersFilterWhere = "(suppliers_orders_items.supplier_order_id IS NOT NULL 
@@ -137,8 +138,11 @@ class ModelSuppliers_orders extends ModelManagers_orders
     {
 
         if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
-            $this->suppliersFilterWhere .= " AND (orders.sales_manager_id = " . $_SESSION['user_id'] . ' OR 
-                suppliers_orders_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
+            $userId = $_SESSION['user_id'];
+            $this->suppliersFilterWhere .= " AND (orders.sales_manager_id = " . $userId . ' OR' .
+                " client.sales_manager_id = $userId ".
+                " OR client.operational_manager_id = $userId " .
+                ' OR suppliers_orders_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
             $this->unLinkStrings($this->suppliers_orders_columns, [2, 26, 27]);
         }
 
@@ -152,8 +156,11 @@ class ModelSuppliers_orders extends ModelManagers_orders
     {
         $where = '';
         if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
-            $where = "orders.sales_manager_id = " . $_SESSION['user_id'] . ' OR 
-                order_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL';
+            $userId = $_SESSION['user_id'];
+            $where = "orders.sales_manager_id = " . $userId . ' OR '.
+                " client.sales_manager_id = $userId ".
+                " OR client.operational_manager_id = $userId " .
+                ' OR order_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL';
             $this->unLinkStrings($this->suppliers_orders_columns_reduce, [1]);
         }
 
@@ -166,9 +173,23 @@ class ModelSuppliers_orders extends ModelManagers_orders
 
     function getSelects()
     {
+
+        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
+            $userId = $_SESSION['user_id'];
+            $this->suppliersFilterWhere .= " AND (orders.sales_manager_id = " . $userId . ' OR' .
+                " client.sales_manager_id = $userId ".
+                " OR client.operational_manager_id = $userId " .
+                ' OR suppliers_orders_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
+            $this->unLinkStrings($this->suppliers_orders_columns, [2, 26, 27]);
+        }
+
+        $columns = $this->getColumns($this->suppliers_orders_columns, 'suppliersOrders', $this->tableNames[0]);
+
+
         $ssp = $this->getSspComplexJson($this->suppliers_orders_table, "suppliers_orders_items.item_id",
-            $this->suppliers_orders_columns, null, null, $this->suppliersFilterWhere);
-        $columns = $this->suppliers_orders_column_names;
+            $columns, null, null, $this->suppliersFilterWhere);
+
+        $columnNames = $this->getColumns($this->suppliers_orders_column_names, 'suppliersOrders', $this->tableNames[0], true);
         $rowValues = json_decode($ssp, true)['data'];
         $ignoreArray = ['Supplier Order ID', 'Manager Order ID', 'Quantity', 'Number of Packs', 'Total weight',
             'Purchase Price / Unit', 'Total Purchase Price', 'Sell Price / Unit', 'Total Sell Price', 'Downpayment',
@@ -180,7 +201,7 @@ class ModelSuppliers_orders extends ModelManagers_orders
                 foreach ($product as $key => $value) {
                     if (!$value || $value == null)
                         continue;
-                    $name = $columns[$key];
+                    $name = $columnNames[$key];
                     if (in_array($name, $ignoreArray))
                         continue;
 
