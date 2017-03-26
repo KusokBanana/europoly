@@ -19,37 +19,37 @@
     <!-- END LAYOUT FIRST STYLES -->
     <!-- BEGIN GLOBAL MANDATORY STYLES -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css"/>
-    <link href="assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
-    <link href="assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css"/>
-    <link href="assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
-    <link href="assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css"/>
-    <link href="assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css"/>
-    <link href="assets/global/plugins/fancybox/source/jquery.fancybox.css" rel="stylesheet" type="text/css"/>
+    <link href="/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css"/>
+    <link href="/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/assets/global/plugins/fancybox/source/jquery.fancybox.css" rel="stylesheet" type="text/css"/>
     <!-- END GLOBAL MANDATORY STYLES -->
     <!-- BEGIN PAGE LEVEL PLUGINS -->
-    <link href="assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css"/>
-    <link href="assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css"/>
-    <link href="assets/global/plugins/bootstrap-editable/bootstrap-editable/css/bootstrap-editable.css" rel="stylesheet" type="text/css"/>
+    <link href="/assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css"/>
+    <link href="/assets/global/plugins/bootstrap-editable/bootstrap-editable/css/bootstrap-editable.css" rel="stylesheet" type="text/css"/>
     <!-- END PAGE LEVEL PLUGINS -->
     <!-- BEGIN THEME GLOBAL STYLES -->
-    <link href="assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css"/>
-    <link href="assets/global/css/plugins.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css"/>
+    <link href="/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css"/>
     <!-- END THEME GLOBAL STYLES -->
     <!-- BEGIN THEME LAYOUT STYLES -->
-    <link href="assets/layouts/layout6/css/layout.min.css" rel="stylesheet" type="text/css"/>
-    <link href="assets/layouts/layout6/css/custom.min.css" rel="stylesheet" type="text/css"/>
-    <link href="assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css"/>
-    <link href="assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css"/>
-    <link href="assets/pages/css/profile-2.min.css" rel="stylesheet" type="text/css"/>
-    <link href="assets/global/plugins/jquery-editable-select-master/dist/jquery-editable-select.min.css" rel="stylesheet">
+    <link href="/assets/layouts/layout6/css/layout.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/assets/layouts/layout6/css/custom.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/assets/pages/css/profile-2.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/assets/global/plugins/jquery-editable-select-master/dist/jquery-editable-select.min.css" rel="stylesheet">
 
     <!-- END THEME LAYOUT STYLES -->
     <link rel="shortcut icon" href="favicon.ico"/>
 
-    <script src="assets/global/plugins/jquery-2.2.4.min.js" type="text/javascript"></script>
-    <script src="assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-    <script src="assets/global/plugins/bootstrap-editable/bootstrap-editable/js/bootstrap-editable.js" type="text/javascript"></script>
-    <script src="assets/global/plugins/select2/js/select2.full.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/jquery-2.2.4.min.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/bootstrap-editable/bootstrap-editable/js/bootstrap-editable.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/select2/js/select2.full.js" type="text/javascript"></script>
 
     <style>
         tbody tr {
@@ -73,10 +73,10 @@
             <div class="havbar-header">
                 <!-- BEGIN LOGO -->
                 <a id="index" class="navbar-brand" href="/">
-                    <img src="assets/layouts/layout6/img/logo1.png" alt="Logo"> </a>
+                    <img src="/assets/layouts/layout6/img/logo1.png" alt="Logo"> </a>
                 <!-- END LOGO -->
 				<a id="menu-toggler">
-                    <img src="assets/layouts/layout6/img/sidebar-toggle-light.png" alt="menu" style="margin: 23px;">
+                    <img src="/assets/layouts/layout6/img/sidebar-toggle-light.png" alt="menu" style="margin: 23px;">
 				</a>
                 <!-- BEGIN TOPBAR ACTIONS -->
                 <div class="topbar-actions">
@@ -105,7 +105,6 @@
                                 if (ROLE_SALES_MANAGER == $userRole || $userRole == ROLE_OPERATING_MANAGER) {
                                     $lk_url = '/sales_manager?id=' . $_SESSION['user_id'];
                                 } else {
-//                                } elseif ($userRole == ROLE_WAREHOUSE || $userRole == ROLE_ACCOUNTANT || $userRole == ROLE_ADMIN) {
                                     $lk_url = '/support?id=' . $_SESSION['user_id'];
                                 }
                                 ?>
@@ -154,7 +153,7 @@
             </div>
         </button>
         <!-- END QUICK SIDEBAR TOGGLER -->
-        <?php include 'application/views/' . $content_view; ?>
+        <?php include '/application/views/' . $content_view; ?>
         <p class="copyright-v2">2016 © Europoly.
         </p>
         <a href="#index" class="go2top">
@@ -165,40 +164,40 @@
 </div>
 <!-- BEGIN QUICK SIDEBAR -->
 <?php if ($isLogVisible): ?>
-    <?php include 'application/views/templates/logging.php' ?>
+    <?php include '/application/views/templates/logging.php' ?>
 <?php endif; ?>
-<?php include 'application/views/templates/documents.php' ?>
-<?php include 'application/views/templates/chat.php' ?>
+<?php include '/application/views/templates/documents.php' ?>
+<?php include '/application/views/templates/chat.php' ?>
 <!-- END QUICK SIDEBAR -->
 <!-- END CONTAINER -->
 <!--[if lt IE 9]>
-<script src="assets/global/plugins/respond.min.js"></script>
-<script src="assets/global/plugins/excanvas.min.js"></script>
+<script src="/assets/global/plugins/respond.min.js"></script>
+<script src="/assets/global/plugins/excanvas.min.js"></script>
 <![endif]-->
 <!-- BEGIN CORE PLUGINS -->
-<script src="assets/global/plugins/js.cookie.min.js" type="text/javascript"></script>
-<script src="assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.js" type="text/javascript"></script>
-<script src="assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
-<script src="assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
-<script src="assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
-<script src="assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
-<script src="assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
-<script src="assets/global/plugins/fancybox/source/jquery.fancybox.pack.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/js.cookie.min.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/fancybox/source/jquery.fancybox.pack.js" type="text/javascript"></script>
 <!-- END CORE PLUGINS -->
 <!-- BEGIN PAGE LEVEL PLUGINS -->
-<script src="assets/global/plugins/moment.min.js" type="text/javascript"></script>
-<script src="assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
-<script src="assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/moment.min.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN THEME GLOBAL SCRIPTS -->
-<script src="assets/global/scripts/app.min.js" type="text/javascript"></script>
+<script src="/assets/global/scripts/app.min.js" type="text/javascript"></script>
 <!-- END THEME GLOBAL SCRIPTS -->
 <!-- BEGIN THEME LAYOUT SCRIPTS -->
-<script src="assets/layouts/layout6/scripts/layout.min.js" type="text/javascript"></script>
-<script src="assets/layouts/global/scripts/quick-sidebar.min.js" type="text/javascript"></script>
-<script src="assets/global/plugins/jquery-sortable/jquery-ui.js" type="text/javascript"></script>
-<script src="assets/global/plugins/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
-<script src="assets/global/plugins/jquery-editable-select-master/dist/jquery-editable-select.min.js"
+<script src="/assets/layouts/layout6/scripts/layout.min.js" type="text/javascript"></script>
+<script src="/assets/layouts/global/scripts/quick-sidebar.min.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/jquery-sortable/jquery-ui.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
+<script src="/assets/global/plugins/jquery-editable-select-master/dist/jquery-editable-select.min.js"
         type="text/javascript"></script>
 <!-- END THEME LAYOUT SCRIPTS -->
 <script>

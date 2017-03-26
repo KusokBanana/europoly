@@ -135,7 +135,7 @@
                         </a>
                     </li>
                     <li id="nav-monthly_payments" class="nav-item">
-                        <a href="" class="nav-link nav-toggle">
+                        <a href="/accountant/monthly" class="nav-link nav-toggle">
                             <i class="icon-bar-chart"></i>
                             <span class="title">Monthly payments</span>
                         </a>

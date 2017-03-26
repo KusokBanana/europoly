@@ -11,7 +11,7 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
         <li>
             Payments
         </li>
-        <li><?= $isNewPayment ? 'New Payment' : $this->payment['payment_id'] ?></li>
+        <li><?= $this->title ?></li>
     </ul>
     <!-- END BREADCRUMBS -->
     <div class="content-header-menu">
@@ -49,21 +49,15 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                     <div class="caption">
                         <i class="icon-settings font-dark"></i>
                         <span class="caption-subject font-dark sbold uppercase">
-                            <?php
-                            if ($isNewPayment)
-                                echo 'New Payment';
-                            else
-                                echo 'Payment #' . $this->payment['payment_id'] .
-                                    ($this->payment['direction'] == 'Income' ? ' to ' : ' from ') .
-                                    $this->contractor;
-
-                            ?>
+                            <?= $this->title ?>
                         </span>
                     </div>
                 </div>
                 <div class="portlet-body form">
                     <form class="form-horizontal" role="form" method="POST"
-                          action="payment/save_payment?id=<?= $isNewPayment ? 'new' : $this->payment['payment_id'] ?>">
+                          action="<?= '/payment/save_payment?id=' . ($isNewPayment ? 'new' : $this->payment['payment_id']).
+                          (isset($this->payment['is_monthly']) && $this->payment['is_monthly'] ? '&type=monthly' : '')
+                          ?>">
                         <div class="form-body">
                             <div class="form-group">
                                 <label class="col-md-3 control-label">Payment ID</label>
@@ -73,6 +67,49 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                     </p>
                                 </div>
                             </div>
+                            <?php if (isset($this->payment['is_monthly']) && $this->payment['is_monthly']): ?>
+                            <hr>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Monthly Pay Day</label>
+                                <div class="col-md-9">
+                                    <div class="input-inline input-medium">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                            <input type="date" class="form-control" name="monthly_pay_day"
+                                                   id="monthly_pay_day"
+                                                   value="<?= isset($this->payment['monthly_pay_day']) ?
+                                                       $this->payment['monthly_pay_day'] : date("Y-m-d", time()) ?>"
+                                                   placeholder="Monthly Pay Day"> </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="is_monthly_active" class="col-md-3 control-label">Is Monthly Active</label>
+                                <div class="col-md-9">
+<!--                                    <input type="checkbox" name="is_monthly_active"-->
+<!--                                           id="is_monthly_active" class="form-control" />-->
+                                    <select name="is_monthly_active" id="is_monthly_active" class="form-control">
+                                        <option> </option>
+                                        <?php $options = ['Not Active', 'Active'] ?>
+                                        <?php foreach ($options as $key => $option): ?>
+                                            <option value="<?= $key ?>"
+                                                <?= (isset($this->payment['is_monthly_active']) &&
+                                                    $this->payment['is_monthly_active'] == $key)
+                                                    ? ' selected ' : ''?>>
+                                                <?= $option ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group hidden">
+                                <input type="hidden" name="is_monthly" value="1">
+                            </div>
+                            <hr>
+                            <?php endif; ?>
                             <div class="form-group">
                                 <label class="col-md-3 control-label">Date</label>
                                 <div class="col-md-9">
@@ -476,10 +513,10 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                 <label class="col-md-3 control-label">Responsible Person</label>
                                 <div class="col-md-9">
                                     <p class="form-control-static">
-                                        <?= $this->currentUser['first_name'] . ' ' .
-                                            $this->currentUser['last_name'] ?>
+                                        <?= $this->user->first_name . ' ' .
+                                            $this->user->last_name ?>
                                         <input type="hidden" name="responsible_person_id"
-                                               value="<?= $this->currentUser['user_id'] ?>">
+                                               value="<?= $this->user->user_id ?>">
                                     </p>
                                 </div>
                             </div>

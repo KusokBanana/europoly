@@ -2,7 +2,7 @@
 
 class ModelAccountant extends Model
 {
-    var $tableName = 'table_warehouse';
+    var $tableName = 'table_accountant';
 
     var $payments_columns = [
         array('dt' => 0, 'db' => "payments.payment_id"),
@@ -68,6 +68,7 @@ class ModelAccountant extends Model
         'Actions'
     ];
 
+
     var $payments_table = "payments
                             left join legal_entities as entities on entities.legal_entity_id = payments.legal_entity_id
                             left join transfers on transfers.transfer_id = payments.transfer_type_id
@@ -90,15 +91,19 @@ class ModelAccountant extends Model
     function getDTPayments($input, $printOpt)
     {
         $where = [];
+        $columns = $this->payments_columns;
+        if (isset($input['type']) && $input['type'] == 'monthly') {
+            $where[] = 'payments.is_monthly = 1';
+            $columns = $this->getMonthlyPaymentsCols('columns');
+        }
         if ($this->user->permissions <= SALES_MANAGER_PERM) {
-            $where = [
-                'payments.is_deleted = 0'
-            ];
-            $this->unLinkStrings($this->payments_columns, [5, 6]);
+            $where[] = 'payments.is_deleted = 0';
+            $this->unLinkStrings($columns, [5, 6]);
         }
 
+
         $ssp = [
-            'columns' => $this->payments_columns,
+            'columns' => $columns,
             'columns_names' => $this->payments_column_names,
             'db_table' => $this->payments_table,
             'page' => 'accountant',
@@ -166,19 +171,27 @@ class ModelAccountant extends Model
 
     }
 
-    function getSelects()
+    function getSelects($isMonthly = false)
     {
-        if ($_SESSION['perm'] <= SALES_MANAGER_PERM) {
-            $this->unLinkStrings($this->payments_columns, [5, 6]);
+
+        $columns = $this->payments_columns;
+        $role = new Roles();
+        $where = ['payments.is_deleted = 0'];
+        if ($isMonthly) {
+            $where[] = 'payments.is_monthly = 1';
+            $cols = $this->getMonthlyPaymentsCols('columns');
+            $columnNames = $this->getMonthlyPaymentsCols('name');
+        } else {
+            $cols = $role->returnModelColumns($columns, 'accountant');
+            $columnNames = $role->returnModelNames($this->payments_column_names, 'accountant');
         }
 
-        $role = new Roles();
-
-        $cols = $role->returnModelColumns($this->payments_columns, 'accountant');
-        $columns = $role->returnModelNames($this->payments_column_names, 'accountant');
+        if ($_SESSION['perm'] <= SALES_MANAGER_PERM) {
+            $this->unLinkStrings($cols, [5, 6]);
+        }
 
         $ssp = $this->getSspComplexJson($this->payments_table, "payments.payment_id", $cols, null, null,
-            "payments.is_deleted = 0");
+            $where);
 
         $rowValues = json_decode($ssp, true)['data'];
         $ignoreArray = ['_payment_id', 'Payment Id', 'Actions'];
@@ -189,7 +202,7 @@ class ModelAccountant extends Model
                 foreach ($product as $key => $value) {
                     if (!$value || $value == null)
                         continue;
-                    $name = $columns[$key];
+                    $name = $columnNames[$key];
                     if (in_array($name, $ignoreArray))
                         continue;
 
@@ -205,8 +218,36 @@ class ModelAccountant extends Model
         }
     }
 
-    function initCatalogueParser($array)
+    public function getMonthlyPaymentsCols($type, $isOriginal = false)
     {
+
+        switch ($type) {
+            case 'name':
+                array_splice($this->payments_column_names, 18, 0, 'Pay Day');
+                array_splice($this->payments_column_names, 18, 0, 'Monthly Status');
+                if (!$isOriginal) {
+                    return $this->getColumns($this->payments_column_names,
+                        'accountant', $this->tableName . 'monthly', true);
+                }
+                $roles = new Roles();
+                return $roles->returnModelNames($this->payments_column_names, 'accountant');
+            case 'columns':
+                $actions = $this->payments_columns[19];
+                $this->payments_columns[19] = array('dt' => 19, 'db' => "payments.monthly_pay_day");
+                $this->payments_columns[] = array('dt' => 20, 'db' => "IF(payments.is_monthly_active, 'Active', 'Not Active')");
+                $actions['dt'] = 21;
+                $this->payments_columns[] = $actions;
+                return $this->payments_columns;
+        }
+
+    }
+
+    public function initCatalogueParser($array, $clear = false)
+    {
+
+        if ($clear) {
+            $this->clearTable('products');
+        }
 
         $brands = $this->getAssoc("SELECT * FROM brands");
 

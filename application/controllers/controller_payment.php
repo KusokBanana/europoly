@@ -19,11 +19,21 @@ class ControllerPayment extends Controller
                     $this->view->post_order = true;
                 }
                 $this->view->title = 'New Payment';
+                if (isset($_GET['type']) && $_GET['type'] == 'monthly' || (isset($this->view->payment)
+                    && isset($this->view->payment['is_monthly']) && $this->view->payment['is_monthly'])) {
+                    $this->view->payment['is_monthly'] = true;
+                    $this->view->title = 'New Monthly Payment';
+                }
             } else {
                 $this->view->payment = $this->model->getPayment($id);
                 $this->view->title = $this->view->payment['payment_id'];
                 $this->view->contractor = $this->model->getContractorName($this->view->payment['category'],
                     $this->view->payment['contractor_id']);
+
+                $this->view->title = ($this->view->payment['is_monthly'] ? 'Monthly ' : '') . 'Payment #' .
+                    $this->view->payment['payment_id'] .
+                    ($this->view->payment['direction'] == 'Income' ? ' to ' : ' from ') . $this->view->contractor;
+
             }
 
             $roles = new Roles();
@@ -37,7 +47,6 @@ class ControllerPayment extends Controller
             $this->view->managers = $this->model->getSalesManagersIdName();
             $this->view->clients = $this->model->getClientsIdName();
             $this->view->expenses = $this->model->getExpenses();
-            $this->view->currentUser = $this->model->getUser($_SESSION["user_id"]);
             $this->view->purpose = ($id != 'new') ? $this->model->getPurpose($this->view->payment) : '';
             $this->view->build('templates/template.php', 'payment.php');
         }
@@ -73,6 +82,7 @@ class ControllerPayment extends Controller
     {
         $this->getAccess('payment', 'ch');
         $payment_id = isset($_GET['id']) ? $_GET['id'] : false;
+        $type = isset($_GET['type']) ? $_GET['type'] : false;
         $form = !empty($_POST) ? $_POST : false;
         if (!$payment_id || !$form)
             return false;
@@ -80,7 +90,7 @@ class ControllerPayment extends Controller
         $paymentId = $this->model->savePayment($form, $payment_id);
 //        if ($paymentId && $payment_id == 'new') {
         if ($paymentId) {
-            header("Location: " . '/accountant');
+            header("Location: " . '/accountant' . ($type == 'monthly' ? "/$type" : ''));
         }
         else {
             header("Location: " . $_SERVER['HTTP_REFERER']);

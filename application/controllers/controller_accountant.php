@@ -40,6 +40,7 @@ class ControllerAccountant extends Controller
     {
         $this->getAccess($this->page, 'v');
 
+        $this->view->title = 'Accountant';
         $this->view->tableName = $this->model->tableName;
         $this->view->column_names = $this->model->getColumns($this->model->payments_column_names,
             $this->page, $this->model->tableName, true);
@@ -49,6 +50,30 @@ class ControllerAccountant extends Controller
         $this->view->access = $roles->getPageAccessAbilities($this->page);
 
         $array = $this->model->getSelects();
+        $selects = $array['selects'];
+        $rows = $array['rows'];
+
+        $this->view->selects = $selects;
+        $this->view->rows = $rows;
+
+        $this->view->build('templates/template.php', 'accountant.php');
+    }
+
+    function action_monthly()
+    {
+        $this->page = 'accountant';
+        $this->getAccess($this->page, 'v');
+        $this->view->title = 'Monthly Payments';
+        $this->view->monthly_payment = true;
+
+        $this->view->tableName = $this->model->tableName;
+        $this->view->column_names = $this->model->getMonthlyPaymentsCols('name');
+        $roles = new Roles();
+        $this->view->originalColumns = $this->model->getMonthlyPaymentsCols('name', true);
+
+        $this->view->access = $roles->getPageAccessAbilities($this->page);
+
+        $array = $this->model->getSelects(true);
         $selects = $array['selects'];
         $rows = $array['rows'];
 

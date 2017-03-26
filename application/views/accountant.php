@@ -4,7 +4,7 @@
         <li>
             <a href="/">Dashboard</a>
         </li>
-        <li>Accountant</li>
+        <li><?= $this->title ?></li>
     </ul>
     <!-- END BREADCRUMBS -->
     <div class="content-header-menu">
@@ -32,7 +32,7 @@
                 <div class="portlet-title">
                     <div class="caption">
                         <i class="icon-social-dribbble font-dark"></i>
-                        <span class="caption-subject bold uppercase font-dark">Accountant</span>
+                        <span class="caption-subject bold uppercase font-dark"><?= $this->title ?></span>
                     </div>
                 </div>
                 <div class="portlet-body">
@@ -43,22 +43,27 @@
                                     <form action="payment?id=new" method="POST" id="payment-form"></form>
                                     <?php
                                     $buttons = [];
+                                    $url = (isset($this->monthly_payment)) ? '&type=monthly' : '';
                                     if ($this->access['ch']) {
+
                                         $buttons[] = '<a class="btn sbold green" 
-                                                        href="payment?id=new">
+                                                        href="/payment?id=new' . $url . '">
                                                             <i class="fa fa-plus"></i> Add New
                                                     </a>';
 
-                                        $buttons[] = '<a href="javascript:void;"
+                                        if (!isset($this->monthly_payment)) {
+                                            $buttons[] = '<a href="javascript:void;"
                                        class="btn sbold blue new-similar-payment-btn">
                                         <i class="fa fa-plus"></i> Add Similar Payment </a>';
+                                        }
                                     }
+
 
                                     $table_data = [
                                         'buttons' => $buttons,
                                         'table_id' => $this->tableName,
                                         'ajax' => [
-                                            'url' => "/accountant/dt_payments"
+                                            'url' => "/accountant/dt_payments" . str_replace('&', '?', $url)
                                         ],
                                         'column_names' => $this->column_names,
                                         'click_url' => "javascript:;",

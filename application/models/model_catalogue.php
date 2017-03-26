@@ -200,4 +200,48 @@ class ModelCatalogue extends Model
         return json_encode($product);
     }
 
+
+    public function getCategoryTabs()
+    {
+        $categories = $this->getAll('category');
+        $floors = ['name' => 'Floors', 'items' => [], 'id' => []];
+        $windows = ['name' => 'Windows', 'items' => [], 'id' => []];
+        $interior = ['name' => 'Interior Elements', 'items' => [], 'id' => []];
+        $other = ['name' => 'Other', 'items' => [], 'id' => []];
+        $all = ['name' => 'All'];
+        foreach ($categories as $category) {
+            $catId = $category['category_id'];
+            $item = [
+                'id' => $catId,
+                'name' => $category['name']
+            ];
+            switch ($catId) {
+                case 1:
+                case 2:
+                case 4:
+                case 5:
+                case 6:
+                    $floors['items'][] = $item;
+                    break;
+                case 7:
+                case 13:
+                case 14:
+                    $interior['items'][] = $item;
+                    break;
+                case 3:
+                case 8:
+                case 9:
+                case 10:
+                case 11:
+                    $other['items'][] = $item;
+                    break;
+                case 12:
+                    $windows = $item;
+                    break;
+            }
+        }
+        return [$all, $floors, $windows, $interior, $other];
+    }
+
+
 }
