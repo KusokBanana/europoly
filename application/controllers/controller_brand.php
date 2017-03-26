@@ -6,6 +6,7 @@ class ControllerBrand extends Controller
     {
         parent::__construct();
         $this->model = new ModelBrand();
+        parent::afterConstruct();
     }
 
     public $page = 'brand';
@@ -41,7 +42,7 @@ class ControllerBrand extends Controller
                 $this->view->selects = $selects;
                 $this->view->rows = $rows;
 
-                $this->view->access = $roles->returnAccessAbilities($this->page, 'ch');
+                $this->view->access = $roles->getPageAccessAbilities($this->page);
 
                 $this->view->brands = $this->model->getAll("brands");
                 $this->view->colors = $this->model->getAll("colors");
@@ -78,14 +79,14 @@ class ControllerBrand extends Controller
 
             $print = isset($_POST['print']) ? $_POST['print'] : false;
             if ($print) {
-                $visible = isset($_POST['visible']) ? $_POST['visible'] : false;
-                $selected = isset($_POST['selected']) && $_POST['selected'] ? json_decode($_POST['selected'], true) : [];
-                $filters = isset($_POST['filters']) && $_POST['filters'] ? json_decode($_POST['filters'], true) : [];
-                echo $this->model->printTable($_POST, $visible, $selected, $filters);
-                return true;
+                $print = [
+                    'visible' => isset($_POST['visible']) && $_POST['visible'] ? json_decode($_POST['visible'], true) : [],
+                    'selected' => isset($_POST['selected']) && $_POST['selected'] ? json_decode($_POST['selected'], true) : [],
+                    'filters' => isset($_POST['filters']) && $_POST['filters'] ? json_decode($_POST['filters'], true) : [],
+                ];
             }
 
-            $this->model->getDTProductsForBrand($brand_id, $_POST);
+            $this->model->getDTProductsForBrand($brand_id, $_POST, $print);
         } else {
             http_response_code(400);
         }

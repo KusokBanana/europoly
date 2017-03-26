@@ -6,6 +6,7 @@ class ControllerChat extends Controller
     {
         parent::__construct();
         $this->model = new ModelChat();
+        parent::afterConstruct();
     }
 
     function action_index($action_param = null, $action_data = null)

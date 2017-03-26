@@ -9,44 +9,29 @@ class ModelCatalogue extends Model
 
     public $tableName = "table_catalogue";
 
-    function getDTProducts($input, $id)
+    function getDTProducts($input, $printOpt)
     {
-        $where = 'products.is_deleted = 0';
-        $columns = $this->getColumns($this->full_product_columns, 'catalogue', $this->tableName);
-        $this->sspComplex($this->full_products_table, "product_id", $columns, $input, null, $where);
-    }
-
-    function printTable($input, $visible, $selected = [], $filters = [])
-    {
+        $where = ['products.is_deleted = 0'];
         $columns = $this->getColumns($this->full_product_columns, 'catalogue', $this->tableName);
 
-        $names = $this->getColumns($this->full_product_column_names, 'catalogue', $this->tableName, true);
-        if (empty($selected)) {
-            $where = ['products.is_deleted = 0'];
-            if (!empty($filters)) {
-                foreach ($filters as $colId => $value) {
-                    if (!$value || $value == null)
-                        continue;
+        $ssp = [
+            'columns' => $columns,
+            'columns_names' => $this->full_product_column_names,
+            'db_table' => $this->full_products_table,
+            'page' => 'catalogue',
+            'table_name' => $this->tableName,
+            'primary' => 'products.product_id',
+        ];
 
-                    if (is_int($value))
-                        $where[] = $columns[$colId]['db'] . ' = ' . $value;
-                    elseif (is_string($value))
-                        $where[] = $columns[$colId]['db'] . " LIKE '%$value%'";
-                }
-            }
-            $where = join(' AND ', $where);
-            $ssp = $this->getSspComplexJson($this->full_products_table, "product_id", $columns, $input, null, $where);
-            $values = json_decode($ssp, true)['data'];
-        } else {
-            $values = $selected;
+        if ($printOpt) {
+
+            $printOpt['where'] = $where;
+            echo $this->printTable($input, $ssp, $printOpt);
+            return true;
+
         }
 
-        require_once dirname(__FILE__) . '/../classes/Excel.php';
-        $excel = new Excel();
-
-        $data = array_merge([$names], $values);
-        return $excel->printTable($data, $visible, 'catalogue');
-
+        $this->sspComplex($ssp['db_table'], $ssp['primary'], $ssp['columns'], $input, null, $where);
     }
 
     public function newProductSelects()

@@ -30,7 +30,7 @@
                     </div>
                 </div>
                 <div class="portlet-body">
-                    <ul class="nav nav-tabs category-tabs">
+                    <ul class="nav nav-tabs filter-tabs">
                         <?php if (!empty($this->tabs)):
                             foreach ($this->tabs as $key => $tab):
                                 $tab_id = 'tab_' . $key ;
@@ -47,12 +47,10 @@
                                                 $name = $item['name'];
                                                 ?>
                                                 <li>
-                                                    <?php
-                                                    $tab_item_id = $tab_id . '_' . $i++;
-                                                    ?>
-                                                    <a href="<?= '#' . $tab_item_id ?>"
+                                                    <a class="tab-filter"
+                                                       data-filter-name="category_id"
+                                                       data-filter-value="<?= $id ?>"
                                                        tabindex="-1"
-                                                       data-category-id="<?= $id ?>"
                                                        data-toggle="tab">
                                                         <?= $name ?>
                                                     </a>
@@ -65,9 +63,10 @@
                                     $id = ($tab['name'] != 'All') ? $tab['id'] : 0;
                                     ?>
                                     <li <?= $id === 0 ? 'class="active"' : '' ?>>
-                                        <a href="<?= '#' . $tab_id ?>"
+                                        <a class="tab-filter"
+                                           data-filter-name="category_id"
+                                           data-filter-value="<?= $id ?>"
                                             <?= $id === 0 ? 'aria-expanded="true"' : '' ?>
-                                           data-category-id="<?= $id ?>"
                                            data-toggle="tab"> <?= $tab['name'] ?> </a>
                                     </li>
                                 <?php endif;

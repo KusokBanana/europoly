@@ -6,6 +6,7 @@ class ControllerTruck extends Controller
     {
         parent::__construct();
         $this->model = new ModelTruck();
+        parent::afterConstruct();
     }
 
     public $page = 'truck';

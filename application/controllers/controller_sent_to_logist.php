@@ -6,6 +6,7 @@ class ControllerSent_to_logist extends Controller
     {
         parent::__construct();
         $this->model = new ModelSent_to_logist();
+        parent::afterConstruct();
     }
 
     public $page = 'sentToLogist';
@@ -44,13 +45,13 @@ class ControllerSent_to_logist extends Controller
     {
         $print = isset($_GET['print']) ? $_GET['print'] : false;
         if ($print) {
-            $visible = isset($_GET['visible']) ? $_GET['visible'] : false;
-            $selected = isset($_GET['selected']) && $_GET['selected'] ? json_decode($_GET['selected'], true) : [];
-            $filters = isset($_GET['filters']) && $_GET['filters'] ? json_decode($_GET['filters'], true) : [];
-            echo $this->model->printTable($_GET, $visible, $selected, $filters);
-            return true;
+            $print = [
+                'visible' => isset($_GET['visible']) && $_GET['visible'] ? json_decode($_GET['visible'], true) : [],
+                'selected' => isset($_GET['selected']) && $_GET['selected'] ? json_decode($_GET['selected'], true) : [],
+                'filters' => isset($_GET['filters']) && $_GET['filters'] ? json_decode($_GET['filters'], true) : [],
+            ];
         }
 
-        $this->model->getDTManagersOrders($_GET);
+        $this->model->getDTManagersOrders($_GET, $print);
     }
 }

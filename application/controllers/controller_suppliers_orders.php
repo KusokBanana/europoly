@@ -9,6 +9,7 @@ class ControllerSuppliers_orders extends Controller
     {
         parent::__construct();
         $this->model = new ModelSuppliers_orders();
+        parent::afterConstruct();
     }
 
     function action_index($action_param = null, $action_data = null)
@@ -16,8 +17,6 @@ class ControllerSuppliers_orders extends Controller
         $this->getAccess($this->page, 'v');
         $this->view->title = "Suppliers' Orders";
         $roles = new Roles();
-//        $this->view->column_names = $roles->returnModelNames($this->model->suppliers_orders_column_names, $this->page);
-//        $this->view->column_names_reduce = $this->model->suppliers_orders_column_names_reduce;
         $this->view->access = $roles->returnAccessAbilities($this->page, 'ch');
 
         $this->view->tableNames = $this->model->tableNames;
@@ -40,7 +39,16 @@ class ControllerSuppliers_orders extends Controller
 
     function action_dt_suppliers_orders()
     {
-        $this->model->getDTSuppliersOrders($_GET);
+        $print = isset($_GET['print']) ? $_GET['print'] : false;
+        if ($print) {
+            $print = [
+                'visible' => isset($_GET['visible']) && $_GET['visible'] ? json_decode($_GET['visible'], true) : [],
+                'selected' => isset($_GET['selected']) && $_GET['selected'] ? json_decode($_GET['selected'], true) : [],
+                'filters' => isset($_GET['filters']) && $_GET['filters'] ? json_decode($_GET['filters'], true) : [],
+            ];
+        }
+
+        $this->model->getDTSuppliersOrders($_GET, $print);
     }
 
     function action_dt_suppliers_orders_reduce()

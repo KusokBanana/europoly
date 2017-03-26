@@ -6,6 +6,7 @@ class ControllerPayment extends Controller
     {
         parent::__construct();
         $this->model = new ModelPayment();
+        parent::afterConstruct();
     }
 
     function action_index($action_param = null, $action_data = null)

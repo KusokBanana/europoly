@@ -6,6 +6,7 @@ class ControllerStaff extends Controller
     {
         parent::__construct();
         $this->model = new ModelStaff();
+        parent::afterConstruct();
     }
 
     function action_index($action_param = null, $action_data = null)

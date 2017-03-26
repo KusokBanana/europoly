@@ -81,7 +81,7 @@
                                                 ],
                                                 'table_id' => "table_clients",
                                                 'ajax' => [
-                                                    'url' => "/clients/dt_clients"
+                                                    'url' => "/contractors/dt_clients"
                                                 ],
                                                 'column_names' => $this->clients_column_names,
                                                 'click_url' => "client?id=",

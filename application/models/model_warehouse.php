@@ -132,56 +132,72 @@ class ModelWarehouse extends ModelManagers_orders
     var $where_reserve = '(products_warehouses.manager_order_id IS NOT NULL AND '.
     'products_warehouses.reserve_since_date IS NOT NULL)';
 
-    function getDTProductsForWarehouses($input, $warehouse_id = 0, $type)
+    function getDTProductsForWarehouses($input, $warehouse_id = 0, $type, $printOpt)
     {
+
         if ($warehouse_id) {
-            $where = "products_warehouses.warehouse_id = $warehouse_id";
+            $where = ["products_warehouses.warehouse_id = $warehouse_id"];
         } else {
-            $where = 'products_warehouses.warehouse_id IS NOT NULL';
+            $where = ['products_warehouses.warehouse_id IS NOT NULL'];
         }
-        $where .= " AND products_warehouses.status_id <> " . ISSUED;
+        $where[] = "products_warehouses.status_id <> " . ISSUED;
         switch ($type) {
             case '':
-                $where = '(' . $where . ' AND '. $this->where . ')';
+                $where[] = $this->where;
                 break;
             case 'issue':
-                $where = '(' . $where . ' AND '. $this->where_issue . ')';
+                $where[] = $this->where_issue;
                 break;
             case 'reserve':
-                $where = '(' . $where . ' AND ' . $this->where_reserve . ')';
+                $where[] = $this->where_reserve;
                 break;
         }
 
-        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
-            $userId = $_SESSION['user_id'];
-            $where = '(' . $where . ") AND (orders.sales_manager_id = " . $userId . ' OR '.
-                " client.sales_manager_id = $userId ".
-                " OR client.operational_manager_id = $userId " .
+        if ($this->user->role_id == ROLE_SALES_MANAGER) {
+            $where[] = "(orders.sales_manager_id = " . $this->user->user_id . ' OR '.
+                " client.sales_manager_id = ". $this->user->user_id .
+                " OR client.operational_manager_id = " . $this->user->user_id .
                 ' OR products_warehouses.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
         }
-        if ($_SESSION['perm'] <= SALES_MANAGER_PERM) {
+        if ($this->user->permissions <= SALES_MANAGER_PERM) {
             $this->unLinkStrings($this->product_warehouses_columns, [27, 30, 33, 34]);
         }
+
         $columns = $this->getColumns($this->product_warehouses_columns, 'warehouse', $this->tableName);
 
+        $ssp = [
+            'columns' => $columns,
+            'columns_names' => $this->product_warehouses_column_names,
+            'db_table' => $this->products_warehouses_table,
+            'page' => 'warehouse',
+            'table_name' => $this->tableName,
+            'primary' => 'products_warehouses.item_id',
+        ];
 
-        $this->sspComplex($this->products_warehouses_table, "products_warehouses.item_id", $columns,
-            $input, null, $where);
+        if ($printOpt) {
+
+            $printOpt['where'] = $where;
+            echo $this->printTable($input, $ssp, $printOpt);
+            return true;
+
+        }
+
+        $this->sspComplex($ssp['db_table'], $ssp['primary'],
+            $ssp['columns'], $input, null, $where);
     }
 
     function getSelects($warehouse_id = 0)
     {
         if (!$warehouse_id) {
-            $where = 'products_warehouses.warehouse_id IS NOT NULL';
+            $where = ['products_warehouses.warehouse_id IS NOT NULL'];
         } else {
-            $where = "products_warehouses.warehouse_id = $warehouse_id";
+            $where = ["products_warehouses.warehouse_id = $warehouse_id"];
         }
 
-        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
-            $userId = $_SESSION['user_id'];
-            $where = '(' . $where . ") AND (orders.sales_manager_id = " . $userId . ' OR '.
-                " client.sales_manager_id = $userId ".
-                " OR client.operational_manager_id = $userId " .
+        if ($this->user->role_id == ROLE_SALES_MANAGER) {
+            $where[] = "(orders.sales_manager_id = " . $this->user->user_id . ' OR '.
+                " client.sales_manager_id = $this->user->user_id ".
+                " OR client.operational_manager_id = $this->user->user_id " .
                 ' OR products_warehouses.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
         }
         if ($_SESSION['perm'] <= SALES_MANAGER_PERM) {
@@ -349,11 +365,13 @@ class ModelWarehouse extends ModelManagers_orders
     public function printDoc($warehouseId, $where, $type='', $log = [])
     {
         $fileName = $type;
-        $whereFull = "warehouse_id = $warehouseId AND $where";
+        $where[] = "warehouse_id = $warehouseId";
         if (!$warehouseId)
-            $whereFull = "warehouse_id IS NOT NULL AND $where";
+            $where[] = "warehouse_id IS NOT NULL";
 
-        $orderItems = $this->getAssoc("SELECT * FROM order_items products_warehouses WHERE $whereFull");
+        $where = implode(' AND ', $where);
+
+        $orderItems = $this->getAssoc("SELECT * FROM order_items products_warehouses WHERE $where");
 //        $warehouse = $this->getFirst("SELECT * FROM warehouses WHERE warehouse_id = $warehouseId");
 
         if (!empty($orderItems)) {

@@ -6,6 +6,7 @@ class ControllerCatalogue extends Controller
     {
         parent::__construct();
         $this->model = new ModelCatalogue();
+        parent::afterConstruct();
     }
 
     public $page = 'catalogue';
@@ -31,7 +32,7 @@ class ControllerCatalogue extends Controller
         $this->view->tabs = $this->model->getCategoryTabs();
         $this->view->categories = $this->model->getAll('category');
 
-        $this->view->access = $roles->returnAccessAbilities('catalogue', 'ch');
+        $this->view->access = $roles->getPageAccessAbilities($this->page);
 
         $cache = new Cache();
         $selectsCache = $cache->read('catalogue_selects');
@@ -63,17 +64,15 @@ class ControllerCatalogue extends Controller
 
     function action_dt()
     {
-        $id = isset($_POST['products']['id']) ? $_POST['products']['id'] : false;
         $print = isset($_POST['print']) ? $_POST['print'] : false;
         if ($print) {
-            $visible = isset($_POST['visible']) ? $_POST['visible'] : false;
-            $selected = isset($_POST['selected']) && $_POST['selected'] ? json_decode($_POST['selected'], true) : [];
-            $filters = isset($_POST['filters']) && $_POST['filters'] ? json_decode($_POST['filters'], true) : [];
-            echo $this->model->printTable($_POST, $visible, $selected, $filters);
-            return true;
+            $print = [
+                'visible' => isset($_POST['visible']) && $_POST['visible'] ? json_decode($_POST['visible'], true) : [],
+                'selected' => isset($_POST['selected']) && $_POST['selected'] ? json_decode($_POST['selected'], true) : [],
+                'filters' => isset($_POST['filters']) && $_POST['filters'] ? json_decode($_POST['filters'], true) : [],
+            ];
         }
-
-        $this->model->getDTProducts($_POST, $id);
+        $this->model->getDTProducts($_POST, $print);
     }
 
     function action_add()

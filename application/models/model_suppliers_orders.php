@@ -131,25 +131,42 @@ class ModelSuppliers_orders extends ModelManagers_orders
         'left join clients client on orders.client_id = client.client_id ' .
         'left join items_status as status on (suppliers_orders.status_id = status.status_id)';
 
-    var $suppliersFilterWhere = "(suppliers_orders_items.supplier_order_id IS NOT NULL 
-                                    AND suppliers_orders_items.truck_id IS NULL)";
+    var $suppliersFilterWhere = ["suppliers_orders_items.supplier_order_id IS NOT NULL",
+                                    "suppliers_orders_items.truck_id IS NULL"];
 
-    function getDTSuppliersOrders($input)
+    function getDTSuppliersOrders($input, $printOpt)
     {
 
-        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
-            $userId = $_SESSION['user_id'];
-            $this->suppliersFilterWhere .= " AND (orders.sales_manager_id = " . $userId . ' OR' .
-                " client.sales_manager_id = $userId ".
-                " OR client.operational_manager_id = $userId " .
+        if ($this->user->role_id == ROLE_SALES_MANAGER) {
+            $this->suppliersFilterWhere[] = "(orders.sales_manager_id = " . $this->user->user_id . ' OR' .
+                " client.sales_manager_id = ". $this->user->user_id .
+                " OR client.operational_manager_id = " . $this->user->user_id .
                 ' OR suppliers_orders_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
             $this->unLinkStrings($this->suppliers_orders_columns, [2, 26, 27]);
         }
 
         $columns = $this->getColumns($this->suppliers_orders_columns, 'suppliersOrders', $this->tableNames[0]);
 
-        $this->sspComplex($this->suppliers_orders_table, "suppliers_orders_items.item_id", $columns,
-            $input, null, $this->suppliersFilterWhere);
+        $ssp = [
+            'columns' => $columns,
+            'columns_names' => $this->suppliers_orders_column_names,
+            'db_table' => $this->suppliers_orders_table,
+            'page' => 'suppliersOrders',
+            'table_name' => $this->tableNames[0],
+            'primary' => 'suppliers_orders_items.item_id',
+        ];
+
+        if ($printOpt) {
+
+            $printOpt['where'] = $this->suppliersFilterWhere;
+            echo $this->printTable($input, $ssp, $printOpt);
+            return true;
+
+        }
+
+        $this->sspComplex($ssp['db_table'], $ssp['primary'],
+            $ssp['columns'], $input, null, $this->suppliersFilterWhere);
+
     }
 
     function getDTSuppliersOrdersReduce($input)
@@ -174,11 +191,10 @@ class ModelSuppliers_orders extends ModelManagers_orders
     function getSelects()
     {
 
-        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
-            $userId = $_SESSION['user_id'];
-            $this->suppliersFilterWhere .= " AND (orders.sales_manager_id = " . $userId . ' OR' .
-                " client.sales_manager_id = $userId ".
-                " OR client.operational_manager_id = $userId " .
+        if ($this->user->permissions == ROLE_SALES_MANAGER) {
+            $this->suppliersFilterWhere[] = "(orders.sales_manager_id = " . $this->user->user_id . ' OR' .
+                " client.sales_manager_id =  ". $this->user->user_id .
+                " OR client.operational_manager_id = " . $this->user->user_id .
                 ' OR suppliers_orders_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
             $this->unLinkStrings($this->suppliers_orders_columns, [2, 26, 27]);
         }

@@ -8,6 +8,7 @@ class ControllerContractors extends Controller
     {
         parent::__construct();
         $this->model = new ModelContractors();
+        parent::afterConstruct();
     }
 
     function action_index($action_param = null, $action_data = null)
@@ -32,6 +33,20 @@ class ControllerContractors extends Controller
         $this->view->managers = $this->model->getSalesManagersIdName();
         $this->view->commission_agents = $this->model->getCommissionAgentsIdName();
         $this->view->build('templates/template.php', 'contractors.php');
+    }
+
+    function action_dt_clients()
+    {
+        $print = isset($_GET['print']) ? $_GET['print'] : false;
+        if ($print) {
+            $print = [
+                'visible' => isset($_GET['visible']) && $_GET['visible'] ? json_decode($_GET['visible'], true) : [],
+                'selected' => isset($_GET['selected']) && $_GET['selected'] ? json_decode($_GET['selected'], true) : [],
+                'filters' => isset($_GET['filters']) && $_GET['filters'] ? json_decode($_GET['filters'], true) : [],
+            ];
+        }
+
+        $this->model->getDTClients($_GET, $print);
     }
 
     function action_dt_suppliers()

@@ -11,6 +11,7 @@ class ControllerAccountant extends Controller
     {
         parent::__construct();
         $this->model = new ModelAccountant();
+        parent::afterConstruct();
     }
 
     function action_parser()
@@ -61,14 +62,14 @@ class ControllerAccountant extends Controller
     {
         $print = isset($_GET['print']) ? $_GET['print'] : false;
         if ($print) {
-            $visible = isset($_GET['visible']) ? $_GET['visible'] : false;
-            $selected = isset($_GET['selected']) && $_GET['selected'] ? json_decode($_GET['selected'], true) : [];
-            $filters = isset($_GET['filters']) && $_GET['filters'] ? json_decode($_GET['filters'], true) : [];
-            echo $this->model->printTable($_GET, $visible, $selected, $filters);
-            return true;
+            $print = [
+                'visible' => isset($_GET['visible']) && $_GET['visible'] ? json_decode($_GET['visible'], true) : [],
+                'selected' => isset($_GET['selected']) && $_GET['selected'] ? json_decode($_GET['selected'], true) : [],
+                'filters' => isset($_GET['filters']) && $_GET['filters'] ? json_decode($_GET['filters'], true) : [],
+            ];
         }
 
-        $this->model->getDTPayments($_GET);
+        $this->model->getDTPayments($_GET, $print);
     }
 
     function action_dt_order_payments()

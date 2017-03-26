@@ -44,8 +44,6 @@
                                                 $name = $item['name'];
                                                 ?>
                                                 <li>
-                                                    <?php
-                                                    ?>
                                                     <a class="tab-filter"
                                                        data-filter-name="category_id"
                                                        data-filter-value="<?= $id ?>"
@@ -81,7 +79,7 @@ data-target="#modal_newProduct">Add New Product <i class="fa fa-plus"></i></butt
                                 '<button class="btn sbold blue new-similar-product-btn" data-toggle="modal" 
 data-target="#modal_newProduct">Add Similar Product <i class="fa fa-plus"></i></button>'
                             ];
-                            if (!$this->access)
+                            if (!$this->access['ch'])
                                 $buttons = [];
                             $table_data = [
                                 'buttons' => $buttons,

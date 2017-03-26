@@ -6,6 +6,7 @@ class ControllerBrands extends Controller
     {
         parent::__construct();
         $this->model = new ModelBrands();
+        parent::afterConstruct();
     }
 
     public $page = 'brands';

@@ -6,6 +6,7 @@ class ControllerSuppliers_order extends Controller
     {
         parent::__construct();
         $this->model = new ModelSuppliers_order();
+        parent::afterConstruct();
     }
 
     public $page = 'suppliersOrder';

@@ -11,6 +11,12 @@ abstract class Model extends mysqli
         'host' => SQLADDR
     );
 
+    /**
+     * @var $user object
+     * Global variable with user data
+     */
+    public $user;
+
     public function connect_db()
     {
         parent::__construct(SQLADDR, SQLUSER, SQLPWD, SQLDB);
@@ -682,6 +688,68 @@ abstract class Model extends mysqli
             $this->insert("INSERT INTO logging (action, info, user_id) VALUES ('$name', '$info', $userId)");
 
         }
+
+    }
+
+    /**
+     * @param $input
+     * @param array $ssp[] Array containing the necessary params.
+     *  $ssp = [
+     *      'columns'           => (string)
+     *      'columns_names'     => (string)
+     *      'page'              => (string)
+     *      'db_table'          => (string) table name from database
+     *      'table_name'        => (string) table id from page
+     *      'primary'           => (string)
+     *  ]
+     * @param array $options[] Array containing the necessary params.
+     * *  $options = [
+     *      'visible'       => (array)
+     *      'where'         => (array)
+     *      'selected'      => (array)
+     *      'filters'       => (array)
+     *  ]
+     * @return string
+     */
+    protected function printTable($input, $ssp, $options)
+    {
+
+        $names = $this->getColumns($ssp['columns_names'], $ssp['page'], $ssp['table_name'], true);
+        $selected = $options['selected'];
+
+        if (empty($selected)) {
+
+            $columns = $this->getColumns($ssp['columns'], $ssp['page'], $ssp['table_name']);
+            $where = $options['where'];
+            if (!is_array($where)) {
+                $where = [$where];
+            }
+            $filters = $options['filters'];
+
+            if (!empty($filters)) {
+                foreach ($filters as $colId => $value) {
+                    if (!$value || $value == null)
+                        continue;
+
+                    if (is_int($value))
+                        $where[] = $columns[$colId]['db'] . ' = ' . $value;
+                    elseif (is_string($value))
+                        $where[] = $columns[$colId]['db'] . " LIKE '%$value%'";
+                }
+            }
+
+            $sspData = $this->getSspComplexJson($ssp['db_table'], $ssp['primary'], $ssp['columns'], $input, null, $where);
+            $values = json_decode($sspData, true)['data'];
+        } else {
+            $values = $selected;
+        }
+
+        require_once dirname(__FILE__) . '/../classes/Excel.php';
+        $excel = new Excel();
+
+        $data = array_merge([$names], $values);
+        return $excel->printTable($data, $options['visible'], $ssp['page']);
+
 
     }
 }

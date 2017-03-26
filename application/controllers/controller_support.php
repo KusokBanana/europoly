@@ -6,6 +6,7 @@ class ControllerSupport extends Controller
     {
         parent::__construct();
         $this->model = new ModelSupport();
+        parent::afterConstruct();
     }
 
     public $page = 'support';

@@ -6,6 +6,7 @@ class ControllerOrder extends Controller
     {
         parent::__construct();
         $this->model = new ModelOrder();
+        parent::afterConstruct();
     }
 
     public $page = 'order';

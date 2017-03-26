@@ -755,6 +755,7 @@ if ($hidden_by_default) {
             selectedRows = JSON.stringify(selectedRows);
 
             var filters = JSON.stringify(getTableFilters());
+            visible = JSON.stringify(visible);
 
             if (ajax.url == undefined) {
                 $.ajax({

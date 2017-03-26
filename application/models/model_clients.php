@@ -83,128 +83,36 @@ class ModelClients extends Model
         $this->connect_db();
     }
 
-    function getDTClients($input)
+    function getDTAllClients($input, $printOpt)
     {
-
-        $columns = $this->client_columns;
-
-        array_push($columns,
-            array('dt' => 28, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
-                        CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to delete the client?\" 
-                                   href=\"/contractors/delete?id=', clients.client_id, '&type=clients', '\" 
-                                   class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" 
-                                   data-singleton=\"true\">
-                                        <span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span>
-                                   </a>'),
-                '</div>')")
-        );
-        $this->unLinkStrings($columns, [17]);
-        $columns = $this->getColumns($columns, 'contractors', 'table_clients');
-
-        $this->sspComplex($this->client_table, "clients.client_id", $columns, $input, null, 'clients.is_deleted = 0');
-    }
-
-    function getDTAllClients($input)
-    {
-        $where = "clients.is_deleted = 0";
-        $userId = $_SESSION['user_id'];
-        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
-            $where .= " AND (clients.sales_manager_id = " . $userId;
-            $where .=  " OR clients.operational_manager_id = " . $userId . ')';
+        $where = ['clients.is_deleted = 0'];
+        if ($this->user->role_id == ROLE_SALES_MANAGER) {
+            $where[] =
+                "(clients.sales_manager_id = " . $this->user->user_id .
+                " OR clients.operational_manager_id = " . $this->user->user_id . ")";
             $this->unLinkStrings($this->client_columns, [17]);
         }
 
-        $columns = $this->getColumns($this->client_columns, 'clients', 'table_clients');
+        $ssp = [
+            'columns' => $this->client_columns,
+            'columns_names' => $this->client_column_names,
+            'db_table' => $this->client_table,
+            'page' => 'clients',
+            'table_name' => 'table_clients',
+            'primary' => 'clients.client_id',
+        ];
 
-        $this->sspComplex($this->client_table, "clients.client_id", $columns, $input, null,
+        if ($printOpt) {
+
+            $printOpt['where'] = $where;
+            echo $this->printTable($input, $ssp, $printOpt);
+            return true;
+
+        }
+
+        $this->sspComplex($ssp['db_table'], $ssp['primary'], $ssp['columns'], $input, null,
             $where);
     }
-
-    function printTable($input, $visible, $selected = [], $filters = [])
-    {
-        $where = [];
-        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
-            $userId = $_SESSION['user_id'];
-            $where = [
-                'clients.is_deleted = 0',
-                "(clients.sales_manager_id = " . $userId .
-                " OR clients.operational_manager_id = " . $userId . ")"
-            ];
-            $this->unLinkStrings($this->client_columns, [17]);
-        }
-
-        $columns = $this->getColumns($this->client_columns, 'clients', 'table_clients');
-        $names = $this->getColumns($this->client_column_names, 'clients', 'table_clients', true);
-
-        if (empty($selected)) {
-
-            if (!empty($filters)) {
-                foreach ($filters as $colId => $value) {
-                    if (!$value || $value == null)
-                        continue;
-
-                    if (is_int($value))
-                        $where[] = $columns[$colId]['db'] . ' = ' . $value;
-                    elseif (is_string($value))
-                        $where[] = $columns[$colId]['db'] . " LIKE '%$value%'";
-                }
-            }
-
-            $where = join(' AND ', $where);
-            $ssp = $this->getSspComplexJson($this->client_table, "client_id", $columns, $input, null, $where);
-            $values = json_decode($ssp, true)['data'];
-        } else {
-            $values = $selected;
-        }
-
-        require_once dirname(__FILE__) . '/../classes/Excel.php';
-        $excel = new Excel();
-
-        $data = array_merge([$names], $values);
-        return $excel->printTable($data, $visible, 'clients');
-
-    }
-
-//    function getDTEndCustomers($input)
-//    {
-//        $where = "clients.type = '".CLIENT_TYPE_END_CUSTOMER."' AND clients.is_deleted = 0";
-//        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
-//            $where .= " AND clients.sales_manager_id = " . $_SESSION['user_id'];
-//            $this->unLinkStrings($this->client_columns, [17]);
-//        }
-//
-//        $columns = $this->getColumns($this->client_columns, 'clients', 'table_clients');
-//
-//        $this->sspComplex($this->client_table, "clients.client_id", $columns, $input, null,
-//            $where);
-//    }
-//
-//    function getDTCommissionAgents($input)
-//    {
-//        $where = "clients.type = '".CLIENT_TYPE_COMISSION_AGENT."' AND clients.is_deleted = 0";
-//        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
-//            $where .= " AND clients.sales_manager_id = " . $_SESSION['user_id'];
-//            $this->unLinkStrings($this->client_columns, [17]);
-//        }
-//
-//        $columns = $this->getColumns($this->client_columns, 'clients', 'table_clients');
-//
-//        $this->sspComplex($this->client_table, "clients.client_id", $columns, $input, null,
-//            $where);
-//    }
-//
-//    function getDTDealers($input)
-//    {
-//        $where = "clients.type = '".CLIENT_TYPE_DEALER."' AND clients.is_deleted = 0";
-//        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
-//            $where .= " AND clients.sales_manager_id = " . $_SESSION['user_id'];
-//            $this->unLinkStrings($this->client_columns, [17]);
-//        }
-//
-//        $columns = $this->getColumns($this->client_columns, 'clients', 'table_clients');
-//
-//        $this->sspComplex($this->client_table, "clients.client_id", $columns, $input, null, $where);
-//    }
 
     function addClient($name, $type, $manager_id, $commission_agent_id, $country_id, $region_id, $city)
     {

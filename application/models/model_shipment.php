@@ -99,12 +99,11 @@ class ModelShipment extends ModelManagers_orders
 
     function getSelects()
     {
-        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
-            $userId = $_SESSION['user_id'];
-            $this->filterWhere .= " AND (orders.sales_manager_id = " . $userId . ' OR '.
-                " client.sales_manager_id = $userId ".
-                " OR client.operational_manager_id = $userId " .
-                ' OR trucks_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
+        if ($this->user->role_id == ROLE_SALES_MANAGER) {
+            $this->filterWhere[] = "orders.sales_manager_id = " . $this->user->user_id . ' OR '.
+                " client.sales_manager_id = ". $this->user->user_id .
+                " OR client.operational_manager_id = " . $this->user->user_id .
+                ' OR trucks_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL';
             $this->unLinkStrings($this->suppliers_orders_columns, [1, 7, 27, 28]);
         }
 
@@ -166,23 +165,40 @@ class ModelShipment extends ModelManagers_orders
                                           left join clients client on orders.client_id = client.client_id 
                                           left join items_status as status on trucks.status_id = status.status_id';
 
-    var $filterWhere = "(trucks_items.truck_id IS NOT NULL AND trucks_items.warehouse_id IS NULL)";
+    var $filterWhere = ["trucks_items.truck_id IS NOT NULL", "trucks_items.warehouse_id IS NULL"];
 
-    function getDTSuppliersOrders($input)
+    function getDTSuppliersOrders($input, $printOpt)
     {
-        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
-            $userId = $_SESSION['user_id'];
-            $this->filterWhere .= " AND (orders.sales_manager_id = " . $userId . ' OR '.
-                " client.sales_manager_id = $userId ".
-                " OR client.operational_manager_id = $userId " .
+        if ($this->user->role_id == ROLE_SALES_MANAGER) {
+            $this->filterWhere[] = "(orders.sales_manager_id = " . $this->user->user_id . ' OR '.
+                " client.sales_manager_id = ". $this->user->user_id .
+                " OR client.operational_manager_id = " . $this->user->user_id .
                 ' OR trucks_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
             $this->unLinkStrings($this->suppliers_orders_columns, [1, 7, 27, 28]);
         }
 
         $columns = $this->getColumns($this->suppliers_orders_columns, 'shipment', $this->tableNames[0]);
 
-        $this->sspComplex($this->suppliers_orders_table, "trucks_items.item_id", $columns,
-            $input, null, $this->filterWhere);
+        $ssp = [
+            'columns' => $columns,
+            'columns_names' => $this->suppliers_orders_column_names,
+            'db_table' => $this->suppliers_orders_table,
+            'page' => 'shipment',
+            'table_name' => $this->tableNames[0],
+            'primary' => 'trucks_items.item_id',
+        ];
+
+        if ($printOpt) {
+
+            $printOpt['where'] = $this->filterWhere;
+            echo $this->printTable($input, $ssp, $printOpt);
+            return true;
+
+        }
+
+        $this->sspComplex($ssp['db_table'], $ssp['primary'],
+            $ssp['columns'], $input, null, $this->filterWhere);
+
     }
 
     var $suppliers_orders_columns_reduce = [

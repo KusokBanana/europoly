@@ -6,6 +6,7 @@ class ControllerSales_manager extends Controller
     {
         parent::__construct();
         $this->model = new ModelSales_manager();
+        parent::afterConstruct();
     }
 
     public $page = 'sales manager';

@@ -9,6 +9,7 @@ class ControllerWarehouse extends Controller
     {
         parent::__construct();
         $this->model = new ModelWarehouse();
+        parent::afterConstruct();
     }
 
     function action_index($action_param = null, $action_data = null)
@@ -79,9 +80,18 @@ class ControllerWarehouse extends Controller
     function action_dt()
     {
         if (isset($_GET['warehouse_id'])) {
+            $print = isset($_POST['print']) ? $_POST['print'] : false;
+            if ($print) {
+                $print = [
+                    'visible' => isset($_POST['visible']) && $_POST['visible'] ? json_decode($_POST['visible'], true) : [],
+                    'selected' => isset($_POST['selected']) && $_POST['selected'] ? json_decode($_POST['selected'], true) : [],
+                    'filters' => isset($_POST['filters']) && $_POST['filters'] ? json_decode($_POST['filters'], true) : [],
+                ];
+            }
+
             $warehouse_id = intval($_GET['warehouse_id']);
             $type = isset($_GET['type']) ? $_GET['type'] : '';
-            $this->model->getDTProductsForWarehouses($_GET, $warehouse_id, $type);
+            $this->model->getDTProductsForWarehouses($_GET, $warehouse_id, $type, $print);
         } else {
             http_response_code(400);
         }

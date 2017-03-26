@@ -137,20 +137,37 @@ class ModelManagers_orders extends Model
 
     var $whereCondition = "order_items.manager_order_id IS NOT NULL";
 
-    function getDTManagersOrders($input)
+    function getDTManagersOrders($input, $printOpt)
     {
-        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
-            $userId = $_SESSION['user_id'];
-            $this->whereCondition .= " AND orders.sales_manager_id = " . $userId;
-            $this->whereCondition = '(' . $this->whereCondition . ')' . " OR client.sales_manager_id = " . $userId .
-                " OR client.operational_manager_id = " . $userId;
+
+        if ($this->user->role_id == ROLE_SALES_MANAGER) {
+            $this->whereCondition .= " AND orders.sales_manager_id = " . $this->user->user_id;
+            $this->whereCondition = '(' . $this->whereCondition . ')' . " OR client.sales_manager_id = " . $this->user->user_id .
+                " OR client.operational_manager_id = " . $this->user->user_id;
             $this->unLinkStrings($this->managers_orders_columns, [24, 25]);
         }
 
         $columns = $this->getColumns($this->managers_orders_columns, 'managersOrders', $this->tableNames[0]);
 
-        $this->sspComplex($this->managers_orders_table, "order_items.item_id",
-            $columns, $input, null, $this->whereCondition);
+        $ssp = [
+            'columns' => $columns,
+            'columns_names' => $this->managers_orders_column_names,
+            'db_table' => $this->managers_orders_table,
+            'page' => 'managersOrders',
+            'table_name' => $this->tableNames[0],
+            'primary' => 'order_items.item_id',
+        ];
+
+        if ($printOpt) {
+
+            $printOpt['where'] = $this->whereCondition;
+            echo $this->printTable($input, $ssp, $printOpt);
+            return true;
+
+        }
+
+        $this->sspComplex($ssp['db_table'], $ssp['primary'],
+            $ssp['columns'], $input, null, $this->whereCondition);
     }
 
     function getDTManagersOrdersReduced($input)
@@ -168,46 +185,6 @@ class ModelManagers_orders extends Model
 
         $this->sspComplex($this->managers_orders_table_reduce, "orders.order_id",
             $columns, $input, null, $where);
-    }
-
-    function printTable($input, $visible, $selected = [], $filters = [])
-    {
-        $where = [$this->whereCondition];
-        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
-            $where[] = "orders.sales_manager_id = " . $_SESSION['user_id'];
-            $this->unLinkStrings($this->managers_orders_columns, [24, 25]);
-        }
-
-        $columns = $this->getColumns($this->managers_orders_columns, 'managersOrders', $this->tableNames[0]);
-
-        $names = $this->getColumns($this->managers_orders_column_names, 'managersOrders', $this->tableNames[0], true);
-        if (empty($selected)) {
-            $where = [];
-            if (!empty($filters)) {
-                foreach ($filters as $colId => $value) {
-                    if (!$value || $value == null)
-                        continue;
-
-                    if (is_int($value))
-                        $where[] = $columns[$colId]['db'] . ' = ' . $value;
-                    elseif (is_string($value))
-                        $where[] = $columns[$colId]['db'] . " LIKE '%$value%'";
-                }
-            }
-            $where = join(' AND ', $where);
-            $ssp = $this->getSspComplexJson($this->managers_orders_table, "order_items.item_id",
-                $columns, $input, null, $where);
-            $values = json_decode($ssp, true)['data'];
-        } else {
-            $values = $selected;
-        }
-
-        require_once dirname(__FILE__) . '/../classes/Excel.php';
-        $excel = new Excel();
-
-        $data = array_merge([$names], $values);
-        return $excel->printTable($data, $visible, 'managersOrders');
-
     }
 
     function getDTManagersOrdersToSuppliersOrder($input, $products)

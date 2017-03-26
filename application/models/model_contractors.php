@@ -32,8 +32,51 @@ class ModelContractors extends ModelClients
         'Samples Position',
         'Needful Actions',
         'Comments',
+        'Type',
         'Delete',
     ];
+
+    public function getDTClients($input, $printOpt)
+    {
+
+        $columns = $this->client_columns;
+        array_push($columns,
+            array('dt' => 28, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
+                        CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to delete the client?\" 
+                                   href=\"/contractors/delete?id=', clients.client_id, '&type=clients', '\" 
+                                   class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" 
+                                   data-singleton=\"true\">
+                                        <span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span>
+                                   </a>'),
+                '</div>')")
+        );
+        $this->unLinkStrings($columns, [17]);
+
+        $columns = $this->getColumns($columns, 'contractors', 'table_clients');
+
+        $where = ['clients.is_deleted = 0'];
+
+        $ssp = [
+            'columns' => $columns,
+            'columns_names' => $this->client_column_names,
+            'db_table' => $this->client_table,
+            'page' => 'contractors',
+            'table_name' => 'table_clients',
+            'primary' => 'clients.client_id',
+        ];
+
+        if ($printOpt) {
+
+            $printOpt['where'] = $where;
+            echo $this->printTable($input, $ssp, $printOpt);
+            return true;
+
+        }
+
+        $this->sspComplex($this->client_table, $ssp['primary'], $ssp['columns'], $input, null,
+            $where);
+
+    }
 
     var $suppliers_columns = [
             array('dt' => 0, 'db' => "suppliers.supplier_id"),
