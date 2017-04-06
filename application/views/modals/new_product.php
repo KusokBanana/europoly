@@ -40,7 +40,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Name/ Wood RUS</label>
-                                <input name="RUS[name]" class="form-control" placeholder="Enter Name Rus">
+                                <input name="RUS[name]" class="form-control" id="name_rus" placeholder="Enter Name Rus">
                             </div>
                         </div>
                     </div>
@@ -53,7 +53,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Visual Name RUS</label>
-                                <input name="RUS[visual_name]" class="form-control" placeholder="Enter Visual Name Rus">
+                                <input name="RUS[visual_name]" class="form-control"  id="visual_name_rus" placeholder="Enter Visual Name Rus">
                             </div>
                         </div>
                     </div>
@@ -255,7 +255,8 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="pattern">Construction RUS</label>
-                                <input name="RUS[construction]" class="form-control" placeholder="Enter Construction RUS">
+                                <input name="RUS[construction]" class="form-control" id="construction_rus"
+                                       placeholder="Enter Construction RUS">
                             </div>
                         </div>
                     </div>
@@ -536,12 +537,50 @@
         editableSelects.attr('placeholder', 'Did not find the desired item? - Enter new one here');
 
         $('form').keydown(function(event){
-            if(event.keyCode == 13) {
+            if(event.keyCode === 13) {
                 $(event.target).trigger('change');
                 event.preventDefault();
                 return false;
             }
+        }).on('blur', 'input', function() {
+            var block = $(this).closest('.col-md-6');
+            var data = {};
+            if (block.length) {
+                var rusBlock = block.next();
+                if (rusBlock.length) {
+                    var rusInput = rusBlock.find('input');
+                    var id = rusInput.attr('id');
+                    var value = $(this).val();
+                    var table = id.split('_rus');
+                    console.log(rusBlock, rusInput, id, value, table);
+                    if (table.length) {
+                        table = table[0];
+                        data.field = table;
+                        data.value = value;
+                        if (table.indexOf('_fix_') !== -1) {
+                            var tableTemp = table.split('_fix_');
+                            if (tableTemp.length) {
+                                var rusId = tableTemp[0];
+                                var rusTable = tableTemp[1];
+                                data.rus_id = rusId;
+                                data.rus_table = rusTable;
+                            }
+                        }
+                        $.ajax({
+                            url: '/catalogue/get_russian_value',
+                            data: data,
+                            type: "POST",
+                            success: function(data) {
+                                if (data) {
+                                    rusInput.val(data);
+                                }
+                            }
+                        })
+                    }
+                }
+            }
         });
+
     });
 </script>
 

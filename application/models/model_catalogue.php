@@ -243,5 +243,29 @@ class ModelCatalogue extends Model
         return [$all, $floors, $windows, $interior, $other];
     }
 
+    public function getRusValue($field, $value, $table=false)
+    {
+
+        if (!$table) {
+
+            $productId = $this->getFirst("SELECT product_id FROM products WHERE `$field` = '$value'");
+            if ($productId && $productId = $productId['product_id']) {
+                $russian = $this->getFirst("SELECT * FROM nls_products WHERE product_id = $productId");
+                return ($russian) ? $russian[$field] : '';
+            }
+
+        } else {
+
+            $nls_product = $this->getFirst("SELECT * FROM `$table` WHERE '$field' => '$value'");
+            if ($nls_product) {
+                $nls_product_id = $nls_product['nls_product_id'];
+                $russian_product = $this->getFirst("SELECT * FROM nls_resources WHERE nls_resource_id = $nls_product_id");
+                return ($russian_product) ? $russian_product['value'] : '';
+            }
+
+        }
+
+
+    }
 
 }

@@ -153,7 +153,7 @@
             </div>
         </button>
         <!-- END QUICK SIDEBAR TOGGLER -->
-        <?php include '/application/views/' . $content_view; ?>
+        <?php include $_SERVER['DOCUMENT_ROOT'] . '/application/views/' . $content_view; ?>
         <p class="copyright-v2">2016 © Europoly.
         </p>
         <a href="#index" class="go2top">
@@ -164,10 +164,10 @@
 </div>
 <!-- BEGIN QUICK SIDEBAR -->
 <?php if ($isLogVisible): ?>
-    <?php include '/application/views/templates/logging.php' ?>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/application/views/templates/logging.php' ?>
 <?php endif; ?>
-<?php include '/application/views/templates/documents.php' ?>
-<?php include '/application/views/templates/chat.php' ?>
+<?php include $_SERVER['DOCUMENT_ROOT'] . '/application/views/templates/documents.php' ?>
+<?php include $_SERVER['DOCUMENT_ROOT'] . '/application/views/templates/chat.php' ?>
 <!-- END QUICK SIDEBAR -->
 <!-- END CONTAINER -->
 <!--[if lt IE 9]>

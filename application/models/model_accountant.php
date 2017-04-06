@@ -88,9 +88,8 @@ class ModelAccountant extends Model
         $this->connect_db();
     }
 
-    function getDTPayments($input, $printOpt)
+    function getDTPayments($input, $printOpt, $where = [])
     {
-        $where = [];
         $columns = $this->payments_columns;
         if (isset($input['type']) && $input['type'] == 'monthly') {
             $where[] = 'payments.is_monthly = 1';
@@ -100,7 +99,11 @@ class ModelAccountant extends Model
             $where[] = 'payments.is_deleted = 0';
             $this->unLinkStrings($columns, [5, 6]);
         }
-
+        if (isset($input['products']) && isset($input['products']['contractor_id'])
+            && isset($input['products']['contractor_type'])) {
+            $where[] = 'payments.contractor_id = ' . $input['products']['contractor_id'];
+            $where[] = "payments.category = '" . $input['products']['contractor_type'] . "'";
+        }
 
         $ssp = [
             'columns' => $columns,
@@ -171,12 +174,11 @@ class ModelAccountant extends Model
 
     }
 
-    function getSelects($isMonthly = false)
+    function getSelects($isMonthly = false, $where = [])
     {
-
         $columns = $this->payments_columns;
         $role = new Roles();
-        $where = ['payments.is_deleted = 0'];
+        $where[] = 'payments.is_deleted = 0';
         if ($isMonthly) {
             $where[] = 'payments.is_monthly = 1';
             $cols = $this->getMonthlyPaymentsCols('columns');
@@ -247,6 +249,8 @@ class ModelAccountant extends Model
 
         if ($clear) {
             $this->clearTable('products');
+            $this->clearIncrement('products');
+            $this->clearIncrement('nls_products');
         }
 
         $brands = $this->getAssoc("SELECT * FROM brands");
@@ -261,11 +265,14 @@ class ModelAccountant extends Model
 
         foreach ($array as $item) {
 
+
             $brand = $item['brand']['val'];
-            $item['brand_id'] = [
-                'val' => getBrandId($brand, $brands),
-                'type' => 'int'
-            ];
+            if ($brand !== null) {
+                $item['brand_id'] = [
+                    'val' => getBrandId($brand, $brands),
+                    'type' => 'int'
+                ];
+            }
             unset($item['brand']);
 
 
@@ -278,7 +285,7 @@ class ModelAccountant extends Model
             foreach ($item as $name => $valsArray) {
                 $value = trim($valsArray['val']);
                 $type = $valsArray['type'];
-                if (!$value) {
+                if (!$value || $value == null) {
                     $empty--;
                     continue;
                 }

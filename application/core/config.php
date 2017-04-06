@@ -39,6 +39,15 @@ define('CLIENT_TYPE_END_CUSTOMER', 'End-Customer');
 define('CLIENT_TYPE_DEALER', 'Dealer');
 define('CLIENT_TYPE_COMISSION_AGENT', 'Comission Agent');
 
+define('PAYMENT_CATEGORY_CLIENT', 'Client');
+define('PAYMENT_CATEGORY_COMMISSION_AGENT', 'Comission Agent');
+define('PAYMENT_CATEGORY_SUPPLIER', 'Supplier');
+define('PAYMENT_CATEGORY_CUSTOMS', 'Customs');
+define('PAYMENT_CATEGORY_DELIVERY', 'Delivery');
+define('PAYMENT_CATEGORY_OTHER', 'Other');
+define('PAYMENT_DIRECTION_INCOME', 'Income');
+define('PAYMENT_DIRECTION_EXPENSE', 'Expense');
+
 // Logs Names
 define('LOG_ADD_TO_WAREHOUSE', 'New products added in warehouse');
 define('LOG_DELIVERY_TO_WAREHOUSE', 'New products delivered to warehouse');

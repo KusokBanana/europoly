@@ -40,6 +40,8 @@ class ModelContractors extends ModelClients
     {
 
         $columns = $this->client_columns;
+        $columns[1]['db'] = "CONCAT('<a href=\"/contractor?id=', clients.client_id, 
+            '&type=', '".PAYMENT_CATEGORY_CLIENT."', '\">', clients.name, '</a>')";
         array_push($columns,
             array('dt' => 28, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
                         CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to delete the client?\" 
@@ -80,8 +82,9 @@ class ModelContractors extends ModelClients
 
     var $suppliers_columns = [
             array('dt' => 0, 'db' => "suppliers.supplier_id"),
-            array('dt' => 1, 'db' => "suppliers.name"),
-        array('dt' => 2, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
+            array('dt' => 1, 'db' => "CONCAT('<a href=\"/contractor?id=', suppliers.supplier_id, 
+            '&type=', '".PAYMENT_CATEGORY_SUPPLIER."', '\">', suppliers.name, '</a>')"),
+            array('dt' => 2, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
                         CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to delete the supplier?\" 
                                    href=\"/contractors/delete?id=', suppliers.supplier_id, '&type=suppliers', '\"
                                    class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" 
@@ -105,7 +108,8 @@ class ModelContractors extends ModelClients
 
     var $customs_columns = [
         array('dt' => 0, 'db' => "customs.custom_id"),
-        array('dt' => 1, 'db' => "customs.name"),
+        array('dt' => 1, 'db' => "CONCAT('<a href=\"/contractor?id=', customs.custom_id, 
+            '&type=', '".PAYMENT_CATEGORY_CUSTOMS."', '\">', customs.name, '</a>')"),
         array('dt' => 2, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
                         CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to delete the custom?\" 
                                    href=\"/contractors/delete?id=', customs.custom_id, '&type=customs', '\" 
@@ -123,7 +127,8 @@ class ModelContractors extends ModelClients
 
     var $transportation_columns = [
         array('dt' => 0, 'db' => "transport.transportation_company_id"),
-        array('dt' => 1, 'db' => "transport.name"),
+        array('dt' => 1, 'db' => "CONCAT('<a href=\"/contractor?id=', transport.transportation_company_id, 
+            '&type=', '".PAYMENT_CATEGORY_DELIVERY."', '\">', transport.name, '</a>')"),
         array('dt' => 2, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
                         CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to delete the transportation company?\" 
                                    href=\"/contractors/delete?id=', transport.transportation_company_id, 
@@ -143,7 +148,8 @@ class ModelContractors extends ModelClients
 
     var $other_columns = [
         array('dt' => 0, 'db' => "other.other_id"),
-        array('dt' => 1, 'db' => "other.name"),
+        array('dt' => 1, 'db' => "CONCAT('<a href=\"/contractor?id=', other.other_id, 
+            '&type=', '".PAYMENT_CATEGORY_OTHER."', '\">', other.name, '</a>')"),
         array('dt' => 2, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
                         CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to delete the other?\" 
                                    href=\"/contractors/delete?id=', other.other_id, '&type=other', '\" 

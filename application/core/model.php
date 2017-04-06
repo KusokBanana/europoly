@@ -105,6 +105,15 @@ abstract class Model extends mysqli
         return $list;
     }
 
+    public function clearIncrement($table)
+    {
+        $result = $this->query("ALTER TABLE `$table` AUTO_INCREMENT = 1;");
+        if (!$result) {
+            echo mysqli_error($this);
+            die("Mysqli: error while clear increment");
+        }
+    }
+
     public function clearTable($table)
     {
         $result = $this->query("DELETE FROM `$table`");
@@ -718,5 +727,17 @@ abstract class Model extends mysqli
         return $excel->printTable($data, $options['visible'], $ssp['page']);
 
 
+    }
+
+    public function getPrimaryKeyName($table)
+    {
+        $query = "SHOW COLUMNS FROM `$table` WHERE `key` LIKE 'PRI'";
+        if ($result = $this->query($query)) {
+            if ($result->num_rows > 0) {
+                $field = $result->fetch_assoc();
+                return $field['Field'];
+            }
+        }
+        return NULL;
     }
 }

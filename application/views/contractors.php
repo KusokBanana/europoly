@@ -84,7 +84,7 @@
                                                     'url' => "/contractors/dt_clients"
                                                 ],
                                                 'column_names' => $this->clients_column_names,
-                                                'click_url' => "client?id=",
+                                                'click_url' => "contractor?type=Client&id=",
                                                 'originalColumns' => $this->originalColumns,
                                                 'selectSearch' => $this->selects,
                                                 'filterSearchValues' => $this->rows,

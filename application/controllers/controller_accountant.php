@@ -29,7 +29,7 @@ class ControllerAccountant extends Controller
 
 //        require dirname(__FILE__) . "/../../assets/phpExcel/Examples/expenses_parser.php";
 
-        $this->model->initCatalogueParser($parser);
+//        $this->model->initCatalogueParser($parser, true);
 
 //        $this->model->initParser($parser);
 
@@ -38,9 +38,10 @@ class ControllerAccountant extends Controller
 
     function action_index($action_param = null, $action_data = null)
     {
+
         $this->getAccess($this->page, 'v');
 
-        $this->view->title = 'Accountant';
+        $this->view->title = 'Payments';
         $this->view->tableName = $this->model->tableName;
         $this->view->column_names = $this->model->getColumns($this->model->payments_column_names,
             $this->page, $this->model->tableName, true);
@@ -50,11 +51,8 @@ class ControllerAccountant extends Controller
         $this->view->access = $roles->getPageAccessAbilities($this->page);
 
         $array = $this->model->getSelects();
-        $selects = $array['selects'];
-        $rows = $array['rows'];
-
-        $this->view->selects = $selects;
-        $this->view->rows = $rows;
+        $this->view->selects = $array['selects'];
+        $this->view->rows = $array['rows'];
 
         $this->view->build('templates/template.php', 'accountant.php');
     }
@@ -127,5 +125,19 @@ class ControllerAccountant extends Controller
             echo json_encode($payment);
         }
         echo false;
+    }
+    function action_dt_contractor_payments()
+    {
+        $print = isset($_GET['print']) ? $_GET['print'] : false;
+        if ($print) {
+            $print = [
+                'visible' => isset($_GET['visible']) && $_GET['visible'] ? json_decode($_GET['visible'], true) : [],
+                'selected' => isset($_GET['selected']) && $_GET['selected'] ? json_decode($_GET['selected'], true) : [],
+                'filters' => isset($_GET['filters']) && $_GET['filters'] ? json_decode($_GET['filters'], true) : [],
+            ];
+        }
+
+        $this->model->getDTPayments($_GET, $print);
+
     }
 }

@@ -101,4 +101,16 @@ class ControllerCatalogue extends Controller
             echo $this->model->getProductValuesForSimilar($productId);
         }
     }
+
+    function action_get_russian_value()
+    {
+
+        $field = (isset($_POST['field']) && $_POST['field']) ? $_POST['field'] : false;
+        $table = (isset($_POST['table']) && $_POST['table']) ? $_POST['table'] : false;
+        $value = (isset($_POST['value']) && $_POST['value']) ? $_POST['value'] : false;
+        if ($field && $value) {
+            echo $this->model->getRusValue($field, $value, $table);
+        }
+
+    }
 }
