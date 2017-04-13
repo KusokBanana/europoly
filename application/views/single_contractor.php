@@ -42,7 +42,7 @@
             <!-- BEGIN TICKET LIST CONTENT -->
             <div class="app-ticket app-ticket-list">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="dashboard-stat2 bordered">
                             <div class="display">
                                 <div class="number">
@@ -58,7 +58,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="dashboard-stat2 bordered">
                             <div class="display">
                                 <div class="number">
@@ -74,7 +74,23 @@
                         </div>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-3">
+                        <div class="dashboard-stat2 bordered">
+                            <div class="display">
+                                <div class="number">
+                                    <h3 class="font-blue-sharp">
+                                        <span data-counter="counterup" data-value="59"><?= $this->balance['services'] ?> €</span>
+                                    </h3>
+                                    <small>Services Turnover</small>
+                                </div>
+                                <div class="icon">
+                                    <i class="icon-pie-chart"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
                         <div class="dashboard-stat2 bordered">
                             <div class="display">
                                 <div class="number">
@@ -107,6 +123,9 @@
                                     <li>
                                         <a href="#tab_2" data-toggle="tab"> Goods Movement </a>
                                     </li>
+                                    <li>
+                                        <a href="#tab_3" data-toggle="tab"> Provision of Services </a>
+                                    </li>
                                 </ul>
                                 <div class="tab-content" style="padding: 10px;">
                                     <div class="tab-pane active" id="tab_1">
@@ -135,27 +154,62 @@
                                     <div class="tab-pane" id="tab_2">
                                         <div class="portlet-body">
                                             <?php
+                                            if ($this->isGoods) {
+                                                $table_data = [
+                                                    'buttons' => [],
+                                                    'table_id' => $this->tableNames[1],
+                                                    'ajax' => [
+                                                        'url' => "/contractor/dt_contractor_goods",
+                                                        'data' => [
+                                                            'contractor_id' => $this->contractor["contractor_id"],
+                                                            'contractor_type' => $this->contractor["contractor_type"]
+                                                        ]
+                                                    ],
+                                                    'column_names' => $this->goods_column_names,
+                                                    'hidden_by_default' => "[]",
+                                                    'click_url' => "javascript:;",
+                                                    'originalColumns' => $this->goods_original_columns,
+                                                    'selectSearch' => $this->goods_selects,
+                                                    'filterSearchValues' => $this->goods_rows,
+                                                ];
+                                                include 'application/views/templates/table.php';
+                                            }
+
+                                            ?>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="tab_3">
+                                        <div class="portlet-body">
+                                            <?php
+                                            $buttons = [];
+                                            if ($this->contractor["contractor_type"] == PAYMENT_CATEGORY_OTHER) {
+                                                $buttons = [
+                                                        '<a href="#new_other" class="btn btn-primary" '.
+                                                        'data-toggle="modal">Add new</a>'
+                                                ];
+                                            }
                                             $table_data = [
-                                                'buttons' => [],
-                                                'table_id' => $this->tableNames[1],
+                                                'buttons' => $buttons,
+                                                'table_id' => $this->tableNames[2],
                                                 'ajax' => [
-                                                    'url' => "/contractor/dt_contractor_goods",
+                                                    'url' => "/contractor/dt_contractor_services",
                                                     'data' => [
                                                         'contractor_id' => $this->contractor["contractor_id"],
                                                         'contractor_type' => $this->contractor["contractor_type"]
                                                     ]
                                                 ],
-                                                'column_names' => $this->goods_column_names,
+                                                'column_names' => $this->services_column_names,
                                                 'hidden_by_default' => "[]",
                                                 'click_url' => "javascript:;",
-                                                'originalColumns' => $this->goods_original_columns,
-                                                'selectSearch' => $this->goods_selects,
-                                                'filterSearchValues' => $this->goods_rows,
+                                                'originalColumns' => $this->services_original_columns,
+                                                'selectSearch' => $this->services_selects,
+                                                'filterSearchValues' => $this->services_rows,
                                             ];
                                             include 'application/views/templates/table.php'
                                             ?>
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
@@ -167,4 +221,53 @@
         </div>
     </div>
     <!-- END PAGE BASE CONTENT -->
+</div>
+
+<div id="new_other" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Заголовок модального окна -->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">New Other Item</h4>
+            </div>
+            <!-- Основное содержимое модального окна -->
+            <div class="modal-body">
+                <form action="/contractor/new_other" id="newOtherForm" method="post">
+
+                    <label class="control-label" for="name">Name</label>
+                    <input type="text" name="name" id="name" class="form-control" required>
+                    <label class="control-label" for="sum">Sum</label>
+                    <input type="text" name="sum" id="sum" class="form-control" required>
+                    <label class="control-label" for="currency">Currency</label>
+                    <select name="currency" id="currency" class="form-control" required>
+                        <option> </option>
+                        <?php $currencies = ['USD', 'EUR', 'РУБ', 'GBP', 'SEK', 'AED'] ?>
+                        <?php foreach ($currencies as $currency): ?>
+                            <option value="<?= $currency ?>">
+                                <?= $currency ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <label class="control-label" for="direction">Direction</label>
+                    <select name="direction" id="direction" class="form-control" required>
+                        <option> </option>
+                        <?php $directions = ['Income', 'Expense'] ?>
+                        <?php foreach ($directions as $direction): ?>
+                            <option value="<?= $direction ?>">
+                                <?= $direction ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <input type="hidden" name="other_id" value="<?= $this->contractor["contractor_id"] ?>">
+
+                </form>
+            </div>
+            <!-- Футер модального окна -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="submit" form="newOtherForm" class="btn btn-primary">Add</button>
+            </div>
+        </div>
+    </div>
 </div>

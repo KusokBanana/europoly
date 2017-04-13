@@ -66,20 +66,15 @@
                                                             Discard Goods <i class="fa fa-minus"></i>
                                                    </button>';
                                 $urlId = ($this->id) ? $this->warehouse['warehouse_id'] : 0;
-                                $table_data = [
+                                $table_data = array_merge([
                                     'buttons' => $buttons,
-                                    'table_id' => "table_warehouses_products",
                                     'ajax' => [
                                         'url' => "/warehouse/dt?warehouse_id=$urlId",
                                     ],
-                                    'column_names' => $this->column_names,
                                     'hidden_by_default' => "[]",
                                     'click_url' => "javascript:;",
-                                    'selectSearch' => $this->selects,
-                                    'filterSearchValues' => $this->rows,
                                     'method' => 'POST',
-                                    'originalColumns' => $this->originalColumns
-                                ];
+                                ], $this->tableData['warehouse1']);
                                 include 'application/views/templates/table.php'
                                 ?>
                             </div>
@@ -94,20 +89,15 @@
                                             '<button data-link="/warehouse/issue_products" 
                                                         class="btn sbold green issue-products-btn"
                                                         data-sel="#table_warehouses_products_issue">Issue</button>';
-                                    $table_data = [
+                                    $table_data = array_merge([
                                         'buttons' => $buttons,
-                                        'table_id' => "table_warehouses_products_issue",
                                         'ajax' => [
                                             'url' => "/warehouse/dt?warehouse_id=$urlId&type=issue",
                                         ],
-                                        'column_names' => $this->column_names,
                                         'hidden_by_default' => "[]",
                                         'click_url' => "javascript:;",
-                                        'selectSearch' => $this->selects,
-                                        'filterSearchValues' => $this->rows,
                                         'method' => 'POST',
-                                        'originalColumns' => $this->originalColumns
-                                    ];
+                                    ], $this->tableData['warehouse2']);
                                     include 'application/views/templates/table.php'
                                     ?>
                                 </div>
@@ -118,20 +108,15 @@
                                 <div class="portlet-body">
                                     <?php
                                     $buttons = [];
-                                    $table_data = [
+                                    $table_data = array_merge([
                                         'buttons' => $buttons,
-                                        'table_id' => "table_warehouses_products_reserved",
                                         'ajax' => [
                                             'url' => "/warehouse/dt?warehouse_id=$urlId&type=reserve",
                                         ],
-                                        'column_names' => $this->column_names,
                                         'hidden_by_default' => "[]",
                                         'click_url' => "javascript:;",
-                                        'selectSearch' => $this->selects,
-                                        'filterSearchValues' => $this->rows,
                                         'method' => 'POST',
-                                        'originalColumns' => $this->originalColumns
-                                    ];
+                                    ], $this->tableData['warehouse3']);
                                     include 'application/views/templates/table.php'
                                     ?>
                                 </div>

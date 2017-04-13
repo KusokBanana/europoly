@@ -23,41 +23,13 @@ class ControllerWarehouse extends Controller
         if (isset($_GET["id"])) {
             $id = intval($_GET["id"]);
             $this->view->prices = $this->model->getPrices($_GET["id"]);
-            $array = $this->model->getSelects($id);
-            $selects = $array['selects'];
-            $rows = $array['rows'];
-            $this->view->selects = $selects;
-            $this->view->rows = $rows;
 
-            $this->view->column_names = $this->model->getColumns($this->model->product_warehouses_column_names,
-                $this->page, $this->model->tableName, true);
-            $this->view->originalColumns = $roles->returnModelNames($this->model->product_warehouses_column_names, $this->page);
-
-            $this->view->products_column_names = $this->model->getColumns($this->model->full_product_column_names,
-                $this->page, 'table_catalogue', true);
-            $this->view->products_hidden_columns = $this->model->full_product_hidden_columns;
-            $this->view->products_originalColumns = $roles->returnModelNames($this->model->full_product_column_names, $this->page);
+            $this->setTablesVals($id);
 
             $this->view->access = $roles->getPageAccessAbilities('warehouse');
             if ($this->view->access['p']) {
                 $this->view->documents = $this->model->getDocuments($_GET['id']);
             }
-
-            $cache = new Cache();
-            $selectsCache = $cache->read('catalogue_selects');
-            if (!empty($selectsCache)) {
-                $array = $selectsCache;
-                $selects = $array['selects'];
-                $rows = $array['rows'];
-            } else {
-                $array = $this->model->getSelects();
-                $selects = $array['selects'];
-                $rows = $array['rows'];
-                $cache->write('catalogue_selects', $array);
-            }
-            $this->view->catalogue_selects = $selects;
-            $this->view->catalogue_rows = $rows;
-
 
             if ($id == 0) {
                 $this->view->title = "All";
@@ -141,7 +113,7 @@ class ControllerWarehouse extends Controller
     {
         if (isset($_GET['warehouse_id'])) {
             $warehouse_id = $_GET['warehouse_id'];
-            $result = $this->model->printDoc($warehouse_id, $this->model->where_issue, 'expects_issue');
+            $result = $this->model->printDoc($warehouse_id, [$this->model->where_issue], 'expects_issue');
             echo $result;
         }
     }
@@ -193,4 +165,60 @@ class ControllerWarehouse extends Controller
             echo $this->model->printLogDoc($_GET['id']);
         }
     }
+
+
+    public function setTablesVals($id)
+    {
+        $this->view->tableData = [];
+
+        $roles = new Roles();
+
+        $array = $this->model->getSelects($id);
+
+        $tableData = [
+            'selectSearch' => $array['selects'],
+            'filterSearchValues' => $array['rows'],
+            'table_id' => 'table_warehouses_products',
+            'column_names' => $this->model->getColumns($this->model->product_warehouses_column_names,
+                $this->page, $this->model->tableName, true),
+            'originalColumns' => $roles->returnModelNames($this->model->product_warehouses_column_names, $this->page)
+        ];
+
+        $this->view->tableData['warehouse1'] = $tableData;
+        $this->view->tableData['warehouse2'] = array_merge($tableData, ['table_id' => 'table_warehouses_products_issue']);
+        $this->view->tableData['warehouse3'] = array_merge($tableData, ['table_id' => 'table_warehouses_products_reserved']);
+
+        $this->view->products_hidden_columns = $this->model->full_product_hidden_columns;
+        $this->view->products_originalColumns = $roles->returnModelNames($this->model->full_product_column_names, $this->page);
+
+        $cache = new Cache();
+        $selectsCache = $cache->read('warehouse_modal_new_product');
+        if (!empty($selectsCache)) {
+            $array = $selectsCache;
+            $selects = $array['selects'];
+            $rows = $array['rows'];
+        } else {
+            $array = $this->model->getSelects();
+            $selects = $array['selects'];
+            $rows = $array['rows'];
+            $cache->write('warehouse_modal_new_product', $array);
+        }
+
+        $tableData = [
+            'table_id' => 'table_product_warehouse_modal',
+            'column_names' => $this->model->getColumns($this->model->full_product_column_names,
+                $this->page, 'table_product_warehouse_modal', true),
+            'originalColumns' => $roles->returnModelNames($this->model->full_product_column_names, $this->page),
+            'hidden_by_default' => $this->model->full_product_hidden_columns,
+            'filterSearchValues' => $rows,
+            'selectSearch' => $selects
+        ];
+
+        $this->view->tableData['warehouse_modal_new_product'] = $tableData;
+        $this->view->tableData['warehouse_modal_assemble'] = array_merge($tableData,
+            ['table_id' => 'table_assembles_assemble_set']);
+
+
+    }
+
 }

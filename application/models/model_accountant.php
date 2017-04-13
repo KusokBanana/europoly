@@ -324,7 +324,8 @@ class ModelAccountant extends Model
             }
 
         }
-
+        echo 'Job is Done, my Master!';
+        die();
     }
 
     // parser fo expenses

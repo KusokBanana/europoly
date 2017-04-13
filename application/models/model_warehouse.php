@@ -254,9 +254,10 @@ class ModelWarehouse extends ModelManagers_orders
 
             $amount = isset($product['amount']) && $product['amount'] ? $product['amount'] : 0;
             $buy_price = isset($product['buy_price']) && $product['buy_price'] ? $product['buy_price'] : 0;
+            $numberOfPacks = isset($product['number_of_packs']) && $product['number_of_packs'] ? $product['number_of_packs'] : 0;
 
             $items[] = $this->insert("INSERT INTO `order_items` (`product_id`, `warehouse_id`, `amount`, `buy_price`,
-              `status_id`) VALUES ($product_id, $warehouse_id, $amount, $buy_price, ".ON_STOCK.")");
+              `status_id`, `number_of_packs`) VALUES ($product_id, $warehouse_id, $amount, $buy_price, ".ON_STOCK.", $numberOfPacks)");
         }
 
         $this->addLog(LOG_ADD_TO_WAREHOUSE, ['warehouse_id' => $warehouse_id, 'items' => $items]);
@@ -314,21 +315,21 @@ class ModelWarehouse extends ModelManagers_orders
                     case LOG_ADD_TO_WAREHOUSE:
                         $warehouseId = $info['warehouse_id'];
                         $where = "item_id IN ($items)";
-                        return $this->printDoc($warehouseId, $where, 'warehouse', $logData);
+                        return $this->printDoc($warehouseId, [$where], 'warehouse', $logData);
                     case LOG_DELIVERY_TO_WAREHOUSE:
                         $warehouseId = $info['warehouse_id'];
                         $where = "item_id IN ($items)";
-                        return $this->printDoc($warehouseId, $where, 'truck_to_warehouse', $logData);
+                        return $this->printDoc($warehouseId, [$where], 'truck_to_warehouse', $logData);
                     case LOG_RETURN_TO_WAREHOUSE:
                         $orderId = $this->getFirst("SELECT manager_order_id as id FROM order_items 
                             WHERE item_id = ${items[0]}")['id'];
                         $logData['order_id'] = $orderId;
                         $warehouseId = $info['warehouse_id'];
                         $where = "item_id IN ($items)";
-                        return $this->printDoc($warehouseId, $where, 'return', $logData);
+                        return $this->printDoc($warehouseId, [$where], 'return', $logData);
                     case LOG_ISSUE_FROM_WAREHOUSE:
                         $where = "item_id IN ($items)";
-                        return $this->printDoc(false, $where, 'issue', $logData);
+                        return $this->printDoc(false, [$where], 'issue', $logData);
                     case LOG_ASSEMBLING_PRODUCT_WAREHOUSE:
                         $where = "item_id IN ($items)";
                         $logData['items_replace'] = $info['items_detail'];
@@ -344,7 +345,7 @@ class ModelWarehouse extends ModelManagers_orders
                             'manager' => $user ? $user['last_name'] . ' ' . $user['first_name'] : '',
                         ];
                         $logData['merge'] = array_merge($logData['merge'], $merge);
-                        return $this->printDoc(false, $where, 'assemble', $logData);
+                        return $this->printDoc(false, [$where], 'assemble', $logData);
                     CASE LOG_CHANGE_WAREHOUSE:
                         $where = "item_id IN ($items)";
                         $oldWarehouse = $info['old_warehouse_id'];
@@ -355,7 +356,7 @@ class ModelWarehouse extends ModelManagers_orders
                             LEFT JOIN warehouses old_warehouse ON (old_warehouse.warehouse_id = $oldWarehouse)
                             WHERE new_warehouse.warehouse_id = $warehouse");
                         $logData['merge'] = array_merge($logData['merge'], $warehouses);
-                        return $this->printDoc(false, $where, 'change_warehouse', $logData);
+                        return $this->printDoc(false, [$where], 'change_warehouse', $logData);
                 }
             }
 

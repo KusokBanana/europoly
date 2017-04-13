@@ -107,7 +107,7 @@ class ControllerClient extends Controller
 
         $parser = getXLS('clients.xlsx'); //извлеаем данные из XLS
 
-        $this->model->importClients($parser);
+        $this->model->importClients($parser, true);
 
     }
 

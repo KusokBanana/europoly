@@ -50,24 +50,18 @@
                                             <button class="close" data-dismiss="alert"></button> Your have chosen # products. </div>
                                         <div class="tab-pane active" id="tab1">
                                             <?php
-                                            $table_data = [
+                                            $table_data = array_merge([
                                                 'buttons' => [
                                                     'Select product in the table above:'
                                                 ],
-                                                'table_id' => "table_assembles_assemble_set",
                                                 'ajax' => [
                                                     'url' => "/catalogue/dt"
                                                 ],
-                                                'column_names' => $this->products_column_names,
-                                                'hidden_by_default' => $this->products_hidden_columns,
                                                 'click_url' => "#",
-                                                'originalColumns' => $this->products_originalColumns,
-                                                'selectSearch' => $this->catalogue_selects,
-                                                'filterSearchValues' => $this->catalogue_rows,
                                                 'select' => 'single',
                                                 'global' => 'assembleGlobalTable',
                                                 'method' => 'POST',
-                                            ];
+                                            ], $this->tableData['warehouse_modal_assemble']);
                                             include 'application/views/templates/table.php'
                                             ?>
                                         </div>

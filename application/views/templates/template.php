@@ -154,7 +154,7 @@
         </button>
         <!-- END QUICK SIDEBAR TOGGLER -->
         <?php include $_SERVER['DOCUMENT_ROOT'] . '/application/views/' . $content_view; ?>
-        <p class="copyright-v2">2016 © Europoly.
+        <p class="copyright-v2">2016 - <?= date('Y') ?> © Evropoly.
         </p>
         <a href="#index" class="go2top">
             <i class="icon-arrow-up"></i>

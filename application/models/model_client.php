@@ -340,8 +340,15 @@ class ModelClient extends Model
         ];
     }
 
-    public function importClients($array)
+    public function importClients($array, $clear)
     {
+
+        if ($clear) {
+            $this->clearTable('clients');
+            $this->clearTable('client_additions');
+            $this->clearIncrement('clients');
+            $this->clearIncrement('client_additions');
+        }
 
         $entities = $this->getAssoc("SELECT * FROM legal_entities");
 
@@ -359,8 +366,9 @@ class ModelClient extends Model
         }
 
         $commissionAgents = [];
+        $countries = [];
 
-        foreach ($array as $item) {
+        foreach ($array as $key => $item) {
 
             $names = '';
             $values = '';
@@ -387,6 +395,39 @@ class ModelClient extends Model
                         $commissionAgent = $value;
                         continue;
                     }
+
+                    // add commission agent to temp value for search
+                    if ($explodeArray[1] == 'country_id') {
+
+                        $countryId = $this->getFirst("SELECT country_id FROM countries 
+                          WHERE LOWER(name) = '" . mb_strtolower($value) . "'");
+                        if ($countryId) {
+                            $countryId = $countryId['country_id'];
+                        } else {
+                            $countryId = $this->insert("INSERT INTO countries (name) VALUES ('$value')");
+                        }
+                        $value = $countryId;
+                        $name = $explodeArray[1];
+                        $countries[$key] = $value;
+                    }
+
+                    if ($explodeArray[1] == 'region_id') {
+
+                        $countryId = isset($countries[$key]) ? $countries[$key] : false;
+                        if (!$countryId)
+                            continue;
+
+                        $regionId = $this->getFirst("SELECT region_id FROM regions 
+                          WHERE country_id = $countryId AND LOWER(name) = '" . mb_strtolower($value) . "'");
+                        if ($regionId) {
+                            $regionId = $regionId['region_id'];
+                        } else {
+                            $regionId = $this->insert("INSERT INTO regions (name, country_id) VALUES ('$value', $countryId)");
+                        }
+                        $value = $regionId;
+                        $name = $explodeArray[1];
+                    }
+
                     if ($explodeArray[1] == 'sales_manager_id') {
                         $explodeManagerName = explode(' ', $value);
                         $managerId = $this->getFirst("SELECT user_id as id FROM users WHERE 
@@ -443,6 +484,9 @@ class ModelClient extends Model
                     }
                     if ($type == 'int') {
                         $value = intval($value);
+                    }
+                    if ($type == 'bool') {
+                        $value = in_array(mb_strtolower($value), ['yes', 'да']) ? 1 : 0;
                     }
                     $values .= "$value, ";
                 }

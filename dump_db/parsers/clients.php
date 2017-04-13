@@ -47,7 +47,7 @@ function getXLS($xls){
                 //заносим значения ячеек одной строки в отдельный массив
                 $value = $cell->getFormattedValue();
                 $colNumber = $cell->getColumn();
-                if ($rowIndex < 2) {
+                if ($rowIndex < 6) {
                     setHeader($header, $value, $colNumber);
                 } else {
                     if (isset($header[$colNumber]) && $headerName = $header[$colNumber]) {
@@ -91,6 +91,22 @@ function getXLS($xls){
                 'client_additions.Contracts' => ['val' => returnElement($item, 'client_additions.contracts'), 'type' => 'array'],
                 'client_additions.Bank Accounts' => ['val' => returnElement($item, 'client_additions.bank_accounts'), 'type' => 'string'],
                 'client_additions.Contact Persons' => ['val' => returnElement($item, 'client_additions.contact_persons'), 'type' => 'array'],
+                'design_buro' => ['val' => returnElement($item, 'design_buro'), 'type' => 'string'],
+                'second_name' => ['val' => returnElement($item, 'second_name'), 'type' => 'string'],
+                'final_name' => ['val' => returnElement($item, 'final_name'), 'type' => 'string'],
+                'client_category_2' => ['val' => returnElement($item, 'client_category_2'), 'type' => 'string'],
+                'is_agree_for_formation' => ['val' => returnElement($item, 'is_agree_for_formation'), 'type' => 'bool'],
+                'quantity_of_people' => ['val' => returnElement($item, 'quantity_of_people'), 'type' => 'int'],
+                'main_target' => ['val' => returnElement($item, 'main_target'), 'type' => 'string'],
+                'showrooms' => ['val' => returnElement($item, 'showrooms'), 'type' => 'bool'],
+                'main_competiter' => ['val' => returnElement($item, 'main_competiter'), 'type' => 'string'],
+                'samples_position' => ['val' => returnElement($item, 'samples_position'), 'type' => 'string'],
+                'needful_actions' => ['val' => returnElement($item, 'needful_actions'), 'type' => 'string'],
+                'countries.country_id' => ['val' => returnElement($item, 'countries.country_id'), 'type' => 'int'],
+                'regions.region_id' => ['val' => returnElement($item, 'regions.region_id'), 'type' => 'int'],
+                'city' => ['val' => returnElement($item, 'city'), 'type' => 'string'],
+                'legal_address' => ['val' => returnElement($item, 'legal_address'), 'type' => 'string'],
+                'actual_address' => ['val' => returnElement($item, 'actual_address'), 'type' => 'string'],
             ];
 
             //заносим массив со значениями ячеек отдельной строки в "общий массв строк"
@@ -108,6 +124,7 @@ function setHeader(&$header, $value, $cellNumber)
             $header[$cellNumber] = 'type';
             break;
         case 'Comission Agent':
+        case 'Comission Agent????':
             $header[$cellNumber] = 'clients.commission_agent_id';
             break;
         case 'Client Category (Legal entity / physical person)':
@@ -152,6 +169,54 @@ function setHeader(&$header, $value, $cellNumber)
         case '"Contracts (STRICT template: evropoly_contract_organisation / Name_of_contract / Contract_type / mutual_settlments_type / Currency_of_the_contract) 
 Evropoly_contract_organisation: Tektona/Avena, Contract_type:Client/Supplier/Other, Mutual_Settlements_type: On the orders/ On the bills / For the entire contract, Currency: USD / EURO / Rubles"':
             $header[$cellNumber] = 'client_additions.contracts';
+            break;
+        case 'Design buro/ name of the company':
+            $header[$cellNumber] = 'design_buro';
+            break;
+        case 'Second name':
+            $header[$cellNumber] = 'second_name';
+            break;
+        case ' FINAL NAME':
+            $header[$cellNumber] = 'final_name';
+            break;
+        case 'Category 2 (Arch or Designer bureau/Designer-freelancer/trading agent)':
+            $header[$cellNumber] = 'client_category_2';
+            break;
+        case 'agree to receive in formation by e-mail':
+            $header[$cellNumber] = 'is_agree_for_formation';
+            break;
+        case 'Qty of people':
+            $header[$cellNumber] = 'quantity_of_people';
+            break;
+        case 'Main target':
+            $header[$cellNumber] = 'main_target';
+            break;
+        case 'Showrooms (yes / no)':
+            $header[$cellNumber] = 'showrooms';
+            break;
+        case 'Main Competitor':
+            $header[$cellNumber] = 'main_competiter';
+            break;
+        case 'Samples Position':
+            $header[$cellNumber] = 'samples_position';
+            break;
+        case 'Needful Actions':
+            $header[$cellNumber] = 'needful_actions';
+            break;
+        case 'Country':
+            $header[$cellNumber] = 'countries.country_id'; // TODO linked table
+            break;
+        case 'Region':
+            $header[$cellNumber] = 'regions.region_id'; // TODO linked table
+            break;
+        case 'City':
+            $header[$cellNumber] = 'city';
+            break;
+        case 'Legal Address':
+            $header[$cellNumber] = 'legal_address';
+            break;
+        case 'Actual Address':
+            $header[$cellNumber] = 'actual_address';
             break;
     }
 

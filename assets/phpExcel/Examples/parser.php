@@ -113,7 +113,7 @@ function getXLS($xls){
     return $array;
 }
 global $parser;
-$parser = getXLS(dirname(__FILE__) . '/../catalogue.xlsx'); //извлеаем данные из XLS
+$parser = getXLS(dirname(__FILE__) . '/../products_13.04.xlsx'); //извлеаем данные из XLS
 
 function setHeader(&$header, $value, $cellNumber) {
     switch($value) {

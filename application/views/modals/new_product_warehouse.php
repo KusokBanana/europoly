@@ -33,22 +33,16 @@
                                 </div>
                                 <div class="tab-pane active" id="newProductWarehouseTab1">
                                     <?php
-                                    $table_data = [
+                                    $table_data = array_merge([
                                         'buttons' => [
                                             'Select product in the table above:'
                                         ],
-                                        'table_id' => "table_product_warehouse_modal",
                                         'ajax' => [
                                             'url' => "/catalogue/dt"
                                         ],
-                                        'column_names' => $this->products_column_names,
-                                        'hidden_by_default' => $this->products_hidden_columns,
                                         'click_url' => "#",
-                                        'originalColumns' => $this->products_originalColumns,
-                                        'selectSearch' => $this->catalogue_selects,
-                                        'filterSearchValues' => $this->catalogue_rows,
                                         'method' => "POST",
-                                    ];
+                                    ], $this->tableData['warehouse_modal_new_product']);
                                     include 'application/views/templates/table.php'
                                     ?>
                                 </div>
@@ -62,6 +56,7 @@
                                                         <th>Product</th>
                                                         <th>Quantity</th>
                                                         <th>Units</th>
+                                                        <th>Number of Packs</th>
                                                         <th>Buy Price</th>
                                                         <th>Currency</th>
                                                     </tr>
@@ -115,7 +110,7 @@
                                     <a href="javascript:;" class="btn btn-outline green button-next"> Continue
                                         <i class="fa fa-angle-right"></i>
                                     </a>
-                                    <button type="button" class="btn green button-submit disabled"> Confirm
+                                    <button type="button" class="btn green button-submit"> Confirm
                                         <i class="fa fa-check"></i>
                                     </button>
                                 </div>
@@ -134,7 +129,10 @@
     $(document).ready(function() {
         var modal = $('#modal_newProductWarehouse');
         var progressBar = modal.find('.progress-bar-success');
-        var submitBtn = modal.find('form').find('.button-submit');
+        var submitBtn = modal.find('form').find('.button-submit').hide();
+        var prevBtn = modal.find('form').find('.button-previous').hide();
+        var nextBtn = modal.find('form').find('.button-next');
+
         $table_product_warehouse = $('#table_product_warehouse_modal');
         modal.on('click', '.form-actions .button-next', function() {
             var active = modal.find('.nav-pills').find('li.active');
@@ -143,16 +141,17 @@
             }
         }).on('click', '.form-actions .button-previous', function() {
             var active = modal.find('.nav-pills').find('li.active');
-            console.log(active.index())
             if (active.index() > 0) {
                 active.prev().find('a[data-toggle="tab"]').tab('show');
             }
         }).find('.nav-pills .step').on('show.bs.tab', function () {
             var selectorTab = $(this).attr('href');
-            if (selectorTab == '#newProductWarehouseTab1') {
-                submitBtn.addClass('disabled');
+            if (selectorTab === '#newProductWarehouseTab1') {
+                submitBtn.hide();
+                prevBtn.hide();
+                nextBtn.show();
                 progressBar.width(50 + '%');
-            } else if (selectorTab == '#newProductWarehouseTab2') {
+            } else if (selectorTab === '#newProductWarehouseTab2') {
                 if (!$table_product_warehouse.find(".selected").length) {
                     $('.error-choose-products').show();
                     return false;
@@ -160,8 +159,8 @@
                     $('.error-choose-products').hide();
                     var tableChange = $('#table_newProductWarehouse_change');
 
-                    if (tableChange.attr('data-products') == undefined ||
-                        $table_product_warehouse.attr('data-selected') != tableChange.attr('data-products')) {
+                    if (tableChange.attr('data-products') === undefined ||
+                        $table_product_warehouse.attr('data-selected') !== tableChange.attr('data-products')) {
 
                         var tr = '';
                         var selectedRows = $table_product_warehouse.DataTable().rows('.selected').data();
@@ -169,13 +168,17 @@
                             var name = getColumnValue("Name", index);
                             var units = getColumnValue("Units", index);
                             var currency = getColumnValue("Currency", index);
+                            var quantityInPack = getColumnValue("Quantity of product in 1 pack (in units)", index);
                             var id = getColumnValue("Id", index);
 
                             tr += '<tr>' + '<td>' + name + '</td>';
                             tr += '<td><a href="javascript:;" class="x-editable x-new-warehouse-product-amount"' +
                                 ' data-original-title="Enter Quantity" data-name="NewWarehouseProduct['+id+'][amount]" ' +
-                                'data-pk="'+id+'" data-value="0">0</a></td>';
+                                'data-pk="'+id+'" data-in-pack="'+quantityInPack+'" data-value="0">0</a></td>';
                             tr += '<td>' + units + '</td>';
+                            tr += '<td><a href="javascript:;" class="x-editable x-new-warehouse-product-number_of_packs"' +
+                                ' data-original-title="Enter Number of Packs" data-name="NewWarehouseProduct['+id+'][number_of_packs]" ' +
+                                'data-pk="'+id+'" data-in-pack="'+quantityInPack+'" data-value="0">0</a></td>';
                             tr += '<td><a href="javascript:;" class="x-editable x-new-warehouse-product-price"' +
                                 ' data-original-title="Enter Buy Price" data-name="NewWarehouseProduct['+id+'][buy_price]" ' +
                                 'data-pk="'+id+'" data-value="0">0</a></td>';
@@ -192,8 +195,27 @@
                             success: function () {}
                         })
                     }
-                    submitBtn.removeClass('disabled');
+                    prevBtn.show();
+                    submitBtn.show();
+                    nextBtn.hide();
                     progressBar.width(100 + '%');
+
+                    $('.x-new-warehouse-product-number_of_packs, .x-new-warehouse-product-amount').on('save', function(e, params) {
+                        var tr = $(this).closest('tr');
+                        var numberOfPacks = tr.find('.x-new-warehouse-product-number_of_packs');
+                        var productAmount = tr.find('.x-new-warehouse-product-amount');
+
+                        if ($(this).hasClass('x-new-warehouse-product-number_of_packs')) {
+                            var quantityValue = parseFloat(params.newValue) *
+                                parseFloat($(this).attr('data-in-pack'));
+                            productAmount.editable('setValue', quantityValue);
+                        }
+                        else {
+                            var numberOfPacksValue = ($(this).attr('data-in-pack') > 0) ?
+                                parseFloat(params.newValue) / parseFloat($(this).attr('data-in-pack')) : 0;
+                            numberOfPacks.editable('setValue', numberOfPacksValue);
+                        }
+                    });
                 }
             }
         });

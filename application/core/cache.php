@@ -16,7 +16,7 @@ class Cache {
         }
     }
 
-    function write($fileName,$variable)
+    function write($fileName, $variable)
     {
         $this->setName($fileName);
         $handle = fopen($this->fileName, 'a');

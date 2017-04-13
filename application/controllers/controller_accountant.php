@@ -25,7 +25,7 @@ class ControllerAccountant extends Controller
 
         $parser = [];
 
-        require dirname(__FILE__) . "/../../assets/phpExcel/Examples/parser.php";
+//        require dirname(__FILE__) . "/../../assets/phpExcel/Examples/parser.php";
 
 //        require dirname(__FILE__) . "/../../assets/phpExcel/Examples/expenses_parser.php";
 

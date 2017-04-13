@@ -4,10 +4,14 @@ include_once ('model_contractors.php');
 
 class ModelContractor extends ModelContractors
 {
-    var $tableNames = ['table_contractor_payments', 'table_contractor_goods'];
+    var $tableNames = ['table_contractor_payments', 'table_contractor_goods', 'table_contractor_services'];
 
-    public $contractor_goods_where = '';
+    public $contractor_goods_where = [];
     public $contractor_goods_table = '';
+    public $contractor_services_where = '';
+    public $contractor_services_table = '';
+    public $contractor_services_primary = '';
+    public $contractor_goods_primary = 'order_items.item_id';
 
     var $contractor_goods_columns_names = [
         '_item_id',
@@ -23,12 +27,30 @@ class ModelContractor extends ModelContractors
         'Sum in EUR',
     ];
 
+    var $contractor_services_columns_names = [
+        '_item_id',
+        'Type',
+        'Name',
+        'Direction',
+        'Sum',
+        'Currency',
+        'Sum in EUR',
+    ];
+
+    var $goods_search_types = [PAYMENT_CATEGORY_SUPPLIER, PAYMENT_CATEGORY_CLIENT];
+
+    public function isGoodsSearch($contractor_type)
+    {
+        return in_array($contractor_type, $this->goods_search_types);
+    }
+
     var $contractor_goods_columns = [
         array('dt' => 0, 'db' => "order_items.item_id"),
         array('dt' => 1, 'db' => "orders.order_id"),
     ];
+    var $contractor_services_columns = [];
 
-    public function getInformation($money, $goods)
+    public function getInformation($money, $goods, $services, $contractorType)
     {
         $totalMoney = 0;
         if (!empty($money)) {
@@ -44,10 +66,21 @@ class ModelContractor extends ModelContractors
             }
         }
 
+        $totalServices = 0;
+        if (!empty($services)) {
+            foreach ($services as $service) {
+                if ($contractorType == PAYMENT_CATEGORY_OTHER)
+                    $totalServices += ($service[4] == 'Expense') ? -floatval($service[2]) : floatval($service[2]);
+                else
+                    $totalServices += ($service[3] == 'Expense') ? -floatval($service[6]) : floatval($service[6]);
+            }
+        }
+
         return [
             'money' => $totalMoney,
             'goods' => $totalGoods,
-            'diff' => $totalGoods + $totalMoney
+            'services' => $totalServices,
+            'diff' => $totalGoods + $totalMoney + $totalServices
         ];
 
     }
@@ -57,7 +90,7 @@ class ModelContractor extends ModelContractors
         $contractor_type = $input['products']['contractor_type'];
         $contractor_id = $input['products']['contractor_id'];
 
-        $this->setSSPValues($contractor_id, $contractor_type);
+        $this->setSSPGoodsValues($contractor_id, $contractor_type);
 
         $ssp = [
             'columns' => $this->contractor_goods_columns,
@@ -77,20 +110,53 @@ class ModelContractor extends ModelContractors
         $this->sspComplex($ssp['db_table'], $ssp['primary'], $ssp['columns'], $input, null, $this->contractor_goods_where);
     }
 
-
-    function getSelects($contractor_id, $contractor_type)
+    public function getContractorServices($input, $printOpt)
     {
-        $this->setSSPValues($contractor_id, $contractor_type);
-        $columns = $this->contractor_goods_columns;
+        $contractor_type = $input['products']['contractor_type'];
+        $contractor_id = $input['products']['contractor_id'];
 
-        $ssp = $this->getSspComplexJson($this->contractor_goods_table, "order_items.item_id", $columns, null, null,
-            $this->contractor_goods_where);
+        $this->setSSPServicesValues($contractor_id, $contractor_type);
+
+        $ssp = [
+            'columns' => $this->contractor_services_columns,
+            'columns_names' => $this->contractor_services_columns_names,
+            'db_table' => $this->contractor_services_table,
+            'page' => 'contractor',
+            'table_name' => $this->tableNames[2],
+            'primary' => $this->contractor_services_primary,
+        ];
+
+        if ($printOpt) {
+            $printOpt['where'] = $this->contractor_services_where;
+            echo $this->printTable($input, $ssp, $printOpt);
+            return true;
+        }
+
+        $this->sspComplex($ssp['db_table'], $ssp['primary'], $ssp['columns'], $input, null, $this->contractor_services_where);
+    }
+
+
+    function getSelects($contractor_id, $contractor_type, $type)
+    {
+        if ($type == 'goods')
+            $this->setSSPGoodsValues($contractor_id, $contractor_type);
+        else
+            $this->setSSPServicesValues($contractor_id, $contractor_type);
+
+        $columns = $this->{'contractor_'.$type.'_columns'};
+        $table = $this->{'contractor_'.$type.'_table'};
+        $where = $this->{'contractor_'.$type.'_where'};
+        $colNames = $this->{'contractor_'.$type.'_columns_names'};
+        $primary = $this->{'contractor_'.$type.'_primary'};
+
+        $ssp = $this->getSspComplexJson($table, $primary, $columns, null, null,
+            $where);
 
         $role = new Roles();
 
         $rowValues = json_decode($ssp, true)['data'];
         $ignoreArray = [];
-        $columnNames = $role->returnModelNames($this->contractor_goods_columns_names, 'contractor');
+        $columnNames = $role->returnModelNames($colNames, 'contractor');
 
         if (!empty($rowValues)) {
             $selects = [];
@@ -112,6 +178,124 @@ class ModelContractor extends ModelContractors
             }
             return ['selects' => $selects, 'rows' => $rowValues];
         }
+    }
+
+    public function setSSPServicesValues($contractor_id, $contractor_type)
+    {
+
+        switch ($contractor_type) {
+            case PAYMENT_CATEGORY_CLIENT:
+                $this->contractor_services_table = 'orders ';
+                $this->contractor_services_table .= 'LEFT JOIN order_items ON (order_items.manager_order_id = orders.order_id) '.
+                 'LEFT JOIN products ON (order_items.product_id = products.product_id) '.
+                 'LEFT JOIN clients ON (clients.client_id = orders.client_id)';
+
+                $this->contractor_services_where = ["order_items.status_id = " . ISSUED];
+                $this->contractor_services_where[] = "orders.client_id = $contractor_id";
+
+                $this->contractor_services_columns[] = array('dt' => 0,
+                    'db' => "orders.order_id");
+                $this->contractor_services_columns[] = array('dt' => 1,
+                    'db' => "'Comission Agent Bonus'");
+                $this->contractor_services_columns[] = array('dt' => 2,
+                    'db' => "CONCAT('Bonus for Order <a href=\"/order?id=', orders.order_id, '\">', 
+                        IFNULL(orders.visible_order_id, orders.order_id), '</a> for Client <a href=\"/client?id=', clients.client_id, '\">', 
+                        clients.name, '</a>')");
+                $this->contractor_services_columns[] = array('dt' => 3,
+                    'db' => "'Income'");
+                $this->contractor_services_columns[] = array('dt' => 4,
+                    'db' => "SUM(order_items.commission_agent_bonus)");
+                $this->contractor_services_columns[] = array('dt' => 5,
+                    'db' => "products.sell_price_currency");
+                $this->contractor_services_columns[] = array('dt' => 6,
+                    'db' => "SUM(order_items.commission_agent_bonus)");
+
+                $this->contractor_services_primary = 'orders.order_id';
+                break;
+            case PAYMENT_CATEGORY_DELIVERY:
+                $this->contractor_services_table = 'trucks ';
+                $this->contractor_services_table .= 'LEFT JOIN order_items ON (order_items.truck_id = trucks.id)'.
+                ' LEFT JOIN products ON (order_items.product_id = products.product_id)';
+
+                $this->contractor_services_where = ["order_items.status_id >= " . ON_STOCK];
+                $this->contractor_services_where[] = "trucks.transportation_company_id = $contractor_id";
+
+                $this->contractor_services_columns[] = array('dt' => 0,
+                    'db' => "trucks.id");
+                $this->contractor_services_columns[] = array('dt' => 1,
+                    'db' => "'Goods Delivery'");
+                $this->contractor_services_columns[] = array('dt' => 2,
+                    'db' => "CONCAT('Delivery of goods for Truck <a href=\"/truck?id=', trucks.id, '\">', 
+                        trucks.id, '</a>')");
+                $this->contractor_services_columns[] = array('dt' => 3,
+                    'db' => "'Income'");
+                $this->contractor_services_columns[] = array('dt' => 4,
+                    'db' => "SUM(order_items.delivery_price)");
+                $this->contractor_services_columns[] = array('dt' => 5,
+                    'db' => "products.sell_price_currency");
+                $this->contractor_services_columns[] = array('dt' => 6,
+                    'db' => "SUM(order_items.delivery_price)");
+
+                $this->contractor_services_primary = 'trucks.id';
+                break;
+            case PAYMENT_CATEGORY_CUSTOMS:
+                $this->contractor_services_table = 'trucks ';
+                $this->contractor_services_table .= 'LEFT JOIN order_items ON (order_items.truck_id = trucks.id)'.
+                    ' LEFT JOIN products ON (order_items.product_id = products.product_id)';
+
+                $this->contractor_services_where = ["order_items.status_id >= " . ON_STOCK];
+                $this->contractor_services_where[] = "trucks.custom_id = $contractor_id";
+
+                $this->contractor_services_columns[] = array('dt' => 0,
+                    'db' => "trucks.id");
+                $this->contractor_services_columns[] = array('dt' => 1,
+                    'db' => "'Customs Clearing'");
+                $this->contractor_services_columns[] = array('dt' => 2,
+                    'db' => "CONCAT('Customs clearing for Truck <a href=\"/truck?id=', trucks.id, '\">', 
+                        trucks.id, '</a>')");
+                $this->contractor_services_columns[] = array('dt' => 3,
+                    'db' => "'Income'");
+                $this->contractor_services_columns[] = array('dt' => 4,
+                    'db' => "IFNULL(SUM(order_items.import_VAT + order_items.import_brokers_price + order_items.import_tax), 0)");
+                $this->contractor_services_columns[] = array('dt' => 5,
+                    'db' => "products.sell_price_currency");
+                $this->contractor_services_columns[] = array('dt' => 6,
+                    'db' => "IFNULL(SUM(order_items.import_VAT + order_items.import_brokers_price + order_items.import_tax), 0)");
+
+                $this->contractor_services_primary = 'trucks.id';
+                break;
+            case PAYMENT_CATEGORY_OTHER:
+                $this->contractor_services_table = 'other ';
+                $this->contractor_services_table .= 'LEFT JOIN other_items ON (other_items.other_id = other.other_id)';
+
+                $this->contractor_services_where[] = "other.other_id = $contractor_id";
+
+                $this->contractor_services_columns[] = array('dt' => 0,
+                    'db' => "other_items.item_id");
+                $this->contractor_services_columns[] = array('dt' => 1,
+                    'db' => "other_items.name");
+                $this->contractor_services_columns[] = array('dt' => 2,
+                    'db' => "other_items.sum");
+                $this->contractor_services_columns[] = array('dt' => 3,
+                    'db' => "other_items.currency");
+                $this->contractor_services_columns[] = array('dt' => 4,
+                    'db' => "other_items.direction");
+
+                $this->contractor_services_columns_names = [
+                    '_item_id',
+                    'Name',
+                    'Sum',
+                    'Currency',
+                    'Direction',
+                ];
+
+                $this->contractor_services_primary = 'other_items.item_id';
+                break;
+
+        }
+
+        $this->contractor_services_columns = $this->getColumns($this->contractor_services_columns, 'contractor', $this->tableNames[2]);
+
     }
 
     public function getContractor($contractorId, $contractor_type)
@@ -157,7 +341,7 @@ class ModelContractor extends ModelContractors
             'contractors', $this->tableNames[0], true);
     }
 
-    private function setSSPValues($contractor_id, $contractor_type)
+    private function setSSPGoodsValues($contractor_id, $contractor_type)
     {
         $where = ["(status_id = " . ISSUED . " OR status_id = " . RETURNED . ")"];
         $table = 'order_items LEFT JOIN products ON (order_items.product_id = products.product_id)';
@@ -203,6 +387,23 @@ class ModelContractor extends ModelContractors
                 (100 - order_items.discount_rate)) * order_items.amount/100 as decimal(64, 2)), '')");
 
         $this->contractor_goods_columns = $this->getColumns($this->contractor_goods_columns, 'contractor', $this->tableNames[1]);
+
+    }
+
+    public function addOtherItem($formData)
+    {
+        foreach ($formData as $field => $value) {
+            $formData[$field] = trim($value);
+            if (!$value)
+                return false;
+
+            $formData[$field] = mysql_real_escape_string($value);
+        }
+
+        $names = join('`,`', array_keys($formData));
+        $vals = join("','", $formData);
+
+        $this->insert("INSERT INTO other_items (`$names`) VALUES ('$vals')");
 
     }
 
