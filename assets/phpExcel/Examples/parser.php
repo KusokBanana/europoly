@@ -28,7 +28,7 @@ function getXLS($xls){
                 //заносим значения ячеек одной строки в отдельный массив
                 $value = $cell->getFormattedValue();
                 $colNumber = $cell->getColumn();
-                if ($rowIndex < 3) {
+                if ($rowIndex < 2) {
                     setHeader($header, $value, $colNumber);
                 } else {
                     if (isset($header[$colNumber]) && $headerName = $header[$colNumber]) {
@@ -106,7 +106,7 @@ function getXLS($xls){
             ];
 
             //заносим массив со значениями ячеек отдельной строки в "общий массв строк"
-            if ($rowIndex >= 3)
+            if ($rowIndex >= 2)
                 array_push($array, $baseArrayItem);
         }
     }

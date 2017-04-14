@@ -38,10 +38,16 @@ class ModelContractor extends ModelContractors
     ];
 
     var $goods_search_types = [PAYMENT_CATEGORY_SUPPLIER, PAYMENT_CATEGORY_CLIENT];
+    var $services_search_types = [PAYMENT_CATEGORY_CLIENT, PAYMENT_CATEGORY_DELIVERY, PAYMENT_CATEGORY_CUSTOMS, PAYMENT_CATEGORY_OTHER];
 
     public function isGoodsSearch($contractor_type)
     {
         return in_array($contractor_type, $this->goods_search_types);
+    }
+
+    public function isServicesSearch($contractor_type)
+    {
+        return in_array($contractor_type, $this->services_search_types);
     }
 
     var $contractor_goods_columns = [
@@ -98,8 +104,9 @@ class ModelContractor extends ModelContractors
             'db_table' => $this->contractor_goods_table,
             'page' => 'contractor',
             'table_name' => $this->tableNames[1],
-            'primary' => 'order_items.item_id',
+            'primary' => $this->contractor_goods_primary,
         ];
+
 
         if ($printOpt) {
             $printOpt['where'] = $this->contractor_goods_where;
@@ -343,7 +350,7 @@ class ModelContractor extends ModelContractors
 
     private function setSSPGoodsValues($contractor_id, $contractor_type)
     {
-        $where = ["(status_id = " . ISSUED . " OR status_id = " . RETURNED . ")"];
+        $where = ["(order_items.status_id = " . ISSUED . " OR order_items.status_id = " . RETURNED . ")"];
         $table = 'order_items LEFT JOIN products ON (order_items.product_id = products.product_id)';
         switch ($contractor_type) {
             case PAYMENT_CATEGORY_CLIENT:

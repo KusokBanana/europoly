@@ -28,6 +28,7 @@ class ControllerContractor extends Controller
             $this->view->contractor = $contractor;
 
             $this->view->isGoods = $this->model->isGoodsSearch($contractorType);
+            $this->view->isServices = $this->model->isServicesSearch($contractorType);
 
             $this->setPaymentsValues($contractorId, $contractorType);
             $this->setGoodsValues($contractorId, $contractorType);
@@ -81,6 +82,9 @@ class ControllerContractor extends Controller
 
     public function setServicesValues($contractor_id, $contractor_type)
     {
+        if (!$this->view->isServices)
+            return false;
+
         $array = $this->model->getSelects($contractor_id, $contractor_type, 'services');
 
         $this->view->services_column_names = $this->model->getColumns($this->model->contractor_services_columns_names,

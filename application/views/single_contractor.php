@@ -181,31 +181,33 @@
                                     <div class="tab-pane" id="tab_3">
                                         <div class="portlet-body">
                                             <?php
-                                            $buttons = [];
-                                            if ($this->contractor["contractor_type"] == PAYMENT_CATEGORY_OTHER) {
-                                                $buttons = [
+                                            if ($this->isServices) {
+                                                $buttons = [];
+                                                if ($this->contractor["contractor_type"] == PAYMENT_CATEGORY_OTHER) {
+                                                    $buttons = [
                                                         '<a href="#new_other" class="btn btn-primary" '.
                                                         'data-toggle="modal">Add new</a>'
+                                                    ];
+                                                }
+                                                $table_data = [
+                                                    'buttons' => $buttons,
+                                                    'table_id' => $this->tableNames[2],
+                                                    'ajax' => [
+                                                        'url' => "/contractor/dt_contractor_services",
+                                                        'data' => [
+                                                            'contractor_id' => $this->contractor["contractor_id"],
+                                                            'contractor_type' => $this->contractor["contractor_type"]
+                                                        ]
+                                                    ],
+                                                    'column_names' => $this->services_column_names,
+                                                    'hidden_by_default' => "[]",
+                                                    'click_url' => "javascript:;",
+                                                    'originalColumns' => $this->services_original_columns,
+                                                    'selectSearch' => $this->services_selects,
+                                                    'filterSearchValues' => $this->services_rows,
                                                 ];
+                                                include 'application/views/templates/table.php';
                                             }
-                                            $table_data = [
-                                                'buttons' => $buttons,
-                                                'table_id' => $this->tableNames[2],
-                                                'ajax' => [
-                                                    'url' => "/contractor/dt_contractor_services",
-                                                    'data' => [
-                                                        'contractor_id' => $this->contractor["contractor_id"],
-                                                        'contractor_type' => $this->contractor["contractor_type"]
-                                                    ]
-                                                ],
-                                                'column_names' => $this->services_column_names,
-                                                'hidden_by_default' => "[]",
-                                                'click_url' => "javascript:;",
-                                                'originalColumns' => $this->services_original_columns,
-                                                'selectSearch' => $this->services_selects,
-                                                'filterSearchValues' => $this->services_rows,
-                                            ];
-                                            include 'application/views/templates/table.php'
                                             ?>
                                         </div>
                                     </div>
