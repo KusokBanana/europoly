@@ -11,7 +11,7 @@ class ModelSales_manager extends Model
     {
         $columns = [
             array('dt' => 0, 'db' => "clients.client_id"),
-            array('dt' => 1, 'db' => "clients.name"),
+            array('dt' => 1, 'db' => "clients.final_name"),
             array('dt' => 2, 'db' => "clients.type"),
             array('dt' => 3, 'db' => "''"),
             array('dt' => 4, 'db' => "''"),
@@ -29,7 +29,8 @@ class ModelSales_manager extends Model
 
         $columns = [
             array('dt' => 0, 'db' => "orders.order_id"),
-            array('dt' => 1, 'db' => "CONCAT('<a href=\"\order?id=', orders.order_id, '\">Order #', orders.order_id, '</a>')"),
+            array('dt' => 1, 'db' => "CONCAT('<a href=\"\order?id=', orders.order_id, '\">Order #', 
+                IFNULL(orders.visible_order_id, orders.order_id), '</a>')"),
             array('dt' => 2, 'db' => "orders.start_date"),
             array('dt' => 3, 'db' => "status.name"),
             array('dt' => 4, 'db' => "orders.special_expenses"),
@@ -37,8 +38,8 @@ class ModelSales_manager extends Model
             array('dt' => 6, 'db' => "orders.downpayment_rate"),
             array('dt' => 7, 'db' => "orders.manager_bonus"),
             array('dt' => 8, 'db' => "orders.commission_rate"),
-            array('dt' => 9, 'db' => "CONCAT('<a href=\"\client?id=', orders.commission_agent_id, '\">', commission.name, '</a>')"),
-            array('dt' => 10, 'db' => "CONCAT('<a href=\"\client?id=', orders.client_id, '\">', client.name, '</a>')"),
+            array('dt' => 9, 'db' => "CONCAT('<a href=\"\client?id=', orders.commission_agent_id, '\">', commission.final_name, '</a>')"),
+            array('dt' => 10, 'db' => "CONCAT('<a href=\"\client?id=', orders.client_id, '\">', client.final_name, '</a>')"),
             array('dt' => 11, 'db' => "orders.total_commission"),
             array('dt' => 12, 'db' => "orders.commission_status")
         ];

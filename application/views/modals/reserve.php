@@ -52,13 +52,12 @@
                     $.each(data, function(code) {
                         $.each(this, function(id) {
                             tbody += '<tr class="reserve-'+code+'">';
-                            tbody += '<td>' + name + '</td>';
                             var isAvailable = false;
                             $.each(this, function(name, value) {
                                 tbody += '<td>' + value + '</td>';
-                                if (name == 'available')
+                                if (name === 'available')
                                     isAvailable = parseFloat(value) > 0;
-                                if (name == 'source')
+                                if (name === 'source')
                                     tbody += '<td><a href="/order/reserve?order_item_id=' + itemId + '&action=reserve&type=' + code +
                                         '&reserved_item_id='+id+'"' + ' class="btn btn-primary ' +
                                         (!isAvailable ? 'disabled' : '') + '">Reserve</a></td>'

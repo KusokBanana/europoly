@@ -54,7 +54,7 @@ $isNewClient = !isset($this->client['client_id']);
                 <div class="portlet-title">
                     <div class="caption">
                         <span class="caption-subject font-green sbold uppercase">
-                            Client <?= !$isNewClient ? $this->client['name'] : 'New Client' ?>
+                            <?= $this->title ?>
                         </span>
                     </div>
                     <button type="submit" class="pull-right btn btn-success">

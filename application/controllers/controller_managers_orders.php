@@ -62,12 +62,12 @@ class ControllerManagers_orders extends Controller
             ];
         }
 
-        $this->model->getDTManagersOrders($_GET, $print);
+        $this->model->getDTManagersOrders($_POST, $print);
     }
 
     function action_dt_managers_orders_reduced()
     {
-        $this->model->getDTManagersOrdersReduced($_GET);
+        $this->model->getDTManagersOrdersReduced($_POST);
     }
 
     function action_dt_managers_orders_to_suppliers()

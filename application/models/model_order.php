@@ -101,7 +101,7 @@ class ModelOrder extends Model
                     IFNULL(status.name, ''),
                 '</a>')"),
             array('dt' => 16, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
-                    IF(order_items.status_id = 1,
+                    IF(order_items.status_id = ". DRAFT .",
                     CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to hold the item?\" 
                                href=\"/order/hold?order_item_id=', order_items.item_id, '\" 
                                class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" data-singleton=\"true\">
@@ -137,6 +137,14 @@ class ModelOrder extends Model
                     IF(order_items.status_id = ".ISSUED.",
                         CONCAT('<a class=\"return-item-btn\" data-item_id=\"', order_items.item_id, '\">
                                     <span class=\'glyphicon glyphicon-repeat\' title=\'Return\'></span>
+                                </a>'),
+                        ''),
+                    IF(order_items.status_id >= ".SENT_TO_LOSIGT." AND " . ($this->user->role_id == ROLE_ADMIN ).",
+                        CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to return this item to manager?\" 
+                                   href=\"/order/hold?order_item_id=', order_items.item_id, '\" 
+                                   class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" 
+                                   data-singleton=\"true\">
+                                    <span class=\'glyphicon glyphicon-pencil\' title=\'Return to Manager\'></span>
                                 </a>'),
                         ''),
                 '</div>')"),
@@ -455,12 +463,14 @@ class ModelOrder extends Model
     {
 
         $order_item = $this->getFirst("SELECT * FROM order_items WHERE item_id = $item_id");
-        $amount = intval($order_item['amount']);
+        $amount = floatval($order_item['amount']);
         $productId = $order_item['product_id'];
 
         $tableData = [];
         $sourceItems = $this->getAssoc("SELECT * FROM order_items 
-                    WHERE (ISNULL(manager_order_id) AND ISNULL(reserve_since_date) AND product_id = $productId)");
+                    LEFT JOIN products ON (products.product_id = order_items.product_id)
+                    WHERE (ISNULL(order_items.manager_order_id) AND ISNULL(order_items.reserve_since_date) 
+                    AND order_items.product_id = $productId)");
         if (!empty($sourceItems)) {
             foreach ($sourceItems as $sourceItem) {
 
@@ -477,6 +487,7 @@ class ModelOrder extends Model
                     $available = $sourceItem['amount'];
                     $item_id = $sourceItem['item_id'];
                     $tableData[$sourceParams[0]][$item_id] = [
+                        'product' => $sourceItem['name'],
                         'ordered' => $amount,
                         'status' => $this->getItemStatusName($sourceItem['status_id']),
                         'available' => $available,

@@ -425,6 +425,36 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                 </div>
                             </div>
                             <div class="form-group">
+                                <label class="col-md-3 control-label" for="sum_in_eur">Sum in EUR</label>
+                                <div class="col-md-9">
+                                    <input type="text" id="sum_in_eur" name="sum_in_eur" required
+                                           value="<?= isset($this->payment['sum_in_eur']) ?
+                                               number_format($this->payment['sum_in_eur'], 2, '.', ' ') : '' ?>"
+                                           class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-2 col-md-offset-1 control-label" for="course">Official Currency Rate</label>
+                                <div class="col-md-1">
+                                    <input type="text" id="course"
+                                           value="" readonly
+                                           class="form-control">
+                                </div>
+                                <label class="col-md-2 control-label" for="exchange_commission">Exchange Commission, %</label>
+                                <div class="col-md-1">
+                                    <input type="text" id="exchange_commission"
+                                           value=""
+                                           class="form-control">
+                                </div>
+                                <label class="col-md-2 control-label" for="currency_rate">Final Currency Rate</label>
+                                <div class="col-md-1">
+                                    <input type="text" id="currency_rate" name="currency_rate" required
+                                           value="<?= isset($this->payment['currency_rate']) ?
+                                               number_format($this->payment['currency_rate'], 4, '.', ' ') : '' ?>"
+                                           class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label class="col-md-1 col-md-offset-2 control-label" for="sum">Sum</label>
                                 <div class="col-md-3">
                                     <input type="text" id="sum" name="sum" required
@@ -449,36 +479,6 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                     </select>
                                 </div>
 
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-2 col-md-offset-1 control-label" for="course">Official Currency Rate</label>
-                                <div class="col-md-1">
-                                    <input type="text" id="course"
-                                           value="" readonly
-                                           class="form-control">
-                                </div>
-                                <label class="col-md-2 control-label" for="exchange_commission">Exchange Commission, %</label>
-                                <div class="col-md-1">
-                                    <input type="text" id="exchange_commission"
-                                           value=""
-                                           class="form-control">
-                                </div>
-                                <label class="col-md-2 control-label" for="currency_rate">Final Currency Rate</label>
-                                <div class="col-md-1">
-                                    <input type="text" id="currency_rate" name="currency_rate" required
-                                           value="<?= isset($this->payment['currency_rate']) ?
-                                               number_format($this->payment['currency_rate'], 4, '.', ' ') : '' ?>"
-                                           class="form-control">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-3 control-label" for="sum_in_eur">Sum in EUR</label>
-                                <div class="col-md-9">
-                                    <input type="text" id="sum_in_eur" name="sum_in_eur" required
-                                           value="<?= isset($this->payment['sum_in_eur']) ?
-                                               number_format($this->payment['sum_in_eur'], 2, '.', ' ') : '' ?>"
-                                           class="form-control">
-                                </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-md-3 control-label" for="direction">Direction</label>
@@ -614,7 +614,9 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                             sumInput = $('#sum'),
                                             sumValue = +sumInput.val().split(',').join('.').split(' ').join(''),
                                             currencyRateInput = $('#currency_rate'),
-                                            currencyRateValue = +currencyRateInput.val().split(',').join('.').split(' ').join('');
+                                            currencyRateValue = +currencyRateInput.val().split(',').join('.').split(' ').join(''),
+                                            exchangeCommissionInput = $('#exchange_commission'),
+                                            exchangeCommissionValue = +exchangeCommissionInput.val().split(',').join('.').split(' ').join('');
 
                                         if (date && currency) {
                                             $.ajax({
@@ -630,13 +632,16 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                                         value = parseFloat(1/data).format(4);
                                                     }
                                                     course.val(value);
-                                                    if (isFirst && currencyRateValue !== 0) {
-                                                        value = ($('#currency_rate').val() / $('#course').val() - 1) * 100;
-                                                        $('#exchange_commission').val(value.format(2))
-                                                    } else if (currencyRateValue === 0) {
-                                                        var val = 0;
-                                                        $('#exchange_commission').val(val.format(2));
-                                                    }
+                                                    var courseValue = value;
+//                                                    if (isFirst) {
+//                                                        value = ($('#currency_rate').val() / $('#course').val() - 1) * 100;
+                                                        value = (exchangeCommissionValue / 100 + 1) * courseValue;
+//                                                        $('#exchange_commission').val(value.format(2))
+                                                        currencyRateInput.val(value.format(2));
+//                                                    } else if (currencyRateValue === 0) {
+//                                                        var val = 0;
+//                                                        $('#exchange_commission').val(val.format(2));
+//                                                    }
 //                                                    if (sumInEurValue !== 0 && currencyRateValue !== 0) {
 //                                                        value = sumInEurValue / currencyRateValue;
 //                                                        sumInput.val(value.format(2));

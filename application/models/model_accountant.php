@@ -12,7 +12,7 @@ class ModelAccountant extends Model
         array('dt' => 4, 'db' => "payments.category"),
         array('dt' => 5, 'db' => "CONCAT( 
             IF(payments.category = 'Client' OR payments.category = 'Comission Agent', 
-                CONCAT('<a href=\"/client?id=', payments.contractor_id, '\">', clients.name, '</a>'), ''),
+                CONCAT('<a href=\"/client?id=', payments.contractor_id, '\">', clients.final_name, '</a>'), ''),
             IF(payments.category = 'Supplier', 
                 CONCAT('<a href=\"/supplier?id=', payments.contractor_id, '\">', suppliers.name, '</a>'), ''),
             IF(payments.category = 'Customs', 
@@ -20,7 +20,7 @@ class ModelAccountant extends Model
             IF(payments.category = 'Delivery', 
                 CONCAT('<a href=\"/transportation?id=', payments.contractor_id, '\">', transport.name, '</a>'), ''))"),
         array('dt' => 6, 'db' => "CONCAT('<a href=\"/', IF(payments.category = 'Supplier', 
-            'suppliers_order?id=', 'order?id='), payments.order_id, '\"\">', orders.visible_order_id, 
+            'suppliers_order?id=', 'order?id='), payments.order_id, '\"\">', IFNULL(orders.visible_order_id, orders.order_id), 
             '</a>')"),
         array('dt' => 7, 'db' => "transfers.name"),
         array('dt' => 8, 'db' => "payments.currency"),
@@ -133,7 +133,7 @@ class ModelAccountant extends Model
             array('dt' => 4, 'db' => "payments.category"),
             array('dt' => 5, 'db' => "CONCAT( 
             IF(payments.category = 'Client' OR payments.category = 'Comission Agent', 
-                CONCAT('<a href=\"/client?id=', payments.contractor_id, '\">', clients.name, '</a>'), ''),
+                CONCAT('<a href=\"/client?id=', payments.contractor_id, '\">', clients.final_name, '</a>'), ''),
             IF(payments.category = 'Supplier', 
                 CONCAT('<a href=\"/supplier?id=', payments.contractor_id, '\">', suppliers.name, '</a>'), ''),
             IF(payments.category = 'Customs', 

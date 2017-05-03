@@ -7,7 +7,8 @@ class ModelManagers_orders extends Model
 
     var $managers_orders_columns = [
         array('dt' => 0, 'db' => "order_items.item_id"),
-        array('dt' => 1, 'db' => "CONCAT('<a href=\"/order?id=', order_items.manager_order_id, '\">', order_items.manager_order_id,
+        array('dt' => 1, 'db' => "CONCAT('<a href=\"/order?id=', order_items.manager_order_id, '\">', 
+            IFNULL(orders.visible_order_id, orders.order_id),
             IF(order_items.reserve_since_date IS NULL, '', ' (reserved)'), '</a>')"),
         array('dt' => 2, 'db' => "CONCAT('<a href=\"/sales_manager?id=', orders.sales_manager_id, '\">', 
             managers.first_name, ' ', managers.last_name, '</a>')"),
@@ -36,8 +37,8 @@ class ModelManagers_orders extends Model
             order_items.truck_id, '</a>')"),
         array('dt' => 22, 'db' => "trucks.supplier_departure_date"),
         array('dt' => 23, 'db' => "order_items.warehouse_arrival_date"),
-        array('dt' => 24, 'db' => "CONCAT('<a href=\"\client?id=', orders.client_id, '\">', client.name, '</a>')"),
-        array('dt' => 25, 'db' => "CONCAT('<a href=\"\client?id=', orders.commission_agent_id, '\">', commission.name, '</a>')"),
+        array('dt' => 24, 'db' => "CONCAT('<a href=\"\client?id=', orders.client_id, '\">', client.final_name, '</a>')"),
+        array('dt' => 25, 'db' => "CONCAT('<a href=\"\client?id=', orders.commission_agent_id, '\">', commission.final_name, '</a>')"),
         array('dt' => 26, 'db' => "order_items.discount_rate"),
         array('dt' => 27, 'db' => "order_items.reduced_price"),
         array('dt' => 28, 'db' => "order_items.manager_bonus_rate"),
@@ -87,7 +88,8 @@ class ModelManagers_orders extends Model
 
     var $managers_orders_reduced_columns = [
         array('dt' => 0, 'db' => "orders.order_id"),
-        array('dt' => 1, 'db' => "CONCAT('<a href=\"/order?id=', orders.order_id, '\">', orders.order_id, '</a>')"),
+        array('dt' => 1, 'db' => "CONCAT('<a href=\"/order?id=', orders.order_id, '\">', 
+            IFNULL(orders.visible_order_id, orders.order_id), '</a>')"),
         array('dt' => 2, 'db' => "CONCAT(managers.first_name, ' ', managers.last_name, '<a href=\"/sales_manager?id=', orders.sales_manager_id, '\"><i class=\"glyphicon glyphicon-link\"></i></a></a>')"),
         array('dt' => 3, 'db' => "orders.start_date"),
         array('dt' => 4, 'db' => "status.name"),
@@ -95,8 +97,8 @@ class ModelManagers_orders extends Model
         array('dt' => 6, 'db' => "orders.total_downpayment"),
         array('dt' => 7, 'db' => "orders.downpayment_rate"),
         array('dt' => 8, 'db' => "orders.expected_date_of_issue"),
-        array('dt' => 9, 'db' => "CONCAT('<a href=\"\client?id=', orders.commission_agent_id, '\">', commission.name, '</a>')"),
-        array('dt' => 10, 'db' => "CONCAT('<a href=\"\client?id=', orders.client_id, '\">', client.name, '</a>')"),
+        array('dt' => 9, 'db' => "CONCAT('<a href=\"\client?id=', orders.commission_agent_id, '\">', commission.final_name, '</a>')"),
+        array('dt' => 10, 'db' => "CONCAT('<a href=\"\client?id=', orders.client_id, '\">', client.final_name, '</a>')"),
     ];
 
     var $managers_orders_reduced_column_names = [
@@ -142,8 +144,8 @@ class ModelManagers_orders extends Model
 
         if ($this->user->role_id == ROLE_SALES_MANAGER) {
             $this->whereCondition .= " AND orders.sales_manager_id = " . $this->user->user_id;
-            $this->whereCondition = '(' . $this->whereCondition . ')' . " OR client.sales_manager_id = " . $this->user->user_id .
-                " OR client.operational_manager_id = " . $this->user->user_id;
+            $this->whereCondition = '(' . $this->whereCondition . ')' /*. " OR client.sales_manager_id = " .
+                $this->user->user_id */. " OR client.operational_manager_id = " . $this->user->user_id;
             $this->unLinkStrings($this->managers_orders_columns, [24, 25]);
         }
 
@@ -173,18 +175,26 @@ class ModelManagers_orders extends Model
     function getDTManagersOrdersReduced($input)
     {
         $where = '';
-        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
-            $userId = $_SESSION['user_id'];
-            $where = "orders.sales_manager_id = " . $userId;
-            $where .= " OR client.sales_manager_id = " . $userId .
-                " OR client.operational_manager_id = " . $userId;
+        if ($this->user->role_id == ROLE_SALES_MANAGER) {
+            $where = "orders.sales_manager_id = " . $this->user->user_id;
+            $where .= " OR client.sales_manager_id = " . $this->user->user_id .
+                " OR client.operational_manager_id = " . $this->user->user_id;
             $this->unLinkStrings($this->managers_orders_reduced_columns, [9, 10]);
         }
 
         $columns = $this->getColumns($this->managers_orders_reduced_columns, 'managersOrders', $this->tableNames[1]);
 
-        $this->sspComplex($this->managers_orders_table_reduce, "orders.order_id",
-            $columns, $input, null, $where);
+        $ssp = [
+            'columns' => $columns,
+            'columns_names' => $this->managers_orders_reduced_column_names,
+            'db_table' => $this->managers_orders_table_reduce,
+            'page' => 'managersOrders',
+            'table_name' => $this->tableNames[1],
+            'primary' => 'orders.order_id',
+        ];
+
+        $this->sspComplex($ssp['db_table'], $ssp['primary'],
+            $ssp['columns'], $input, null, $where);
     }
 
     function getDTManagersOrdersToSuppliersOrder($input, $products)
@@ -201,22 +211,48 @@ class ModelManagers_orders extends Model
             $this->managers_orders_columns, $input, null, $where);
     }
 
-    function getSelects()
+    function getSelects($isReduced = false)
     {
-        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
-            $userId = $_SESSION['user_id'];
-            $where = " orders.sales_manager_id = " . $userId;
-            $this->whereCondition = '(' . $where . ')' . " OR client.sales_manager_id = " . $userId .
-                " OR client.operational_manager_id = " . $userId;
-            $this->unLinkStrings($this->managers_orders_reduced_columns, [9, 10]);
+        if (!$isReduced) {
+            if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
+                $userId = $_SESSION['user_id'];
+                $where = " orders.sales_manager_id = " . $userId;
+                $this->whereCondition = '(' . $where . ')' . " OR client.sales_manager_id = " . $userId .
+                    " OR client.operational_manager_id = " . $userId;
+                $this->unLinkStrings($this->managers_orders_reduced_columns, [9, 10]);
+            }
+            $ssp = $this->getSspComplexJson($this->managers_orders_table, "order_items.item_id",
+                $this->managers_orders_columns, null, null, $this->whereCondition);
+            $columns = $this->getColumns($this->managers_orders_column_names, 'managersOrders', $this->tableNames[0]);
+            $rowValues = json_decode($ssp, true)['data'];
+            $ignoreArray = ['Manager Order ID', 'Quantity', 'Number of Packs', 'Total Weight', 'Purchase Price / Unit',
+                'Total Purchase Price', 'Sell Price / Unit', 'Total Sell Price', 'Downpayment', 'Downpayment rate',
+                'Supplier Order ID', 'Truck ID'];
+        } else {
+
+            if ($this->user->role_id == ROLE_SALES_MANAGER) {
+                $this->whereCondition = "orders.sales_manager_id = " . $this->user->user_id;
+                $this->whereCondition .= " OR client.sales_manager_id = " . $this->user->user_id .
+                    " OR client.operational_manager_id = " . $this->user->user_id;
+                $this->unLinkStrings($this->managers_orders_reduced_columns, [9, 10]);
+            }
+
+            $columns = $this->getColumns($this->managers_orders_reduced_columns, 'managersOrders', $this->tableNames[1]);
+
+            $ssp = [
+                'columns' => $columns,
+                'columns_names' => $this->managers_orders_reduced_column_names,
+                'db_table' => $this->managers_orders_table_reduce,
+                'page' => 'managersOrders',
+                'table_name' => $this->tableNames[1],
+                'primary' => 'orders.order_id',
+            ];
+
+            $this->sspComplex($ssp['db_table'], $ssp['primary'],
+                $ssp['columns'], $input, null, $this->whereCondition);
+
         }
-        $ssp = $this->getSspComplexJson($this->managers_orders_table, "order_items.item_id",
-            $this->managers_orders_columns, null, null, $this->whereCondition);
-        $columns = $this->managers_orders_column_names;
-        $rowValues = json_decode($ssp, true)['data'];
-        $ignoreArray = ['Manager Order ID', 'Quantity', 'Number of Packs', 'Total Weight', 'Purchase Price / Unit',
-            'Total Purchase Price', 'Sell Price / Unit', 'Total Sell Price', 'Downpayment', 'Downpayment rate',
-            'Supplier Order ID', 'Truck ID'];
+
 
         if (!empty($rowValues)) {
             $selects = [];

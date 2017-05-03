@@ -55,7 +55,7 @@ class ModelSuppliers_order extends ModelOrder
                 suppliers_orders_items.manager_order_id,
                 '\">', suppliers_orders_items.manager_order_id,
                  IF(suppliers_orders_items.reserve_since_date IS NULL, '', (CONCAT(' (reserved ', suppliers_orders_items.reserve_since_date, ')'))), '</a>')"),
-        array('dt' => 13, 'db' => "clients.name"),
+        array('dt' => 13, 'db' => "clients.final_name"),
         array('dt' => 14, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
                         CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to delete the item?\" 
                         href=\"/suppliers_order/delete_order_item?order_id=', suppliers_orders_items.supplier_order_id,

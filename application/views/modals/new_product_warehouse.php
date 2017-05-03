@@ -120,7 +120,7 @@
         var prevBtn = modal.find('form').find('.button-previous').hide();
         var nextBtn = modal.find('form').find('.button-next');
 
-        $table_product_warehouse = $('#warehouse_modal_new_product');
+        var $table_product_warehouse = $('#warehouse_modal_new_product');
         modal.on('click', '.form-actions .button-next', function() {
             var active = modal.find('.nav-pills').find('li.active');
             if (active.index() < 2) {
@@ -219,7 +219,7 @@
         });
 
         function getColumnValue(name, id) {
-            var index =$('#table_product_warehouse_modal_columns_choose').find(':contains('+name+')')
+            var index =$('#warehouse_modal_new_product_columns_choose').find(':contains('+name+')')
                 .closest('label').find('input').attr('data-column');
             return $table_product_warehouse.DataTable().rows('.selected').data()[id][index];
         }

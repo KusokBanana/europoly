@@ -49,7 +49,7 @@ class ModelTruck extends ModelOrder
         array('dt' => 12, 'db' => "CONCAT('<a href=\"/suppliers_order?id=',
                 trucks_items.supplier_order_id,
                 '\">', trucks_items.supplier_order_id, '</a>')"),
-        array('dt' => 13, 'db' => "clients.name"),
+        array('dt' => 13, 'db' => "clients.final_name"),
         array('dt' => 14, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-import_VAT\" data-pk=\"',
                 trucks_items.item_id,
                 '\" data-name=\"import_VAT\" data-value=\"',

@@ -53,7 +53,7 @@ class ModelContractor extends ModelContractors
 
     var $contractor_goods_columns = [
         array('dt' => 0, 'db' => "order_items.item_id"),
-        array('dt' => 1, 'db' => "orders.order_id"),
+        array('dt' => 1, 'db' => "IFNULL(orders.visible_order_id, orders.order_id)"),
     ];
     var $contractor_services_columns = [];
 
@@ -247,13 +247,13 @@ class ModelContractor extends ModelContractors
                 $this->contractor_services_where[] = "order_items.manager_order_id IS NOT NULL";
 
                 $this->contractor_services_columns[] = array('dt' => 0,
-                    'db' => "orders.order_id");
+                    'db' => "IFNULL(orders.visible_order_id, orders.order_id)");
                 $this->contractor_services_columns[] = array('dt' => 1,
                     'db' => "'Comission Agent Bonus'");
                 $this->contractor_services_columns[] = array('dt' => 2,
                     'db' => "CONCAT('Bonus for Order <a href=\"/order?id=', orders.order_id, '\">', 
                         IFNULL(orders.visible_order_id, orders.order_id), '</a> for Client <a href=\"/client?id=', clients.client_id, '\">', 
-                        clients.name, '</a>')");
+                        clients.final_name, '</a>')");
                 $this->contractor_services_columns[] = array('dt' => 3,
                     'db' => "'Income'");
                 $this->contractor_services_columns[] = array('dt' => 4,

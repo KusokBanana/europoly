@@ -10,7 +10,7 @@ class ModelClients extends Model
             data-url=\"/clients/change_item_field\" data-original-title=\"Change Manager\">', managers.first_name, ' ', 
             managers.last_name, '</a><a href=\"/sales_manager?id=', clients.sales_manager_id, '\">
             <i class=\"glyphicon glyphicon-link\"></i></a>')"),
-        array('dt' => 3, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-commission_agent\" data-pk=\"', clients.client_id ,'\" data-name=\"commission_agent_id\" data-value=\"', IFNULL(clients.commission_agent_id, ''), '\" data-url=\"/clients/change_item_field\" data-original-title=\"Change Commission Agent\">', IFNULL(commission_agents.name, ''), '</a>')"),
+        array('dt' => 3, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-commission_agent\" data-pk=\"', clients.client_id ,'\" data-name=\"commission_agent_id\" data-value=\"', IFNULL(clients.commission_agent_id, ''), '\" data-url=\"/clients/change_item_field\" data-original-title=\"Change Commission Agent\">', IFNULL(commission_agents.final_name, ''), '</a>')"),
         array('dt' => 4, 'db' => "clients.city"),
         array('dt' => 5, 'db' => "clients.turnover"),
         array('dt' => 6, 'db' => "clients.profit"),
@@ -25,7 +25,7 @@ class ModelClients extends Model
         array('dt' => 15, 'db' => "clients.actual_address"),
         array('dt' => 16, 'db' => "clients.status"),
         array('dt' => 17, 'db' => "CONCAT('<a href=\"/client?id=', clients.head_contractor_client_id, '\"\">', 
-            head_contractor.name, '</a>')"),
+            head_contractor.final_name, '</a>')"),
         array('dt' => 18, 'db' => "clients.first_contact_date"),
         array('dt' => 19, 'db' => "CONCAT(operational_manager.first_name, ' ', operational_manager.last_name)"),
         array('dt' => 20, 'db' => "clients.quantity_of_people"),

@@ -22,7 +22,7 @@ class ModelPayment extends Model
     {
         switch ($category) {
             case 'Client':
-                $select = (!$contractorId) ? $this->getClientsByType() :
+                $select = (!$contractorId) ? $this->getClientsByType(PAYMENT_CATEGORY_CLIENT) :
                     $this->getOrdersBy($contractorId, 'client_id');
                 break;
             case 'Comission Agent':
@@ -52,9 +52,14 @@ class ModelPayment extends Model
 
     public function getClientsByType($type = '')
     {
+        $fieldName = 'name';
+        if ($type === PAYMENT_CATEGORY_CLIENT) {
+            $fieldName = 'final_name';
+            $type = '';
+        }
         $where = $type ? "`type` = '$type' AND " : '';
         $where .= "`is_deleted` = 0";
-        return $this->getAssoc("SELECT client_id as id, name FROM clients WHERE $where");
+        return $this->getAssoc("SELECT client_id as id, `$fieldName` as name FROM clients WHERE $where");
     }
 
     public function getBrands()
@@ -204,7 +209,9 @@ class ModelPayment extends Model
                     continue;
                 $value = $value != "" ? $this->escape_string($value) : '';
                 if (in_array($name, ['sum', 'sum_in_eur', 'currency_rate'])) {
-                    $value = +str_replace(',', '.', $value);
+                    $value = str_replace(',', '.', $value);
+                    $value = str_replace(' ', '', $value);
+                    $value = doubleval($value);
                 }
                 $setArray[] = "`$name` = '$value'";
             }

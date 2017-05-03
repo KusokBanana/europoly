@@ -63,6 +63,7 @@
                                         ],
                                         'column_names' => $this->column_names,
                                         'click_url' => "javascript:;",
+                                        'method' => "POST",
                                         'selectSearch' => $this->selects,
                                         'filterSearchValues' => $this->rows,
                                         'originalColumns' => $this->originalColumns
@@ -81,6 +82,7 @@
                                             'url' => "/managers_orders/dt_managers_orders_reduced"
                                         ],
                                         'column_names' => $this->column_names_reduced,
+                                        'method' => "POST",
                                         'click_url' => "javascript:;",
                                         'originalColumns' => $this->originalColumnsReduced
                                     ];
