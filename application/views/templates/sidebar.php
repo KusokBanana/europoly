@@ -149,7 +149,7 @@
                         </li>
                     <?php endif; ?>
                     <li id="nav-finance_reports" class="nav-item">
-                        <a href="" class="nav-link nav-toggle">
+                        <a href="/accountant/financial_reports" class="nav-link nav-toggle">
                             <i class="icon-bar-chart"></i>
                             <span class="title">Financial Reports</span>
                         </a>

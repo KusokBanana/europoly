@@ -260,6 +260,8 @@
                                             $this->order['legal_entity_id'] !== null): ?>
                                         <input type="hidden" name="Similar[legal_entity_id]"
                                                value="<?= $this->order['legal_entity_id'] ?>">
+                                        <input type="hidden" name="Similar[sum_in_eur]"
+                                               value="<?= round($this->order['total_price'], 2) ?>">
                                         <?php endif; ?>
                                     </form>
                                     <a href="javascript:void;" onclick="$('#payment-form').submit()"

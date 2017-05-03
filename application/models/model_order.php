@@ -442,12 +442,12 @@ class ModelOrder extends Model
 
     public function getClientsOfManager($managerId)
     {
-        return $this->getAssoc("SELECT client_id, name FROM clients WHERE sales_manager_id = $managerId");
+        return $this->getAssoc("SELECT client_id, final_name as name FROM clients WHERE sales_manager_id = $managerId");
     }
 
     public function getCommissionAgentsOfManager($managerId)
     {
-        return $this->getAssoc("SELECT client_id, name FROM clients 
+        return $this->getAssoc("SELECT client_id, final_name as name FROM clients 
               WHERE sales_manager_id = $managerId AND type = 'Comission Agent'"); // TODO REPLACE_CONST
     }
 

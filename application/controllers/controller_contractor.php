@@ -15,7 +15,6 @@ class ControllerContractor extends Controller
     {
 
         $this->getAccess($this->page, 'v');
-        $this->view->title = "Contractor";
         $this->view->payments_column_names = $this->model->getPaymentsColumnNames();
 
         $contractorId = isset($_GET['id']) ? $_GET['id'] : 0;
@@ -27,6 +26,7 @@ class ControllerContractor extends Controller
         } else {
             $this->view->contractor = $contractor;
 
+            $this->view->title = 'Contractor ' . $contractor['name'];
             $this->view->isGoods = $this->model->isGoodsSearch($contractorType);
             $this->view->isServices = $this->model->isServicesSearch($contractorType);
 
@@ -38,6 +38,8 @@ class ControllerContractor extends Controller
             $paymentsRows = isset($this->view->rows) ? $this->view->rows : [];
             $goodsRows = isset($this->view->goods_rows) ? $this->view->goods_rows : [];
             $servicesRows = isset($this->view->services_rows) ? $this->view->services_rows : [];
+
+            $this->view->contractor_type = $contractorType;
 
             $this->view->balance = $this->model->getInformation($paymentsRows, $goodsRows, $servicesRows, $contractorType);
 
@@ -90,7 +92,8 @@ class ControllerContractor extends Controller
         $this->view->services_column_names = $this->model->getColumns($this->model->contractor_services_columns_names,
             $this->page, $this->model->tableNames[2], true);
         $roles = new Roles();
-        $this->view->services_original_columns = $roles->returnModelNames($this->model->contractor_services_columns_names, $this->page);
+        $this->view->services_original_columns = $roles->returnModelNames($this->model->contractor_services_columns_names,
+            $this->page);
 
         $this->view->services_selects = $array['selects'];
         $this->view->services_rows = $array['rows'];
@@ -121,14 +124,15 @@ class ControllerContractor extends Controller
             ];
         }
 
-        $this->model->getContractorServices($_GET, $print);
+        $lolo = $this->model->getContractorServices($_GET, $print);
+        echo $lolo;
     }
 
-    function action_new_other()
+    function action_new_service()
     {
 
-        if (isset($_POST['other_id'])) {
-            $this->model->addOtherItem($_POST);
+        if (isset($_POST['contractor_id'])) {
+            $this->model->addServicesItem($_POST);
         }
         header("Location: " . $_SERVER['HTTP_REFERER']);
 

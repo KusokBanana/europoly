@@ -38,7 +38,8 @@ class ModelContractor extends ModelContractors
     ];
 
     var $goods_search_types = [PAYMENT_CATEGORY_SUPPLIER, PAYMENT_CATEGORY_CLIENT];
-    var $services_search_types = [PAYMENT_CATEGORY_CLIENT, PAYMENT_CATEGORY_DELIVERY, PAYMENT_CATEGORY_CUSTOMS, PAYMENT_CATEGORY_OTHER];
+    var $services_search_types = [PAYMENT_CATEGORY_CLIENT, PAYMENT_CATEGORY_DELIVERY,
+        PAYMENT_CATEGORY_CUSTOMS, PAYMENT_CATEGORY_OTHER, PAYMENT_CATEGORY_SUPPLIER, PAYMENT_CATEGORY_COMMISSION_AGENT];
 
     public function isGoodsSearch($contractor_type)
     {
@@ -75,10 +76,7 @@ class ModelContractor extends ModelContractors
         $totalServices = 0;
         if (!empty($services)) {
             foreach ($services as $service) {
-                if ($contractorType == PAYMENT_CATEGORY_OTHER)
-                    $totalServices += ($service[4] == 'Expense') ? -floatval($service[2]) : floatval($service[2]);
-                else
-                    $totalServices += ($service[3] == 'Expense') ? -floatval($service[6]) : floatval($service[6]);
+                $totalServices += ($service[3] == 'Expense') ? -floatval($service[6]) : floatval($service[6]);
             }
         }
 
@@ -139,9 +137,46 @@ class ModelContractor extends ModelContractors
             return true;
         }
 
-        $this->sspComplex($ssp['db_table'], $ssp['primary'], $ssp['columns'], $input, null, $this->contractor_services_where);
+        $dynamicData = json_encode(['recordsFiltered' => 0, 'recordsTotal' => 0, 'data' => [], 'draw' => 1]);
+
+        if ($contractor_type !== PAYMENT_CATEGORY_OTHER && $contractor_type !== PAYMENT_CATEGORY_SUPPLIER) {
+            $dynamicData = $this->getSspComplexJson($ssp['db_table'], $ssp['primary'], $ssp['columns'],
+                $input, null, $this->contractor_services_where);
+        }
+
+        echo $this->mergeWithStaticServices($contractor_type, $contractor_id, $dynamicData);
+
     }
 
+    function mergeWithStaticServices($contractor_type, $contractor_id, $jsonData)
+    {
+
+        $staticServices = $this->getAssoc("SELECT 
+          item_id as '0', 
+          'Other Services' as '1', 
+          name as '2', 
+          direction as '3', 
+          sum as '4', 
+          currency as '5', 
+          sum as '6' 
+          FROM services_items WHERE contractor_type = '$contractor_type' AND contractor_id = $contractor_id");
+
+        $data = json_decode($jsonData, true);
+
+        $count = count($staticServices);
+
+        $data['draw'] = (count($data['data']) && $count) ? 1 : 0;
+        if ($data['draw'] == 0) {
+            $data['data'] = [];
+        }
+
+        $data['recordsTotal'] += $count;
+        $data['recordsFiltered'] += $count;
+        $data['data'] = array_merge($data['data'], $staticServices);
+
+        return json_encode($data);
+
+    }
 
     function getSelects($contractor_id, $contractor_type, $type)
     {
@@ -156,17 +191,27 @@ class ModelContractor extends ModelContractors
         $colNames = $this->{'contractor_'.$type.'_columns_names'};
         $primary = $this->{'contractor_'.$type.'_primary'};
 
-        $ssp = $this->getSspComplexJson($table, $primary, $columns, null, null,
-            $where);
+        $dynamicData = json_encode(['recordsFiltered' => 0, 'recordsTotal' => 0, 'data' => [], 'draw' => 1]);
+
+        if ($type == 'services') {
+            if ($contractor_type !== PAYMENT_CATEGORY_OTHER && $contractor_type !== PAYMENT_CATEGORY_SUPPLIER) {
+                $dynamicData = $this->getSspComplexJson($table, $primary, $columns,
+                    null, null, $where);
+            }
+            $ssp = $this->mergeWithStaticServices($contractor_type, $contractor_id, $dynamicData);
+        } else {
+            $ssp = $this->getSspComplexJson($table, $primary, $columns, null, null,
+                $where);
+        }
 
         $role = new Roles();
 
         $rowValues = json_decode($ssp, true)['data'];
         $ignoreArray = [];
         $columnNames = $role->returnModelNames($colNames, 'contractor');
+        $selects = [];
 
         if (!empty($rowValues)) {
-            $selects = [];
             foreach ($rowValues as $product) {
                 foreach ($product as $key => $value) {
                     if (!$value || $value == null)
@@ -183,8 +228,8 @@ class ModelContractor extends ModelContractors
                         $selects[$name][] = $value;
                 }
             }
-            return ['selects' => $selects, 'rows' => $rowValues];
         }
+        return ['selects' => $selects, 'rows' => $rowValues];
     }
 
     public function setSSPServicesValues($contractor_id, $contractor_type)
@@ -199,6 +244,7 @@ class ModelContractor extends ModelContractors
 
                 $this->contractor_services_where = ["order_items.status_id = " . ISSUED];
                 $this->contractor_services_where[] = "orders.client_id = $contractor_id";
+                $this->contractor_services_where[] = "order_items.manager_order_id IS NOT NULL";
 
                 $this->contractor_services_columns[] = array('dt' => 0,
                     'db' => "orders.order_id");
@@ -271,37 +317,10 @@ class ModelContractor extends ModelContractors
 
                 $this->contractor_services_primary = 'trucks.id';
                 break;
-            case PAYMENT_CATEGORY_OTHER:
-                $this->contractor_services_table = 'other ';
-                $this->contractor_services_table .= 'LEFT JOIN other_items ON (other_items.other_id = other.other_id)';
-
-                $this->contractor_services_where[] = "other.other_id = $contractor_id";
-
-                $this->contractor_services_columns[] = array('dt' => 0,
-                    'db' => "other_items.item_id");
-                $this->contractor_services_columns[] = array('dt' => 1,
-                    'db' => "other_items.name");
-                $this->contractor_services_columns[] = array('dt' => 2,
-                    'db' => "other_items.sum");
-                $this->contractor_services_columns[] = array('dt' => 3,
-                    'db' => "other_items.currency");
-                $this->contractor_services_columns[] = array('dt' => 4,
-                    'db' => "other_items.direction");
-
-                $this->contractor_services_columns_names = [
-                    '_item_id',
-                    'Name',
-                    'Sum',
-                    'Currency',
-                    'Direction',
-                ];
-
-                $this->contractor_services_primary = 'other_items.item_id';
-                break;
-
         }
 
-        $this->contractor_services_columns = $this->getColumns($this->contractor_services_columns, 'contractor', $this->tableNames[2]);
+        $this->contractor_services_columns = $this->getColumns($this->contractor_services_columns,
+            'contractor', $this->tableNames[2]);
 
     }
 
@@ -397,7 +416,7 @@ class ModelContractor extends ModelContractors
 
     }
 
-    public function addOtherItem($formData)
+    public function addServicesItem($formData)
     {
         foreach ($formData as $field => $value) {
             $formData[$field] = trim($value);
@@ -410,7 +429,7 @@ class ModelContractor extends ModelContractors
         $names = join('`,`', array_keys($formData));
         $vals = join("','", $formData);
 
-        $this->insert("INSERT INTO other_items (`$names`) VALUES ('$vals')");
+        $this->insert("INSERT INTO services_items (`$names`) VALUES ('$vals')");
 
     }
 

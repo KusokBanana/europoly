@@ -197,6 +197,7 @@ class PHPExcel_Cell
 	 */
 	public function getFormattedValue()
 	{
+	    set_time_limit(-1);
 		return (string) PHPExcel_Style_NumberFormat::toFormattedString(
 				$this->getCalculatedValue(),
 				$this->getWorksheet()->getParent()->getCellXfByIndex($this->getXfIndex())

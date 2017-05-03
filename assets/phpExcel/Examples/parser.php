@@ -3,15 +3,22 @@ function getXLS($xls){
     require_once dirname(__FILE__) . "/../Classes/PHPExcel/IOFactory.php";
     $objPHPExcel = PHPExcel_IOFactory::load($xls);
     $objPHPExcel->setActiveSheetIndex(0);
-//    $aSheet = $objPHPExcel->getActiveSheet();
 
+//    $aSheet = $objPHPExcel->getActiveSheet();
     $sheets = $objPHPExcel->getAllSheets();
 
     ini_set('memory_limit', '-1');
+    set_time_limit(0);
 
     //этот массив будет содержать массивы содержащие в себе значения ячеек каждой строки
     $array = array();
+    $i = 0;
     foreach ($sheets as $aSheet) {
+
+//        if ($i == 5)
+//            return $array;
+
+//        $i++;
         //получим итератор строки и пройдемся по нему циклом
         $header = [];
         foreach ($aSheet->getRowIterator() as $row) {
@@ -43,7 +50,7 @@ function getXLS($xls){
                 'article' => ['val' => isset($item['article']) ? $item['article'] : null, 'type' => 'string'],
                 'name' => ['val' => isset($item['name']) ? $item['name'] : null, 'type' => 'string'],
                 'category_id' => ['val' => isset($item['category_id']) ? $item['category_id'] : null, 'type' => 'int'],
-                'brand' => ['val' => isset($item['brand']) ? $item['brand'] : null], 
+                'brand' => ['val' => isset($item['brand']) ? $item['brand'] : null],
                 'country' => ['val' => isset($item['country']) ? $item['country'] : null, 'type' => 'string'],
                 'collection' => ['val' => isset($item['collection']) ? $item['collection'] : null, 'type' => 'string'],
                 'wood_id' => ['val' => isset($item['wood_id']) ? $item['wood_id'] : null, 'type' => 'int'],
@@ -84,9 +91,9 @@ function getXLS($xls){
                 'units_rus' => ['val' => isset($item['units_rus']) ? $item['units_rus'] : null, 'type' => 'string'],
                 'packing_type_rus' => ['val' => isset($item['packing_type_rus']) ? $item['packing_type_rus'] : null, 'type' => 'string'],
                 'sell_price' => ['val' => isset($item['sell_price']) ? $item['sell_price'] : null, 'type' => 'float'],
-                'image_id_A' => ['val' => isset($item['image_id_A']) ? $item['image_id_A'] : null, 'type' => 'int'],
-                'image_id_B' => ['val' => isset($item['image_id_B']) ? $item['image_id_B'] : null, 'type' => 'int'],
-                'image_id_V' => ['val' => isset($item['image_id_V']) ? $item['image_id_V'] : null, 'type' => 'int'],
+//                'image_id_A' => ['val' => isset($item['image_id_A']) ? $item['image_id_A'] : null, 'type' => 'string'],
+//                'image_id_B' => ['val' => isset($item['image_id_B']) ? $item['image_id_B'] : null, 'type' => 'string'],
+//                'image_id_V' => ['val' => isset($item['image_id_V']) ? $item['image_id_V'] : null, 'type' => 'string'],
                 'grading_id' => ['val' => isset($item['grading_id']) ? $item['grading_id'] : null, 'type' => 'int'],
                 'texture_id' => ['val' => isset($item['texture_id']) ? $item['texture_id'] : null, 'type' => 'int'],
                 'texture2_id' => ['val' => isset($item['texture2_id']) ? $item['texture2_id'] : null, 'type' => 'int'],
@@ -113,7 +120,7 @@ function getXLS($xls){
     return $array;
 }
 global $parser;
-$parser = getXLS(dirname(__FILE__) . '/../products_13.04.xlsx'); //извлеаем данные из XLS
+$parser = getXLS(dirname(__FILE__) . '/../products_24_04_v3.xlsx'); //извлеаем данные из XLS
 
 function setHeader(&$header, $value, $cellNumber) {
     switch($value) {
@@ -246,15 +253,15 @@ function setHeader(&$header, $value, $cellNumber) {
         case 'Розничная цена/ Retail price':
             $header[$cellNumber] = 'sell_price';
             break;
-        case 'Фото вблизи (А)':
-            $header[$cellNumber] = 'image_id_A';
-            break;
-        case 'Фото издалека (Б)':
-            $header[$cellNumber] = 'image_id_B';
-            break;
-        case 'Фото под углом (В)':
-            $header[$cellNumber] = 'image_id_V';
-            break;
+//        case 'Фото вблизи (А)':
+//            $header[$cellNumber] = 'image_id_A';
+//            break;
+//        case 'Фото издалека (Б)':
+//            $header[$cellNumber] = 'image_id_B';
+//            break;
+//        case 'Фото под углом (В)':
+//            $header[$cellNumber] = 'image_id_V';
+//            break;
         case 'Селекция КОД':
             $header[$cellNumber] = 'grading_id';
             break;

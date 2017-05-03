@@ -27,11 +27,19 @@ class ControllerAccountant extends Controller
 
 //        require dirname(__FILE__) . "/../../assets/phpExcel/Examples/parser.php";
 
-//        require dirname(__FILE__) . "/../../assets/phpExcel/Examples/expenses_parser.php";
+//        $file = dirname(__FILE__) . "/pars.txt";
 
-//        $this->model->initCatalogueParser($parser, true);
+//        $fd = fopen($file, 'w') or die("не удалось создать файл");
+//        $str = json_encode($parser);
+//        fwrite($fd, $str);
+//        fclose($fd);
+//        echo '<br><br>Job Is Done';
+//        die();
+        require dirname(__FILE__) . "/../../assets/phpExcel/Examples/expenses_parser.php";
 
-//        $this->model->initParser($parser);
+//        $this->model->initCatalogueParser($parser, false);
+
+        $this->model->initParser($parser);
 
     }
 
@@ -140,4 +148,12 @@ class ControllerAccountant extends Controller
         $this->model->getDTPayments($_GET, $print);
 
     }
+
+    function action_financial_reports()
+    {
+
+
+
+    }
+
 }

@@ -15,7 +15,6 @@ class ControllerClient extends Controller
             $this->getAccess('client', 'v');
             if ($id == 'new') {
                 $this->view->title = 'New Client';
-                $this->view->commission_agents = $this->model->getCommissionAgentsIdName();
             } else {
                 $this->view->client = $this->model->getClient($id);
                 $this->view->title = $this->view->client['name'];
@@ -31,6 +30,7 @@ class ControllerClient extends Controller
                     $this->getAccess('none', 'v');
                 }
             }
+            $this->view->commission_agents = $this->model->getCommissionAgentsIdName();
             $this->view->managers = $this->model->getSalesManagersIdName();
             $this->view->clients = $this->model->getClientsIdName();
             $this->view->build('templates/template.php', 'single_client.php');
@@ -105,7 +105,7 @@ class ControllerClient extends Controller
 
         require dirname(__FILE__) . "/../../dump_db/parsers/clients.php";
 
-        $parser = getXLS('clients.xlsx'); //извлеаем данные из XLS
+        $parser = getXLS('clients_v3.xlsx'); //извлеаем данные из XLS
 
         $this->model->importClients($parser, true);
 

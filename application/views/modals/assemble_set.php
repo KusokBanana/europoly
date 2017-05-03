@@ -55,11 +55,11 @@
                                                     'Select product in the table above:'
                                                 ],
                                                 'ajax' => [
-                                                    'url' => "/catalogue/dt"
+                                                    'url' => "/warehouse/dt_modal_products?table_id=" .
+                                                        $this->tableData['warehouse_modal_assemble']['table_id']
                                                 ],
                                                 'click_url' => "#",
                                                 'select' => 'single',
-                                                'global' => 'assembleGlobalTable',
                                                 'method' => 'POST',
                                             ], $this->tableData['warehouse_modal_assemble']);
                                             include 'application/views/templates/table.php'
@@ -164,8 +164,12 @@
 </div>
 <script>
     $(document).ready(function() {
-        var progressBar = $('#assemble-set').find('.progress-bar-success');
+        var modal = $('#assemble-set');
+        var progressBar = modal.find('.progress-bar-success');
         progressBar.width(33 + '%');
+        var submitBtn = modal.find('form').find('.button-submit').hide();
+        var prevBtn = modal.find('form').find('.button-previous').hide();
+        var nextBtn = modal.find('form').find('.button-next');
 
         $('#table_warehouses_products').find('tbody').on('click', 'tr td:first-child', function (e) {
             var selectedRows = $('#table_warehouses_products').find('.selected');
@@ -182,14 +186,13 @@
             }
         });
 
-        $('#assemble-set').on('click', '.form-actions .button-next', function() {
+        modal.on('click', '.form-actions .button-next', function() {
             var active = $('#assemble-set').find('.nav-pills').find('li.active');
             if (active.index() < 2) {
                 active.next().find('a[data-toggle="tab"]').tab('show');
             }
         }).on('click', '.form-actions .button-previous', function() {
             var active = $('#assemble-set').find('.nav-pills').find('li.active');
-            console.log(active.index())
             if (active.index() > 0) {
                 active.prev().find('a[data-toggle="tab"]').tab('show');
             }
@@ -197,7 +200,7 @@
             var selectorTab = $(this).attr('href');
             var can = 1;
             var firstTable = $('#table_warehouses_products');
-            var secondTable = $('#table_assembles_assemble_set');
+            var secondTable = $('#warehouse_modal_assemble');
             var $table_source = $("#table_assemble_set_source");
             var $table_result = $("#table_assemble_set_result");
             var sourceProducts = firstTable.attr('data-selected');
@@ -207,16 +210,19 @@
                 can = 2;
             if (resultProduct !== undefined && resultProduct)
                 can = 3;
-            if ($table_source.hasClass('dataTable') && can == 3)
+            if ($table_source.hasClass('dataTable') && can === 3)
                 can = 4;
 
-            if (selectorTab == '#tab1') {
+            if (selectorTab === '#tab1') {
                 if (can < 2) {
                     return false;
                 } else {
+                    submitBtn.hide();
+                    prevBtn.hide();
+                    nextBtn.show();
                     progressBar.width(33 + '%');
                 }
-            } else if (selectorTab == '#tab2') {
+            } else if (selectorTab === '#tab2') {
                 if (can < 3) {
                     $('.error-choose-products').show();
                     return false;
@@ -226,6 +232,9 @@
                         $table_source.attr('data-products') != sourceProducts) {
                         $table_source.dataTable().fnDestroy();
                     }
+                    submitBtn.hide();
+                    prevBtn.show();
+                    nextBtn.show();
                     if (!$table_source.hasClass('dataTable')) {
 
                         $table_source.attr('data-products', sourceProducts);
@@ -326,19 +335,17 @@
                                 });
                             }
                         }
-
                         function getColumnValue(name) {
-                            var index =$('#table_assembles_assemble_set_columns_choose').find(':contains('+name+')')
+                            var index =$('#warehouse_modal_assemble_columns_choose').find(':contains('+name+')')
                                 .closest('label').find('input').attr('data-column');
-                            // TODO change this from global
-                            return assembleGlobalTable.rows('.selected').data()[0][index];
+                            return secondTable.DataTable().rows('.selected').data()[0][index];
                         }
 
                     }
                     $('.progress-bar-success').width(66 + '%');
                 }
 
-            } else if (selectorTab == '#tab3') {
+            } else if (selectorTab === '#tab3') {
                 if (can < 4) {
                     return false;
                 } else {
@@ -353,6 +360,9 @@
                     $('.assemble-final-source').empty().append(tableSource);
                     $('.assemble-final-result').empty().append(tableResult);
                     progressBar.width(100 + '%');
+                    submitBtn.show();
+                    prevBtn.show();
+                    nextBtn.hide();
 
                     var sourceAnchors = $table_source.find('.x-assemble-amount');
                     var inputsBlock = $('#tab3').find('.assemble-inputs-block');
@@ -360,7 +370,7 @@
                     $.each(sourceAnchors, function() {
                         var name = 'Assemble[warehouse][' + $(this).attr('data-pk') + ']',
                             value = $(this).editable('getValue', true);
-                        if (!name || !value || name == undefined || value == undefined)
+                        if (!name || !value || name === undefined || value === undefined)
                             return;
                         var input = '<input type="hidden" name="'+ name +'" value="'+value+'"/>';
                         inputsBlock.append(input);

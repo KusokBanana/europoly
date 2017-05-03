@@ -62,13 +62,13 @@ $isNewClient = !isset($this->client['client_id']);
                     </button>
                 </div>
                 <div class="portlet-body">
-                    <?php if ($isNewClient): ?>
                         <h4 class="sbold">General Client Data</h4>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="name">Name</label>
-                                    <input name="name" id="name" class="form-control" required>
+                                    <input name="name" id="name" value="<?= isset($this->client['name']) ?
+                                        $this->client['name'] : '' ?>" class="form-control" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="commission_agent_id">Commission agent</label>
@@ -76,18 +76,32 @@ $isNewClient = !isset($this->client['client_id']);
                                             id="commission_agent_id" class="form-control select2-select">
                                         <option selected value="">no commission agent</option>
                                         <?php
-                                        foreach ($this->commission_agents as $commission_agent) {
-                                            echo "<option value='{$commission_agent["client_id"]}'>
-                                                        {$commission_agent["name"]}
-                                                    </option>";
-                                        }
-                                        ?>
+                                        foreach ($this->commission_agents as $commission_agent): ?>
+                                            <option value="<?= $commission_agent['client_id'] ?>"
+                                                <?php if (isset($this->client['commission_agent_id']) &&
+                                                    $this->client['commission_agent_id'] == $commission_agent['client_id'])
+                                                    echo ' selected ';
+                                                ?>>
+                                                <?= $commission_agent["name"]; ?>
+                                            </option>
+                                        <?php endforeach; ?>
                                     </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="second_name">Second Name</label>
+                                    <input name="second_name" id="second_name" value="<?= isset($this->client['second_name']) ?
+                                        $this->client['second_name'] : '' ?>" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="final_name">Final Name</label>
+                                    <input name="final_name" id="final_name" value="<?= isset($this->client['final_name']) ?
+                                        $this->client['final_name'] : '' ?>" class="form-control">
                                 </div>
                             </div>
                         </div>
                         <hr>
-                    <?php endif; ?>
                     <h4 class="sbold">General Contractor Data</h4>
                     <div class="row">
                         <div class="col-md-4">
@@ -135,6 +149,15 @@ $isNewClient = !isset($this->client['client_id']);
                                             $this->client['inn'] : '' ?>">
                             </div>
                         </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="client_category_2">Category 2</label>
+                                <input type="text" name="client_category_2"
+                                       id="client_category_2" class="form-control"
+                                       value="<?= isset($this->client['client_category_2']) ?
+                                           $this->client['inn'] : '' ?>">
+                            </div>
+                        </div>
                     </div>
                     <hr>
                     <div class="row">
@@ -177,14 +200,20 @@ $isNewClient = !isset($this->client['client_id']);
                             </div>
                             <div class="form-group">
                                 <label for="sales_manager_id">Responsible Manager</label>
-                                <select class="form-control select2-select" id="sales_manager_id" name="sales_manager_id">
+                                <select class="form-control select2-select"
+                                        id="sales_manager_id"
+                                        name="sales_manager_id">
                                     <option></option>
                                     <?php if (!empty($this->managers)): ?>
                                         <?php foreach ($this->managers as $manager): ?>
                                             <option value="<?= $manager['user_id'] ?>"
-                                                <?= (isset($this->client['sales_manager_id']) &&
-                                                    $this->client['sales_manager_id'] == $manager['user_id'])
-                                                    ? ' selected ' : ''?>>
+                                                <?php if (isset($this->client['sales_manager_id']) &&
+                                                    $this->client['sales_manager_id'] == $manager['user_id']) {
+                                                    echo ' selected ';
+                                                } elseif($this->user->user_id == $manager['user_id']) {
+                                                    echo ' selected ';
+                                                }
+                                                ?>>
                                                 <?= $manager['name']; ?>
                                             </option>
                                         <?php endforeach; ?>
@@ -264,6 +293,35 @@ $isNewClient = !isset($this->client['client_id']);
                                        value="<?= isset($this->client['needful_actions']) ?
                                            $this->client['needful_actions'] : ''  ?>"
                                        class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="legal_name">Legal Name</label>
+                                <input name="legal_name" id="legal_name"
+                                       value="<?= isset($this->client['legal_name']) ?
+                                           $this->client['legal_name'] : ''  ?>"
+                                       class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="design_buro">Design Buro</label>
+                                <input name="design_buro" id="design_buro"
+                                       value="<?= isset($this->client['design_buro']) ?
+                                           $this->client['design_buro'] : ''  ?>"
+                                       class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="is_agree_for_formation">Agree to receive in formation by e-mail</label>
+                                <select class="form-control" id="is_agree_for_formation" name="is_agree_for_formation">
+                                    <?php $is_agree = [ 'Да' => 1, 'Нет' => 0] ?>
+                                    <option></option>
+                                    <?php foreach ($is_agree as $stringValue => $value): ?>
+                                        <option value="<?= $value ?>"
+                                            <?= (isset($this->client['is_agree_for_formation']) &&
+                                                $this->client['is_agree_for_formation'] == $value) ?
+                                                ' selected ' : ''?>>
+                                            <?= $stringValue ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -555,8 +613,8 @@ $isNewClient = !isset($this->client['client_id']);
                 var needToSave = false;
                 window.onbeforeunload = function (e) {
                     // Ловим событие для Interner Explorer
-                    var e = e || window.event;
-                    if ($(e.target.activeElement).attr('type') == 'submit' ||
+                    e = e || window.event;
+                    if ($(e.target.activeElement).attr('type') === 'submit' ||
                         $(e.target.activeElement).hasClass('form-control'))
                         return;
                     if (!needToSave)

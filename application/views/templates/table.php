@@ -124,25 +124,26 @@
     }
 </style>
 <?php
+$hidden = [];
 if ($hidden_by_default) {
-    $hidden = json_decode($hidden_by_default, true);
-    if (!empty($hidden)) {
-        if ($mustHidden) {
-            if (is_array($mustHidden)) {
-                $hidden = array_merge($hidden, $mustHidden);
-            } else {
-                $hidden[] = $mustHidden;
-            }
-            $hidden = array_unique($hidden);
-        }
-        foreach ($hidden as $key => $value) {
-            if (!isset($column_names[$value]))
-                unset($hidden[$key]);
-        }
-        $hidden_by_default = json_encode($hidden);
+    $hidden_by_default = json_decode($hidden_by_default, true);
+    $hidden = array_merge($hidden, $hidden_by_default);
+}
+if ($mustHidden) {
+    if (is_array($mustHidden)) {
+        $hidden = array_merge($hidden, $mustHidden);
+    } else {
+        $hidden[] = $mustHidden;
+    }
+    $hidden = array_unique($hidden);
+}
+if (!empty($hidden)) {
+    foreach ($hidden as $key => $value) {
+        if (!isset($column_names[$value]))
+            unset($hidden[$key]);
     }
 }
-
+$hidden_by_default = json_encode($hidden);
 
 ?>
 <script>
@@ -218,6 +219,18 @@ if ($hidden_by_default) {
             }
             reOrderColumns();
 
+            // resize top scroll after load data
+            var topScroll = $('.top-scroll');
+            if (topScroll.length) {
+                $.each(topScroll, function() {
+                    var scroll = $(this);
+                    var fake = scroll.find('.fake');
+                    var tableWrapper = scroll.next('div');
+                    scroll.width(tableWrapper.width());
+                    fake.width(tableWrapper.find('table').width());
+                })
+            }
+
         });
 
         $table.on( 'order.dt', function () {
@@ -272,9 +285,10 @@ if ($hidden_by_default) {
             });
 
             function keyUpChangeHandler(event) {
-                if (event.data.column.search() !== this.value) {
-                    event.data.column.search(this.value).draw();
-                    if (!this.value) {
+                if (event.data.column.search() !== $(this).val()) {
+                    event.data.column.search($(this).val()).draw();
+                    table.draw();
+                    if (!$(this).val()) {
                         filterSelectsValues($(this))
                     }
                 }
@@ -408,18 +422,17 @@ if ($hidden_by_default) {
 
         }
 
-        // TODO maybe replace this 'cause this doesn't need because of we use all labels
         function addTabsFilters(filter) {
             if (filterTabsBlock.length) {
                 var activeTab = filterTabsBlock.find('li:not(.dropdown).active a.tab-filter');
                 if (activeTab.length) {
                     var filterName = activeTab.attr('data-filter-name');
                     var filterValue = activeTab.attr('data-filter-value');
-                    if (filterName == 'category_id' && filterValue == '0')
+                    if (filterName === 'category_id' && filterValue === '0')
                         return;
-
                     var filterId = hiddenTabFilters[filterName];
-                    filter[filterId] = filterValue;
+                    var realIndex = getRealIndex(filterId);
+                    filter[realIndex] = filterValue;
                 }
             }
 
@@ -432,7 +445,7 @@ if ($hidden_by_default) {
 
         function onSelectEditable(e, li) {
             e.stopPropagation();
-            if (li == undefined)
+            if (li === undefined)
                 return false;
             var value = $(this).val();
             var index = $(this).closest('th').attr('data-column-index');
@@ -465,8 +478,7 @@ if ($hidden_by_default) {
             $.each(editableSelects, function() {
                 if ($(this).val()) {
                     var index = $(this).closest('th').attr('data-header-id');
-                    var realIndex = $('#'+$table.attr('id')+'_columns_choose.order-columns-block')
-                        .find('label input[data-column="'+index+'"]').attr('data-original-column-id');
+                    var realIndex = getRealIndex(index);
                     filter[realIndex] = $(this).val();
                 }
             });
@@ -509,8 +521,7 @@ if ($hidden_by_default) {
                             return;
                         }
                     }
-                    var realIndex = $('#'+$table.attr('id')+'_columns_choose.order-columns-block')
-                        .find('label input[data-column="'+currentIndex+'"]').attr('data-original-column-id');
+                    var realIndex = getRealIndex(currentIndex);
 
                     if (row[realIndex]) {
                         var currentValue = row[realIndex];
@@ -788,6 +799,11 @@ if ($hidden_by_default) {
             }
 
         })
+
+        function getRealIndex(index) {
+            return $('#'+$table.attr('id')+'_columns_choose.order-columns-block')
+                .find('label input[data-column="'+index+'"]').attr('data-original-column-id');
+        }
 
     });
 

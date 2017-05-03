@@ -4,7 +4,7 @@ class ModelClients extends Model
 {
     var $client_columns = [
         array('dt' => 0, 'db' => "clients.client_id"),
-        array('dt' => 1, 'db' => "clients.name"),
+        array('dt' => 1, 'db' => "clients.final_name"),
         array('dt' => 2, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-sales_manager\" data-pk=\"', 
             clients.client_id ,'\" data-name=\"sales_manager_id\" data-value=\"', clients.sales_manager_id, '\"
             data-url=\"/clients/change_item_field\" data-original-title=\"Change Manager\">', managers.first_name, ' ', 
@@ -35,7 +35,13 @@ class ModelClients extends Model
         array('dt' => 24, 'db' => "clients.samples_position"),
         array('dt' => 25, 'db' => "clients.needful_actions"),
         array('dt' => 26, 'db' => "clients.comments"),
-        array('dt' => 27, 'db' => "clients.type"),
+        array('dt' => 27, 'db' => "clients.legal_name"),
+        array('dt' => 28, 'db' => "clients.type"),
+        array('dt' => 29, 'db' => "clients.design_buro"),
+        array('dt' => 30, 'db' => "clients.second_name"),
+        array('dt' => 31, 'db' => "clients.client_category_2"),
+        array('dt' => 32, 'db' => "IF(clients.is_agree_for_formation IS NOT NULL, 
+        IF(clients.is_agree_for_formation, 'Yes', 'No'), '')"),
 
     ];
 
@@ -67,7 +73,12 @@ class ModelClients extends Model
         'Samples Position',
         'Needful Actions',
         'Comments',
-        '_type'
+        'Legal Name',
+        '_type',
+        'Design Buro',
+        'Second Name',
+        'Client Category 2',
+        'Is Agree for Formation',
     ];
 
     var $client_table = 'clients
@@ -94,8 +105,8 @@ class ModelClients extends Model
         }
 
         $ssp = [
-            'columns' => $this->client_columns,
-            'columns_names' => $this->client_column_names,
+            'columns' => $this->getColumns($this->client_columns, 'clients', 'table_clients'),
+            'columns_names' => $this->getColumns($this->client_columns, 'clients', 'table_clients', true),
             'db_table' => $this->client_table,
             'page' => 'clients',
             'table_name' => 'table_clients',

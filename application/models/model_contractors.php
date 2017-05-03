@@ -32,7 +32,12 @@ class ModelContractors extends ModelClients
         'Samples Position',
         'Needful Actions',
         'Comments',
+        'Legal Name',
         'Type',
+        'Design Buro',
+        'Second Name',
+        'Client Category 2',
+        'Is Agree for Formation',
         'Delete',
     ];
 
@@ -41,9 +46,10 @@ class ModelContractors extends ModelClients
 
         $columns = $this->client_columns;
         $columns[1]['db'] = "CONCAT('<a href=\"/contractor?id=', clients.client_id, 
-            '&type=', '".PAYMENT_CATEGORY_CLIENT."', '\">', clients.name, '</a>')";
+            '&type=', '".PAYMENT_CATEGORY_CLIENT."', '\">', clients.final_name, '</a>')";
+        $count = count($columns);
         array_push($columns,
-            array('dt' => 28, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
+            array('dt' => $count, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
                         CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to delete the client?\" 
                                    href=\"/contractors/delete?id=', clients.client_id, '&type=clients', '\" 
                                    class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" 

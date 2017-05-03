@@ -194,24 +194,24 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                                     value = (sumValue / currencyRateValue).format(2);
 //                                                    value = (sumValue / currencyRateValue).format(2);
                                                     sumInEurInput.val(value);
-                                                } else if (sumInEurValue != 0) {
+                                                } /*else if (sumInEurValue != 0) {
                                                     value = (sumValue) ? (sumInEurValue / sumValue).format(4) : 0;
 //                                                    value = (sumValue / sumInEurValue).format(4);
                                                     currencyRateInput.val(value);
                                                     value = (courseValue) ? ((currencyRateValue / courseValue - 1) * 100).format(2) : 0;
                                                     exchangeCommissionInput.val(value);
-                                                }
+                                                }*/
                                                 sumInput.val(sumValue.format(2));
                                                 break;
                                             case 'currency_rate':
-                                                if (sumValue != 0) {
-                                                    value = (currencyRateValue) ? (sumValue / currencyRateValue).format(2) : 0;
-//                                                    value = (currencyRateValue) ? (sumValue / currencyRateValue).format(2) : 0;
-                                                    sumInEurInput.val(value);
-                                                } else if (sumInEurValue != 0) {
+                                                if (sumInEurValue !== 0) {
                                                     value = (sumInEurValue / currencyRateValue).format(2);
 //                                                    value = (currencyRateValue * sumInEurValue).format(2);
                                                     sumInput.val(value);
+                                                } else if (sumValue !== 0) {
+                                                    value = (currencyRateValue) ? (sumValue / currencyRateValue).format(2) : 0;
+//                                                    value = (currencyRateValue) ? (sumValue / currencyRateValue).format(2) : 0;
+                                                    sumInEurInput.val(value);
                                                 }
 //                                                value = (courseValue) ? ((1 / (courseValue - 1) * currencyRateValue ) * 100).format(2) : 0;
                                                 value = (courseValue) ? ((currencyRateValue / courseValue - 1) * 100).format(2) : 0;
@@ -219,14 +219,14 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                                 currencyRateInput.val(currencyRateValue.format(4));
                                                 break;
                                             case 'sum_in_eur':
-                                                if (sumValue != 0) {
-//                                                    value = (sumInEurValue) ? (sumInEurValue / sumValue).format(4) : 0;
-                                                    value = (sumInEurValue) ? (sumValue / sumInEurValue).format(4) : 0;
-                                                    currencyRateInput.val(value);
-//                                                    value = (courseValue) ? ((1 / (courseValue - 1) * currencyRateValue) * 100).format(2) : 0;
-                                                    value = (courseValue) ? ((currencyRateValue / courseValue - 1) * 100).format(2) : 0;
-                                                    exchangeCommissionInput.val(value);
-                                                } else if (currencyRateValue != 0) {
+                                                //if (sumValue != 0) {
+//                                                //    value = (sumInEurValue) ? (sumInEurValue / sumValue).format(4) : 0;
+                                                    //value = (sumInEurValue) ? (sumValue / sumInEurValue).format(4) : 0;
+                                                    //currencyRateInput.val(value);
+//                                                    //value = (courseValue) ? ((1 / (courseValue - 1) * currencyRateValue) * 100).format(2) : 0;
+                                                   // value = (courseValue) ? ((currencyRateValue / courseValue - 1) * 100).format(2) : 0;
+                                                   // exchangeCommissionInput.val(value);
+                                                /*} else*/ if (currencyRateValue != 0) {
                                                     value = (sumInEurValue * currencyRateValue).format(2);
 //                                                    value = (sumInEurValue * currencyRateValue).format(2);
                                                     sumInput.val(value);
@@ -609,6 +609,13 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                         var date = $('#date').val();
                                         var currency = $('#currency').val();
                                         var course = $('#course');
+                                        var sumInEurInput = $('#sum_in_eur'),
+                                            sumInEurValue = +sumInEurInput.val().split(',').join('.').split(' ').join(''),
+                                            sumInput = $('#sum'),
+                                            sumValue = +sumInput.val().split(',').join('.').split(' ').join(''),
+                                            currencyRateInput = $('#currency_rate'),
+                                            currencyRateValue = +currencyRateInput.val().split(',').join('.').split(' ').join('');
+
                                         if (date && currency) {
                                             $.ajax({
                                                 url: '/payment/get_currency',
@@ -623,10 +630,17 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                                         value = parseFloat(1/data).format(4);
                                                     }
                                                     course.val(value);
-                                                    if (isFirst) {
+                                                    if (isFirst && currencyRateValue !== 0) {
                                                         value = ($('#currency_rate').val() / $('#course').val() - 1) * 100;
                                                         $('#exchange_commission').val(value.format(2))
+                                                    } else if (currencyRateValue === 0) {
+                                                        var val = 0;
+                                                        $('#exchange_commission').val(val.format(2));
                                                     }
+//                                                    if (sumInEurValue !== 0 && currencyRateValue !== 0) {
+//                                                        value = sumInEurValue / currencyRateValue;
+//                                                        sumInput.val(value.format(2));
+//                                                    }
                                                     course.trigger('change');
                                                 }
                                             })

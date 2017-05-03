@@ -38,7 +38,8 @@
                                             'Select product in the table above:'
                                         ],
                                         'ajax' => [
-                                            'url' => "/catalogue/dt"
+                                            'url' => "/warehouse/dt_modal_products?table_id=" .
+                                                $this->tableData['warehouse_modal_new_product']['table_id']
                                         ],
                                         'click_url' => "#",
                                         'method' => "POST",
@@ -83,20 +84,6 @@
                                         <input type="hidden" name="warehouse_id" value="<?= $this->warehouse['warehouse_id'] ?>">
                                     <?php endif; ?>
                                     <div class="row">
-
-<!--                                        <div class="col-md-6">-->
-<!--                                            <div class="form-group">-->
-<!--                                                <label>Quantity</label>-->
-<!--                                                <input name="amount" class="form-control" type="number" step="0.01">-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                        <div class="col-md-6">-->
-<!--                                            <div class="form-group">-->
-<!--                                                <label>Buy price</label>-->
-<!--                                                <input name="buy_price" class="form-control" type="number" step="0.01">-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                        <input id="field_product_id" type="hidden" name="product_ids">-->
                                         <div class="new-product-warehouse-inputs-block"></div>
                                     </div>
                                 </div>
@@ -133,7 +120,7 @@
         var prevBtn = modal.find('form').find('.button-previous').hide();
         var nextBtn = modal.find('form').find('.button-next');
 
-        $table_product_warehouse = $('#table_product_warehouse_modal');
+        $table_product_warehouse = $('#warehouse_modal_new_product');
         modal.on('click', '.form-actions .button-next', function() {
             var active = modal.find('.nav-pills').find('li.active');
             if (active.index() < 2) {

@@ -186,7 +186,7 @@ class ModelWarehouse extends ModelManagers_orders
             $ssp['columns'], $input, null, $where);
     }
 
-    function getSelects($warehouse_id = 0)
+    function getSelects($warehouse_id = 0, $table_id)
     {
         if (!$warehouse_id) {
             $where = ['products_warehouses.warehouse_id IS NOT NULL'];
@@ -194,10 +194,23 @@ class ModelWarehouse extends ModelManagers_orders
             $where = ["products_warehouses.warehouse_id = $warehouse_id"];
         }
 
+        $where[] = "products_warehouses.status_id <> " . ISSUED;
+        switch ($table_id) {
+            case 'table_warehouses_products':
+                $where[] = $this->where;
+                break;
+            case 'table_warehouses_products_issue':
+                $where[] = $this->where_issue;
+                break;
+            case 'table_warehouses_products_reserved':
+                $where[] = $this->where_reserve;
+                break;
+        }
+
         if ($this->user->role_id == ROLE_SALES_MANAGER) {
             $where[] = "(orders.sales_manager_id = " . $this->user->user_id . ' OR '.
-                " client.sales_manager_id = $this->user->user_id ".
-                " OR client.operational_manager_id = $this->user->user_id " .
+                " client.sales_manager_id = " . $this->user->user_id .
+                " OR client.operational_manager_id = " . $this->user->user_id .
                 ' OR products_warehouses.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
         }
         if ($_SESSION['perm'] <= SALES_MANAGER_PERM) {
@@ -208,7 +221,7 @@ class ModelWarehouse extends ModelManagers_orders
         $ssp = $this->getSspComplexJson($this->products_warehouses_table, "products_warehouses.item_id",
             $columns, null, null, $where);
 
-        $columnNames = $this->getColumns($this->product_warehouses_column_names, 'warehouse', $this->tableName, true);
+        $columnNames = $this->getColumns($this->product_warehouses_column_names, 'warehouse', $table_id, true);
 
         $rowValues = json_decode($ssp, true)['data'];
         $ignoreArray = ['Id', 'Quantity', 'Buy Price', 'Buy + Transport + Taxes', 'Sell Price',
@@ -233,9 +246,67 @@ class ModelWarehouse extends ModelManagers_orders
                         $selects[$name][] = $value;
                 }
             }
+            return ['selectSearch' => $selects, 'filterSearchValues' => $rowValues];
+        }
+        return ['selectSearch' => [], 'filterSearchValues' => []];
+    }
+
+    function getModalSelects($table_id)
+    {
+
+        $columns = $this->getColumns($this->full_product_columns, 'warehouse', $table_id);
+        $ssp = $this->getSspComplexJson($this->full_products_table, "product_id", $columns, 'products.is_deleted = 0');
+        $columnNames = $this->getColumns($this->full_product_column_names, 'warehouse', $table_id, true);
+
+        $rowValues = json_decode($ssp, true)['data'];
+        $ignoreArray = ['_product_id', 'Name', 'Article', 'Thickness', 'Width', 'Length',
+            'Weight', 'Quantity in 1 Pack', 'Purchase price', 'Supplier\'s discount',
+            'Margin', 'Sell',/* TODO */ 'image_id_A', 'image_id_B', 'image_id_V', 'amount_of_units_in_pack',
+            'visual_name', 'amount_of_packs_in_pack', 'Visual Name'];
+
+        if (!empty($rowValues)) {
+            $selects = [];
+            foreach ($rowValues as $product) {
+                foreach ($product as $key => $value) {
+                    if (!$value || $value == null)
+                        continue;
+                    $name = $columnNames[$key];
+                    if (in_array($name, $ignoreArray))
+                        continue;
+
+                    preg_match('/<\w+[^>]+?[^>]+>(.*?)<\/\w+>/i', $value, $match);
+                    if (!empty($match) && isset($match[1])) {
+                        $value = $match[1];
+                    }
+
+                    if ((isset($selects[$name]) && !in_array($value, $selects[$name])) || !isset($selects[$name]))
+                        $selects[$name][] = $value;
+                }
+            }
             return ['selects' => $selects, 'rows' => $rowValues];
         }
+        return ['selects' => [], 'rows' => []];
     }
+
+
+    function getModalProducts($input, $table_id)
+    {
+        $where = ['products.is_deleted = 0'];
+        $columns = $this->getColumns($this->full_product_columns, 'warehouse', $table_id);
+        $colNames = $this->getColumns($this->full_product_column_names, 'warehouse', $table_id, true);
+
+        $ssp = [
+            'columns' => $columns,
+            'columns_names' => $colNames,
+            'db_table' => $this->full_products_table,
+            'page' => 'warehouse',
+            'table_name' => $table_id,
+            'primary' => 'products.product_id',
+        ];
+
+        $this->sspComplex($ssp['db_table'], $ssp['primary'], $ssp['columns'], $input, null, $where);
+    }
+
 
     function addProductsWarehouse($products, $warehouse_id)
     {

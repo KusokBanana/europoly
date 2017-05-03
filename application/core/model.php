@@ -341,7 +341,7 @@ abstract class Model extends mysqli
 
     function getClientsOfSalesManager($sales_manager_id)
     {
-        return $this->getAssoc("SELECT client_id, name FROM clients WHERE sales_manager_id = $sales_manager_id OR operational_manager_id = $sales_manager_id");
+        return $this->getAssoc("SELECT client_id, final_name as name FROM clients WHERE sales_manager_id = $sales_manager_id OR operational_manager_id = $sales_manager_id");
     }
 
     public function updateOrderPayment($payment_id)
@@ -407,9 +407,15 @@ abstract class Model extends mysqli
                         $newColumns[] = $newColumn;
                     }
                 }
-                if (($count = count($columns) - count($columnsRightOrderForTable)) > 1) {
-                    for ($i=$count-2; $i >= 0; $i--) {
-                        $newColumn = $columns[count($columns)-$i-1];
+                $originKeys = array_keys($columns);
+                $reorderedKeys = array_values($columnsRightOrderForTable);
+                $notExistedKeys = array_diff($originKeys, $reorderedKeys);
+                if ($notExistedKeys && count($notExistedKeys) > 1) {
+                    foreach ($notExistedKeys as $notExistedKey) {
+                        if (!$notExistedKey)
+                            continue;
+
+                        $newColumn = $columns[$notExistedKey];
                         if (!$isNames) {
                             $newColumn['dt'] = count($newColumns);
                         }

@@ -112,7 +112,7 @@
                             <div class="portlet-title">
                                 <div class="caption font-dark">
                                     <i class="icon-settings font-dark"></i>
-                                    <span class="caption-subject bold uppercase"> Contractors </span>
+                                    <span class="caption-subject bold uppercase"> <?= $this->title ?> </span>
                                 </div>
                             </div>
                             <div class="tabbable-line tabbable-custom-profile">
@@ -182,13 +182,10 @@
                                         <div class="portlet-body">
                                             <?php
                                             if ($this->isServices) {
-                                                $buttons = [];
-                                                if ($this->contractor["contractor_type"] == PAYMENT_CATEGORY_OTHER) {
-                                                    $buttons = [
-                                                        '<a href="#new_other" class="btn btn-primary" '.
-                                                        'data-toggle="modal">Add new</a>'
-                                                    ];
-                                                }
+                                                $buttons = [
+                                                    '<a href="#new_other" class="btn btn-primary" '.
+                                                    'data-toggle="modal">Add new</a>'
+                                                ];
                                                 $table_data = [
                                                     'buttons' => $buttons,
                                                     'table_id' => $this->tableNames[2],
@@ -231,11 +228,11 @@
             <!-- Заголовок модального окна -->
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h4 class="modal-title">New Other Item</h4>
+                <h4 class="modal-title">New Services Item</h4>
             </div>
             <!-- Основное содержимое модального окна -->
             <div class="modal-body">
-                <form action="/contractor/new_other" id="newOtherForm" method="post">
+                <form action="/contractor/new_service" id="newOtherForm" method="post">
 
                     <label class="control-label" for="name">Name</label>
                     <input type="text" name="name" id="name" class="form-control" required>
@@ -261,7 +258,8 @@
                             </option>
                         <?php endforeach; ?>
                     </select>
-                    <input type="hidden" name="other_id" value="<?= $this->contractor["contractor_id"] ?>">
+                    <input type="hidden" name="contractor_id" value="<?= $this->contractor["contractor_id"] ?>">
+                    <input type="hidden" name="contractor_type" value="<?= $this->contractor_type ?>">
 
                 </form>
             </div>

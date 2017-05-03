@@ -392,4 +392,11 @@ class ModelAccountant extends Model
 
     }
 
+    function getFinancialData()
+    {
+
+
+
+    }
+
 }

@@ -20,7 +20,6 @@ class ControllerClients extends Controller
 
         $this->view->column_names = $this->model->getColumns($this->model->client_column_names,
             $this->page, 'table_clients', true);
-        $this->view->hidden_columns = $this->model->full_product_hidden_columns;
         $this->view->originalColumns = $roles->returnModelNames($this->model->client_column_names, $this->page);
 
         $array = $this->model->getSelects();
@@ -53,21 +52,6 @@ class ControllerClients extends Controller
 
         $this->model->getDTAllClients($_GET, $print);
     }
-
-//    function action_dt_end_customers()
-//    {
-//        $this->model->getDTEndCustomers($_GET);
-//    }
-//
-//    function action_dt_commission_agents()
-//    {
-//        $this->model->getDTCommissionAgents($_GET);
-//    }
-//
-//    function action_dt_dealers()
-//    {
-//        $this->model->getDTDealers($_GET);
-//    }
 
     function action_get_countries()
     {
