@@ -58,7 +58,7 @@
                                                         <th>Quantity</th>
                                                         <th>Units</th>
                                                         <th>Number of Packs</th>
-                                                        <th>Buy Price</th>
+                                                        <th>Purchase Price</th>
                                                         <th>Currency</th>
                                                     </tr>
                                                 </thead>
@@ -167,7 +167,7 @@
                                 ' data-original-title="Enter Number of Packs" data-name="NewWarehouseProduct['+id+'][number_of_packs]" ' +
                                 'data-pk="'+id+'" data-in-pack="'+quantityInPack+'" data-value="0">0</a></td>';
                             tr += '<td><a href="javascript:;" class="x-editable x-new-warehouse-product-price"' +
-                                ' data-original-title="Enter Buy Price" data-name="NewWarehouseProduct['+id+'][buy_price]" ' +
+                                ' data-original-title="Enter Purchase Price" data-name="NewWarehouseProduct['+id+'][purchase_price]" ' +
                                 'data-pk="'+id+'" data-value="0">0</a></td>';
                             tr += '<td>' + currency + '</td></tr>';
                         });

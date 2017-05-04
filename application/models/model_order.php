@@ -422,6 +422,9 @@ class ModelOrder extends Model
 
     public function updateOrderPrice($orderId)
     {
+        if (!$orderId || is_null($orderId))
+            return false;
+
         $orderItems = $this->getAssoc("SELECT * FROM order_items WHERE manager_order_id = $orderId");
         $totalPrice = 0;
         $totalCommission = 0;
@@ -503,6 +506,7 @@ class ModelOrder extends Model
     public function reserve($itemId, $reserved_item_id, $type)
     {
         $currentOrderItem = $this->getFirst("SELECT * FROM order_items WHERE item_id = $itemId");
+        $currentProductItem = $this->getFirst("SELECT * FROM products WHERE product_id = ${currentOrderItem['product_id']}");
         $reserved = $this->getFirst("SELECT * FROM order_items WHERE item_id = $reserved_item_id");
         if ($reserved && !empty($reserved)) {
 
@@ -519,7 +523,7 @@ class ModelOrder extends Model
 
                 $insertNames = '';
                 $insertValues = '';
-                $updateSellPrice = 0;
+//                $updateSellPrice = 0;
                 foreach ($currentOrderItem as $name => $value) {
                     if ($name != 'item_id') {
 
@@ -528,9 +532,9 @@ class ModelOrder extends Model
                         if ($name == 'status_id') {
                             $value = $reserved['status_id'];
                         }
-                        if ($name == 'sell_price') {
-                            $updateSellPrice = floatval($value);
-                        }
+//                        if ($name == 'sell_price') {
+//                            $updateSellPrice = floatval($value);
+//                        }
 
                         if (!$value || $value == null)
                             continue;
@@ -553,8 +557,8 @@ class ModelOrder extends Model
                       VALUES ($insertValues)");
 
                     // recalc parameters for current and new items (replace by updating amount instead)
-                    $this->updateItemField($itemId, 'sell_price', $updateSellPrice);
-                    $this->updateItemField($newOrderItemId, 'sell_price', $updateSellPrice);
+                    $this->updateItemField($itemId, 'sell_price', $currentOrderItem['sell_price']);
+                    $this->updateItemField($newOrderItemId, 'sell_price', $currentProductItem['sell_price']);
                 }
 
                 // Update reserved item in Source
@@ -575,6 +579,7 @@ class ModelOrder extends Model
 
                 $newAmount = $available - $ordered;
                 $this->update("UPDATE order_items SET amount = $newAmount WHERE item_id = $reserved_item_id");
+
                 $this->update("UPDATE order_items SET status_id = ${reserved['status_id']} WHERE item_id = $itemId");
                 $currentReservedSourceItem = $this->getFirst("SELECT * FROM order_items WHERE item_id = $reserved_item_id");
                 $insertNames = '';
@@ -602,6 +607,10 @@ class ModelOrder extends Model
                 if ($insertNames && $insertValues) {
                     $newSourceItemId = $this->insert("INSERT INTO order_items ($insertNames reserve_since_date, reserve_till_date)
                       VALUES ($insertValues NOW(), ADDDATE(NOW(), 7))");
+
+                    $this->updateItemField($newSourceItemId, 'sell_price', $currentProductItem['sell_price']);
+                    $this->updateItemField($newSourceItemId, 'amount', $ordered);
+                    $this->updateItemField($reserved_item_id, 'amount', $newAmount);
                 }
 
             }

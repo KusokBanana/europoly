@@ -33,7 +33,8 @@ class ModelWarehouse extends ModelManagers_orders
         array('dt' => 6, 'db' => 'products.units'),
         array('dt' => 7, 'db' => "products_warehouses.number_of_packs"),
         array('dt' => 8, 'db' => "products.weight * products_warehouses.number_of_packs"),
-        array('dt' => 9, 'db' => 'products_warehouses.buy_price'),
+        array('dt' => 9, 'db' => 'products_warehouses.purchase_price'),
+//        array('dt' => 9, 'db' => 'products_warehouses.buy_price'),
         array('dt' => 10, 'db' => 'products_warehouses.buy_and_taxes'),
         array('dt' => 11, 'db' => 'products_warehouses.sell_price'),
         array('dt' => 12, 'db' => 'products_warehouses.dealer_price'),
@@ -87,7 +88,7 @@ class ModelWarehouse extends ModelManagers_orders
         "Units",
         'Number of Packs',
         'Total Weight',
-        "Buy Price",
+        "Purchase Price",
         "Buy + Transport + Taxes",
         "Sell Price",
         "Dealer Price (-30%)",
@@ -224,7 +225,7 @@ class ModelWarehouse extends ModelManagers_orders
         $columnNames = $this->getColumns($this->product_warehouses_column_names, 'warehouse', $table_id, true);
 
         $rowValues = json_decode($ssp, true)['data'];
-        $ignoreArray = ['Id', 'Quantity', 'Buy Price', 'Buy + Transport + Taxes', 'Sell Price',
+        $ignoreArray = ['Id', 'Quantity', 'Purchase Price', 'Buy + Transport + Taxes', 'Sell Price',
             'Dealer Price (-30%)', 'Total Price'];
 
         if (!empty($rowValues)) {
@@ -324,11 +325,11 @@ class ModelWarehouse extends ModelManagers_orders
         foreach ($products as $product_id => $product) {
 
             $amount = isset($product['amount']) && $product['amount'] ? $product['amount'] : 0;
-            $buy_price = isset($product['buy_price']) && $product['buy_price'] ? $product['buy_price'] : 0;
+            $purchase_price = isset($product['purchase_price']) && $product['purchase_price'] ? $product['purchase_price'] : 0;
             $numberOfPacks = isset($product['number_of_packs']) && $product['number_of_packs'] ? $product['number_of_packs'] : 0;
 
-            $items[] = $this->insert("INSERT INTO `order_items` (`product_id`, `warehouse_id`, `amount`, `buy_price`,
-              `status_id`, `number_of_packs`) VALUES ($product_id, $warehouse_id, $amount, $buy_price, ".ON_STOCK.", $numberOfPacks)");
+            $items[] = $this->insert("INSERT INTO `order_items` (`product_id`, `warehouse_id`, `amount`, `purchase_price`,
+              `status_id`, `number_of_packs`) VALUES ($product_id, $warehouse_id, $amount, $purchase_price, ".ON_STOCK.", $numberOfPacks)");
         }
 
         $this->addLog(LOG_ADD_TO_WAREHOUSE, ['warehouse_id' => $warehouse_id, 'items' => $items]);
@@ -532,7 +533,7 @@ class ModelWarehouse extends ModelManagers_orders
             foreach ($warehouseProducts as $warehouseProduct) {
                 $amount = $warehouseProduct['amount'];
 //                $product = $this->getFirst("SELECT * FROM products WHERE product_id = ${warehouseProduct['product_id']}");
-                $buyPrice += $warehouseProduct['buy_price'] * $amount;
+                $buyPrice += $warehouseProduct['purchase_price'] * $amount;
                 $buyAndExpenses += $warehouseProduct['buy_and_taxes'] * $amount;
                 $dealerPrice += $warehouseProduct['dealer_price'] * $amount;
                 $sellPrice += $warehouseProduct['sell_price'] * $amount;
