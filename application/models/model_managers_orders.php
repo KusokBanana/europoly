@@ -90,7 +90,8 @@ class ModelManagers_orders extends Model
         array('dt' => 0, 'db' => "orders.order_id"),
         array('dt' => 1, 'db' => "CONCAT('<a href=\"/order?id=', orders.order_id, '\">', 
             IFNULL(orders.visible_order_id, orders.order_id), '</a>')"),
-        array('dt' => 2, 'db' => "CONCAT(managers.first_name, ' ', managers.last_name, '<a href=\"/sales_manager?id=', orders.sales_manager_id, '\"><i class=\"glyphicon glyphicon-link\"></i></a></a>')"),
+        array('dt' => 2, 'db' => "CONCAT('<a href=\"/sales_manager?id=', orders.sales_manager_id, '\">', 
+            managers.first_name, ' ', managers.last_name, '</a>')"),
         array('dt' => 3, 'db' => "orders.start_date"),
         array('dt' => 4, 'db' => "status.name"),
         array('dt' => 5, 'db' => "orders.total_price"),
@@ -127,7 +128,7 @@ class ModelManagers_orders extends Model
             left join items_status as status on order_items.status_id = status.status_id
             left join users as managers on orders.sales_manager_id = managers.user_id
             left join products on order_items.product_id = products.product_id
-            left join clients as client on (orders.client_id = client.client_id)
+            left join clients as client ON (orders.client_id = client.client_id)
             left join clients as commission on (orders.commission_agent_id = commission.client_id)
             left join brands on products.brand_id = brands.brand_id';
 
@@ -135,6 +136,7 @@ class ModelManagers_orders extends Model
             left join users as managers on orders.sales_manager_id = managers.user_id
             left join clients as client on (orders.client_id = client.client_id)
             left join clients as commission on (orders.commission_agent_id = commission.client_id)
+            left join order_items on (order_items.manager_order_id = orders.order_id)
             left join items_status as status on orders.order_status_id = status.status_id';
 
     var $whereCondition = "order_items.manager_order_id IS NOT NULL";
@@ -144,8 +146,8 @@ class ModelManagers_orders extends Model
 
         if ($this->user->role_id == ROLE_SALES_MANAGER) {
             $this->whereCondition .= " AND orders.sales_manager_id = " . $this->user->user_id;
-            $this->whereCondition = '(' . $this->whereCondition . ')' /*. " OR client.sales_manager_id = " .
-                $this->user->user_id */. " OR client.operational_manager_id = " . $this->user->user_id;
+            $this->whereCondition = '(' . $this->whereCondition . ')' . " OR client.sales_manager_id = " .
+                $this->user->user_id . " OR client.operational_manager_id = " . $this->user->user_id;
             $this->unLinkStrings($this->managers_orders_columns, [24, 25]);
         }
 
@@ -214,13 +216,13 @@ class ModelManagers_orders extends Model
     function getSelects($isReduced = false)
     {
         if (!$isReduced) {
-            if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
-                $userId = $_SESSION['user_id'];
-                $where = " orders.sales_manager_id = " . $userId;
-                $this->whereCondition = '(' . $where . ')' . " OR client.sales_manager_id = " . $userId .
-                    " OR client.operational_manager_id = " . $userId;
+            if ($this->user->role_id == ROLE_SALES_MANAGER) {
+                $where = " orders.sales_manager_id = " . $this->user->user_id;
+                $this->whereCondition = '(' . $where . ')' . " OR client.sales_manager_id = " . $this->user->user_id .
+                    " OR client.operational_manager_id = " . $this->user->user_id;
                 $this->unLinkStrings($this->managers_orders_reduced_columns, [9, 10]);
             }
+
             $ssp = $this->getSspComplexJson($this->managers_orders_table, "order_items.item_id",
                 $this->managers_orders_columns, null, null, $this->whereCondition);
             $columns = $this->getColumns($this->managers_orders_column_names, 'managersOrders', $this->tableNames[0]);
@@ -237,19 +239,11 @@ class ModelManagers_orders extends Model
                 $this->unLinkStrings($this->managers_orders_reduced_columns, [9, 10]);
             }
 
-            $columns = $this->getColumns($this->managers_orders_reduced_columns, 'managersOrders', $this->tableNames[1]);
-
-            $ssp = [
-                'columns' => $columns,
-                'columns_names' => $this->managers_orders_reduced_column_names,
-                'db_table' => $this->managers_orders_table_reduce,
-                'page' => 'managersOrders',
-                'table_name' => $this->tableNames[1],
-                'primary' => 'orders.order_id',
-            ];
-
-            $this->sspComplex($ssp['db_table'], $ssp['primary'],
-                $ssp['columns'], $input, null, $this->whereCondition);
+            $ssp = $this->getSspComplexJson($this->managers_orders_table_reduce, "orders.order_id",
+                $this->managers_orders_reduced_columns, null, null, $this->whereCondition);
+            $columns = $this->getColumns($this->managers_orders_reduced_column_names, 'managersOrders', $this->tableNames[1]);
+            $rowValues = json_decode($ssp, true)['data'];
+            $ignoreArray = [];
 
         }
 

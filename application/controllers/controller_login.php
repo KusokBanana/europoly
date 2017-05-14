@@ -20,7 +20,9 @@ class ControllerLogin extends Controller
         session_start();
 
         if (isset($_POST["username"]) && isset($_POST["password"])) {
-            $user_exist = $this->model->getUserByEmailAndPassword($_POST["username"], md5($_POST["password"]));
+            $userName = trim($_POST["username"]);
+            $pass = trim($_POST["password"]);
+            $user_exist = $this->model->getUserByEmailAndPassword($userName, md5($pass));
             if ($user_exist) {
                 $_SESSION["user_connected"] = true;
                 $roleId = $user_exist['role_id'];
@@ -51,13 +53,12 @@ class ControllerLogin extends Controller
     {
         if (isset($_POST["columns"])) {
             $columns = $_POST["columns"];
-            $userId = $_SESSION['user_id'];
             $tableId = $_POST['tableId'];
             if (in_array($tableId, ["table_warehouses_products","table_warehouses_products_issue","table_warehouses_products_reserved"]))
                 $tableId = 'table_warehouse';
             if (in_array($tableId, ["table_end_customers","table_commission_agents","table_dealers"]))
                 $tableId = 'table_clients';
-            echo $this->model->saveOrderColumns($columns, $userId, $tableId);
+            echo $this->model->saveOrderColumns($columns, $tableId);
         }
     }
     function action_save_sort_columns()
@@ -69,7 +70,18 @@ class ControllerLogin extends Controller
             $currentSort = isset($_COOKIE['sort_columns']) ? $_COOKIE['sort_columns'] : [];
             $currentSort[$tableId] = $sort;
 //            setcookie('sort_columns', $currentSort);
-            $_SESSION['sort_columns'] = $currentSort;
+            $_COOKIE['sort_columns'] = $currentSort;
         }
     }
+
+    function action_save_records_total()
+    {
+        if (isset($_POST["count"])) {
+            $count = $_POST["count"];
+            $tableId = $_POST['tableId'];
+            $this->model->saveRecordsCount($count, $tableId);
+        }
+    }
+
+
 }

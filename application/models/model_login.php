@@ -13,8 +13,9 @@ class ModelLogin extends Model
             "' AND password = '" . $this->escape_string($hash) . "'");
     }
 
-    function saveOrderColumns($columns, $userId, $tableId)
+    function saveOrderColumns($columns, $tableId)
     {
+        $userId = $this->user->user_id;
         $savedOrderColumns = $this->getFirst("SELECT columns_order FROM users WHERE user_id = $userId");
         if ($savedOrderColumns) {
             $savedOrderColumnsJson = $savedOrderColumns['columns_order'];
@@ -27,6 +28,25 @@ class ModelLogin extends Model
             }
             $savedOrderColumnsJson = json_encode($savedOrderColumns);
             return $this->update("UPDATE users SET columns_order = '$savedOrderColumnsJson' WHERE user_id = $userId");
+        }
+
+    }
+
+    function saveRecordsCount($count, $tableId)
+    {
+        $userId = $this->user->user_id;
+        $savedCount = $this->getFirst("SELECT records_show FROM users WHERE user_id = $userId");
+        if ($savedCount) {
+            $savedCountJson = $savedCount['records_show'];
+            if ($savedCountJson) {
+                $savedCount = json_decode($savedCountJson, true);
+                $savedCount[$tableId] = json_decode($count, true);
+            } else {
+                $savedCount = [];
+                $savedCount[$tableId] = json_decode($count, true);
+            }
+            $savedCountJson = json_encode($savedCount);
+            return $this->update("UPDATE users SET records_show = '$savedCountJson' WHERE user_id = $userId");
         }
 
     }

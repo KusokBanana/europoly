@@ -20,7 +20,6 @@ class ControllerManagers_orders extends Controller
 
         $roles = new Roles();
         $this->view->access = $roles->getPageAccessAbilities($this->page);
-
         $this->view->tableNames = $this->model->tableNames;
         $this->view->column_names = $this->model->getColumns($this->model->managers_orders_column_names,
             $this->page, $this->model->tableNames[0], true);
@@ -46,6 +45,10 @@ class ControllerManagers_orders extends Controller
         }
         $this->view->selects = $selects;
         $this->view->rows = $rows;
+
+        $selects = $this->model->getSelects(true);
+        $this->view->reducedSelects = $selects['selects'];
+        $this->view->reducedRows = $selects['rows'];
 
         $this->view->build('templates/template.php', 'managers_orders.php');
     }

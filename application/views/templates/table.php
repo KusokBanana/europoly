@@ -19,6 +19,15 @@
     $select = (isset($table_data['select']) && $table_data['select']) ? json_encode($table_data['select'])
         : json_encode(['style' => 'os', 'selector' => 'td:first-child']);
     $globalTable = isset($table_data['global']) && $table_data['global'] ? $table_data['global'] : false;
+    $serverSide = isset($table_data['serverSide']) ? $table_data['serverSide'] : true;
+
+    $recordsCount = 100;
+    if (isset($this) && $this->user->records_show) {
+        $recordsCount = json_decode($this->user->records_show, true);
+        $recordsCount = isset($recordsCount[$table_id]) ? $recordsCount[$table_id] : 100;
+    } else {
+        $recordsCount = 50;
+    }
 
     ?>
     <div id="<?= $table_id ?>_left_buttons" class="btn-group">
@@ -164,6 +173,8 @@ $hidden_by_default = json_encode($hidden);
         var $clickUrl = "<?= $click_url == 'javascript:;' ? false : $click_url; ?>";
         var $sort = <?= json_encode(explode('-', $sort)); ?>;
         var $select = <?= $select; ?>;
+        var recordsCount = "<?= $recordsCount; ?>";
+        var serverSide = <?= $serverSide ? 'true' : 'false'; ?>;
         <?php
         if (isset($ajax['data']) && $ajax['data'] != "") {
             echo "var ajax = { url: '" . $ajax['url'] . "', 
@@ -177,7 +188,7 @@ $hidden_by_default = json_encode($hidden);
         // DataTable
         var table = $table.DataTable({
             processing: true,
-            serverSide: true,
+            serverSide: serverSide,
             ajax: ajax,
             sServerMethod: '<?= $method; ?>',
             columnDefs: [
@@ -203,6 +214,7 @@ $hidden_by_default = json_encode($hidden);
             select: $select,
             colReorder: false,
             deferRender: true,
+            displayLength: recordsCount
         });
 
         // TODO remove it and change into warehouse
@@ -804,6 +816,20 @@ $hidden_by_default = json_encode($hidden);
             return $('#'+$table.attr('id')+'_columns_choose.order-columns-block')
                 .find('label input[data-column="'+index+'"]').attr('data-original-column-id');
         }
+
+        $('body').on('change', '#' + tableId + '_length select', function(e) {
+            var count = $(this).val();
+            if (count) {
+                $.ajax({
+                    url: '/login/save_records_total',
+                    method: 'POST',
+                    data: {
+                        count: count,
+                        tableId: tableId
+                    }
+                })
+            }
+        })
 
     });
 

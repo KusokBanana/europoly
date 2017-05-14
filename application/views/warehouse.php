@@ -145,6 +145,16 @@ if ($this->access['ch']) {
                 inputclass: 'form-control input-medium',
                 source: warehouses
             });
+            $('.x-amount, .x-number_of_packs, .x-purchase_price').editable({
+                type: "number",
+                min: 0,
+                step: 0.01,
+                inputclass: 'form-control input-medium',
+                success: function () {
+//                location.reload();
+                }
+            });
+
         });
         // TODO remove it
         <?php if (isset($_GET['documentPath']) && $_GET['documentPath']): ?>
@@ -177,8 +187,7 @@ if ($this->access['ch']) {
             } else {
                 $('#modal_warehouse_error').modal('show')/*.find('.modal-body h4').text(errorMessage)*/;
             }
-        })
-
+        });
     });
 </script>
 

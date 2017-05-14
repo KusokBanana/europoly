@@ -11,17 +11,15 @@ class ModelUser extends Model
     public function initializeUser()
     {
 
-        if (isset($_SESSION['user']) && $_SESSION['user']) {
-
-            return $_SESSION['user'];
-
-        } else {
+//        if (isset($_SESSION['user']) && $_SESSION['user']) {
+//
+//            return $_SESSION['user'];
+//
+//        } else {
 
             $userId = isset($_SESSION['user_id']) && $_SESSION['user_id'] ? $_SESSION['user_id'] : false;
             if (!$userId)
                 return new MongoDB\Driver\Exception\AuthenticationException('No user identified!');
-
-
 
             $query = "SELECT users.*, roles.permissions as permissions 
                         FROM users LEFT JOIN roles ON (roles.role_id = users.role_id) 
@@ -35,7 +33,7 @@ class ModelUser extends Model
 
             return new MongoDB\Driver\Exception\AuthenticationException('No such User Identified!');
 
-        }
+//        }
 
     }
 

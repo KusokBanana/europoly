@@ -245,8 +245,7 @@ class ControllerWarehouse extends Controller
         ]);
 
         $this->view->tableData['warehouse_modal_assemble'] = $tableData;
-
-
     }
+
 
 }

@@ -63,10 +63,11 @@
                                         ],
                                         'column_names' => $this->column_names,
                                         'click_url' => "javascript:;",
-                                        'method' => "POST",
                                         'selectSearch' => $this->selects,
+                                        'method' => "POST",
                                         'filterSearchValues' => $this->rows,
-                                        'originalColumns' => $this->originalColumns
+                                        'originalColumns' => $this->originalColumns,
+                                        'serverSide' => false
                                     ];
                                     include 'application/views/templates/table.php'
                                     ?>
@@ -82,9 +83,12 @@
                                             'url' => "/managers_orders/dt_managers_orders_reduced"
                                         ],
                                         'column_names' => $this->column_names_reduced,
+                                        'selectSearch' => $this->reducedSelects,
+                                        'filterSearchValues' => $this->reducedRows,
                                         'method' => "POST",
                                         'click_url' => "javascript:;",
-                                        'originalColumns' => $this->originalColumnsReduced
+                                        'originalColumns' => $this->originalColumnsReduced,
+                                        'serverSide' => false
                                     ];
                                     include 'application/views/templates/table.php'
                                     ?>

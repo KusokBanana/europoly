@@ -43,4 +43,5 @@ class ControllerStaff extends Controller
             header("Location: " . $_SERVER['HTTP_REFERER']);
         }
     }
+
 }

@@ -139,7 +139,7 @@ class ModelSuppliers_orders extends ModelManagers_orders
 
         if ($this->user->role_id == ROLE_SALES_MANAGER) {
             $this->suppliersFilterWhere[] = "(orders.sales_manager_id = " . $this->user->user_id . ' OR' .
-                " client.sales_manager_id = ". $this->user->user_id .
+                " client.sales_manager_id = " . $this->user->user_id .
                 " OR client.operational_manager_id = " . $this->user->user_id .
                 ' OR suppliers_orders_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
             $this->unLinkStrings($this->suppliers_orders_columns, [2, 26, 27]);

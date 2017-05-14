@@ -7,11 +7,12 @@
                     <h4 class="modal-title">New Order</h4>
                 </div>
                 <div class="modal-body">
-                    <input id="modal_new_order_sales_manager" type="hidden" value="<?= $_SESSION['user_id'] ?>"
+                    <input id="modal_new_order_sales_manager" type="hidden" value="<?= $this->user->user_id ?>"
                            name="sales_manager_id" class="form-control" required>
                     <div class="form-group">
                         <label for="modal_new_order_sales_manager_2">Sales Manager</label>
                         <select id="modal_new_order_sales_manager_2" class="form-control" disabled>
+<!--                            --><?//= $this->user->role_id == ROLE_ADMIN ? '' : 'disabled' ?><!-->-->
                             <option disabled selected value></option>
                             <?php
                             foreach ($this->managers as $manager) {

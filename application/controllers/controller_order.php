@@ -235,4 +235,9 @@ class ControllerOrder extends Controller
         }
     }
 
+//    function action_change_price()
+//    {
+//        $this->model->changePrice();
+//    }
+
 }

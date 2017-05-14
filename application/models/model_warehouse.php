@@ -29,12 +29,33 @@ class ModelWarehouse extends ModelManagers_orders
             data-name="warehouse_id" data-value="\', products_warehouses.warehouse_id, \'" data-url="/warehouse/change_item_field" 
             data-original-title="Change Warehouse">\', IFNULL(warehouses.name, \'no name\'), \'</a>
             <a href="/warehouse?id=\', products_warehouses.warehouse_id, \'"><i class="glyphicon glyphicon-link"></i></a>\')'),
-        array('dt' => 5, 'db' => 'products_warehouses.amount'),
+        array('dt' => 5, 'db' => "IF(ISNULL(products_warehouses.manager_order_id), 
+            CONCAT('<a href=\"javascript:;\" class=\"x-editable x-amount\" data-pk=\"',
+                products_warehouses.item_id,
+                '\" data-name=\"amount\" data-value=\"',
+                IFNULL(products_warehouses.amount, ''),
+                '\" data-url=\"/warehouse/change_item_field\" data-original-title=\"Enter Quantity\">',
+                    IFNULL(CONCAT(products_warehouses.amount, ' ', products.units), ''),
+                '</a>'),
+                products_warehouses.amount)"),
         array('dt' => 6, 'db' => 'products.units'),
-        array('dt' => 7, 'db' => "products_warehouses.number_of_packs"),
+        array('dt' => 7, 'db' => "IF(ISNULL(products_warehouses.manager_order_id), 
+            CONCAT('<a href=\"javascript:;\" class=\"x-editable x-number_of_packs\" data-pk=\"',
+                products_warehouses.item_id,
+                '\" data-name=\"number_of_packs\" data-value=\"',
+                IFNULL(products_warehouses.number_of_packs, ''),
+                '\" data-url=\"/warehouse/change_item_field\" data-original-title=\"Enter Number of Packs\">',
+                    IFNULL(products_warehouses.number_of_packs, ''),
+                '</a>'), products_warehouses.number_of_packs)"),
         array('dt' => 8, 'db' => "products.weight * products_warehouses.number_of_packs"),
-        array('dt' => 9, 'db' => 'products_warehouses.purchase_price'),
-//        array('dt' => 9, 'db' => 'products_warehouses.buy_price'),
+        array('dt' => 9, 'db' => "IF(ISNULL(products_warehouses.manager_order_id), 
+            CONCAT('<a href=\"javascript:;\" class=\"x-editable x-purchase_price\" data-pk=\"',
+                products_warehouses.item_id,
+                '\" data-name=\"purchase_price\" data-value=\"',
+                IFNULL(products_warehouses.purchase_price, ''),
+                '\" data-url=\"/warehouse/change_item_field\" data-original-title=\"Enter Purchase Price\">',
+                    IFNULL(CAST(products_warehouses.purchase_price as decimal(64, 2)), ''),
+                '</a>'), CAST(products_warehouses.purchase_price as decimal(64, 2)))"),
         array('dt' => 10, 'db' => 'products_warehouses.buy_and_taxes'),
         array('dt' => 11, 'db' => 'products_warehouses.sell_price'),
         array('dt' => 12, 'db' => 'products_warehouses.dealer_price'),
@@ -549,6 +570,28 @@ class ModelWarehouse extends ModelManagers_orders
     public function updateItemField($warehouse_item_id, $field, $new_value)
     {
         $old_order_item = $this->getFirst("SELECT * FROM order_items WHERE item_id = $warehouse_item_id");
+
+        if ($field == 'number_of_packs' || $field == 'amount') {
+            $product = $this->getFirst("SELECT * FROM products WHERE product_id = ${old_order_item['product_id']}");
+            switch ($field) {
+                case 'number_of_packs':
+                    $number_of_packs = floatval($new_value);
+                    $amount = $number_of_packs * floatval($product['amount_in_pack']);
+                    break;
+                case 'amount':
+                    $amount = floatval($new_value);
+                    $number_of_packs = $amount / floatval($product['amount_in_pack']);
+            }
+
+            $sellValue = ($old_order_item['sell_price'] * (100 - $old_order_item['discount_rate'])) * $amount / 100;
+            $commission_agent_bonus = $old_order_item['commission_rate'] * $sellValue / 100;
+            $manager_bonus = ($sellValue - $commission_agent_bonus) * $old_order_item['manager_bonus_rate'] / 100;
+
+            $this->update("UPDATE order_items SET number_of_packs = $number_of_packs, amount = $amount, 
+                commission_agent_bonus = $commission_agent_bonus, manager_bonus = $manager_bonus
+                                    WHERE item_id = $warehouse_item_id");
+            return true;
+        }
 
         $result = $this->update("UPDATE `order_items` SET `$field` = '$new_value' WHERE item_id = $warehouse_item_id");
 

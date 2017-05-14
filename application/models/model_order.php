@@ -139,7 +139,7 @@ class ModelOrder extends Model
                                     <span class=\'glyphicon glyphicon-repeat\' title=\'Return\'></span>
                                 </a>'),
                         ''),
-                    IF(order_items.status_id >= ".SENT_TO_LOSIGT." AND " . ($this->user->role_id == ROLE_ADMIN ).",
+                    IF(order_items.status_id >= ".SENT_TO_LOSIGT." AND " . intval(($this->user->role_id == ROLE_ADMIN)) .",
                         CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to return this item to manager?\" 
                                    href=\"/order/hold?order_item_id=', order_items.item_id, '\" 
                                    class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" 
@@ -662,6 +662,22 @@ class ModelOrder extends Model
         }
         return false;
     }
+
+//    public function changePrice() {
+//
+//        $orderitems = $this->getAssoc("SELECT * FROM order_items WHERE sell_price = 0");
+//        foreach ($orderitems as $orderitem) {
+//            $prod = $this->getFirst("SELECT * FROM products WHERE product_id = ${orderitem['product_id']}");
+//            if ($prod) {
+//                $sellPrice = doubleval($prod['sell_price']);
+//                if (!$sellPrice)
+//                    continue;
+//                $item = $orderitem['item_id'];
+//                $this->update("UPDATE order_items SET sell_price = '$sellPrice' WHERE item_id = $item");
+//            }
+//        }
+//
+//    }
 
     public function printDoc($orderId, $type, $items = false)
     {
