@@ -47,7 +47,7 @@ class Roles {
     }
 
     private $brandModelColumns = [25, 26, 27, 28, 31];
-    private $catalogueModelColumns = [25, 26, 27, 28, 31];
+    private $catalogueModelColumns = [34, 35, 36, 37];
     private $suppliersOrdersModelColumns = [15, 16, 17, 18, 23, 24, 29];
     private $shipmentModelColumns = [16, 17, 18, 19, 25, 26, 30];
     private $suppliersOrderModelColumns = [4, 5];
