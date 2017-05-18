@@ -135,4 +135,9 @@ class ControllerPayment extends Controller
 //        }
 //    }
 
+    function action_parse_for_database()
+    {
+        $this->model->updateDatabaseCurrency();
+    }
+
 }
