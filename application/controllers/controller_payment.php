@@ -127,12 +127,4 @@ class ControllerPayment extends Controller
         }
     }
 
-//    function action_parse_all()
-//    {
-//        for ($day=30; $day>=0; $day--) {
-//            $date = mktime(0, 0, 0, date("m"), +date("d")-$day, +date("Y"));
-//            $this->model->cbrParser($date);
-//        }
-//    }
-
 }

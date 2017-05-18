@@ -2,8 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fe24c410-5d2a-4ad7-aea6-4e59e4e304a8" name="Default" comment="">
+<<<<<<< HEAD
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/deployment.xml" afterPath="$PROJECT_DIR$/.idea/deployment.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+=======
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/cron/curse.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/controller_payment.php" afterPath="$PROJECT_DIR$/application/controllers/controller_payment.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/models/model_payment.php" afterPath="$PROJECT_DIR$/application/models/model_payment.php" />
+>>>>>>> code-reform
     </list>
     <ignored path="europoly.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -62,6 +69,7 @@
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
       <file leaf-file-name="controller_payment.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/application/controllers/controller_payment.php">
+<<<<<<< HEAD
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="347">
               <caret line="121" column="0" lean-forward="true" selection-start-line="121" selection-start-column="0" selection-end-line="121" selection-end-column="0" />
@@ -97,6 +105,12 @@
                 <marker date="1495131571673" expanded="true" signature="13978:14050" ph="INSERT INTO official_currency... " />
                 <marker date="1495131571673" expanded="true" signature="15055:15110" ph="SELECT `${$c... official_currency" />
               </folding>
+=======
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="284">
+              <caret line="110" column="0" lean-forward="true" selection-start-line="110" selection-start-column="0" selection-end-line="110" selection-end-column="0" />
+              <folding />
+>>>>>>> code-reform
             </state>
           </provider>
         </entry>
@@ -112,8 +126,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>Buy</find>
-      <find>Buy P</find>
       <find>Buy Pri</find>
       <find>Buy Price</find>
       <find>$ordered</find>
@@ -142,6 +154,8 @@
       <find>serverSide</find>
       <find>console.log</find>
       <find>manager</find>
+      <find>requi</find>
+      <find>require</find>
     </findStrings>
     <replaceStrings>
       <replace>import_tax</replace>
@@ -172,8 +186,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/application/core/cache.php" />
-        <option value="$PROJECT_DIR$/application/views/modals/assemble_set.php" />
         <option value="$PROJECT_DIR$/.htaccess" />
         <option value="&lt;4b001fc0-8144-410a-ba4c-669dfa54c1fc&gt;/www/application/models/model_accountant.php" />
         <option value="$PROJECT_DIR$/assets/phpExcel/Classes/PHPExcel/Cell.php" />
@@ -203,7 +215,6 @@
         <option value="$PROJECT_DIR$/application/models/model_truck.php" />
         <option value="$PROJECT_DIR$/application/views/single_client.php" />
         <option value="$PROJECT_DIR$/application/controllers/controller_client.php" />
-        <option value="$PROJECT_DIR$/application/models/model_payment.php" />
         <option value="$PROJECT_DIR$/application/views/modals/new_product_warehouse.php" />
         <option value="$PROJECT_DIR$/application/views/modals/reserve.php" />
         <option value="$PROJECT_DIR$/application/controllers/controller_warehouse.php" />
@@ -223,6 +234,9 @@
         <option value="$PROJECT_DIR$/application/views/templates/table.php" />
         <option value="$PROJECT_DIR$/application/views/modals/new_order.php" />
         <option value="$PROJECT_DIR$/application/core/roles.php" />
+        <option value="$PROJECT_DIR$/application/models/model_payment.php" />
+        <option value="$PROJECT_DIR$/application/controllers/controller_payment.php" />
+        <option value="$PROJECT_DIR$/cron/curse.php" />
       </list>
     </option>
   </component>
@@ -319,6 +333,7 @@
               <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
             </PATH_ELEMENT>
           </PATH>
+<<<<<<< HEAD
           <PATH>
             <PATH_ELEMENT>
               <option name="myItemId" value="europoly" />
@@ -423,6 +438,8 @@
               <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
             </PATH_ELEMENT>
           </PATH>
+=======
+>>>>>>> code-reform
         </subPane>
       </pane>
     </panes>
@@ -723,11 +740,16 @@
       <workItem from="1494929659614" duration="107000" />
       <workItem from="1495032267930" duration="623000" />
       <workItem from="1495047000963" duration="600000" />
+      <workItem from="1495131511667" duration="4000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
+<<<<<<< HEAD
     <option name="totallyTimeSpent" value="1879098000" />
+=======
+    <option name="totallyTimeSpent" value="1883733000" />
+>>>>>>> code-reform
   </component>
   <component name="TodoView" selected-index="1">
     <todo-panel id="selected-file">
@@ -768,7 +790,11 @@
       <window_info id="Database Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.37372592" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1724512" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.13201821" sideWeight="0.5" order="3" side_tool="false" content_ui="combo" />
+<<<<<<< HEAD
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19143167" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
+=======
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19414316" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
+>>>>>>> code-reform
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3298969" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23047723" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24886191" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -814,6 +840,7 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/application/controllers/controller_contractor.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="389">
@@ -821,6 +848,8 @@
         </state>
       </provider>
     </entry>
+=======
+>>>>>>> code-reform
     <entry file="file://$PROJECT_DIR$/application/views/single_contractor.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="95">
@@ -891,6 +920,17 @@
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
+=======
+    <entry file="file://$PROJECT_DIR$/application/core/config.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="84">
+          <caret line="4" column="18" lean-forward="false" selection-start-line="4" selection-start-column="18" selection-end-line="4" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+>>>>>>> code-reform
     <entry file="file://$PROJECT_DIR$/application/models/model_catalogue.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="336">
@@ -991,8 +1031,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/application/controllers/controller_order.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="683">
-          <caret line="241" column="0" lean-forward="true" selection-start-line="241" selection-start-column="0" selection-end-line="241" selection-end-column="0" />
+        <state relative-caret-position="189">
+          <caret line="9" column="5" lean-forward="false" selection-start-line="9" selection-start-column="5" selection-end-line="9" selection-end-column="5" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1052,6 +1093,7 @@
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/application/models/model_order.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="623">
@@ -1059,6 +1101,8 @@
         </state>
       </provider>
     </entry>
+=======
+>>>>>>> code-reform
     <entry file="file://$PROJECT_DIR$/application/core/route.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="421">
@@ -1141,6 +1185,67 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="147">
           <caret line="49" column="54" lean-forward="false" selection-start-line="49" selection-start-column="54" selection-end-line="49" selection-end-column="54" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/classes/Excel.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-126">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/models/model_order.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="10668">
+          <caret line="505" column="4" lean-forward="false" selection-start-line="505" selection-start-column="4" selection-end-line="505" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cron/curse.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="6" column="0" lean-forward="true" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/models/model_payment.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="494">
+          <caret line="434" column="78" lean-forward="false" selection-start-line="434" selection-start-column="78" selection-end-line="434" selection-end-column="78" />
+          <folding>
+            <marker date="1495141994395" expanded="true" signature="196:245" ph="SELECT legal... legal_entities" />
+            <marker date="1495141994395" expanded="true" signature="331:370" ph="SELECT trans... transfers" />
+            <marker date="1495141994395" expanded="true" signature="1956:2020" ph="SELECT clien... clients" />
+            <marker date="1495141994395" expanded="true" signature="2107:2173" ph="SELECT suppl... suppliers" />
+            <marker date="1495141994395" expanded="true" signature="2255:2317" ph="SELECT custo... customs" />
+            <marker date="1495141994395" expanded="true" signature="2401:2533" ph="SELECT trans... transportation_companies" />
+            <marker date="1495141994395" expanded="true" signature="2613:2709" ph="SELECT other... other" />
+            <marker date="1495141994395" expanded="true" signature="3052:3226" ph="SELECT DISTI... ${$ordersTable}" />
+            <marker date="1495141994395" expanded="true" signature="4201:4291" ph="SELECT categ... category_of_expense" />
+            <marker date="1495141994395" expanded="true" signature="4339:4440" ph="SELECT artic... article_of_expense" />
+            <marker date="1495141994395" expanded="true" signature="6199:6251" ph="INSERT INTO ${$base[0]}... " />
+            <marker date="1495141994395" expanded="true" signature="7205:7258" ph="INSERT INTO payments... " />
+            <marker date="1495141994395" expanded="true" signature="8006:8077" ph="UPDATE payme... " />
+            <marker date="1495141994395" expanded="true" signature="8625:8667" ph="SELECT * FRO... payments" />
+            <marker date="1495141994395" expanded="true" signature="8756:8794" ph="SELECT * FRO... orders" />
+            <marker date="1495141994395" expanded="true" signature="9346:9399" ph="SELECT * FRO... legal_entities" />
+            <marker date="1495141994395" expanded="true" signature="9549:9589" ph="SELECT * FRO... clients" />
+            <marker date="1495141994395" expanded="true" signature="11301:11434" ph="SELECT visib... orders" />
+            <marker date="1495141994395" expanded="true" signature="13978:14050" ph="INSERT INTO official_currency... " />
+            <marker date="1495141994395" expanded="true" signature="15055:15110" ph="SELECT `${$c... official_currency" />
+            <marker date="1495141994395" expanded="true" signature="15816:15861" ph="SELECT * FRO... official_currency" />
+            <marker date="1495141994395" expanded="true" signature="15816:15872" ph="SELECT * FRO... official_currency" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/controller_payment.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="284">
+          <caret line="110" column="0" lean-forward="true" selection-start-line="110" selection-start-column="0" selection-end-line="110" selection-end-column="0" />
           <folding />
         </state>
       </provider>

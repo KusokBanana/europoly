@@ -425,4 +425,21 @@ class ModelPayment extends Model
         }
 
     }
+
+
+    public function updateDatabaseCurrency()
+    {
+        $cur_date = date('Y-m-d');
+        for ($i=30; $i >= 0; $i--) {
+            $date = new DateTime($cur_date);
+//            $date = mktime(0, 0, 0, date("m"), +date("d")-$day, +date("Y"));
+            $needDate = $date->modify('-'.$i.' day')->format('Y-m-d');
+            $databaseRecord = $this->getFirst("SELECT * FROM official_currency WHERE date = '$needDate'");
+            if (!$databaseRecord) {
+                $this->cbrParser($needDate);
+            }
+
+        }
+
+    }
 }
