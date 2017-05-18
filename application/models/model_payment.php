@@ -430,13 +430,13 @@ class ModelPayment extends Model
     public function updateDatabaseCurrency()
     {
         $cur_date = date('Y-m-d');
-        $date = new DateTime($cur_date);
-        for ($i=70; $i >= 0; $i--) {
-
-            $needDate = $date->modify('-'.$i.' day');
-            $databaseRecord = $this->getFirst("SELECT * FROM official_currency WHERE date = STR_TO_DATE($needDate, 'Y-M-D')");
-            if ($databaseRecord) {
-                print_r($databaseRecord);
+        for ($i=30; $i >= 0; $i--) {
+            $date = new DateTime($cur_date);
+//            $date = mktime(0, 0, 0, date("m"), +date("d")-$day, +date("Y"));
+            $needDate = $date->modify('-'.$i.' day')->format('Y-m-d');
+            $databaseRecord = $this->getFirst("SELECT * FROM official_currency WHERE date = '$needDate'");
+            if (!$databaseRecord) {
+                $this->cbrParser($needDate);
             }
 
         }
