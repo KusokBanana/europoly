@@ -399,4 +399,37 @@ class ModelAccountant extends Model
 
     }
 
+    function checkMonthlyPayments()
+    {
+        $monthlyPayments = $this->getAssoc("SELECT * FROM payments WHERE is_deleted = 0 AND 
+          is_monthly = 1 AND monthly_pay_day = CURDATE() AND is_monthly_active = 1 AND status = 'Not Executed'");
+        if (!empty($monthlyPayments)) {
+            foreach ($monthlyPayments as $monthlyPayment) {
+                $paymentId = $monthlyPayment['payment_id'];
+                unset($monthlyPayment['monthly_pay_day']);
+                unset($monthlyPayment['is_monthly_active']);
+                unset($monthlyPayment['is_monthly']);
+                unset($monthlyPayment['payment_id']);
+                $monthlyPayment['status'] = 'Not Executed';
+                $names = join('`,`', array_keys($monthlyPayment));
+                $values = join("','", $monthlyPayment);
+                if ($names && $values) {
+                    $insert = $this->insert("INSERT INTO payments (`$names`) VALUES ('$values')");
+                    if ($insert) {
+                        $this->update("UPDATE payments SET status = 'Executed' WHERE payment_id = $paymentId");
+                    }
+                }
+            }
+        }
+
+        $monthlyPayments = $this->getAssoc("SELECT * FROM payments WHERE is_deleted = 0 AND 
+          is_monthly = 1 AND monthly_pay_day <> CURDATE() AND is_monthly_active = 1 AND status = 'Executed'");
+        if (!empty($monthlyPayments)) {
+            foreach ($monthlyPayments as $monthlyPayment) {
+                $paymentId = $monthlyPayment['payment_id'];
+                $this->update("UPDATE payments SET status = 'Not Executed' WHERE payment_id = $paymentId");
+            }
+        }
+    }
+
 }
