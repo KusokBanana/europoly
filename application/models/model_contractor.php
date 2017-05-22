@@ -423,7 +423,7 @@ class ModelContractor extends ModelContractors
             if (!$value)
                 return false;
 
-            $formData[$field] = mysql_real_escape_string($value);
+            $formData[$field] = mysql_escape_string($value);
         }
 
         $names = join('`,`', array_keys($formData));

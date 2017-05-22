@@ -182,12 +182,18 @@
                                 <div class="row static-info">
                                     <div class="col-md-5 name"> Commission Agent:</div>
                                     <div class="col-md-7 value">
-                                        <a href="javascript:;" id="editable-commission_agent" class='x-editable' data-pk="<?= $this->order['order_id'] ?>" data-name="commission_agent_id" data-value="<?= $this->order['commission_agent_id'] ?>"
+                                        <a href="javascript:;" id="editable-commission_agent" class='x-editable'
+                                           data-pk="<?= $this->order['order_id'] ?>" data-name="commission_agent_id"
+                                           data-value="<?= $this->order['commission_agent_id'] ?>"
                                            data-url='/order/change_field' data-original-title='Enter Commission Agent'>
-                                            <?= $this->commission_agent['name'] != null ? $this->commission_agent['name'] . '<a href="/order/delete_commission_agent?order_id=' . $this->order["order_id"] . '"><span class="glyphicon glyphicon-trash"></span></a>' : '' ?>
+                                            <?= $this->commission_agent['name'] != null ? $this->commission_agent['name'] .
+                                                '<a href="/order/delete_commission_agent?order_id=' . $this->order["order_id"] .
+                                                '"><span class="glyphicon glyphicon-trash"></span></a>' : '' ?>
                                         </a>
-                                        <a href="/client?id=<?= $this->order['commission_agent_id'] ?>">
-                                            <i class="glyphicon glyphicon-link"></i></a>
+                                        <?php if (!is_null($this->order['commission_agent_id'])): ?>
+                                            <a href="/client?id=<?= $this->order['commission_agent_id'] ?>">
+                                                <i class="glyphicon glyphicon-link"></i></a>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                                 <div class="row static-info">
