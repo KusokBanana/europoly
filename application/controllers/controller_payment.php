@@ -44,7 +44,7 @@ class ControllerPayment extends Controller
 
             $this->view->entities = $this->model->getLegalEntitiesIdName();
             $this->view->transfers = $this->model->getTransferTypesIdName();
-            $this->view->managers = $this->model->getSalesManagersIdName();
+            $this->view->managers = $this->model->getSalesManagersIdName(false);
             $this->view->clients = $this->model->getClientsIdName();
             $this->view->expenses = $this->model->getExpenses();
             $this->view->purpose = ($id != 'new') ? $this->model->getPurpose($this->view->payment) : '';

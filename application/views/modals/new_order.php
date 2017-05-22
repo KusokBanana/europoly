@@ -11,13 +11,13 @@
                            name="sales_manager_id" class="form-control" required>
                     <div class="form-group">
                         <label for="modal_new_order_sales_manager_2">Sales Manager</label>
-                        <select id="modal_new_order_sales_manager_2" class="form-control" disabled>
-<!--                            --><?//= $this->user->role_id == ROLE_ADMIN ? '' : 'disabled' ?><!-->-->
+                        <select id="modal_new_order_sales_manager_2" class="form-control" required
+                            <?= $this->user->role_id == ROLE_ADMIN ? '' : 'disabled'; ?>>
                             <option disabled selected value></option>
                             <?php
                             foreach ($this->managers as $manager) {
                                 echo "<option value='{$manager["user_id"]}' " .
-                                    ($_SESSION['user_id'] == $manager['user_id'] ? 'selected' : '').
+                                    ($this->user->user_id == $manager['user_id'] ? 'selected' : '').
                                     ">{$manager["name"]}</option>";
                             }
                             ?>
@@ -47,3 +47,41 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
+<script>
+//    $(document).ready(function() {
+//
+//        var select = $('#modal_new_order_sales_manager_2');
+//        $('body').on('change', '#modal_new_order_sales_manager_2', function() {
+//            var manager = $(this).val();
+//            if (!manager)
+//                return false;
+//
+//            console.log(manager);
+//            $.ajax({
+//                url: '/managers_orders/get_clients',
+//                data: {
+//                    manager_id: manager
+//                },
+//                method: 'GET',
+//                success: function(data) {
+//                    if (data) {
+//                        data = JSON.parse(data);
+//                        var newClients = [{id:0, text: ''}];
+//                        $.each(data, function() {
+//                            var object = {
+//                                id: this.client_id,
+//                                text: this.name
+//                            };
+//                            newClients.push(object);
+//                        });
+//                        console.log(newClients);
+//                        $('#modal_new_order_client').select2({
+//                            data: newClients
+//                        })
+//                    }
+//                }
+//            })
+//
+//        })
+//    })
+</script>

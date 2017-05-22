@@ -28,8 +28,11 @@ class ControllerManagers_orders extends Controller
 
         $this->view->originalColumns = $roles->returnModelNames($this->model->managers_orders_column_names, $this->page);
         $this->view->originalColumnsReduced = $roles->returnModelNames($this->model->managers_orders_reduced_column_names, $this->page);
-        $this->view->managers = $this->model->getSalesManagersIdName();
-        $this->view->clients = $this->model->getClientsOfSalesManager($_SESSION['user_id']);
+
+        $withAdmins = $this->user->role_id == ROLE_ADMIN ? true : false;
+        $this->view->managers = $this->model->getSalesManagersIdName($withAdmins);
+        $clientsFor = $this->user->role_id == ROLE_ADMIN ? false : $this->user->user_id;
+        $this->view->clients = $this->model->getClientsOfSalesManager($clientsFor);
 
         $cache = new Cache();
         $selectsCache = $cache->read('managers_orders_selects');
@@ -79,5 +82,13 @@ class ControllerManagers_orders extends Controller
         if (isset($_GET['products']))
             $products = json_decode($_GET['products'], true);
         $this->model->getDTManagersOrdersToSuppliersOrder($this->model->managers_orders_column_names, $products);
+    }
+
+    function action_get_clients()
+    {
+        $managerId = isset($_GET['manager_id']) ? $_GET['manager_id'] : false;
+        $clients = $this->model->getClientsOfSalesManager($managerId);
+        echo json_encode($clients);
+        return true;
     }
 }

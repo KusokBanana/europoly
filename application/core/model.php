@@ -259,10 +259,15 @@ abstract class Model extends mysqli
                                         left join grading on products.grading_id = grading.grading_id
                                         left join patterns on products.pattern_id = patterns.pattern_id';
 
-    function getSalesManagersIdName()
+    function getSalesManagersIdName($isWithAdmins = true)
     {
+        $in = [ROLE_SALES_MANAGER, ROLE_OPERATING_MANAGER];
+        if ($isWithAdmins)
+            $in[] = ROLE_ADMIN;
+
+        $in = join(',', $in);
         return $this->getAssoc("SELECT user_id, CONCAT(first_name, ' ', last_name) AS name
-          FROM users LEFT JOIN roles ON roles.role_id = users.role_id WHERE roles.role_id IN (2, 5)");
+          FROM users LEFT JOIN roles ON roles.role_id = users.role_id WHERE roles.role_id IN ($in)");
     }
 
     function getRolePermissions($roleId)
@@ -339,9 +344,10 @@ abstract class Model extends mysqli
         return ($status) ? $status['name'] : '';
     }
 
-    function getClientsOfSalesManager($sales_manager_id)
+    function getClientsOfSalesManager($sales_manager_id = false)
     {
-        return $this->getAssoc("SELECT client_id, final_name as name FROM clients WHERE sales_manager_id = $sales_manager_id OR operational_manager_id = $sales_manager_id");
+        $where = $sales_manager_id ? "sales_manager_id = $sales_manager_id OR operational_manager_id = $sales_manager_id" : 1;
+        return $this->getAssoc("SELECT client_id, final_name as name FROM clients WHERE $where");
     }
 
     public function updateOrderPayment($payment_id)
