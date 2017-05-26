@@ -55,8 +55,20 @@
                             <div class="portlet-body">
                                 <div class="row static-info">
                                     <div class="col-md-5 name"> Order Date & Time:</div>
-                                    <div class="col-md-7 value"><?= $this->order['start_date'] ?></div>
+                                    <div class="col-md-7 value">
+                                        <?php if ($this->user->role_id == ROLE_ADMIN): ?>
+                                            <a href="javascript:" id="editable-start_date" class="x-editable"
+                                               data-pk="<?= $this->order['order_id'] ?>" data-name="start_date"
+                                               data-value="<?= $this->order['start_date'] ?>"
+                                               data-url="/order/change_field" data-original-title="Enter Date and Time">
+                                                <?= $this->order['start_date'] ?>
+                                            </a>
+                                        <?php else: ?>
+                                            <?= $this->order['start_date'] ?>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
+
                                 <div class="row static-info">
                                     <div class="col-md-5 name"> Order Status:</div>
                                     <div class="col-md-7 value">
@@ -594,6 +606,21 @@ require_once 'modals/cancel_order.php';
                 location.reload();
             }
         });
+
+        <?php if ($this->user->role_id == ROLE_ADMIN): ?>
+        $('#editable-start_date').editable({
+            type: 'datetime',
+            format: 'yyyy-mm-dd hh:ii',
+            viewformat: 'dd/mm/yyyy hh:ii',
+            datetimepicker: {
+                weekStart: 1
+            },
+            inputclass: 'form-control input-medium',
+            success: function () {
+                location.reload();
+            }
+        });
+        <?php endif; ?>
 
 
         var $table_payments = $("#table-payments");
