@@ -249,6 +249,9 @@ class ModelOrder extends Model
     public function updateField($order_id, $field, $new_value)
     {
         $old_order = $this->getFirst("SELECT * FROM orders WHERE order_id = $order_id");
+        if ($field == 'start_date') {
+            $new_value = date('Y-m-d H:i:s', strtotime($new_value));
+        }
         $result = $this->update("UPDATE `orders` SET `$field` = '$new_value' WHERE order_id = $order_id");
         $new_order = $this->getFirst("SELECT * FROM orders WHERE order_id = $order_id");
 
