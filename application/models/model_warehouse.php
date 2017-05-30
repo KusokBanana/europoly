@@ -162,6 +162,7 @@ class ModelWarehouse extends ModelManagers_orders
         } else {
             $where = ['products_warehouses.warehouse_id IS NOT NULL'];
         }
+        $where[] = 'products_warehouses.is_deleted = 0';
         $where[] = "products_warehouses.status_id <> " . ISSUED;
         switch ($type) {
             case '':
@@ -217,6 +218,7 @@ class ModelWarehouse extends ModelManagers_orders
         }
 
         $where[] = "products_warehouses.status_id <> " . ISSUED;
+        $where[] = 'products_warehouses.is_deleted = 0';
         switch ($table_id) {
             case 'table_warehouses_products':
                 $where[] = $this->where;
@@ -404,27 +406,28 @@ class ModelWarehouse extends ModelManagers_orders
                 $info = json_decode($log['info'], true);
                 $items = $info['items'];
                 $items = implode(',', $items);
+                $where = ['is_deleted = 0'];
                 switch ($action) {
                     case LOG_ADD_TO_WAREHOUSE:
                         $warehouseId = $info['warehouse_id'];
-                        $where = "item_id IN ($items)";
-                        return $this->printDoc($warehouseId, [$where], 'warehouse', $logData);
+                        $where[] = "item_id IN ($items)";
+                        return $this->printDoc($warehouseId, $where, 'warehouse', $logData);
                     case LOG_DELIVERY_TO_WAREHOUSE:
                         $warehouseId = $info['warehouse_id'];
-                        $where = "item_id IN ($items)";
-                        return $this->printDoc($warehouseId, [$where], 'truck_to_warehouse', $logData);
+                        $where[] = "item_id IN ($items)";
+                        return $this->printDoc($warehouseId, $where, 'truck_to_warehouse', $logData);
                     case LOG_RETURN_TO_WAREHOUSE:
                         $orderId = $this->getFirst("SELECT manager_order_id as id FROM order_items 
                             WHERE item_id = ${items[0]}")['id'];
                         $logData['order_id'] = $orderId;
                         $warehouseId = $info['warehouse_id'];
-                        $where = "item_id IN ($items)";
-                        return $this->printDoc($warehouseId, [$where], 'return', $logData);
+                        $where[] = "item_id IN ($items)";
+                        return $this->printDoc($warehouseId, $where, 'return', $logData);
                     case LOG_ISSUE_FROM_WAREHOUSE:
-                        $where = "item_id IN ($items)";
-                        return $this->printDoc(false, [$where], 'issue', $logData);
+                        $where[] = "item_id IN ($items)";
+                        return $this->printDoc(false, $where, 'issue', $logData);
                     case LOG_ASSEMBLING_PRODUCT_WAREHOUSE:
-                        $where = "item_id IN ($items)";
+                        $where[] = "item_id IN ($items)";
                         $logData['items_replace'] = $info['items_detail'];
                         $assProductId = $info['product'];
                         $product = $this->getFirst("SELECT * FROM products WHERE product_id = $assProductId");
@@ -438,9 +441,9 @@ class ModelWarehouse extends ModelManagers_orders
                             'manager' => $user ? $user['last_name'] . ' ' . $user['first_name'] : '',
                         ];
                         $logData['merge'] = array_merge($logData['merge'], $merge);
-                        return $this->printDoc(false, [$where], 'assemble', $logData);
+                        return $this->printDoc(false, $where, 'assemble', $logData);
                     CASE LOG_CHANGE_WAREHOUSE:
-                        $where = "item_id IN ($items)";
+                        $where[] = "item_id IN ($items)";
                         $oldWarehouse = $info['old_warehouse_id'];
                         $warehouse = $info['warehouse_id'];
                         $warehouses = $this->getFirst("SELECT new_warehouse.name as warehouse_to, 
@@ -449,7 +452,7 @@ class ModelWarehouse extends ModelManagers_orders
                             LEFT JOIN warehouses old_warehouse ON (old_warehouse.warehouse_id = $oldWarehouse)
                             WHERE new_warehouse.warehouse_id = $warehouse");
                         $logData['merge'] = array_merge($logData['merge'], $warehouses);
-                        return $this->printDoc(false, [$where], 'change_warehouse', $logData);
+                        return $this->printDoc(false, $where, 'change_warehouse', $logData);
                 }
             }
 
@@ -460,6 +463,7 @@ class ModelWarehouse extends ModelManagers_orders
     {
         $fileName = $type;
         $where[] = "warehouse_id = $warehouseId";
+        $where[] = 'is_deleted = 0';
         if (!$warehouseId)
             $where[] = "warehouse_id IS NOT NULL";
 
@@ -549,6 +553,7 @@ class ModelWarehouse extends ModelManagers_orders
         $dealerPrice = 0;
 
         $where = ($warehouse_id) ? "WHERE warehouse_id = $warehouse_id" : "WHERE warehouse_id IS NOT NULL";
+        $where .= ' AND is_deleted = 0';
         $warehouseProducts = $this->getAssoc("SELECT * FROM order_items $where");
         if (!empty($warehouseProducts))
             foreach ($warehouseProducts as $warehouseProduct) {
@@ -692,7 +697,7 @@ class ModelWarehouse extends ModelManagers_orders
                 '</span>', ' ', products.purchase_price_currency)"),
         ];
 
-        $where = "products_warehouses.item_id IN ($items)";
+        $where = ["products_warehouses.item_id IN ($items)", 'products_warehouses.is_deleted = 0'];
 
         $table = $this->products_warehouses_table . " left join wood on products.wood_id = wood.wood_id " .
             "left join grading on products.grading_id = grading.grading_id ".

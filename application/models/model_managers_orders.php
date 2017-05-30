@@ -47,6 +47,7 @@ class ModelManagers_orders extends Model
         array('dt' => 31, 'db' => "order_items.commission_agent_bonus"),
         array('dt' => 32, 'db' => "order_items.production_date"),
         array('dt' => 33, 'db' => "IFNULL(CONCAT(order_items.reserve_since_date, ' - ',order_items.reserve_till_date), '')"),
+        array('dt' => 34, 'db' => "orders.comment"),
     ];
 
     var $managers_orders_column_names = [
@@ -84,6 +85,7 @@ class ModelManagers_orders extends Model
          'Commission Agent Bonus',
          'Production Date',
          'Reserve Period',
+         'Comments',
     ];
 
     var $managers_orders_reduced_columns = [
@@ -139,7 +141,7 @@ class ModelManagers_orders extends Model
             left join order_items on (order_items.manager_order_id = orders.order_id)
             left join items_status as status on orders.order_status_id = status.status_id';
 
-    var $whereCondition = "order_items.manager_order_id IS NOT NULL";
+    var $whereCondition = "order_items.manager_order_id IS NOT NULL AND order_items.is_deleted = 0";
 
     function getDTManagersOrders($input, $printOpt)
     {
@@ -201,13 +203,14 @@ class ModelManagers_orders extends Model
 
     function getDTManagersOrdersToSuppliersOrder($input, $products)
     {
-        $where = '';
+        $where = '(order_items.is_deleted = 0) AND (';
         $count = count($products);
 
         foreach ($products as $key => $product) {
             $where .= "(order_items.item_id=". $product .")";
             $where .= ($count-$key > 1) ? ' OR ' : '';
         }
+        $where .= ')';
 
         $this->sspComplex($this->managers_orders_table, "order_items.item_id",
             $this->managers_orders_columns, $input, null, $where);
@@ -216,15 +219,18 @@ class ModelManagers_orders extends Model
     function getSelects($isReduced = false)
     {
         if (!$isReduced) {
+            $tableNames = $this->getColumns($this->managers_orders_columns,
+                'managersOrders', $this->tableNames[0], true);
+
             if ($this->user->role_id == ROLE_SALES_MANAGER) {
                 $where = " orders.sales_manager_id = " . $this->user->user_id;
-                $this->whereCondition = '(' . $where . ')' . " OR client.sales_manager_id = " . $this->user->user_id .
-                    " OR client.operational_manager_id = " . $this->user->user_id;
-                $this->unLinkStrings($this->managers_orders_reduced_columns, [9, 10]);
+                $this->whereCondition = '((' . $where . ')' . " OR client.sales_manager_id = " . $this->user->user_id .
+                    " OR client.operational_manager_id = " . $this->user->user_id . ') AND order_items.is_deleted = 0';
+                $this->unLinkStrings($tableNames, [9, 10]);
             }
 
             $ssp = $this->getSspComplexJson($this->managers_orders_table, "order_items.item_id",
-                $this->managers_orders_columns, null, null, $this->whereCondition);
+                $tableNames, null, null, $this->whereCondition);
             $columns = $this->getColumns($this->managers_orders_column_names, 'managersOrders', $this->tableNames[0]);
             $rowValues = json_decode($ssp, true)['data'];
             $ignoreArray = ['Manager Order ID', 'Quantity', 'Number of Packs', 'Total Weight', 'Purchase Price / Unit',
@@ -232,15 +238,18 @@ class ModelManagers_orders extends Model
                 'Supplier Order ID', 'Truck ID'];
         } else {
 
+            $tableNames = $this->getColumns($this->managers_orders_reduced_columns,
+                'managersOrders', $this->tableNames[1], true);
+
             if ($this->user->role_id == ROLE_SALES_MANAGER) {
                 $this->whereCondition = "orders.sales_manager_id = " . $this->user->user_id;
                 $this->whereCondition .= " OR client.sales_manager_id = " . $this->user->user_id .
                     " OR client.operational_manager_id = " . $this->user->user_id;
-                $this->unLinkStrings($this->managers_orders_reduced_columns, [9, 10]);
+                $this->unLinkStrings($tableNames, [9, 10]);
             }
 
             $ssp = $this->getSspComplexJson($this->managers_orders_table_reduce, "orders.order_id",
-                $this->managers_orders_reduced_columns, null, null, $this->whereCondition);
+                $tableNames, null, null, $this->whereCondition);
             $columns = $this->getColumns($this->managers_orders_reduced_column_names, 'managersOrders', $this->tableNames[1]);
             $rowValues = json_decode($ssp, true)['data'];
             $ignoreArray = [];

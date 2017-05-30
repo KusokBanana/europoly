@@ -14,7 +14,7 @@
             "reference": "19dd1de9d3f5fc4d7d70175b4c344dee329f45fd",
             "shasum": ""
         },
-        "time": "2014-06-05 11:42:24",
+        "time": "2014-06-05T11:42:24+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -65,7 +65,7 @@
             "sebastian/phpcpd": "2.*",
             "squizlabs/php_codesniffer": "2.*"
         },
-        "time": "2016-07-07 17:26:55",
+        "time": "2016-07-07T17:26:55+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -128,7 +128,7 @@
             "zendframework/zend-serializer": "Zend\\Serializer component",
             "zendframework/zend-servicemanager": "To support hydrator plugin manager usage"
         },
-        "time": "2015-07-21 13:55:46",
+        "time": "2015-07-21T13:55:46+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -194,7 +194,7 @@
             "zendframework/zend-session": "Zend\\Session component",
             "zendframework/zend-uri": "Zend\\Uri component, required by the Uri and Sitemap\\Loc validators"
         },
-        "time": "2015-09-08 21:04:17",
+        "time": "2015-09-08T21:04:17+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -242,7 +242,7 @@
             "phpunit/phpunit": "~4.0",
             "satooshi/php-coveralls": "dev-master"
         },
-        "time": "2015-05-07 14:55:31",
+        "time": "2015-05-07T14:55:31+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -306,7 +306,7 @@
             "ext-xsl": "Allows applying XSL style sheet to headers, to main document part, and to footers of an OOXML template",
             "ext-zip": "Allows writing OOXML and ODF"
         },
-        "time": "2016-07-31 08:53:39",
+        "time": "2016-07-31T08:53:39+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {

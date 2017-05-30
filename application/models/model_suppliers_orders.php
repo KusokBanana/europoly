@@ -132,7 +132,7 @@ class ModelSuppliers_orders extends ModelManagers_orders
         'left join items_status as status on (suppliers_orders.status_id = status.status_id)';
 
     var $suppliersFilterWhere = ["suppliers_orders_items.supplier_order_id IS NOT NULL",
-                                    "suppliers_orders_items.truck_id IS NULL"];
+                                    "suppliers_orders_items.truck_id IS NULL AND suppliers_orders_items.is_deleted = 0"];
 
     function getDTSuppliersOrders($input, $printOpt)
     {
@@ -172,11 +172,10 @@ class ModelSuppliers_orders extends ModelManagers_orders
     function getDTSuppliersOrdersReduce($input)
     {
         $where = '';
-        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
-            $userId = $_SESSION['user_id'];
-            $where = "orders.sales_manager_id = " . $userId . ' OR '.
-                " client.sales_manager_id = $userId ".
-                " OR client.operational_manager_id = $userId " .
+        if ($this->user->role_id == ROLE_SALES_MANAGER) {
+            $where = "orders.sales_manager_id = " . $this->user->user_id . ' OR '.
+                " client.sales_manager_id = " . $this->user->user_id .
+                " OR client.operational_manager_id = " . $this->user->user_id .
                 ' OR order_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL';
             $this->unLinkStrings($this->suppliers_orders_columns_reduce, [1]);
         }
