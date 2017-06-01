@@ -57,9 +57,23 @@
                                     <div class="col-md-5 name"> Order Date & Time:</div>
                                     <div class="col-md-7 value">
                                         <?php if ($this->user->role_id == ROLE_ADMIN): ?>
+                                            <a href="#"
+                                               class="x-editable editable editable-click editable-empty"
+                                               id="editable-start_date-visible"><?= $this->order['start_date'] ?></a>
                                             <input type="text" name="start_date" id="editable-start_date"
-                                                    data-pk="<?= $this->order['order_id'] ?>"
-                                                    value="<?= $this->order['start_date'] ?>">
+                                                   style="display: none;"
+                                                   data-pk="<?= $this->order['order_id'] ?>"
+                                                   value="<?= $this->order['start_date'] ?>">
+                                            <div class="editable-buttons">
+                                                <button type="submit" class="btn blue editable-submit start_date-btn"
+                                                        style="display: none;">
+                                                    <i class="fa fa-check"></i>
+                                                </button>
+                                                <button type="button" class="btn default editable-cancel start_date-btn"
+                                                        style="display: none;">
+                                                    <i class="fa fa-times"></i>
+                                                </button>
+                                            </div>
                                         <?php else: ?>
                                             <?= $this->order['start_date'] ?>
                                         <?php endif; ?>
@@ -604,19 +618,39 @@ require_once 'modals/cancel_order.php';
             }
         });
         <?php if ($this->user->role_id == ROLE_ADMIN): ?>
-            $('#editable-start_date').datetimepicker({
+            var editableDate = $('#editable-start_date'),
+                editableDateVisible = $('#editable-start_date-visible'),
+                btns = $('.start_date-btn');
+            editableDate.datetimepicker({
                 format: 'Y-m-d H:i:s',
-                onChangeDateTime:function(current_time,$input){
+                onChangeDateTime: function(current_time,$input){
+
+                }
+            });
+        editableDateVisible.click(function(e) {
+                e.preventDefault();
+                $(this).hide();
+                editableDate.show().trigger('focusin');
+                btns.show();
+            });
+            btns.click(function () {
+                if ($(this).hasClass('editable-submit')) {
                     $.ajax({
                         url: '/order/change_field',
                         method: 'POST',
                         data: {
-                            name: $input.attr('name'),
-                            pk: $input.attr('data-pk'),
-                            value: $input.val()
+                            name: editableDate.attr('name'),
+                            pk: editableDate.attr('data-pk'),
+                            value: editableDate.val()
                         }
-                    })
+                    });
+                    editableDateVisible.text(editableDate.val());
+                } else {
+                    editableDate.val(editableDateVisible.text())
                 }
+                editableDateVisible.show();
+                editableDate.hide();
+                btns.hide();
             });
         <?php endif; ?>
 

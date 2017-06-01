@@ -252,6 +252,8 @@ class ModelOrder extends Model
         $old_order = $this->getFirst("SELECT * FROM orders WHERE order_id = $order_id");
         if ($field == 'start_date') {
             $new_value = date('Y-m-d H:i:s', strtotime($new_value));
+            $this->update("UPDATE `orders` SET `start_date` = '$new_value' WHERE order_id = $order_id");
+            return true;
         }
         $result = $this->update("UPDATE `orders` SET `$field` = '$new_value' WHERE order_id = $order_id");
         $new_order = $this->getFirst("SELECT * FROM orders WHERE order_id = $order_id");
