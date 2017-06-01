@@ -1,7 +1,5 @@
 <?php
 
-use PhpOffice\PhpWord\TemplateProcessor;
-
 class ControllerAccountant extends Controller
 {
 
@@ -154,6 +152,14 @@ class ControllerAccountant extends Controller
 
 
 
+    }
+
+    function action_download_sberbank()
+    {
+        $file = isset($_FILES['sberbank_file']) && !empty($_FILES['sberbank_file']) ? $_FILES['sberbank_file'] : false;
+        if ($file)
+            $this->model->addPaymentFromFile($file);
+        header("Location: " . $_SERVER['HTTP_REFERER']);
     }
 
 }

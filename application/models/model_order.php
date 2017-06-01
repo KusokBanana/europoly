@@ -527,50 +527,14 @@ class ModelOrder extends Model
             $status_id = $reserved['status_id'];
 
             $order_id = $currentOrderItem['manager_order_id'];
-            $order = $this->getFirst("SELECT sales_manager_id FROM orders WHERE order_id = $order_id");
+
+            if (!$available || !$ordered)
+                return false;
 
             // ordered > available
             if ($ordered > $available) {
 
-                $insertNames = '';
-                $insertValues = '';
-//                $updateSellPrice = 0;
-                /*foreach ($currentOrderItem as $name => $value) {
-                    if ($name != 'item_id') {
-
-                        if ($name == 'amount')
-                            $value = $available;
-                        if ($name == 'status_id') {
-                            $value = $reserved['status_id'];
-                        }
-//                        if ($name == 'sell_price') {
-//                            $updateSellPrice = floatval($value);
-//                        }
-
-                        if (!$value || $value == null)
-                            continue;
-                        $insertNames .= $name . ', ';
-                        if (is_numeric($value)) {
-                            $value = floatval($value);
-                            $insertValues .= "$value, ";
-                        } else {
-                            $insertValues .= "'$value', ";
-                        }
-                    }
-                }*/
-
                 $amount = $ordered - $available;
-                // Insert new reservation in Order
-//                if ($insertNames && $insertValues) {
-//                    $insertNames = substr($insertNames, 0, -2);
-//                    $insertValues = substr($insertValues, 0, -2);
-//                    $newOrderItemId = $this->insert("INSERT INTO order_items ($insertNames)
-//                      VALUES ($insertValues)");
-//
-                    // recalc parameters for current and new items (replace by updating amount instead)
-//                    $this->updateItemField($itemId, 'sell_price', $currentOrderItem['sell_price']);
-//                    $this->updateItemField($newOrderItemId, 'sell_price', $currentProductItem['sell_price']);
-//                }
 
                 // Update reserved item in Source
                 $commission_rate = floatval($currentOrderItem['commission_rate']);
@@ -591,12 +555,7 @@ class ModelOrder extends Model
                         issue_date = '$issue_date',
                         return_date = '$return_date'
                         WHERE item_id = $reserved_item_id");
-                // update current item
-//                $this->updateItemField($reserved_item_id, 'manager_bonus', $currentOrderItem['manager_bonus']);
-//                $this->updateItemField($reserved_item_id, 'manager_bonus_rate', $currentOrderItem['manager_bonus_rate']);
-//                $this->updateItemField($reserved_item_id, 'commission_agent_bonus', $currentOrderItem['commission_agent_bonus']);
-//                $this->updateItemField($reserved_item_id, 'commission_rate', $currentOrderItem['commission_rate']);
-//                $this->updateItemField($reserved_item_id, 'discount_rate', $currentOrderItem['discount_rate']);
+
                 $this->updateItemField($itemId, 'amount', $amount);
                 $this->updateItemField($reserved_item_id, 'sell_price', $currentOrderItem['sell_price']);
 
@@ -640,7 +599,6 @@ class ModelOrder extends Model
             } elseif ($ordered < $available) {
 
                 $newAmount = $available - $ordered;
-//                $this->update("UPDATE order_items SET amount = $newAmount WHERE item_id = $reserved_item_id");
 
                 $purchasePrice = floatval($reserved['purchase_price']);
                 $supOrderId = (!is_null($reserved['supplier_order_id'])) ? $reserved['supplier_order_id'] : 'NULL';
@@ -674,39 +632,6 @@ class ModelOrder extends Model
 
                 $this->updateItemField($reserved_item_id, 'amount', $newAmount);
                 $this->updateItemField($itemId, 'amount', $ordered);
-
-//                $currentReservedSourceItem = $this->getFirst("SELECT * FROM order_items WHERE item_id = $reserved_item_id");
-//                $insertNames = '';
-//                $insertValues = '';
-//                foreach ($currentReservedSourceItem as $name => $value) {
-//                    if ($name != 'item_id') {
-//
-//                        if ($name == 'amount')
-//                            $value = $ordered;
-//
-//                        if ($name == 'manager_order_id')
-//                            $value = (string) $order_id;
-//
-//                        if (!$value || $value == null)
-//                            continue;
-//                        $insertNames .= $name . ', ';
-//                        if (is_numeric($value)) {
-//                            $value = floatval($value);
-//                            $insertValues .= "$value, ";
-//                        } else {
-//                            $insertValues .= "'$value', ";
-//                        }
-//                    }
-//                }
-//                if ($insertNames && $insertValues) {
-////                    $newSourceItemId = $this->insert("INSERT INTO order_items ($insertNames reserve_since_date, reserve_till_date,
-////                      reserved_for_order_item_id)
-////                      VALUES ($insertValues NOW(), ADDDATE(NOW(), 7), $itemId)");
-//
-////                    $this->updateItemField($newSourceItemId, 'sell_price', $currentProductItem['sell_price']);
-//                    $this->updateItemField($newSourceItemId, 'amount', $ordered);
-//                    $this->updateItemField($reserved_item_id, 'amount', $newAmount);
-//                }
 
             }
         }

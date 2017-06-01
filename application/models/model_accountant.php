@@ -432,4 +432,73 @@ class ModelAccountant extends Model
         }
     }
 
+    function addPaymentFromFile($file)
+    {
+
+        $name = $file['name'];
+        $error = $file['error'];
+        $fileDir = $file['tmp_name'];
+
+        if (!$name || $error)
+            return false;
+
+        $text = file_get_contents($fileDir);
+
+        if ($text) {
+            $text = iconv("windows-1251", "utf-8", $text);
+            preg_match_all('|СекцияДокумент=Банковский ордер(.+)КонецДокумента|isU', $text, $arr);
+            if ($arr && isset($arr[1]) && !empty($arr[1])) {
+                foreach ($arr[1] as $onePayment)
+                {
+                    $onePayment = explode("\n", $onePayment);
+
+                    if (!empty($onePayment)) {
+                        $data = [];
+                        foreach ($onePayment as $values) {
+
+                            $tempArr = explode('=', $values);
+                            $name = Helper::arrGetVal($tempArr, 0);
+                            $value = Helper::arrGetVal($tempArr, 1);
+
+                            if (!$name || !$value)
+                                continue;
+
+                            switch ($name) {
+                                case 'Сумма':
+                                    $value = (double) $value;
+                                    $data['sum'] = $value;
+                                    require_once dirname(__FILE__) . "\model_payment.php";
+                                    $data['currency'] = 'РУБ';
+                                    $modelPayment = new ModelPayment();
+                                    $currency = (float) $modelPayment->getOfficialCurrency('РУБ');
+                                    $data['currency_rate'] = $currency;
+                                    $data['sum_in_eur'] = (double) ($value / $currency);
+                                    break;
+                                case 'НазначениеПлатежа':
+                                    $data['purpose_of_payment'] = $value;
+                                    break;
+                            }
+
+                        }
+
+                        if (!empty($data)) {
+
+                            $data['date'] = (string) date('Y-m-d');
+                            $data['responsible_person_id'] = $this->user->user_id;
+                            $data['status'] = 'Not Executed';
+
+                            $names = join('`, `', array_keys($data));
+                            $values = join("', '", $data);
+                            $this->insert("INSERT INTO payments (`$names`) VALUES ('$values')");
+
+                        }
+
+                    }
+
+                }
+
+            }
+        }
+    }
+
 }

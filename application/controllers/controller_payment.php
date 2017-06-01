@@ -123,7 +123,7 @@ class ControllerPayment extends Controller
     function action_get_currency()
     {
         if (isset($_POST['date']) && isset($_POST['currency'])) {
-            echo $this->model->getOfficialCurrency($_POST['date'], $_POST['currency']);
+            echo $this->model->getOfficialCurrency($_POST['currency'], $_POST['date']);
         }
     }
 

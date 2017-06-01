@@ -58,6 +58,10 @@
                                         }
                                     }
 
+                                    $buttons[] = '<button class="btn sbold red" data-toggle="modal" '.
+                                        'data-target="#upload_from_sberbank" type="button">'.
+                                        '<i class="fa fa-download" aria-hidden="true"></i> '.
+                                        'Upload from Sberbank Online</button>';
 
                                     $table_data = [
                                         'buttons' => $buttons,
@@ -142,4 +146,4 @@
         });
     })
 </script>
-
+<?php include 'application/views/modals/upload_from_sberbank.php' ?>

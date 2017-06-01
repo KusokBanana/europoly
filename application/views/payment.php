@@ -345,7 +345,9 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                                 category: category
                                             },
                                             success: function(data) {
-                                                $('#purpose_of_payment').val(data);
+                                                if (data) {
+                                                    $('#purpose_of_payment').val(data);
+                                                }
                                             }
                                         })
 

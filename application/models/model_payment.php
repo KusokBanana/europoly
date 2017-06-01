@@ -103,6 +103,9 @@ class ModelPayment extends Model
 
     public function getContractorName($category, $contractorId)
     {
+        if (!$category || $contractorId)
+            return '';
+
         $contractorsList = $this->getSelectByCategory($category);
         foreach ($contractorsList as $contractor) {
             if ($contractor['id'] == $contractorId)
@@ -400,14 +403,14 @@ class ModelPayment extends Model
         return mktime(0, 0, 0, $m, $d, $y);
     }
 
-    public function getOfficialCurrency($date, $currency)
+    public function getOfficialCurrency($currency, $date = false)
     {
 
-        if ($date && $currency) {
+        if ($currency) {
             if ($currency == 'EUR')
                 return 1;
 
-            $date = date('Y-m-d', strtotime($date));
+            $date = $date ? date('Y-m-d', strtotime($date)) : date('Y-m-d');
             $cur = $currency . '_value';
             $value = $this->getFirst("SELECT `$currency` FROM official_currency WHERE date = $date");
 
