@@ -15,21 +15,26 @@ class ControllerOrder extends Controller
     {
         $this->getAccess($this->page, 'v');
 
-        $this->view->order = $this->model->getOrder($_GET['id']);
-        $this->view->client = $this->model->getClient($this->view->order['client_id']);
+        $order = $this->model->getOrder($_GET['id']);
 
-        $userId = $_SESSION['user_id'];
+        if (!$order) {
+            $this->notFound();
+        }
+        $this->view->order = $order;
+        $this->view->client = $this->model->getClient($order['client_id']);
+
+        $userId = $this->user->user_id;
 
         if (($_SESSION["user_role"] == ROLE_SALES_MANAGER &&
-                ($this->view->order['sales_manager_id'] == $userId ||
+                ($order['sales_manager_id'] == $userId ||
                     $this->view->client['sales_manager_id'] == $userId ||
                     $this->view->client['operational_manager_id'] == $userId )
             ) || $_SESSION["perm"] >= OPERATING_MANAGER_PERM) {
 
-            $this->view->order_status = $this->model->getItemStatusName($this->view->order['order_status_id']);
-            $this->view->sales_manager = $this->model->getUser($this->view->order["sales_manager_id"]);
-            $this->view->commission_agent = $this->model->getClient($this->view->order["commission_agent_id"]);
-            $this->view->title = 'Order #' . $this->view->order['order_id'] . ' / ' . $this->view->order['order_items_count'];
+            $this->view->order_status = $this->model->getItemStatusName($order['order_status_id']);
+            $this->view->sales_manager = $this->model->getUser($order["sales_manager_id"]);
+            $this->view->commission_agent = $this->model->getClient($order["commission_agent_id"]);
+            $this->view->title = 'Order #' . $order['order_id'];
             $this->view->warehouses = $this->model->getWarehousesIdNames();
 
             $roles = new Roles();
@@ -61,11 +66,11 @@ class ControllerOrder extends Controller
             $this->view->full_product_hidden_columns = $this->model->full_product_hidden_columns;
             $this->view->managers = $this->model->getSalesManagersIdName();
             $this->view->legalEntities = $this->model->getLegalEntities();
-            $this->view->legalEntityName = $this->model->getLegalEntityName($this->view->order['legal_entity_id']);
+            $this->view->legalEntityName = $this->model->getLegalEntityName($order['legal_entity_id']);
 
-            $clientsFor = $this->user->role_id == ROLE_ADMIN ? false : $this->view->order["sales_manager_id"];
+            $clientsFor = $this->user->role_id == ROLE_ADMIN ? false : $order["sales_manager_id"];
             $this->view->clients = $this->model->getClientsOfSalesManager($clientsFor);
-            $this->view->commission_agents = $this->model->getCommissionAgentsOfManager($this->view->order["sales_manager_id"]);
+            $this->view->commission_agents = $this->model->getCommissionAgentsOfManager($order["sales_manager_id"]);
             $this->view->statusList = $this->model->getStatusList();
             $this->view->build('templates/template.php', 'single_order.php');
         } else {

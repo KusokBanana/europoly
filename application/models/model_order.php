@@ -386,6 +386,10 @@ class ModelOrder extends Model
 
         $this->update("UPDATE `order_items` SET `$field` = '$new_value' WHERE item_id = $order_item_id");
 
+        if ($field == 'status_id' && $orderId) {
+            $this->updateItemsStatus($orderId);
+        }
+
         $new_order_item = $this->getFirst("SELECT * FROM order_items WHERE item_id = $order_item_id");
 
         $sellValue = ($new_order_item['sell_price'] * (100 - $new_order_item['discount_rate'])) * $new_order_item['amount'] / 100;
@@ -419,17 +423,6 @@ class ModelOrder extends Model
         }
         $this->clearCache(['managers_orders_selects', 'sent_to_logist']);
         return true;
-    }
-
-
-    public function updateItemsStatus($orderId)
-    {
-        $status = $this->getFirst("SELECT status_id FROM order_items WHERE manager_order_id = $orderId AND 
-                                    status_id = (SELECT MIN(status_id) FROM order_items) AND is_deleted = 0");
-        $orderStatus = $status ? $status['status_id'] : DRAFT;
-        $this->update("UPDATE `orders` 
-                SET order_status_id = $orderStatus WHERE order_id = $orderId");
-        $this->clearCache(['managers_orders_selects', 'sent_to_logist']);
     }
 
     public function updateOrderPrice($orderId)
@@ -642,7 +635,7 @@ class ModelOrder extends Model
     public function getItemStatusName($status_id)
     {
         $status = $this->getFirst("SELECT name FROM items_status WHERE status_id = $status_id");
-        return $status ? $status['name'] : 'WTF?!?';
+        return $status ? $status['name'] : 'Unknown';
 
     }
     public function getLegalEntities()

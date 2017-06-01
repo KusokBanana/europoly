@@ -128,4 +128,12 @@ abstract class Controller
             $this->user = $userObj;
         }
     }
+
+    public function notFound()
+    {
+        http_response_code(404);
+//        header('HTTP/1.0 404 not found');
+        $this->view->build('templates/404.php');
+        die();
+    }
 }

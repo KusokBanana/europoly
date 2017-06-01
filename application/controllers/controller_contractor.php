@@ -22,7 +22,7 @@ class ControllerContractor extends Controller
         $contractor = $this->model->getContractor($contractorId, $contractorType);
 
         if (!$contractor) {
-            $this->getAccess('none', 'v');
+            $this->notFound();
         } else {
             $this->view->contractor = $contractor;
 

@@ -600,6 +600,10 @@ class ModelWarehouse extends ModelManagers_orders
 
         $result = $this->update("UPDATE `order_items` SET `$field` = '$new_value' WHERE item_id = $warehouse_item_id");
 
+        if ($field == 'status_id' && $orderId = $old_order_item['manager_order_id']) {
+            $this->updateItemsStatus($orderId);
+        }
+
         if ($field == 'warehouse_id' && $result)
             $this->addLog(LOG_CHANGE_WAREHOUSE, ['items' => [$warehouse_item_id],
                 'old_warehouse_id' => $old_order_item['warehouse_id'], 'warehouse_id' => $new_value]);

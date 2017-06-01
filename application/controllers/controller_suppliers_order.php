@@ -16,6 +16,9 @@ class ControllerSuppliers_order extends Controller
         $this->getAccess($this->page, 'v');
         $this->view->title = "Suppliers Order";
         $this->view->order = $this->model->getOrder($_GET['id']);
+        if (!$this->view->order)
+            $this->notFound();
+
 //        $this->view->client = $this->model->getClient($this->view->order['client_id']);
         $this->view->title = "Supplier Order #".$this->view->order['order_id'];
         $roles = new Roles();

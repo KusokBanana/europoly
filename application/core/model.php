@@ -752,4 +752,14 @@ abstract class Model extends mysqli
         }
         return NULL;
     }
+
+    public function updateItemsStatus($orderId)
+    {
+        $status = $this->getFirst("SELECT status_id FROM order_items WHERE manager_order_id = $orderId AND 
+                                    status_id = (SELECT MIN(status_id) FROM order_items) AND is_deleted = 0");
+        $orderStatus = $status ? $status['status_id'] : DRAFT;
+        $this->update("UPDATE `orders` 
+                SET order_status_id = $orderStatus WHERE order_id = $orderId");
+        $this->clearCache(['managers_orders_selects', 'sent_to_logist']);
+    }
 }

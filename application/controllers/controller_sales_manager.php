@@ -25,6 +25,9 @@ class ControllerSales_manager extends Controller
 
             $this->view->manager = $this->model->getUser($_GET['id']);
 
+            if (!$this->view->manager)
+                $this->notFound();
+
             if ($this->view->manager['is_deleted']) {
                 http_response_code(400);
                 die();

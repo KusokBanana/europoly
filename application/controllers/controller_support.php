@@ -16,9 +16,8 @@ class ControllerSupport extends Controller
         if (in_array($_SESSION['user_role'], [ROLE_WAREHOUSE, ROLE_ACCOUNTANT, ROLE_ADMIN])) {
             $this->view->support = $this->model->getUser($_GET['id']);
 
-            if ($this->view->support['is_deleted']) {
-                http_response_code(400);
-                die();
+            if (!$this->view->support || $this->view->support['is_deleted']) {
+                $this->notFound();
             }
 
             $userId = $_SESSION['user_id'];
@@ -33,7 +32,7 @@ class ControllerSupport extends Controller
             $this->view->roles = $this->model->getRoles();
             $this->view->build('templates/template.php', 'single_support.php');
         } else {
-            http_response_code(400);
+            $this->notFound();
         }
 
     }

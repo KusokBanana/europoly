@@ -40,10 +40,10 @@ class ControllerProduct extends Controller
 
                 $this->view->build('templates/template.php', 'single_product.php');
             } else {
-                http_response_code(400);
+                $this->notFound();
             }
         } else {
-            http_response_code(400);
+            $this->notFound();
         }
     }
 

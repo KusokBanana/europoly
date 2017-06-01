@@ -16,6 +16,9 @@ class ControllerTruck extends Controller
         $this->getAccess($this->page, 'v');
         $this->view->title = "Truck #" . $_GET['id'];
         $this->view->order = $this->model->getOrder($_GET['id']);
+        if (!$this->view->order)
+            $this->notFound();
+
         $roles = new Roles();
         $this->view->suppliers_orders_column_names =
             $roles->returnModelNames($this->model->suppliers_orders_column_names, 'suppliersOrders');

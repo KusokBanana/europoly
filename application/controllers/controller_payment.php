@@ -26,6 +26,9 @@ class ControllerPayment extends Controller
                 }
             } else {
                 $this->view->payment = $this->model->getPayment($id);
+                if (!$this->view->payment)
+                    $this->notFound();
+
                 $this->view->title = $this->view->payment['payment_id'];
                 $this->view->contractor = $this->model->getContractorName($this->view->payment['category'],
                     $this->view->payment['contractor_id']);

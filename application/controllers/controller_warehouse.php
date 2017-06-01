@@ -36,6 +36,9 @@ class ControllerWarehouse extends Controller
                 $this->view->id = 0;
             } else {
                 $this->view->warehouse = $this->model->getById("warehouses", "warehouse_id", $id);
+                if (!$this->view->warehouse)
+                    $this->notFound();
+
                 if ($this->view->warehouse != NULL) {
                     $this->view->id = $this->view->warehouse["warehouse_id"];
                     $this->view->title = $this->view->warehouse["name"];
@@ -45,7 +48,7 @@ class ControllerWarehouse extends Controller
             }
             $this->view->build('templates/template.php', 'warehouse.php');
         } else {
-            http_response_code(400);
+            $this->notFound();
         }
     }
 

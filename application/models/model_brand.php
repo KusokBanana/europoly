@@ -8,7 +8,7 @@ class ModelBrand extends ModelCatalogue
 
     function getDTProductsForBrand($brand_id, $input, $printOpt)
     {
-        $where = ["brands.brand_id = " . $brand_id];
+        $where = ["brands.brand_id = " . $brand_id, 'products.is_deleted = 0'];
 
         $columns = $this->getColumns($this->full_product_columns, 'brand', $this->tableName);
 
@@ -36,7 +36,7 @@ class ModelBrand extends ModelCatalogue
 
     function getSelectsBrand($brand_id)
     {
-        $where = "brands.brand_id = " . $brand_id;
+        $where = ["brands.brand_id = " . $brand_id, 'products.is_deleted = 0'];
         $role = new Roles();
         $cols = $role->returnModelColumns($this->full_product_columns, 'catalogue');
         $ssp = $this->getSspComplexJson($this->full_products_table, "product_id", $cols, null, $where);

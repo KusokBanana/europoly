@@ -17,6 +17,9 @@ class ControllerClient extends Controller
                 $this->view->title = 'New Client';
             } else {
                 $this->view->client = $this->model->getClient($id);
+                if (!$this->view->client)
+                    $this->notFound();
+
                 $this->view->title = 'Client ' . $this->view->client['final_name'];
                 $client = $this->view->client;
                 $this->view->primaryForm = $this->model->buildPrimaryForm($id);

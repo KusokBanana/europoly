@@ -28,7 +28,7 @@ class ControllerBrand extends Controller
                 $this->view->originalColumns = $roles->returnModelNames($this->model->full_product_column_names, $this->page);
 
                 $cache = new Cache();
-                $selectsCache = $cache->read('brand_catalogue_selects');
+                $selectsCache = $cache->read('brand_catalogue_selects' . $id);
                 if (!empty($selectsCache)) {
                     $array = $selectsCache;
                     $selects = $array['selects'];
@@ -37,7 +37,7 @@ class ControllerBrand extends Controller
                     $array = $this->model->getSelectsBrand($id);
                     $selects = $array['selects'];
                     $rows = $array['rows'];
-                    $cache->write('brand_catalogue_selects', $array);
+                    $cache->write('brand_catalogue_selects' . $id, $array);
                 }
                 $this->view->selects = $selects;
                 $this->view->rows = $rows;
@@ -64,10 +64,10 @@ class ControllerBrand extends Controller
 
                 $this->view->build('templates/template.php', 'single_brand.php');
             } else {
-                http_response_code(400);
+                $this->notFound();
             }
         } else {
-            http_response_code(400);
+            $this->notFound();
         }
     }
 
