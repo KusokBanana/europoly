@@ -746,7 +746,7 @@ class ModelOrder extends Model
             $manager = $order['sales_manager_id'];
 
             $user = $this->getFirst("SELECT * FROM users WHERE user_id = $manager");
-            $values['manager'] = $user ? $user['last_name'] . ' ' . $user['first_name'] : '';
+            $values['manager'] = $user ? $user['visual_name'] : '?';
             $values['visible_order_id'] = ($order['visible_order_id']) ? $order['visible_order_id'] : $order['order_id'];
 
             $templateProcessor = $phpWord->loadTemplate($docFile);

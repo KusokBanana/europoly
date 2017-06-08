@@ -80,6 +80,11 @@ class ControllerOrder extends Controller
 
     }
 
+    function action_parse()
+    {
+        $this->model->parse();
+    }
+
     function action_dt_order_items()
     {
         $this->model->getDTOrderItems($_GET['order_id'], $_GET);

@@ -22,25 +22,23 @@ class ControllerAccountant extends Controller
         set_time_limit(-1);
 
         $parser = [];
-
 //        require dirname(__FILE__) . "/../../assets/phpExcel/Examples/parser.php";
-
-//        $file = dirname(__FILE__) . "/pars.txt";
-
+//
+//        $file = dirname(__FILE__) . "/parse3.txt";
+//
 //        $fd = fopen($file, 'w') or die("не удалось создать файл");
 //        $str = json_encode($parser);
 //        fwrite($fd, $str);
 //        fclose($fd);
 //        echo '<br><br>Job Is Done';
 //        die();
-        require dirname(__FILE__) . "/../../assets/phpExcel/Examples/expenses_parser.php";
+//        require dirname(__FILE__) . "/../../assets/phpExcel/Examples/expenses_parser.php";
 
 //        $this->model->initCatalogueParser($parser, false);
 
-        $this->model->initParser($parser);
+//        $this->model->initParser($parser);
 
     }
-
 
     function action_index($action_param = null, $action_data = null)
     {

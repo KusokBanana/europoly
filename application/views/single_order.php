@@ -170,8 +170,11 @@
                                 <div class="row static-info">
                                     <div class="col-md-5 name"> Customer Name:</div>
                                     <div class="col-md-7 value">
-                                        <a href="javascript:;" id="editable-client" class='x-editable' data-pk="<?= $this->order['order_id'] ?>" data-name="client_id" data-value="<?= $this->order['client_id'] ?>"
-                                           data-url='/order/change_field' data-original-title='Choose Client:'><?= $this->client['name'] ?></a>
+                                        <a href="javascript:;" id="editable-client" class='x-editable'
+                                           data-pk="<?= $this->order['order_id'] ?>" data-name="client_id"
+                                           data-value="<?= $this->order['client_id'] ?>"
+                                           data-url='/order/change_field'
+                                           data-original-title='Choose Client:'><?= $this->client['final_name'] ?></a>
                                         <a href="/client?id=<?= $this->order['client_id'] ?>">
                                             <i class="glyphicon glyphicon-link"></i></a>
                                     </div>
@@ -209,8 +212,10 @@
                                            data-pk="<?= $this->order['order_id'] ?>" data-name="commission_agent_id"
                                            data-value="<?= $this->order['commission_agent_id'] ?>"
                                            data-url='/order/change_field' data-original-title='Enter Commission Agent'>
-                                            <?= $this->commission_agent['name'] != null ? $this->commission_agent['name'] .
-                                                '<a href="/order/delete_commission_agent?order_id=' . $this->order["order_id"] .
+                                            <?= $this->commission_agent['final_name'] != null ?
+                                                $this->commission_agent['final_name'] .
+                                                '<a href="/order/delete_commission_agent?order_id=' .
+                                                $this->order["order_id"] .
                                                 '"><span class="glyphicon glyphicon-trash"></span></a>' : '' ?>
                                         </a>
                                         <?php if (!is_null($this->order['commission_agent_id'])): ?>

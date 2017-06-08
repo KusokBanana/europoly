@@ -478,9 +478,9 @@ $hidden_by_default = json_encode($hidden);
                 nextSelect.removeClass('hidden').editableSelect('show');
                 var select = parent.find('.es-input');
                 select.focus();
-                select.on('select.editable-select', onSelectEditable)
+                select.on('select.editable-select', onSelectEditable);
             } else if (isAlreadyBuild) {
-                $(this).on('select.editable-select', onSelectEditable)
+                $(this).on('select.editable-select', onSelectEditable);
             }
         }
 

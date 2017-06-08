@@ -46,7 +46,7 @@ class ModelSales_manager extends Model
         return $this->sspComplex($db, "orders.order_id", $columns, $input, null, "orders.sales_manager_id = $user_id");
     }
 
-    function updatePersonalInfo($user_id, $first_name, $last_name, $date_of_birth, $position, $work_phone, $mobile_number, $email, $employment_date, $notes, $roleId = false)
+    function updatePersonalInfo($user_id, $first_name, $last_name, $visual_name, $date_of_birth, $position, $work_phone, $mobile_number, $email, $employment_date, $notes, $roleId = false)
     {
         $set = ($date_of_birth != 'null' ? "date_of_birth = '$date_of_birth', " : "") .
             ($position != 'null' ? "position = '$position', " : "") .
@@ -54,7 +54,8 @@ class ModelSales_manager extends Model
             ($mobile_number != 'null' ? "mobile_number = '$mobile_number', " : "") .
             ($email != 'null' ? "email = '$email', " : "") .
             ($employment_date != 'null' ? "employment_date = '$employment_date', " : "") .
-            ($notes != 'null' ? "notes = '$notes', " : "");
+            ($notes != 'null' ? "notes = '$notes', " : "") .
+            ($visual_name != 'null' ? "visual_name = '$visual_name', " : "");
         if ($roleId)
             $set .= ($roleId != 'null' ? "role_id = $roleId, " : "");
         return $this->update("UPDATE users SET " .

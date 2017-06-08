@@ -42,6 +42,7 @@ class ControllerSupport extends Controller
         $this->model->updatePersonalInfo($this->escape_and_empty_to_null($_POST['user_id']),
             $this->escape_and_empty_to_null($_POST['first_name']),
             $this->escape_and_empty_to_null($_POST['last_name']),
+            $this->escape_and_empty_to_null($_POST['visual_name']),
             $this->escape_and_empty_to_null($_POST['date_of_birth']),
             $this->escape_and_empty_to_null($_POST['position']),
             $this->escape_and_empty_to_null($_POST['work_phone']),

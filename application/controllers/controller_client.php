@@ -67,6 +67,13 @@ class ControllerClient extends Controller
             unset($_POST['client_additions']);
         }
         $this->model->updateClient($_POST, $clientId);
+        if ($this->user->role_id == ROLE_SALES_MANAGER) {
+            $client = $this->model->getFirst("SELECT * FROM clients WHERE client_id = $clientId");
+            if (isset($_POST['sales_manager_id']) && $_POST['sales_manager_id'] !== $this->user->user_id
+                && $client['operational_manager_id'] !== $this->user->user_id) {
+                header("Location: /clients");
+            }
+        }
 
         header("Location: " . $_SERVER['HTTP_REFERER']);
     }
