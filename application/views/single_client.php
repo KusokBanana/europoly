@@ -172,7 +172,7 @@ $isNewClient = !isset($this->client['client_id']);
                             </div>
                             <div class="form-group">
                                 <label for="type">Category</label>
-                                <select class="form-control" id="type" name="type">
+                                <select class="form-control" id="type" name="type" required>
                                     <?php $types = ['End-Customer', 'Comission Agent', 'Dealer'] ?>
                                     <option disabled selected></option>
                                     <?php foreach ($types as $type): ?>
@@ -207,10 +207,11 @@ $isNewClient = !isset($this->client['client_id']);
                                     <?php if (!empty($this->managers)): ?>
                                         <?php foreach ($this->managers as $manager): ?>
                                             <option value="<?= $manager['user_id'] ?>"
-                                                <?php if (isset($this->client['sales_manager_id']) &&
-                                                    $this->client['sales_manager_id'] == $manager['user_id']) {
-                                                    echo ' selected ';
-                                                } elseif($this->user->user_id == $manager['user_id']) {
+                                                <?php if (isset($this->client['sales_manager_id'])) {
+                                                    if ($this->client['sales_manager_id'] == $manager['user_id']) {
+                                                        echo ' selected ';
+                                                    }
+                                                } elseif ($this->user->user_id == $manager['user_id']) {
                                                     echo ' selected ';
                                                 }
                                                 ?>>

@@ -58,8 +58,11 @@
         .table-advance tr td:first-child {
             border-left-width: 0 !important;
         }
-        .select2-container {
+        .select2-container, .page-quick-sidebar-wrapper {
             z-index: 100000;
+        }
+        .page-quick-sidebar-toggler {
+            z-index: 100001;
         }
     </style>
 </head>

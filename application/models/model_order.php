@@ -295,12 +295,11 @@ class ModelOrder extends Model
     {
         $old_order_item = $this->getFirst("SELECT * FROM order_items 
           WHERE item_id = $order_item_id AND is_deleted = 0");
-        $orderId = $old_order_item['manager_order_id'];
 
-        $reserved = $this->getFirst("SELECT item_id FROM order_items 
-          WHERE reserved_for_order_item_id = $order_item_id AND is_deleted = 0");
-        if ($reserved)
-            $this->updateItemField($reserved['item_id'], $field, $new_value);
+        if (!$old_order_item)
+            return false;
+
+        $orderId = $old_order_item['manager_order_id'];
 
         if ($field == 'reduced-price' || $field == 'sell-value') {
             switch ($field) {
@@ -367,14 +366,20 @@ class ModelOrder extends Model
                 case 'number_of_packs':
                     $number_of_packs = floatval($new_value);
                     $amount = $number_of_packs * floatval($product['amount_in_pack']);
+                    if (!$product['amount_in_pack']) {
+                        echo 'Enter correct Quantity in 1 Pack of Product!';
+                        return false;
+                    }
                     break;
                 case 'amount':
                     $amount = floatval($new_value);
-                    $number_of_packs = $amount / floatval($product['amount_in_pack']);
+                    $number_of_packs = ($product['amount_in_pack']) ? $amount / floatval($product['amount_in_pack']) :
+                        0;
             }
 
             $sellValue = ($old_order_item['sell_price'] * (100 - $old_order_item['discount_rate'])) * $amount / 100;
-            $commission_agent_bonus = $old_order_item['commission_rate'] * $sellValue / 100;
+            $commission_rate = ($old_order_item['commission_rate']) ? $old_order_item['commission_rate'] : 0;
+            $commission_agent_bonus = $commission_rate * $sellValue / 100;
             $manager_bonus = ($sellValue - $commission_agent_bonus) * $old_order_item['manager_bonus_rate'] / 100;
 
             $this->update("UPDATE order_items SET number_of_packs = $number_of_packs, amount = $amount, 
@@ -386,10 +391,6 @@ class ModelOrder extends Model
 
         $this->update("UPDATE `order_items` SET `$field` = '$new_value' WHERE item_id = $order_item_id");
 
-        if ($field == 'status_id' && $orderId) {
-            $this->updateItemsStatus($orderId);
-        }
-
         $new_order_item = $this->getFirst("SELECT * FROM order_items WHERE item_id = $order_item_id");
 
         $sellValue = ($new_order_item['sell_price'] * (100 - $new_order_item['discount_rate'])) * $new_order_item['amount'] / 100;
@@ -400,25 +401,9 @@ class ModelOrder extends Model
                       commission_agent_bonus = $commission_agent_bonus
                       WHERE item_id = $order_item_id");
 
-
-
-//        $total_price = $new_order_item['purchase_price'] * $amount;
-//        $reduced_price = (1.0 - $new_order_item['discount_rate'] / 100.0) * $total_price;
-//        $manager_bonus = $new_order_item['manager_bonus_rate'] / 100.0 * $reduced_price;
-
-
-//$this->update("UPDATE order_items
-//            SET amount = $amount, number_of_packs = $number_of_packs, total_price = $total_price, reduced_price = $reduced_price, manager_bonus = $manager_bonus
-//            WHERE order_item_id = $order_item_id");
-
-//        $order_id = $new_order_item['order_id'];
-//        $order = $this->getFirst("SELECT * FROM orders WHERE order_id = $order_id");
-//        $total_price = $order['total_price'] - $old_order_item['reduced_price'] + $reduced_price;
-//        $manager_bonus = $order['manager_bonus'] - $old_order_item['manager_bonus'] + $manager_bonus;
-
         $this->updateOrderPrice($orderId);
 
-        if ($field == 'status_id') {
+        if ($field == 'status_id' && $orderId) {
             $this->updateItemsStatus($orderId);
         }
         $this->clearCache(['managers_orders_selects', 'sent_to_logist']);
@@ -745,10 +730,12 @@ class ModelOrder extends Model
             $client = $this->getFirst("SELECT * FROM clients WHERE client_id = ${order['client_id']}");
             if ($client) {
                 $add[] = $client['name'];
-                if (!is_null($client['inn']))
-                    $add[] = 'ИНН ' . $client['inn'];
-                if (!is_null($client['legal_address']))
-                    $add[] = $client['legal_address'];
+                if (!is_null($client['inn']) && trim($client['inn']))
+                    $add[] = 'ИНН ' . trim($client['inn']);
+                if (!is_null($client['legal_address']) && trim($client['legal_address']))
+                    $add[] = trim($client['legal_address']);
+                if (!is_null($client['mobile_number']) && trim($client['mobile_number']))
+                    $add[] = 'тел.: ' . trim($client['mobile_number']);
                 $values['client'] = join(', ', $add);
             }
 
@@ -756,9 +743,11 @@ class ModelOrder extends Model
                   WHERE legal_entity_id = ${order['legal_entity_id']}");
             $values['visual_legal_entity_name'] = $legalEntity['visual_name'];
 
-            $user = $this->getFirst("SELECT * FROM users WHERE user_id = ".$_SESSION['user_id']);
+            $manager = $order['sales_manager_id'];
+
+            $user = $this->getFirst("SELECT * FROM users WHERE user_id = $manager");
             $values['manager'] = $user ? $user['last_name'] . ' ' . $user['first_name'] : '';
-            $values['visible_order_id'] = $order['visible_order_id'];
+            $values['visible_order_id'] = ($order['visible_order_id']) ? $order['visible_order_id'] : $order['order_id'];
 
             $templateProcessor = $phpWord->loadTemplate($docFile);
 
