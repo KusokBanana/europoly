@@ -169,7 +169,7 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
 
                                     body.on('change', 'select', function() {
                                         var selectType = $(this).attr('id');
-                                        if (selectType != 'contractor' && selectType != 'category')
+                                        if (selectType !== 'contractor' && selectType !== 'category')
                                             return false;
                                         changeSelects(selectType);
                                     }).on('change', '#sum, #currency_rate, #sum_in_eur, #course, ' +
@@ -452,7 +452,7 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                 <div class="col-md-1">
                                     <input type="text" id="currency_rate" name="currency_rate" required
                                            value="<?= isset($this->payment['currency_rate']) ?
-                                               number_format($this->payment['currency_rate'], 4, '.', ' ') : '' ?>"
+                                               number_format(1/$this->payment['currency_rate'], 4, '.', ' ') : '' ?>"
                                            class="form-control">
                                 </div>
                             </div>
@@ -603,10 +603,14 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                         expenseArticleSelect.empty().append(articleOptions).select2();
                                     });
 
-                                    $('#date, #currency').on('change', getOfficialCurrency);
+                                    $('#date, #currency').on('change', '', {isFirst: false}, getOfficialCurrency);
 
                                     getOfficialCurrency(true);
                                     function getOfficialCurrency(isFirst = false) {
+
+                                        if (typeof isFirst === 'object') {
+                                            isFirst = isFirst.data.isFirst;
+                                        }
 
                                         var date = $('#date').val();
                                         var currency = $('#currency').val();
@@ -633,11 +637,9 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                                     if (data) {
                                                         value = parseFloat(1/data).format(4);
                                                     }
-                                                    course.val(value);
-                                                    var courseValue = value;
 //                                                    if (isFirst) {
 //                                                        value = ($('#currency_rate').val() / $('#course').val() - 1) * 100;
-                                                        value = (exchangeCommissionValue / 100 + 1) * courseValue;
+                                                        value = (exchangeCommissionValue / 100 + 1) * value;
 //                                                        $('#exchange_commission').val(value.format(2))
                                                         currencyRateInput.val(value.format(2));
 //                                                    } else if (currencyRateValue === 0) {
@@ -648,7 +650,8 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
 //                                                        value = sumInEurValue / currencyRateValue;
 //                                                        sumInput.val(value.format(2));
 //                                                    }
-                                                    course.trigger('change');
+                                                    if ((!sumValue && isFirst) || !isFirst)
+                                                        course.trigger('change');
                                                 }
                                             })
                                         }
