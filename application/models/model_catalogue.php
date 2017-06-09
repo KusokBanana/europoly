@@ -160,13 +160,13 @@ class ModelCatalogue extends Model
         // delete ',' from end
         $names = trim($names);
         $values = trim($values);
-        if (substr($names, -1) == ',')
-            $names = substr($names, 0, -1);
-        if (substr($values, -1) == ',')
-            $values = substr($values, 0, -1);
+//        if (substr($names, -1) == ',')
+//            $names = substr($names, 0, -1);
+//        if (substr($values, -1) == ',')
+//            $values = substr($values, 0, -1);
 
-        $productId = $this->insert("INSERT INTO products ($names)
-                          VALUES ($values)");
+        $productId = $this->insert("INSERT INTO products ($names change_time)
+                          VALUES ($values NOW())");
         $rusNames = '';
         $rusValues = '';
         if (!empty($rusArray)) {
@@ -181,11 +181,12 @@ class ModelCatalogue extends Model
             $rusNames = trim($rusNames);
             $rusValues = trim($rusValues);
 
-            $result = $this->insert("INSERT INTO nls_products ($rusNames language_id, product_id) 
+            $this->insert("INSERT INTO nls_products ($rusNames language_id, product_id) 
                                             VALUES ($rusValues 2, $productId)");
-            if ($result)
-                $this->clearCache(['catalogue_selects', 'new_product_selects', 'product_selects']);
         }
+
+        if ($productId)
+            $this->clearCache(['catalogue_selects', 'new_product_selects', 'product_selects']);
 
     }
 

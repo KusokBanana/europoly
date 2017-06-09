@@ -85,6 +85,8 @@ class ModelProduct extends Model
                 }
             }
         }
+
+        $this->update("UPDATE products SET change_time = NOW() WHERE product_id = $product_id");
     }
 
     public function deleteProduct($product_id)

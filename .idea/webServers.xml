@@ -53,6 +53,14 @@
           <option name="port" value="21" />
         </fileTransfer>
       </webServer>
+      <webServer id="a16609d1-46f2-4481-a2bc-d7488cb3bfe6" name="europolyInstallation" url="http://u470791.ftp.masterhost.ru">
+        <fileTransfer host="u470791.ftp.masterhost.ru" port="21">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="21" />
+        </fileTransfer>
+      </webServer>
     </option>
   </component>
 </project>

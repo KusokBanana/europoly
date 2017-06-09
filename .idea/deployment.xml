@@ -51,6 +51,13 @@
           </mappings>
         </serverdata>
       </paths>
+      <paths name="europolyInstallation">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/www" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="europolyServer">
         <serverdata>
           <mappings>
