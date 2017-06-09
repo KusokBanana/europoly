@@ -446,7 +446,7 @@ class ModelAccountant extends Model
 
         if ($text) {
             $text = iconv("windows-1251", "utf-8", $text);
-            preg_match_all('|СекцияДокумент=Банковский ордер(.+)КонецДокумента|isU', $text, $arr);
+            preg_match_all('|СекцияДокумент(.+)КонецДокумента|isU', $text, $arr);
             if ($arr && isset($arr[1]) && !empty($arr[1])) {
                 foreach ($arr[1] as $onePayment)
                 {
@@ -454,11 +454,14 @@ class ModelAccountant extends Model
 
                     if (!empty($onePayment)) {
                         $data = [];
+                        $receiver = [];
+                        $sender = [];
                         foreach ($onePayment as $values) {
 
                             $tempArr = explode('=', $values);
                             $name = Helper::arrGetVal($tempArr, 0);
                             $value = Helper::arrGetVal($tempArr, 1);
+                            $value = trim($value);
 
                             if (!$name || !$value)
                                 continue;
@@ -472,13 +475,24 @@ class ModelAccountant extends Model
                                     $modelPayment = new ModelPayment();
                                     $currency = (float) $modelPayment->getOfficialCurrency('РУБ');
                                     $data['currency_rate'] = $currency;
-                                    $data['sum_in_eur'] = (double) ($value / $currency);
+                                    $data['sum_in_eur'] = (double) ($value * $currency);
                                     break;
                                 case 'НазначениеПлатежа':
                                     $data['purpose_of_payment'] = $value;
                                     break;
+                                case 'ПлательщикИНН':
+                                    $sender['inn'] = $value;
+                                    break;
+                                case 'ПолучательИНН':
+                                    $receiver['inn'] = $value;
+                                    break;
+                                case 'Получатель':
+                                    $receiver['name'] = $value;
+                                    break;
+                                case 'Плательщик':
+                                    $sender['name'] = $value;
+                                    break;
                             }
-
                         }
 
                         if (!empty($data)) {
@@ -486,6 +500,33 @@ class ModelAccountant extends Model
                             $data['date'] = (string) date('Y-m-d');
                             $data['responsible_person_id'] = $this->user->user_id;
                             $data['status'] = 'Not Executed';
+                            $data['category'] = PAYMENT_CATEGORY_OTHER;
+                            $data['legal_entity_id'] = 2;
+                            $data['transfer_type_id'] = 2;
+
+                            $contractor = [];
+
+                            switch (AVENA_INN) {
+                                case Helper::arrGetVal($receiver, 'inn'):
+                                    $data['direction'] = PAYMENT_DIRECTION_INCOME;
+                                    $contractor = $sender;
+                                    break;
+                                case Helper::arrGetVal($sender, 'inn'):
+                                    $data['direction'] = PAYMENT_DIRECTION_EXPENSE;
+                                    $contractor = $receiver;
+                                    break;
+                            }
+
+                            if (!empty($contractor)) {
+                                $existingContractor = $this->getFirst("SELECT * FROM other WHERE inn = ${contractor['inn']}");
+                                if ($existingContractor) {
+                                    $data['contractor_id'] = $existingContractor['other_id'];
+                                } else {
+                                    $namesC = join('`, `', array_keys($contractor));
+                                    $valuesC = join("', '", $contractor);
+                                    $data['contractor_id'] = $this->insert("INSERT INTO other (`$namesC`) VALUES ('$valuesC')");
+                                }
+                            }
 
                             $names = join('`, `', array_keys($data));
                             $values = join("', '", $data);
@@ -496,7 +537,6 @@ class ModelAccountant extends Model
                     }
 
                 }
-
             }
         }
     }
