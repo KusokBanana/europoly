@@ -287,12 +287,12 @@ abstract class Model extends mysqli
 
     function getCommissionAgentsIdName()
     {
-        return $this->getAssoc("SELECT client_id, name FROM clients WHERE type = '" . CLIENT_TYPE_COMISSION_AGENT . "'");
+        return $this->getAssoc("SELECT client_id, final_name as name FROM clients WHERE type = '" . CLIENT_TYPE_COMISSION_AGENT . "'");
     }
 
     function getClientsIdName()
     {
-        return $this->getAssoc("SELECT client_id, name FROM clients");
+        return $this->getAssoc("SELECT client_id, final_name as name FROM clients");
     }
 
     public function getCountriesIdName($query)
@@ -585,7 +585,9 @@ abstract class Model extends mysqli
             $units = ($unitsRus && $unitsRus['units']) ? $unitsRus['units'] : $product['units'];
             $reducedPrice = $orderItem['sell_price'] * (100 - $orderItem['discount_rate'])/100;
             $sum = floatval($reducedPrice * $orderItem['amount']);
-            $weight = (is_null($product['weight'])) ? 0 : $product['weight'];
+            $amount_in_pack = is_null($product['amount_in_pack']) ? 0 : floatval($product['amount_in_pack']);
+            $weight = (is_null($product['weight']) || !$amount_in_pack || is_null($orderItem['number_of_packs'])) ? 0 :
+                $product['weight'] * $amount_in_pack * $orderItem['number_of_packs'];
 
             $products['id'][] = $id;
             $products['product_id'][] = $productId;
@@ -596,7 +598,8 @@ abstract class Model extends mysqli
             $products['sum'][] = round($sum, 2);
             $products['opt_sum'][] = round($sum * 0.7, 2);
             $products['pack_type'][] = $product['packing_type'];
-            $products['weight'][] = $product['weight'];
+            $products['weight'][] = $weight;
+//            $products['weight'][] = $product['weight'];
             $products['amount'][] = round($orderItem['amount'], 2);
             $products['packs_number'][] = round($orderItem['number_of_packs'], 2);
             $products['production_date'][] = $orderItem['production_date'];
@@ -609,7 +612,7 @@ abstract class Model extends mysqli
 
             $values['total_packs_number'] += $orderItem['number_of_packs'];
             $values['amount'] += $orderItem['amount'];
-            $values['total_weight'] += !is_null($product['weight']) ? floatval($weight) : 0;
+            $values['total_weight'] += $weight ? $weight : 0;
             $values['sum'] += $sum;
             $values['opt_sum'] += $sum * 0.7;
             $values['total']++;

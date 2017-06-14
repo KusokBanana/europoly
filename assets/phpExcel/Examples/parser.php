@@ -122,7 +122,7 @@ function getXLS($xls){
     return $array;
 }
 global $parser;
-$fileName = 'products_24_04_v3.xlsx';
+$fileName = 'products_24_04_v2.xlsx';
 $parser = getXLS(dirname(__FILE__) . "/../$fileName"); //извлеаем данные из XLS
 
 function setHeader(&$header, $value, $cellNumber) {

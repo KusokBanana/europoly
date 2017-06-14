@@ -19,19 +19,19 @@ class ControllerAccountant extends Controller
         ini_set('display_startup_errors', TRUE);
         define('EOL',(PHP_SAPI == 'cli') ? PHP_EOL : '<br />');
         date_default_timezone_set('Europe/London');
-        set_time_limit(-1);
+//        set_time_limit(-1);
 
         $parser = [];
-//        require dirname(__FILE__) . "/../../assets/phpExcel/Examples/parser.php";
-//
-//        $file = dirname(__FILE__) . "/parse3.txt";
-//
-//        $fd = fopen($file, 'w') or die("не удалось создать файл");
-//        $str = json_encode($parser);
-//        fwrite($fd, $str);
-//        fclose($fd);
-//        echo '<br><br>Job Is Done';
-//        die();
+        require dirname(__FILE__) . "/../../assets/phpExcel/Examples/parser.php";
+
+        $file = dirname(__FILE__) . "/parse2.txt";
+
+        $fd = fopen($file, 'w') or die("не удалось создать файл");
+        $str = json_encode($parser);
+        fwrite($fd, $str);
+        fclose($fd);
+        echo '<br><br>Job Is Done';
+        die();
 //        require dirname(__FILE__) . "/../../assets/phpExcel/Examples/expenses_parser.php";
 
 //        $this->model->initCatalogueParser($parser, false);

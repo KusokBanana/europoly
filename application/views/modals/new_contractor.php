@@ -11,9 +11,10 @@
                         <label>Name</label>
                         <input name="name" class="form-control" placeholder="Enter Name" required>
                     </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Create</button>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    </div>
                 </div>
             </form>
         </div>

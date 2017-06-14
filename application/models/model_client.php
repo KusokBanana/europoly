@@ -191,7 +191,7 @@ class ModelClient extends Model
                         if ($key == 'id') {
                             $frame['pk'] = ['value' => $value];
                         }
-                        if (isset($frame[$key])) {
+                        if (isset($frame[$key]) && $value) {
                             $frame[$key]['value'] = $value;
                         }
                     }
@@ -206,7 +206,11 @@ class ModelClient extends Model
 
     public function updateItemField($client_id, $field, $new_value)
     {
-        $new_value = mysql_escape_string($new_value);
+        if (is_string($new_value))
+            $new_value = Helper::safeVar($new_value);
+        else
+            $new_value = mysql_escape_string($new_value);
+        // TODO maybe need to remove else condition
         $result = $this->update("UPDATE clients SET `$field` = '$new_value' WHERE client_id = $client_id");
         return $result;
     }
@@ -225,7 +229,8 @@ class ModelClient extends Model
             $valuesArray = [];
             $fieldsArray = [];
             foreach ($fields as $field => $value) {
-                $value = $value != "" ? $this->escape_string($value) : '';
+                $value = Helper::safeVar($value);
+                if (!$value) continue;
                 $fieldsArray[] = "$field";
                 $valuesArray[] = "'$value'";
             }
@@ -250,24 +255,30 @@ class ModelClient extends Model
                         unset($clientAddition['pk']);
                         $setArray = [];
                         foreach ($clientAddition as $name => $value) {
-                            $value = trim($value);
+                            $value = Helper::safeVar($value);
                             if (!$value)
                                 continue;
-                            $value = mysql_escape_string($value);
                             $setArray[] = "$name = '$value'";
                         }
+
+                        if (empty($setArray))
+                            continue;
+
                         $set = join(', ', $setArray);
                         $this->update("UPDATE client_additions 
                           SET $set, client_id = $clientId, type = '$baseType' WHERE id = $pk");
                     } else {
                         foreach ($clientAddition as $name => $value) {
-                            $value = trim($value);
+                            $value = Helper::safeVar($value);
                             if (!$value)
                                 continue;
-                            $value = mysql_escape_string($value);
                             $names .= $name . ', ';
                             $values .= "'$value', ";
                         }
+
+                        if (!$values)
+                            continue;
+
                         $this->insert("INSERT INTO client_additions ($names client_id, type)
                           VALUES ($values $clientId, '$baseType')");
                     }

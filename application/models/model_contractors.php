@@ -174,6 +174,7 @@ class ModelContractors extends ModelClients
 
     function addNewContractor($type, $name)
     {
+        $name = Helper::safeVar($name);
         $this->insert("INSERT INTO `$type` (`name`) VALUES ('$name')");
         header("Location: " . $_SERVER['HTTP_REFERER']);
     }

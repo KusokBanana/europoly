@@ -68,7 +68,7 @@ $isNewClient = !isset($this->client['client_id']);
                                 <div class="form-group">
                                     <label for="name">Name</label>
                                     <input name="name" id="name" value="<?= isset($this->client['name']) ?
-                                        $this->client['name'] : '' ?>" class="form-control" required>
+                                        htmlspecialchars($this->client['name']) : '' ?>" class="form-control" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="commission_agent_id">Commission agent</label>
@@ -92,12 +92,12 @@ $isNewClient = !isset($this->client['client_id']);
                                 <div class="form-group">
                                     <label for="second_name">Second Name</label>
                                     <input name="second_name" id="second_name" value="<?= isset($this->client['second_name']) ?
-                                        $this->client['second_name'] : '' ?>" class="form-control">
+                                        htmlspecialchars($this->client['second_name']) : '' ?>" class="form-control">
                                 </div>
                                 <div class="form-group">
                                     <label for="final_name">Final Name</label>
                                     <input name="final_name" id="final_name" value="<?= isset($this->client['final_name']) ?
-                                        $this->client['final_name'] : '' ?>" class="form-control">
+                                        htmlspecialchars($this->client['final_name']) : '' ?>" class="form-control">
                                 </div>
                             </div>
                         </div>
@@ -155,7 +155,7 @@ $isNewClient = !isset($this->client['client_id']);
                                 <input type="text" name="client_category_2"
                                        id="client_category_2" class="form-control"
                                        value="<?= isset($this->client['client_category_2']) ?
-                                           $this->client['inn'] : '' ?>">
+                                           $this->client['client_category_2'] : '' ?>">
                             </div>
                         </div>
                     </div>
@@ -256,7 +256,7 @@ $isNewClient = !isset($this->client['client_id']);
                                 <label for="main_target">Main target</label>
                                 <input name="main_target" id="main_target"
                                        value="<?= isset($this->client['main_target']) ?
-                                           $this->client['main_target'] : ''  ?>"
+                                           htmlspecialchars($this->client['main_target']) : ''  ?>"
                                        class="form-control">
                             </div>
                             <div class="form-group">
@@ -278,35 +278,35 @@ $isNewClient = !isset($this->client['client_id']);
                                 <label for="main_competiter">Main Competiter</label>
                                 <input name="main_competiter" id="main_competiter"
                                        value="<?= isset($this->client['main_competiter']) ?
-                                           $this->client['main_competiter'] : ''  ?>"
+                                           htmlspecialchars($this->client['main_competiter']) : ''  ?>"
                                        class="form-control">
                             </div>
                             <div class="form-group">
                                 <label for="samples_position">Samples Position</label>
                                 <input name="samples_position" id="samples_position"
                                        value="<?= isset($this->client['samples_position']) ?
-                                           $this->client['samples_position'] : ''  ?>"
+                                           htmlspecialchars($this->client['samples_position']) : ''  ?>"
                                        class="form-control">
                             </div>
                             <div class="form-group">
                                 <label for="needful_actions">Needful Actions</label>
                                 <input name="needful_actions" id="needful_actions"
                                        value="<?= isset($this->client['needful_actions']) ?
-                                           $this->client['needful_actions'] : ''  ?>"
+                                           htmlspecialchars($this->client['needful_actions']) : ''  ?>"
                                        class="form-control">
                             </div>
                             <div class="form-group">
                                 <label for="legal_name">Legal Name</label>
                                 <input name="legal_name" id="legal_name"
                                        value="<?= isset($this->client['legal_name']) ?
-                                           $this->client['legal_name'] : ''  ?>"
+                                           htmlspecialchars($this->client['legal_name']) : ''  ?>"
                                        class="form-control">
                             </div>
                             <div class="form-group">
                                 <label for="design_buro">Design Buro</label>
                                 <input name="design_buro" id="design_buro"
                                        value="<?= isset($this->client['design_buro']) ?
-                                           $this->client['design_buro'] : ''  ?>"
+                                           htmlspecialchars($this->client['design_buro']) : ''  ?>"
                                        class="form-control">
                             </div>
                             <div class="form-group">
@@ -353,27 +353,28 @@ $isNewClient = !isset($this->client['client_id']);
                                 <label for="city">City</label>
                                 <input name="city" id="city"
                                        value="<?= isset($this->client['city']) ?
-                                           $this->client['city'] : ''  ?>"
+                                           htmlspecialchars($this->client['city']) : ''  ?>"
                                        class="form-control">
                             </div>
                             <div class="form-group">
                                 <label for="legal_address">Legal address</label>
                                 <input type="text" class="form-control"
                                        value="<?= isset($this->client['legal_address']) ?
-                                           $this->client['legal_address'] : '' ?>"
+                                           htmlspecialchars($this->client['legal_address']) : '' ?>"
                                        placeholder="" name="legal_address" id="legal_address">
                             </div>
                             <div class="form-group">
                                 <label for="actual_address">Actual address</label>
                                 <input type="text" class="form-control"
                                        value="<?= isset($this->client['actual_address']) ?
-                                           $this->client['actual_address'] : '' ?>"
+                                           htmlspecialchars($this->client['actual_address']) : '' ?>"
                                        placeholder="" id="actual_address" name="actual_address">
                             </div>
                             <div class="form-group">
                                 <label for="email">Email</label>
                                 <input type="text" class="form-control"
-                                       value="<?= isset($this->client['email']) ? $this->client['email'] : '' ?>"
+                                       value="<?= isset($this->client['email']) ?
+                                           htmlspecialchars($this->client['email']) : '' ?>"
                                        placeholder="" id="email" name="email">
                             </div>
                             <div class="form-group">

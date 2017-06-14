@@ -470,7 +470,7 @@ class ModelAccountant extends Model
                                 case 'Сумма':
                                     $value = (double) $value;
                                     $data['sum'] = $value;
-                                    require_once dirname(__FILE__) . "\model_payment.php";
+                                    require_once dirname(__FILE__) . "/model_payment.php";
                                     $data['currency'] = 'РУБ';
                                     $modelPayment = new ModelPayment();
                                     $currency = (float) $modelPayment->getOfficialCurrency('РУБ');
@@ -478,7 +478,7 @@ class ModelAccountant extends Model
                                     $data['sum_in_eur'] = (double) ($value * $currency);
                                     break;
                                 case 'НазначениеПлатежа':
-                                    $data['purpose_of_payment'] = $value;
+                                    $data['purpose_of_payment'] = Helper::safeVar($value);
                                     break;
                                 case 'ПлательщикИНН':
                                     $sender['inn'] = $value;
@@ -487,10 +487,10 @@ class ModelAccountant extends Model
                                     $receiver['inn'] = $value;
                                     break;
                                 case 'Получатель':
-                                    $receiver['name'] = $value;
+                                    $receiver['name'] = Helper::safeVar($value);
                                     break;
                                 case 'Плательщик':
-                                    $sender['name'] = $value;
+                                    $sender['name'] = Helper::safeVar($value);
                                     break;
                             }
                         }

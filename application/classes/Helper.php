@@ -24,4 +24,18 @@ class Helper
         echo '</pre><br>';
     }
 
+    public static function safeVar($var)
+    {
+        if (!$var || is_null($var))
+            return false;
+
+        $var = trim($var);
+//        $var = mysql_real_escape_string($var);
+//        $var = htmlspecialchars($var);
+        $var = addslashes($var);
+//        $var = htmlspecialchars($var);
+        $var = strip_tags($var);
+        return $var;
+    }
+
 }
