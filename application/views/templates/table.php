@@ -91,7 +91,9 @@
             } else {
                 $input = '<input type="text" class="form-control column-filter-input" style="width: 100%" 
                             onclick="$(this).focus(); event.stopPropagation()" />';
+                $class = '';
                 if ($selectSearch && isset($selectSearch[$column_name]) && !empty($selectSearch[$column_name])) {
+                    $class = 'success';
                     $input .= '<select class="column-filter-select hidden form-control" 
                                         onclick="$(this).focus(); event.stopPropagation()">';
                     foreach ($selectSearch[$column_name] as $value) {
@@ -99,7 +101,9 @@
                     }
                     $input .= '</select>';
                 }
-                echo '<th data-header-id="'.$column_id.'">' . $column_name . '<br>' . $input . '</th>';
+                echo '<th class="'.$class.'" data-header-id="'.$column_id.'">' .
+                        $column_name . '<br>' . $input .
+                    '</th>';
             }
         }
         ?>
@@ -127,6 +131,9 @@
     }
     table .es-list {
         width: auto !important;
+    }
+    table.dataTable td:not(.select-checkbox), table.dataTable tr:not(.select-checkbox) {
+        min-width: 130px;
     }
     table .es-input {
         background-color: #fff;
