@@ -160,6 +160,56 @@ $isNewClient = !isset($this->client['client_id']);
                         </div>
                     </div>
                     <hr>
+
+                    <?php if (!$isNewClient): ?>
+                        <div class="bottom-form-block">
+                            <div class="row">
+                                <div class="col-md-12 main-block" data-type="requests">
+                                    <h4 class="sbold">Requests</h4>
+                                    <div class="row">
+                                        <div class="actions" style="padding:10px">
+                                            <div class="btn-group">
+                                                <a id="" class="btn btn blue btn-sm add-btn" href=""> Add new
+                                                    <i class="fa fa-plus"></i>
+                                                </a>
+                                            </div>
+                                            <div class="btn-group">
+                                                <a id="" class="btn btn red btn-sm delete-btn" href="">
+                                                    Delete last
+                                                    <i class="fa fa-minus"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="bottom-form-block">
+                                <div class="row">
+                                    <div class="col-md-12 main-block" data-type="contact-persons">
+                                        <h4 class="sbold">Contact persons</h4>
+                                        <div class="row">
+                                            <div class="actions" style="padding:10px">
+                                                <div class="btn-group">
+                                                    <a id="" class="btn btn blue btn-sm add-btn" href=""> Add new
+                                                        <i class="fa fa-plus"></i>
+                                                    </a>
+                                                </div>
+                                                <div class="btn-group">
+                                                    <a id="" class="btn btn red btn-sm delete-btn" href="">
+                                                        Delete last
+                                                        <i class="fa fa-minus"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                    <?php endif; ?>
+
                     <div class="row">
                         <div class="col-md-6">
                             <h4 class="sbold">Parameters of the Client</h4>
@@ -397,49 +447,6 @@ $isNewClient = !isset($this->client['client_id']);
                     <?php if (!$isNewClient): ?>
                         <div class="bottom-form-block">
                             <div class="row">
-                                <div class="col-md-12 main-block" data-type="requests">
-                                    <h4 class="sbold">Requests</h4>
-                                    <div class="row">
-                                        <div class="actions" style="padding:10px">
-                                            <div class="btn-group">
-                                                <a id="" class="btn btn blue btn-sm add-btn" href=""> Add new
-                                                    <i class="fa fa-plus"></i>
-                                                </a>
-                                            </div>
-                                            <div class="btn-group">
-                                                <a id="" class="btn btn red btn-sm delete-btn" href="">
-                                                    Delete last
-                                                    <i class="fa fa-minus"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <hr>
-                        <div class="bottom-form-block">
-                            <div class="row">
-                                <div class="col-md-12 main-block" data-type="contact-persons">
-                                    <h4 class="sbold">Contact persons</h4>
-                                    <div class="row">
-                                        <div class="actions" style="padding:10px">
-                                            <div class="btn-group">
-                                                <a id="" class="btn btn blue btn-sm add-btn" href=""> Add new
-                                                    <i class="fa fa-plus"></i>
-                                                </a>
-                                            </div>
-                                            <div class="btn-group">
-                                                <a id="" class="btn btn red btn-sm delete-btn" href="">
-                                                    Delete last
-                                                    <i class="fa fa-minus"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row">
                                 <div class="col-md-12 main-block" data-type="bank-accounts">
                                     <h4 class="sbold">Bank Accounts</h4>
                                     <div class="row">
@@ -459,7 +466,9 @@ $isNewClient = !isset($this->client['client_id']);
                                     </div>
                                 </div>
                             </div>
-                            <hr>
+                        </div>
+                        <hr>
+                        <div class="bottom-form-block">
                             <div class="row">
                                 <div class="col-md-12 main-block" data-type="contracts">
                                     <h4 class="sbold">Contracts</h4>
