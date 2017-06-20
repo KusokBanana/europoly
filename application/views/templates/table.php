@@ -91,9 +91,7 @@
             } else {
                 $input = '<input type="text" class="form-control column-filter-input" style="width: 100%" 
                             onclick="$(this).focus(); event.stopPropagation()" />';
-                $class = '';
                 if ($selectSearch && isset($selectSearch[$column_name]) && !empty($selectSearch[$column_name])) {
-                    $class = 'success';
                     $input .= '<select class="column-filter-select hidden form-control" 
                                         onclick="$(this).focus(); event.stopPropagation()">';
                     foreach ($selectSearch[$column_name] as $value) {
@@ -101,7 +99,7 @@
                     }
                     $input .= '</select>';
                 }
-                echo '<th class="'.$class.'" data-header-id="'.$column_id.'">' .
+                echo '<th data-header-id="'.$column_id.'">' .
                         $column_name . '<br>' . $input .
                     '</th>';
             }
@@ -307,6 +305,14 @@ $hidden_by_default = json_encode($hidden);
                 if (event.data.column.search() !== $(this).val()) {
                     event.data.column.search($(this).val()).draw();
                     table.draw();
+
+                    var th = $(this).closest('th');
+                    if ($(this).val() && !th.hasClass('success')) {
+                        th.addClass('success')
+                    } else if (!$(this).val()) {
+                        th.removeClass('success')
+                    }
+
                     if (!$(this).val()) {
                         filterSelectsValues($(this))
                     }

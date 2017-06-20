@@ -84,6 +84,20 @@
                 </div>
             </div>
         </div>
+
+        <script src="/assets/global/plugins/bootstrap-daterangepicker/moment.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.js" type="text/javascript"></script>
+
+        <div class="col-md-12">
+            <label for="daterange">Period</label>
+            <input type="text" id="daterange" name="daterange" value="01/01/2016 - 01/31/2017" />
+            <div id="balancesTableWrap">
+                <?php
+                $balances = $this->balance;
+                include 'application/views/templates/_balance.php';
+                ?>
+            </div>
+        </div>
     </div>
     <!-- END PAGE BASE CONTENT -->
 </div>
@@ -108,6 +122,33 @@
 
 <script>
     $(document).ready(function() {
+
+        $(function() {
+//            var today = new Date();
+//            var date = today.getFullYear()+'/'+(today.getMonth()+1)+'/'+today.getDate();
+            $('input[name="daterange"]').daterangepicker({
+//                startDate: '2013-01-01',
+//                endDate: date
+            }).on('apply.daterangepicker', function(ev, picker) {
+                var begin = picker.startDate.format('MM/DD/YYYY');
+                var end = picker.endDate.format('MM/DD/YYYY');
+                $(this).val(begin + ' - ' + end);
+                $.ajax({
+                    url: '/accountant/get_balance',
+                    type: 'GET',
+                    data: {
+                        begin: begin,
+                        end: end
+                    },
+                    success: function(data) {
+                        if (data) {
+                            $('#balancesTableWrap').empty().append(data);
+                        }
+                    }
+                })
+            });
+        });
+
         $('body').on('click', '.new-similar-payment-btn', function(e) {
             e.preventDefault();
             var table = $('table').DataTable();
@@ -147,3 +188,4 @@
     })
 </script>
 <?php include 'application/views/modals/upload_from_sberbank.php' ?>
+

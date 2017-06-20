@@ -54,6 +54,7 @@ class ControllerAccountant extends Controller
 
         $this->view->access = $roles->getPageAccessAbilities($this->page);
 
+        $this->view->balance = $this->model->getBalanceData();
         $array = $this->model->getSelects();
         $this->view->selects = $array['selects'];
         $this->view->rows = $array['rows'];
@@ -142,6 +143,18 @@ class ControllerAccountant extends Controller
         }
 
         $this->model->getDTPayments($_GET, $print);
+
+    }
+
+    function action_get_balance()
+    {
+
+        $begin = Helper::arrGetVal($_GET, 'begin');
+        $end = Helper::arrGetVal($_GET, 'end');
+
+        $balances = $this->model->getBalanceData($begin, $end);
+
+        include '/application/views/templates/_balance.php';
 
     }
 

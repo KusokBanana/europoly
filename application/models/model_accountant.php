@@ -541,4 +541,63 @@ class ModelAccountant extends Model
         }
     }
 
+    function getBalanceData($dateBegin = null, $dateEnd = null)
+    {
+
+        $dateBegin = (is_null($dateBegin) || !$dateBegin) ? $this->getFirst("SELECT date FROM payments 
+          WHERE is_deleted = 0 AND is_monthly = 0 AND date IS NOT NULL")['date'] : $dateBegin;
+        $dateEnd = (is_null($dateEnd) || !$dateEnd) ? date('Y-m-d') : $dateEnd;
+
+        $payments = $this->getAssoc("SELECT * FROM payments WHERE is_deleted = 0 AND is_monthly = 0");
+        $data = [
+            1 => [],
+            2 => []
+        ];
+        $dataBalance = [
+            'Balance in the beginning' => 0,
+            'Sum plus for period' => 0,
+            'Sum minus for period' => 0,
+            'Saldo' => 0,
+            'Balance in the end' => 0
+        ];
+        if (!empty($payments)) {
+            foreach ($payments as $payment) {
+
+                $currency = $payment['currency'];
+                $date = $payment['date'];
+                $direction = $payment['direction'];
+                $sum = floatval($payment['sum']);
+                $transferType = +$payment['transfer_type_id'];
+                $sumWithDir = ($direction == 'Expense') ? -$sum : +$sum;
+
+                if (!isset($data[$transferType][$currency])) {
+                    $data[$transferType][$currency] = $dataBalance;
+                }
+
+                $localDataBalance = $data[$transferType][$currency];
+
+                if (strtotime($date) < strtotime($dateBegin)) {
+                    $localDataBalance['Balance in the beginning'] += $sumWithDir;
+                } elseif (strtotime($date) >= strtotime($dateBegin) && strtotime($date) <= strtotime($dateEnd)) {
+                    if ($direction === 'Income') {
+                        $localDataBalance['Sum plus for period'] += $sum;
+                        $localDataBalance['Saldo'] += $sum;
+                    } else {
+                        $localDataBalance['Sum minus for period'] += $sum;
+                        $localDataBalance['Saldo'] -= $sum;
+                    }
+                }
+
+                $localDataBalance['Balance in the end'] = $localDataBalance['Balance in the beginning'] +
+                    $localDataBalance['Saldo'];
+
+                $data[$transferType][$currency] = $localDataBalance;
+
+            }
+        }
+
+        return $data;
+
+    }
+
 }
