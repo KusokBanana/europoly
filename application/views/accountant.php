@@ -62,6 +62,9 @@
                                         'data-target="#upload_from_sberbank" type="button">'.
                                         '<i class="fa fa-download" aria-hidden="true"></i> '.
                                         'Upload from Sberbank Online</button>';
+                                    $buttons[] = '<button class="btn sbold blue" data-toggle="modal" '.
+                                        'data-target="#modal_balances" type="button">'.
+                                        'Balances</button>';
 
                                     $table_data = [
                                         'buttons' => $buttons,
@@ -82,20 +85,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <script src="/assets/global/plugins/bootstrap-daterangepicker/moment.min.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.js" type="text/javascript"></script>
-
-        <div class="col-md-12">
-            <label for="daterange">Period</label>
-            <input type="text" id="daterange" name="daterange" value="01/01/2016 - 01/31/2017" />
-            <div id="balancesTableWrap">
-                <?php
-                $balances = $this->balance;
-                include 'application/views/templates/_balance.php';
-                ?>
             </div>
         </div>
     </div>
@@ -120,6 +109,35 @@
     </div>
 </div>
 
+<script src="/assets/global/plugins/bootstrap-daterangepicker/moment.min.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.js" type="text/javascript"></script>
+
+<div class="modal fade" id="modal_balances" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="width:85%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Balances</h4>
+            </div>
+            <div class="modal-body">
+                <label for="daterange">Choose Period</label>
+                <input type="text" id="daterange" class="form-control" name="daterange"/>
+                <div id="balancesTableWrap" class="row">
+                    <?php
+                    $balances = $this->balance;
+                    include 'application/views/templates/_balance.php';
+                    ?>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+</div>
+
 <script>
     $(document).ready(function() {
 
@@ -127,8 +145,8 @@
 //            var today = new Date();
 //            var date = today.getFullYear()+'/'+(today.getMonth()+1)+'/'+today.getDate();
             $('input[name="daterange"]').daterangepicker({
-//                startDate: '2013-01-01',
-//                endDate: date
+                startDate: moment().subtract(365, 'days'),
+                endDate: moment()
             }).on('apply.daterangepicker', function(ev, picker) {
                 var begin = picker.startDate.format('MM/DD/YYYY');
                 var end = picker.endDate.format('MM/DD/YYYY');

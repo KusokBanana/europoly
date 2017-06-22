@@ -790,7 +790,7 @@ class ModelOrder extends Model
         $rowValues = json_decode($ssp, true)['data'];
         $ignoreArray = ['_product_id', 'Name', 'Article', 'Thickness', 'Width', 'Length',
             'Weight', 'Quantity in 1 Pack', 'Purchase price', 'Supplier\'s discount',
-            'Margin', 'Sell'];
+            'Margin', 'Sell', 'Visual Name', 'visual_name'];
 
         if (!empty($rowValues)) {
             $selects = [];

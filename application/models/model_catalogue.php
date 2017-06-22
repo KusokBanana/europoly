@@ -73,7 +73,7 @@ class ModelCatalogue extends Model
         $ignoreArray = ['_product_id', 'Name', 'Article', 'Thickness', 'Width', 'Length',
             'Weight', 'Quantity in 1 Pack', 'Purchase price', 'Supplier\'s discount',
             'Margin', 'Sell',/* TODO */ 'image_id_A', 'image_id_B', 'image_id_V', 'amount_of_units_in_pack',
-            'Visual Name', 'amount_of_packs_in_pack', 'Visual Name'];
+            'Visual Name', 'visual_name', 'amount_of_packs_in_pack'];
 
         if (!empty($rowValues)) {
             $selects = [];
@@ -82,6 +82,7 @@ class ModelCatalogue extends Model
                     if (!$value || $value == null)
                         continue;
                     $name = $columns[$key];
+                    echo $name;
                     if (in_array($name, $ignoreArray))
                         continue;
 

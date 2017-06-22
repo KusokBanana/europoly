@@ -44,7 +44,7 @@ class ModelBrand extends ModelCatalogue
         $rowValues = json_decode($ssp, true)['data'];
         $ignoreArray = ['_product_id', 'Name', 'Article', 'Thickness', 'Width', 'Length',
             'Weight', 'Quantity in 1 Pack', 'Purchase price', 'Supplier\'s discount',
-            'Margin', 'Sell'];
+            'Margin', 'Visual Name', 'Sell', 'visual_name'];
 
         if (!empty($rowValues)) {
             $selects = [];
