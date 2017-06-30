@@ -40,6 +40,11 @@
                                 + Load into Truck
                             </a>
                         </div>
+                        <div class="actions">
+                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal_newOrder">
+                                + Add Supplier Order
+                            </button>
+                        </div>
                     <?php endif; ?>
                     <script>
                         $('body').on('click', '.load-into-truck-modal-btn', function() {
@@ -122,7 +127,9 @@
 </div>
 
 <div class="modal fade" id="modal_loadintoTruck" role="dialog" aria-hidden="true"></div>
-
+<?php
+include 'application/views/modals/new_empty_supplier_order.php'
+?>
 <script>
 	$('#modal_loadintoTruck').on('hidden.bs.modal', function() {
 		$(this).empty();

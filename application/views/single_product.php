@@ -122,9 +122,9 @@ END;
                             }
 
                             $formName .= '.' . $column['type'];
-                            echo '<a href="javascript:;" id="editable-$name" class=\'x-editable\' data-pk="'.
+                            echo '<a href="javascript:;" id="editable-'.$name.'" class=\'x-editable\' data-pk="'.
                                 $this->product["product_id"].'" data-name="'.$formName.'" data-value="'.$value.'"'.
-                                'data-sourceName="'.$name.'" data-isSelect="'.$isSelect.'" '.
+                                ' data-sourceName="'.$name.'" data-isSelect="'.$isSelect.'" '.
                                 'data-url=\'/product/change_field\' data-original-title=\'Enter '.$label.'\'>'.
                                 $text.
                                 '</a>';
@@ -231,14 +231,19 @@ require_once "modals/upload_image.php"
             var sourceName = $(this).attr('data-sourceName');
             var source = ($selects[sourceName] !== undefined) ? $selects[sourceName] : false;
             var isSelect = $(this).attr('data-isSelect');
+            var url = $(this).attr('data-url');
+            var pk = $(this).attr('data-pk');
+            var name = $(this).attr('data-name');
             if (source && source.length && isSelect) {
                 $(this).editable({
                     type: "select",
+                    url: url,
                     inputclass: 'form-control input-medium',
                     source: source
                 });
                 $(this).on('shown', function(e, editable) {
                     var parent = editable.input.$input.parent();
+//                    parent.closest('form').attr('action', url);
                     var hidden = editable.input.$input;
                     var clone = editable.input.$input.clone();
                     editable.input.$input.after(clone);
@@ -254,7 +259,22 @@ require_once "modals/upload_image.php"
                         hidden.val(selectValue);
                     });
                     editableSelect.closest('form').on('submit', function() {
+                        var value = $(this).find('input').val();
+                        if (!value) {
+                            return false;
+                        }
+                        $.ajax({
+                            url: url,
+                            data: {
+                                name: name,
+                                value: value,
+                                pk: pk
+                            },
+                            type: 'POST',
+                            async: false
+                        });
                         window.location.href = '';
+                        return false;
                     })
                 });
             } else {
@@ -262,6 +282,31 @@ require_once "modals/upload_image.php"
                     type: 'text',
                     inputclass: 'form-control input-medium'
                 });
+//                $(this).on('shown', function(e, editable) {
+//                    var input = editable.input.$input;
+//                    var form = input.closest('form');
+//                    form.on('submit', function() {
+//                        var value = $(this).find('input').val();
+//                        if (!value) {
+//                            return false;
+//                        }
+//                        $.ajax({
+//                            url: url,
+//                            data: {
+//                                name: name,
+//                                value: value,
+//                                pk: pk
+//                            },
+//                            type: 'POST',
+//                            async: true,
+//                            success: function() {
+//                                window.location.href = '';
+//                            }
+//                        });
+////                        window.location.href = '';
+//                        return false;
+//                    })
+//                })
             }
         });
     });

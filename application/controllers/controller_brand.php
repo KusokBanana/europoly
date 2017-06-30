@@ -51,6 +51,7 @@ class ControllerBrand extends Controller
                 $this->view->grading = $this->model->getAll("grading");
                 $this->view->patterns = $this->model->getAll("patterns");
                 $this->view->tabs = $this->model->getCategoryTabs();
+                $this->view->categories = $this->model->getAll('category');
 
                 // try to read cache
                 $selectsCache = $cache->read('new_product_selects');

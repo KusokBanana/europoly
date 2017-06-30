@@ -29,9 +29,9 @@ class ControllerManagers_orders extends Controller
         $this->view->originalColumns = $roles->returnModelNames($this->model->managers_orders_column_names, $this->page);
         $this->view->originalColumnsReduced = $roles->returnModelNames($this->model->managers_orders_reduced_column_names, $this->page);
 
-        $withAdmins = $this->user->role_id == ROLE_ADMIN ? true : false;
+        $withAdmins = $this->user->role_id == ROLE_ADMIN || $this->user->role_id == ROLE_OPERATING_MANAGER ? true : false;
         $this->view->managers = $this->model->getSalesManagersIdName($withAdmins);
-        $clientsFor = $this->user->role_id == ROLE_ADMIN ? false : $this->user->user_id;
+        $clientsFor = $this->user->role_id == ROLE_ADMIN || $this->user->role_id == ROLE_OPERATING_MANAGER ? false : $this->user->user_id;
         $this->view->clients = $this->model->getClientsOfSalesManager($clientsFor);
 
         $cache = new Cache();

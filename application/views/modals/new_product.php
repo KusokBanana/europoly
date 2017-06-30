@@ -396,7 +396,7 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Q-ty of units in 1 piece</label>
-                                <input name="amount_of_units_in_pack" class="form-control" required
+                                <input name="amount_of_units_in_pack" class="form-control"
                                        placeholder="Enter Q-ty of units in 1 pc.">
                             </div>
                         </div>
@@ -405,7 +405,7 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Number of pcs in 1 pack</label>
-                                <input name="amount_of_packs_in_pack" class="form-control" required
+                                <input name="amount_of_packs_in_pack" class="form-control"
                                        placeholder="Enter Number of pcs in 1 pack">
                             </div>
                         </div>
@@ -414,7 +414,7 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Quantity of product in 1 pack (in units)</label>
-                                <input name="amount_in_pack" class="form-control" required
+                                <input name="amount_in_pack" class="form-control"
                                        placeholder="Enter Quantity of product in 1 pack (in units)">
                             </div>
                         </div>
@@ -467,7 +467,14 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Purchase Price Currency</label>
-                                <input name="purchase_price_currency" class="form-control" placeholder="Enter Currency">
+                                <select name="purchase_price_currency" id="purchase_price_currency"
+                                        class="select-editable form-control" required>
+                                    <option> </option>
+                                    <?php $currencies = ['USD', 'EUR', 'РУБ', 'GBP', 'SEK', 'AED'] ?>
+                                    <?php foreach ($currencies as $currency): ?>
+                                        <option value="<?= $currency ?>"><?= $currency ?></option>
+                                    <?php endforeach; ?>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -499,8 +506,13 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Retail Currency</label>
-                                <input name="sell_price_currency" class="select-editable form-control"
-                                       placeholder="Enter Retail Currency">
+                                <select name="sell_price_currency" id="sell_price_currency" class="select-editable form-control" required>
+                                    <option> </option>
+                                    <?php $currencies = ['USD', 'EUR', 'РУБ', 'GBP', 'SEK', 'AED'] ?>
+                                    <?php foreach ($currencies as $currency): ?>
+                                        <option value="<?= $currency ?>"><?= $currency ?></option>
+                                    <?php endforeach; ?>
+                                </select>
                             </div>
                         </div>
                     </div>

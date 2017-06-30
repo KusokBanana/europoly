@@ -56,7 +56,7 @@
                                 <div class="row static-info">
                                     <div class="col-md-5 name"> Order Date & Time:</div>
                                     <div class="col-md-7 value">
-                                        <?php if ($this->user->role_id == ROLE_ADMIN): ?>
+                                        <?php if ($this->user->role_id == ROLE_ADMIN || $this->user->role_id == ROLE_SALES_MANAGER): ?>
                                             <a href="#"
                                                class="x-editable editable editable-click editable-empty"
                                                id="editable-start_date-visible"><?= $this->order['start_date'] ?></a>
@@ -538,7 +538,7 @@ require_once 'modals/cancel_order.php';
             }
         });
 
-        <?php if ($_SESSION["perm"] >= OPERATING_MANAGER_PERM): ?>
+        <?php if ($_SESSION["perm"] >= SALES_MANAGER_PERM): ?>
             $('#editable-visible_order_id').editable({
                 type: "text",
                 inputclass: 'form-control input-medium',

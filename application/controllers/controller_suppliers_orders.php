@@ -33,6 +33,7 @@ class ControllerSuppliers_orders extends Controller
         $rows = $array['rows'];
         $this->view->selects = $selects;
         $this->view->rows = $rows;
+        $this->view->clients = $this->model->getClientsIdName();
 
         $this->view->build('templates/template.php', 'suppliers_orders.php');
     }
@@ -54,6 +55,16 @@ class ControllerSuppliers_orders extends Controller
     function action_dt_suppliers_orders_reduce()
     {
         $this->model->getDTSuppliersOrdersReduce($_GET);
+    }
+
+    function action_add_empty_supplier_order()
+    {
+        $this->getAccess($this->page, 'ch');
+        $supplierId = isset($_POST['supplier']);
+
+        $newId = $this->model->addNewOrder($supplierId);
+        $location = ($newId) ? '/suppliers_order?id='.$newId : $_SERVER['HTTP_REFERER'];
+        header("Location: " . $location);
     }
 
     function action_add_suppliers_order()

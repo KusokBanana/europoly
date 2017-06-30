@@ -193,7 +193,7 @@ class ModelProduct extends Model
     var $columns = [
         'category_id' => ['label' => "Category (numbered)", 'table' => 'category', 'type' => 'id', 'isSelect' => true,
         'blockHeader' => 'Product'],
-        'article' => ['label' => "Article", 'table' => 'products', 'type' => 'string', 'isSelect' => true],
+        'article' => ['label' => "Article", 'table' => 'products', 'type' => 'string', 'isSelect' => false],
         'name' => ['label' => "Name/ Wood", 'table' => 'products', 'type' => 'string', 'isSelect' => true],
         'name_rus' => ['label' => "Name RUS", 'table' => 'nls_products', 'type' => 'string', 'isSelect' => false],
         'visual_name' => ['label' => "Visual Name", 'table' => 'products', 'type' => 'string', 'isSelect' => false],

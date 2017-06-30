@@ -12,7 +12,7 @@
                     <div class="form-group">
                         <label for="modal_new_order_sales_manager_2">Sales Manager</label>
                         <select id="modal_new_order_sales_manager_2" class="form-control" required
-                            <?= $this->user->role_id == ROLE_ADMIN ? '' : 'disabled'; ?>>
+                            <?= $this->user->role_id == ROLE_ADMIN || $this->user->role_id == ROLE_OPERATING_MANAGER ? '' : 'disabled'; ?>>
                             <option disabled selected value></option>
                             <?php
                             foreach ($this->managers as $manager) {

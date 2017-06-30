@@ -237,6 +237,14 @@ class ModelSuppliers_orders extends ModelManagers_orders
         }
     }
 
+    function addNewOrder($supplier_id = false) {
+        $id = $this->insert("INSERT INTO suppliers_orders (supplier_date_of_order) VALUES (NOW())");
+        if ($id && $supplier_id) {
+            $this->update("UPDATE suppliers_orders SET supplier_id = $supplier_id");
+        }
+        return $id;
+    }
+
 
     function addOrderItem($products, $suppliers_order = 0)
     {

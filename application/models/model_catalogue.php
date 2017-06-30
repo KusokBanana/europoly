@@ -82,7 +82,6 @@ class ModelCatalogue extends Model
                     if (!$value || $value == null)
                         continue;
                     $name = $columns[$key];
-                    echo $name;
                     if (in_array($name, $ignoreArray))
                         continue;
 
