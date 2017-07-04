@@ -188,6 +188,50 @@ if ($this->access['ch']) {
                 $('#modal_warehouse_error').modal('show')/*.find('.modal-body h4').text(errorMessage)*/;
             }
         });
+
+
+        $('.print-btn').addClass('has-event').on('click', function(e) {
+            e.preventDefault();
+            var btn = $(this);
+
+            var $table = $('#table_warehouses_products_issue');
+            var selected = $table.attr('data-selected');
+
+            if (!selected || selected === undefined) {
+                $('#notificationModal').modal().find('.modal-body').text('Choose at least one item!');
+                return false;
+            }
+
+            $.ajax({
+                url: btn.attr('href'),
+                type: 'POST',
+                data: {
+                    selected: selected
+                },
+                success: function(data) {
+                    if (data) {
+                        var isJson = true;
+                        try {
+                            var dataObject = JSON.parse(data);
+                        } catch (e) {
+                            isJson = false;
+                        }
+
+                        if (isJson) {
+                            var success = dataObject.success;
+                            if (!success) {
+                                var message = dataObject.message;
+                                $('#notificationModal').modal().find('.modal-body').text(message);
+                                return false;
+                            }
+                        } else {
+                            location.href = data;
+                        }
+                    }
+                }
+            })
+        });
+
     });
 </script>
 

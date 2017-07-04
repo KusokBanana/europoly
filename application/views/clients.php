@@ -75,8 +75,8 @@
                                         <div class="portlet-body">
                                             <?php
                                             $buttons = [
-                                                '<a class="btn sbold green" 
-                                                        href="client?id=new">
+                                                '<a class="btn sbold green" id="createClientBtn"
+                                                        href="client?id=new&category=">
                                                             Add Client <i class="fa fa-plus"></i>
                                                     </a>'
                                             ];
@@ -142,4 +142,18 @@
             });
         });
     <?php endif; ?>
+
+    $('.tab-filter').on('click', function() {
+
+        var createBtn = $('#createClientBtn');
+        if (createBtn.length) {
+            var href = createBtn.attr('href');
+            var explodedHref = href.split('category=');
+            explodedHref[1] = $(this).attr('data-filter-value');
+            href = explodedHref.join('category=');
+            createBtn.attr('href', href);
+        }
+
+    });
+
 </script>

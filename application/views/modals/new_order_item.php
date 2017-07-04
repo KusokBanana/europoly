@@ -17,7 +17,7 @@
                         'table_id' => "table_catalogue",
 //                        'table_id' => "table_order_item_product",
                         'ajax' => [
-                            'url' => "/catalogue/dt"
+                            'url' => "/catalogue/dt?table=table_catalogue&page="
                         ],
                         'column_names' => $this->full_product_column_names,
                         'hidden_by_default' => $this->full_product_hidden_columns,

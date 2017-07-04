@@ -26,12 +26,16 @@
                         'buttons' => [
                             'Select product in the table above:'
                         ],
-                        'table_id' => "table_supplier_order_item_product",
+                        'table_id' => "table_catalogue",
+//                        'table_id' => "table_supplier_order_item_product",
                         'ajax' => [
                             'url' => "/catalogue/dt"
                         ],
                         'column_names' => $this->full_product_column_names,
                         'hidden_by_default' => $this->full_product_hidden_columns,
+                        'selectSearch' => $this->selects,
+                        'filterSearchValues' => $this->rows,
+                        'originalColumns' => $this->originalColumns,
                         'click_url' => "#",
                         'method' => "POST",
                     ];

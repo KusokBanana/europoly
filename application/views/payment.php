@@ -634,8 +634,10 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                                 },
                                                 success: function(data) {
                                                     var value = 0;
+                                                    console.log(data);
                                                     if (data) {
                                                         value = parseFloat(1/data).format(4);
+                                                        course.val(value);
                                                     }
 //                                                    if (isFirst) {
 //                                                        value = ($('#currency_rate').val() / $('#course').val() - 1) * 100;

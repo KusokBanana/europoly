@@ -33,7 +33,7 @@ class ControllerSuppliers_orders extends Controller
         $rows = $array['rows'];
         $this->view->selects = $selects;
         $this->view->rows = $rows;
-        $this->view->clients = $this->model->getClientsIdName();
+        $this->view->suppliers = $this->model->getSuppliers();
 
         $this->view->build('templates/template.php', 'suppliers_orders.php');
     }

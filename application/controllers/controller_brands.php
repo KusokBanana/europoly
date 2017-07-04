@@ -39,4 +39,15 @@ class ControllerBrands extends Controller
             $this->escape_and_empty_to_null($_POST['supplier']));
         header("Location: /brand?id=" . $brand_id);
     }
+
+    function action_delete()
+    {
+
+        $id = (isset($_GET['id']) && $_GET['id']) ? $_GET['id'] : false;
+        if ($id) {
+            $this->model->deleteBrand($id);
+            header("Location: " . $_SERVER['HTTP_REFERER']);
+        }
+
+    }
 }

@@ -320,9 +320,10 @@
             }
         }
 
-        $('.print-btn').on('click', function(e) {
+        $('.print-btn:not(.has-event)').on('click', function(e) {
             e.preventDefault();
             var btn = $(this);
+
             $.ajax({
                 url: btn.attr('href'),
                 success: function(data) {
@@ -345,6 +346,17 @@
 });
 
 </script>
+<div id="notificationModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"><button class="close" type="button" data-dismiss="modal">×</button>
+                <h4 class="modal-title">Alert!</h4>
+            </div>
+            <div class="modal-body text-danger">Текст уведомления</div>
+            <div class="modal-footer"><button class="btn btn-default" type="button" data-dismiss="modal">Close</button></div>
+        </div>
+    </div>
+</div>
 </body>
 
 </html>

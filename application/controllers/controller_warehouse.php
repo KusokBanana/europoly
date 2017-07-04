@@ -116,7 +116,9 @@ class ControllerWarehouse extends Controller
     {
         if (isset($_GET['warehouse_id'])) {
             $warehouse_id = $_GET['warehouse_id'];
-            $result = $this->model->printDoc($warehouse_id, [$this->model->where_issue], 'expects_issue');
+            $selectedString = $_POST['selected'];
+            $result = $this->model->printDoc($warehouse_id, [$this->model->where_issue],
+                'expects_issue', [], $selectedString);
             echo $result;
         }
     }
@@ -208,7 +210,7 @@ class ControllerWarehouse extends Controller
             $selects = $array['selects'];
             $rows = $array['rows'];
         } else {
-            $array = $this->model->getModalSelects('warehouse_modal_new_product');
+            $array = $this->model->getModalSelects('warehouse_modal_new_product', 'warehouse');
             $selects = $array['selects'];
             $rows = $array['rows'];
             $cache->write('warehouse_modal_new_product', $array);
@@ -233,7 +235,7 @@ class ControllerWarehouse extends Controller
             $selects = $array['selects'];
             $rows = $array['rows'];
         } else {
-            $array = $this->model->getModalSelects('warehouse_modal_assemble');
+            $array = $this->model->getModalSelects('warehouse_modal_assemble', 'warehouse');
             $selects = $array['selects'];
             $rows = $array['rows'];
             $cache->write('warehouse_modal_assemble', $array);

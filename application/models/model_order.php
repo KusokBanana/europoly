@@ -115,7 +115,10 @@ class ModelOrder extends Model
                                 </a>',
                                 '<a data-toggle=\"confirmation\" data-title=\"Are you sure to send to logist the item?\" 
                                     href=\"/order/send_to_logist?order_item_id=', order_items.item_id, '\"
-                                    class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" data-singleton=\"true\">
+                                    class=\"', 
+                                    IF(orders.expected_date_of_issue IS NOT NULL AND orders.expected_date_of_issue, 
+                                    \"table-confirm-btn\", \"logist-issue-deny\"), '\" 
+                                    data-placement=\"left\" data-popout=\"true\" data-singleton=\"true\">
                                         <span class=\'glyphicon glyphicon-download-alt\' title=\'Send to Logist\'></span>
                                 </a>',
                                 '<a data-toggle=\"confirmation\" data-title=\"Are you sure to delete the item?\" 
@@ -154,6 +157,7 @@ class ModelOrder extends Model
 
         $table = 'order_items 
                     left join products on order_items.product_id = products.product_id ' .
+                    'left join orders on order_items.manager_order_id = orders.order_id ' .
                     $this->full_products_table_addition .
                     ' left join items_status as status on order_items.status_id = status.status_id';
 
@@ -387,6 +391,12 @@ class ModelOrder extends Model
                                     WHERE item_id = $order_item_id");
             $this->updateOrderPrice($orderId);
             return true;
+        }
+
+        if ($field == 'status_id' && $new_value == SENT_TO_LOSIGT) {
+            $order = $this->getFirst("SELECT expected_date_of_issue FROM orders WHERE order_id = $orderId");
+            if (is_null($order['expected_date_of_issue']) || !$order['expected_date_of_issue'])
+                return false;
         }
 
         $this->update("UPDATE `order_items` SET `$field` = '$new_value' WHERE item_id = $order_item_id");
@@ -748,6 +758,10 @@ class ModelOrder extends Model
             $user = $this->getFirst("SELECT * FROM users WHERE user_id = $manager");
             $values['manager'] = $user ? $user['visual_name'] : '?';
             $values['visible_order_id'] = ($order['visible_order_id']) ? $order['visible_order_id'] : $order['order_id'];
+            if ($order['visible_order_id']) {
+                $newVisOrderId = explode('/', $order['visible_order_id']);
+                $values['visible_order_id'] = (isset($newVisOrderId[1])) ? (int)$newVisOrderId[1] : $order['visible_order_id'];
+            }
 
             $templateProcessor = $phpWord->loadTemplate($docFile);
 
@@ -773,10 +787,10 @@ class ModelOrder extends Model
                 'href' => "/order/print_payment?order_id=$orderId&type=order",
                 'name' => 'Buyer\'s order'
             ],
-            [
-                'href' => "/order/print_payment?order_id=$orderId&type=return",
-                'name' => 'Return of goods'
-            ],
+//            [
+//                'href' => "/order/print_payment?order_id=$orderId&type=return",
+//                'name' => 'Return of goods'
+//            ],
         ];
         return $docs;
     }

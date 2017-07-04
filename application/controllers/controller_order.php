@@ -96,6 +96,7 @@ class ControllerOrder extends Controller
         $order_item_id = isset($_GET['order_item_id']) ? intval($_GET['order_item_id']) : 0;
         if (!$order_item_id)
             return false;
+
         $this->model->updateItemField($order_item_id, 'status_id', SENT_TO_LOSIGT);
         header("Location: " . $_SERVER['HTTP_REFERER']);
     }

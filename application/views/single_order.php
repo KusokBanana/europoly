@@ -136,7 +136,9 @@
                                 <div class="row static-info">
                                     <div class="col-md-5 name"> Manager:</div>
                                     <div class="col-md-7 value">
-                                        <a href="javascript:;" id="editable-manager" class='x-editable' data-pk="<?= $this->order['order_id'] ?>" data-name="sales_manager_id" data-value="<?= $this->order['sales_manager_id'] ?>"
+                                        <a href="javascript:;" id="editable-manager" class='x-editable'
+                                           data-pk="<?= $this->order['order_id'] ?>" data-name="sales_manager_id"
+                                           data-value="<?= $this->order['sales_manager_id'] ?>"
                                            data-url='/order/change_field' data-original-title='Enter Sales Manager'>
                                             <?= $this->sales_manager['first_name'] . ' ' . $this->sales_manager['last_name'] ?>
                                             <a href="/sales_manager?id=<?= $this->sales_manager['user_id'] ?>">
@@ -175,8 +177,12 @@
                                            data-value="<?= $this->order['client_id'] ?>"
                                            data-url='/order/change_field'
                                            data-original-title='Choose Client:'><?= $this->client['final_name'] ?></a>
-                                        <a href="/client?id=<?= $this->order['client_id'] ?>">
-                                            <i class="glyphicon glyphicon-link"></i></a>
+                                        <?php if (!is_null($this->order['client_id']) && $this->order['client_id']): ?>
+                                            <a href="/client?id=<?= $this->order['client_id'] ?>">
+                                                <i class="glyphicon glyphicon-link"></i></a>
+                                        <?php endif; ?>
+                                        <a href="/client?id=new">
+                                            <i class="glyphicon glyphicon-plus"></i></a>
                                     </div>
                                 </div>
                                 <div class="row static-info">
@@ -218,10 +224,13 @@
                                                 $this->order["order_id"] .
                                                 '"><span class="glyphicon glyphicon-trash"></span></a>' : '' ?>
                                         </a>
-                                        <?php if (!is_null($this->order['commission_agent_id'])): ?>
+                                        <?php if (!is_null($this->order['commission_agent_id']) &&
+                                            $this->order['commission_agent_id']): ?>
                                             <a href="/client?id=<?= $this->order['commission_agent_id'] ?>">
                                                 <i class="glyphicon glyphicon-link"></i></a>
                                         <?php endif; ?>
+                                        <a href="/client?id=new">
+                                            <i class="glyphicon glyphicon-plus"></i></a>
                                     </div>
                                 </div>
                                 <div class="row static-info">
@@ -430,6 +439,12 @@ require_once 'modals/cancel_order.php';
         $table_order_items.on('draw.dt', function () {
             $('.table-confirm-btn').confirmation({
                 rootSelector: '.table-confirm-btn'
+            });
+            $('body').on('click', '.logist-issue-deny', function(e) {
+                e.preventDefault();
+
+                $('#notificationModal').modal().find('.modal-body')
+                    .text('Please fill in Client\'s expected date of issue before sending request to logist');
             });
             $('.x-amount, .x-number_of_packs, .x-manager_bonus_rate, .x-manager_bonus').editable({
                 type: "number",

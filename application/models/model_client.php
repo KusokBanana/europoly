@@ -133,7 +133,7 @@ class ModelClient extends Model
 
     public function getLegalEntitiesForList()
     {
-        $entities = $this->getAssoc("SELECT legal_entity_id as id, name FROM legal_entities");
+        $entities = $this->getAssoc("SELECT legal_entity_id as id, name FROM legal_entities WHERE is_active = 1");
         $list = [];
         if (!empty($entities))
             foreach ($entities as $entity) {
@@ -539,6 +539,13 @@ class ModelClient extends Model
             }
         }
 
+    }
+
+    public function getCopyFromClient($client_id)
+    {
+        $client = $this->getFirst("SELECT * FROM clients WHERE client_id = $client_id");
+        unset($client['client_id']);
+        return $client;
     }
 
 

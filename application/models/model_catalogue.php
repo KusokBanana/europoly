@@ -9,17 +9,19 @@ class ModelCatalogue extends Model
 
     public $tableName = "table_catalogue";
 
-    function getDTProducts($input, $printOpt)
+    function getDTProducts($input, $printOpt, $page = false, $table = false)
     {
         $where = ['products.is_deleted = 0'];
-        $columns = $this->getColumns($this->full_product_columns, 'catalogue', $this->tableName);
+        $table = ($table) ? $table : $this->tableName;
+        $page = ($page) ? $page : 'catalogue';
+        $columns = $this->getColumns($this->full_product_columns, $page, $table);
 
         $ssp = [
             'columns' => $columns,
             'columns_names' => $this->full_product_column_names,
             'db_table' => $this->full_products_table,
-            'page' => 'catalogue',
-            'table_name' => $this->tableName,
+            'page' => $page,
+            'table_name' => $table,
             'primary' => 'products.product_id',
         ];
 

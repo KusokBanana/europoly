@@ -8,14 +8,19 @@ class ModelBrands extends Model
         array('dt' => 0, 'db' => 'brands.brand_id'),
         array('dt' => 1, 'db' => "CONCAT('<a href=\"/brand?id=', brands.brand_id, '\">', brands.name, '</a>')"),
         array('dt' => 2, 'db' => 'suppliers.name'),
-        array('dt' => 3, 'db' => '"N/A"')
+        array('dt' => 3, 'db' => "CONCAT('<a href=\"/brands/delete?id=', brands.brand_id,
+                                '\" class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" 
+                                 data-title=\"Are you sure to delete the item?\" data-toggle=\"confirmation\"
+                                 data-id=\"', brands.brand_id, '\" data-singleton=\"true\">
+                                    <span class=\'glyphicon glyphicon-trash\' title=\'Delete?\'></span>
+                                </a>')")
     );
 
     var $columnNames = array(
         '_brand_id',
         'Name',
         'Supplier',
-        'Status'
+        'Delete'
     );
 
     public function __construct()
@@ -25,7 +30,9 @@ class ModelBrands extends Model
 
     function getDTBrands($input)
     {
-        $this->sspSimple('brands left join suppliers on suppliers.supplier_id = brands.supplier_id', "brand_id", $this->columns, $input);
+        $where = "brands.is_deleted = 0";
+        $this->sspComplex('brands left join suppliers on suppliers.supplier_id = brands.supplier_id', "brand_id",
+            $this->columns, $input, $where);
     }
 
     function addBrand($name, $supplier)
@@ -48,4 +55,10 @@ class ModelBrands extends Model
     {
         return $this->getAssoc("SELECT supplier_id as id, name FROM suppliers WHERE is_deleted = 0");
     }
+
+    function deleteBrand($brandId)
+    {
+        $this->update("UPDATE brands SET is_deleted = 1 WHERE brand_id = $brandId");
+    }
+
 }

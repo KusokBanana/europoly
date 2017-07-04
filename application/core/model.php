@@ -295,6 +295,11 @@ abstract class Model extends mysqli
         return $this->getAssoc("SELECT client_id, final_name as name FROM clients");
     }
 
+    function getSuppliers()
+    {
+        return $this->getAssoc("SELECT supplier_id, name FROM suppliers");
+    }
+
     public function getCountriesIdName($query)
     {
         return $this->getAssoc("SELECT country_id AS id, name AS text FROM countries WHERE name LIKE '%$query%'");
@@ -765,4 +770,42 @@ abstract class Model extends mysqli
                 SET order_status_id = $orderStatus WHERE order_id = $orderId");
         $this->clearCache(['managers_orders_selects', 'sent_to_logist']);
     }
+
+    function getModalSelects($table_id, $page)
+    {
+
+        $columns = $this->getColumns($this->full_product_columns, $page, $table_id);
+        $ssp = $this->getSspComplexJson($this->full_products_table, "product_id", $columns, 'products.is_deleted = 0');
+        $columnNames = $this->getColumns($this->full_product_column_names, $page, $table_id, true);
+
+        $rowValues = json_decode($ssp, true)['data'];
+        $ignoreArray = ['_product_id', 'Name', 'Article', 'Thickness', 'Width', 'Length',
+            'Weight', 'Quantity in 1 Pack', 'Purchase price', 'Supplier\'s discount',
+            'Margin', 'Sell',/* TODO */ 'image_id_A', 'image_id_B', 'image_id_V', 'amount_of_units_in_pack',
+            'visual_name', 'amount_of_packs_in_pack', 'Visual Name'];
+
+        if (!empty($rowValues)) {
+            $selects = [];
+            foreach ($rowValues as $product) {
+                foreach ($product as $key => $value) {
+                    if (!$value || $value == null)
+                        continue;
+                    $name = $columnNames[$key];
+                    if (in_array($name, $ignoreArray))
+                        continue;
+
+                    preg_match('/<\w+[^>]+?[^>]+>(.*?)<\/\w+>/i', $value, $match);
+                    if (!empty($match) && isset($match[1])) {
+                        $value = $match[1];
+                    }
+
+                    if ((isset($selects[$name]) && !in_array($value, $selects[$name])) || !isset($selects[$name]))
+                        $selects[$name][] = $value;
+                }
+            }
+            return ['selects' => $selects, 'rows' => $rowValues];
+        }
+        return ['selects' => [], 'rows' => []];
+    }
+
 }

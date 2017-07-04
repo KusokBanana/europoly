@@ -35,7 +35,7 @@ class ModelWarehouse extends ModelManagers_orders
                 '\" data-name=\"amount\" data-value=\"',
                 IFNULL(products_warehouses.amount, ''),
                 '\" data-url=\"/warehouse/change_item_field\" data-original-title=\"Enter Quantity\">',
-                    IFNULL(CONCAT(products_warehouses.amount, ' ', products.units), ''),
+                    IFNULL(CONCAT(products_warehouses.amount), ''),
                 '</a>'),
                 products_warehouses.amount)"),
         array('dt' => 6, 'db' => 'products.units'),
@@ -147,9 +147,10 @@ class ModelWarehouse extends ModelManagers_orders
 
     var $where = 'products_warehouses.manager_order_id IS NULL';
 
-    var $where_issue = '((products_warehouses.manager_order_id IS NOT NULL AND '.
+    var $where_issue = '(((products_warehouses.manager_order_id IS NOT NULL AND '.
     'products_warehouses.reserve_since_date IS NULL) AND (products_warehouses.status_id = '.ON_STOCK.' OR '.
-    'products_warehouses.status_id = '.EXPECTS_ISSUE.'))';
+    'products_warehouses.status_id = '.EXPECTS_ISSUE.')) OR (products_warehouses.reserve_since_date IS NOT NULL AND '.
+    'products_warehouses.status_id = '.EXPECTS_ISSUE.' AND products_warehouses.manager_order_id IS NOT NULL))';
 
     var $where_reserve = '(products_warehouses.manager_order_id IS NOT NULL AND '.
     'products_warehouses.reserve_since_date IS NOT NULL)';
@@ -274,44 +275,6 @@ class ModelWarehouse extends ModelManagers_orders
         }
         return ['selectSearch' => [], 'filterSearchValues' => []];
     }
-
-    function getModalSelects($table_id)
-    {
-
-        $columns = $this->getColumns($this->full_product_columns, 'warehouse', $table_id);
-        $ssp = $this->getSspComplexJson($this->full_products_table, "product_id", $columns, 'products.is_deleted = 0');
-        $columnNames = $this->getColumns($this->full_product_column_names, 'warehouse', $table_id, true);
-
-        $rowValues = json_decode($ssp, true)['data'];
-        $ignoreArray = ['_product_id', 'Name', 'Article', 'Thickness', 'Width', 'Length',
-            'Weight', 'Quantity in 1 Pack', 'Purchase price', 'Supplier\'s discount',
-            'Margin', 'Sell',/* TODO */ 'image_id_A', 'image_id_B', 'image_id_V', 'amount_of_units_in_pack',
-            'visual_name', 'amount_of_packs_in_pack', 'Visual Name'];
-
-        if (!empty($rowValues)) {
-            $selects = [];
-            foreach ($rowValues as $product) {
-                foreach ($product as $key => $value) {
-                    if (!$value || $value == null)
-                        continue;
-                    $name = $columnNames[$key];
-                    if (in_array($name, $ignoreArray))
-                        continue;
-
-                    preg_match('/<\w+[^>]+?[^>]+>(.*?)<\/\w+>/i', $value, $match);
-                    if (!empty($match) && isset($match[1])) {
-                        $value = $match[1];
-                    }
-
-                    if ((isset($selects[$name]) && !in_array($value, $selects[$name])) || !isset($selects[$name]))
-                        $selects[$name][] = $value;
-                }
-            }
-            return ['selects' => $selects, 'rows' => $rowValues];
-        }
-        return ['selects' => [], 'rows' => []];
-    }
-
 
     function getModalProducts($input, $table_id)
     {
@@ -459,20 +422,34 @@ class ModelWarehouse extends ModelManagers_orders
         }
     }
 
-    public function printDoc($warehouseId, $where, $type='', $log = [])
+    public function printDoc($warehouseId, $where, $type='', $log = [], $selectedString = '')
     {
         $fileName = $type;
-        $where[] = "warehouse_id = $warehouseId";
-        $where[] = 'is_deleted = 0';
-        if (!$warehouseId)
-            $where[] = "warehouse_id IS NOT NULL";
+
+        if (!$warehouseId) {
+            $where[] = 'products_warehouses.warehouse_id IS NOT NULL';
+        } else {
+            $where[] = "products_warehouses.warehouse_id = $warehouseId";
+        }
+
+        $where[] = 'products_warehouses.is_deleted = 0';
+        $where[] = "products_warehouses.item_id IN ($selectedString)";
 
         $where = implode(' AND ', $where);
 
         $orderItems = $this->getAssoc("SELECT * FROM order_items products_warehouses WHERE $where");
-//        $warehouse = $this->getFirst("SELECT * FROM warehouses WHERE warehouse_id = $warehouseId");
 
         if (!empty($orderItems)) {
+
+            $order_id = null;
+            foreach ($orderItems as $orderItem) {
+                if (is_null($order_id)) {
+                    $order_id = $orderItem['manager_order_id'];
+                }
+                if ($order_id !== $orderItem['manager_order_id']) {
+                    return json_encode(['success' => 0, 'message' => 'All products must be from same order!']);
+                }
+            }
 
             $array = $this->getProductsDataArrayForDocPrint($orderItems, true);
 
@@ -494,16 +471,9 @@ class ModelWarehouse extends ModelManagers_orders
 
                 if (isset($log['items_replace']) && !empty($log['items_replace'])) {
                     $itemsReplace = $log['items_replace'];
-//                    foreach ($products as $key => $product) {
-////                        foreach ($log['items_replace'] as $item_replace_id => $item_replace) {
-////
-////                        }
-//                        $prodId = $product['product_id'];
-//                        if (isset($itemsReplace[$prodId]))
-//                            $products[$key] = array_merge($products[$key], $itemsReplace[$prodId]);
-//                    }
                     $products = array_merge($products, $itemsReplace);
                 }
+
 
                 if (isset($log['order_id'])) {
                     $orderId = $log['order_id'];
@@ -530,6 +500,29 @@ class ModelWarehouse extends ModelManagers_orders
                     $values = array_merge($values, $log['merge']);
             }
 
+
+            $order = $this->getFirst("SELECT * FROM orders WHERE order_id = $order_id");
+            $clientId = $order['client_id'];
+            $client = $this->getFirst("SELECT * FROM clients WHERE client_id = $clientId");
+            $add = [$client['final_name']];
+            if (!is_null($client['inn']) && trim($client['inn']))
+                $add[] = 'ИНН ' . trim($client['inn']);
+            if (!is_null($client['legal_address']) && trim($client['legal_address']))
+                $add[] = trim($client['legal_address']);
+            if (!is_null($client['mobile_number']) && trim($client['mobile_number']))
+                $add[] = 'тел.: ' . trim($client['mobile_number']);
+            $values['client'] = join(', ', $add);
+
+            $legalEntity = $this->getFirst("SELECT * FROM legal_entities 
+                  WHERE legal_entity_id = ${order['legal_entity_id']}");
+            $values['visual_legal_entity_name'] = $legalEntity['visual_name'];
+//            $manager = $order['sales_manager_id'];
+//            $user = $this->getFirst("SELECT * FROM users WHERE user_id = $manager");
+//            $values['manager'] = $user ? $user['visual_name'] : '?';
+
+            $values['visible_order_id'] = ($order['visible_order_id']) ? $order['visible_order_id'] : $order['order_id'];
+            $values['order_date'] = date('Y-m-d', strtotime($order['start_date']));
+            $values['date'] = date('Y-m-d');
 
             $templateProcessor = $phpWord->loadTemplate($docFile);
 

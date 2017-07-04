@@ -14,7 +14,7 @@
                         <select id="modal_new_order_sales_manager_2" name="supplier" class="form-control">
                             <option disabled selected value></option>
                             <?php
-                            foreach ($this->clients as $manager) {
+                            foreach ($this->suppliers as $manager) {
                                 echo "<option value='{$manager["client_id"]}'>{$manager["name"]}</option>";
                             }
                             ?>

@@ -14,6 +14,18 @@ class ControllerClient extends Controller
         if ($id = $_GET['id']) {
             $this->getAccess('client', 'v');
             if ($id == 'new') {
+                $type = isset($_GET['type']) ? $_GET['type'] : false;
+                $category = isset($_GET['category']) ? $_GET['category'] : false;
+                if ($type == 'fromClient' && isset($_SESSION['new_client']) && !$category) {
+                    $this->view->client = $_SESSION['new_client'];
+                    unset($_SESSION['new_client']);
+                    $this->view->countryAndRegion = $this->model->getCountryAndRegionNamesByIds(
+                        $this->view->client['country_id'],
+                        $this->view->client['region_id']
+                    );
+                } elseif ($category) {
+                    $this->view->client['type'] = $category;
+                }
                 $this->view->title = 'New Client';
             } else {
                 $this->view->client = $this->model->getClient($id);
@@ -118,6 +130,20 @@ class ControllerClient extends Controller
         $parser = getXLS('clients_v3.xlsx'); //извлеаем данные из XLS
 
         $this->model->importClients($parser, true);
+
+    }
+
+    function action_copy_client()
+    {
+
+        $client_id = isset($_GET['id']) ? $_GET['id'] : false;
+        if (!$client_id)
+            $this->notFound();
+
+        $post = $this->model->getCopyFromClient($client_id);
+        $_SESSION['new_client'] = $post;
+        header('Location: /client/index?id=new&type=fromClient');
+
 
     }
 

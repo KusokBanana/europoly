@@ -60,6 +60,10 @@ $isNewClient = !isset($this->client['client_id']);
                     <button type="submit" class="pull-right btn btn-success">
                         <?= !$isNewClient ? 'Save Client' : 'Create Client' ?>
                     </button>
+                    <?php if (!$isNewClient): ?>
+                        <a class="pull-right btn btn-primary"
+                           href="/client/copy_client?id=<?= $this->client['client_id'] ?>">Copy Client</a>
+                    <?php endif; ?>
                 </div>
                 <div class="portlet-body">
                         <h4 class="sbold">General Client Data</h4>
@@ -68,21 +72,24 @@ $isNewClient = !isset($this->client['client_id']);
                                 <div class="form-group">
                                     <label for="name">Name</label>
                                     <input name="name" id="name" value="<?= isset($this->client['name']) ?
-                                        htmlspecialchars($this->client['name']) : '' ?>" class="form-control" required>
+                                        htmlspecialchars($this->client['name']) : '' ?>"
+                                           class="form-control final_name-handle" required>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="second_name">Second Name</label>
                                     <input name="second_name" id="second_name" value="<?= isset($this->client['second_name']) ?
-                                        htmlspecialchars($this->client['second_name']) : '' ?>" class="form-control">
+                                        htmlspecialchars($this->client['second_name']) : '' ?>"
+                                           class="form-control final_name-handle">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="final_name">Final Name</label>
                                     <input name="final_name" id="final_name" value="<?= isset($this->client['final_name']) ?
-                                        htmlspecialchars($this->client['final_name']) : '' ?>" class="form-control">
+                                        htmlspecialchars($this->client['final_name']) : '' ?>"
+                                           class="form-control disabled" disabled>
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -153,15 +160,15 @@ $isNewClient = !isset($this->client['client_id']);
                                             $this->client['inn'] : '' ?>">
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="client_category_2">Category 2</label>
-                                <input type="text" name="client_category_2"
-                                       id="client_category_2" class="form-control"
-                                       value="<?= isset($this->client['client_category_2']) ?
-                                           $this->client['client_category_2'] : '' ?>">
-                            </div>
-                        </div>
+<!--                        <div class="col-md-3">-->
+<!--                            <div class="form-group">-->
+<!--                                <label for="client_category_2">Category 2</label>-->
+<!--                                <input type="text" name="client_category_2"-->
+<!--                                       id="client_category_2" class="form-control"-->
+<!--                                       value="--><?//= isset($this->client['client_category_2']) ?
+//                                           $this->client['client_category_2'] : '' ?><!--">-->
+<!--                            </div>-->
+<!--                        </div>-->
                     </div>
                     <hr>
 
@@ -173,7 +180,8 @@ $isNewClient = !isset($this->client['client_id']);
                                     <div class="row">
                                         <div class="actions" style="padding:10px">
                                             <div class="btn-group">
-                                                <a id="" class="btn btn blue btn-sm add-btn" href=""> Add new
+                                                <a id="" class="btn btn blue btn-sm add-btn"
+                                                   href=""> Add new
                                                     <i class="fa fa-plus"></i>
                                                 </a>
                                             </div>
@@ -230,13 +238,13 @@ $isNewClient = !isset($this->client['client_id']);
                                 <input name="design_buro" id="design_buro"
                                        value="<?= isset($this->client['design_buro']) ?
                                            htmlspecialchars($this->client['design_buro']) : ''  ?>"
-                                       class="form-control">
+                                       class="form-control final_name-handle">
                             </div>
                             <div class="form-group">
                                 <label for="first_contact_date">Date of first contact</label>
                                 <input type="date" class="form-control"
                                        value="<?= isset($this->client['first_contact_date']) ?
-                                           $this->client['first_contact_date'] : '' ?>"
+                                           $this->client['first_contact_date'] : date('Y-m-d') ?>"
                                        placeholder="" id="first_contact_date" name="first_contact_date">
                             </div>
                             <div class="form-group">
@@ -310,7 +318,8 @@ $isNewClient = !isset($this->client['client_id']);
                                 <label for="field_country">Country</label>
                                 <select id="field_country" name="country_id"
                                         class="form-control">
-                                    <?php if (!$isNewClient): ?>
+                                    <?php if (!$isNewClient ||
+                                        (isset($this->client['country_id']) && $this->client['country_id'])): ?>
                                         <option value="<?= $this->client['country_id'] ?>">
                                             <?= $this->countryAndRegion['country'] ?>
                                         </option>
@@ -321,7 +330,8 @@ $isNewClient = !isset($this->client['client_id']);
                                 <label for="field_region">Region</label>
                                 <select id="field_region" name="region_id"
                                         class="form-control">
-                                    <?php if (!$isNewClient): ?>
+                                    <?php if (!$isNewClient ||
+                                        (isset($this->client['region_id']) && $this->client['region_id'])): ?>
                                         <option value="<?= $this->client['region_id'] ?>">
                                             <?= $this->countryAndRegion['region'] ?>
                                         </option>
@@ -456,28 +466,28 @@ $isNewClient = !isset($this->client['client_id']);
 
                     <hr>
                     <?php if (!$isNewClient): ?>
-                        <div class="bottom-form-block">
-                            <div class="row">
-                                <div class="col-md-12 main-block" data-type="bank-accounts">
-                                    <h4 class="sbold">Bank Accounts</h4>
-                                    <div class="row">
-                                        <div class="actions pull-left" style="padding:10px">
-                                            <div class="btn-group">
-                                                <a id="" class="btn btn blue btn-sm add-btn" href=""> Add new
-                                                    <i class="fa fa-plus"></i>
-                                                </a>
-                                            </div>
-                                            <div class="btn-group">
-                                                <a id="" class="btn btn red btn-sm delete-btn" href="">
-                                                    Delete last
-                                                    <i class="fa fa-minus"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+<!--                        <div class="bottom-form-block">-->
+<!--                            <div class="row">-->
+<!--                                <div class="col-md-12 main-block" data-type="bank-accounts">-->
+<!--                                    <h4 class="sbold">Bank Accounts</h4>-->
+<!--                                    <div class="row">-->
+<!--                                        <div class="actions pull-left" style="padding:10px">-->
+<!--                                            <div class="btn-group">-->
+<!--                                                <a id="" class="btn btn blue btn-sm add-btn" href=""> Add new-->
+<!--                                                    <i class="fa fa-plus"></i>-->
+<!--                                                </a>-->
+<!--                                            </div>-->
+<!--                                            <div class="btn-group">-->
+<!--                                                <a id="" class="btn btn red btn-sm delete-btn" href="">-->
+<!--                                                    Delete last-->
+<!--                                                    <i class="fa fa-minus"></i>-->
+<!--                                                </a>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
                         <hr>
                         <div class="bottom-form-block">
                             <div class="row">
@@ -517,6 +527,9 @@ $isNewClient = !isset($this->client['client_id']);
                 if (!$clientId)
                     return;
                 var $existClientAdditions = <?= json_encode($this->primaryForm) ?>;
+                var currentDate = '<?= date('Y-m-d') ?>';
+                var isAdmin = <?= ($this->user->role_id === ROLE_ADMIN) ? 'true' : 'false' ?>;
+                console.log(isAdmin);
 
                 if ($existClientAdditions && $existClientAdditions.length) {
                     $.each($existClientAdditions, function(index) {
@@ -553,13 +566,17 @@ $isNewClient = !isset($this->client['client_id']);
                                 current = (last && last !== undefined) ? +last+1 : 0,
                                 name = 'client_additions[' + type + '][' + current + ']' + '[' + index + ']',
                                 value = (this.value !== undefined) ? this.value : '';
-                            if (index == 'pk') {
+                            if (index === 'pk') {
                                 rowHtml += '<input type="hidden" class="'+index+'"\
                                                 name="'+name+'" value="'+value+'" data-id="'+current+'">';
                                 return 0;
                             }
-                            if (this.type == 'input' || this.type == 'date') {
-                                var inputType = (this.type == 'date') ? 'date' : 'text';
+                            if (this.type === 'input' || this.type === 'date') {
+                                var inputType = (this.type === 'date') ? 'date' : 'text';
+                                if (inputType === 'date' && this.value === undefined) {
+                                    value = currentDate;
+                                }
+
                                 var placeholder = (this.placeholder !== undefined) ? this.placeholder : '';
                                 build +=
                                     '<label for="' + name + '">' + label + '</label> \
@@ -570,7 +587,7 @@ $isNewClient = !isset($this->client['client_id']);
                                                         id="' + name + '" name="' + name + '">';
                             }
 
-                            if (this.type == 'select') {
+                            if (this.type === 'select') {
                                 build +=
                                     '<label for="' + name + '">' + label + '</label> \
                                             <select class="form-control ' + index + '" \
@@ -578,7 +595,7 @@ $isNewClient = !isset($this->client['client_id']);
                                                     id="' + name + '" name="' + name + '">';
 
                                 $.each(this.values, function() {
-                                    var selected = (value == this.value) ? ' selected ' : '';
+                                    var selected = (value === this.value) ? ' selected ' : '';
                                     build +=
                                         '<option value="' + this.value + '"' + selected +'>' + this.text + '</option>';
                                 });
@@ -701,6 +718,11 @@ $isNewClient = !isset($this->client['client_id']);
                         })
                     }
                 }
+                $('body').on('change keyup', '.final_name-handle', function() {
+                    var value = $('#name').val() + ' ' + $('#second_name').val();
+                    value = value.trim() + ' ' + $('#design_buro').val();
+                    $('#final_name').val(value.trim());
+                })
             });
         </script>
     <?php endif; ?>
@@ -751,7 +773,7 @@ $isNewClient = !isset($this->client['client_id']);
             });
 
             $('form').keydown(function(event){
-                if(event.keyCode == 13) {
+                if(event.keyCode === 13) {
                     $(event.target).trigger('change');
                     event.preventDefault();
                     return false;
