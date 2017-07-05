@@ -631,7 +631,7 @@ abstract class Model extends mysqli
             }
         }
 
-        $values['nds'] = round($values['sum'] * 0.18, 2);
+        $values['nds'] = round($values['sum'] / 1.18 * 0.18, 2);
         $values['sum'] = round($values['sum'], 2);
         $values['opt_sum'] = round($values['opt_sum'], 2);
         require dirname(__FILE__) . '/../classes/NumbersToStrings.php';

@@ -99,7 +99,7 @@
                     }
                     $input .= '</select>';
                 }
-                echo '<th data-header-id="'.$column_id.'">' .
+                echo '<th data-header-id="'.$column_id.'" data-db-col-name="'.$column_name.'">' .
                         $column_name . '<br>' . $input .
                     '</th>';
             }
@@ -131,7 +131,11 @@
         width: auto !important;
     }
     table.dataTable td:not(.select-checkbox), table.dataTable tr:not(.select-checkbox) {
-        min-width: 130px;
+        /*max-width: auto;*/
+        /*min-width: 130px;*/
+    }
+    table.dataTable th[data-db-col-name="Product"] {
+        /*max-width: 200px;*/
     }
     table .es-input {
         background-color: #fff;
@@ -157,6 +161,11 @@ if (!empty($hidden)) {
             unset($hidden[$key]);
     }
 }
+
+$notHidden = array_keys($column_names);
+unset($notHidden[0]);
+
+
 $hidden_by_default = json_encode($hidden);
 
 ?>
@@ -174,11 +183,16 @@ $hidden_by_default = json_encode($hidden);
         if ($mustHidden && hiddenByDefault && hiddenByDefault.indexOf($mustHidden) === -1) {
             hiddenByDefault.push($mustHidden);
         }
+
+        var widthTds = <?= json_encode($notHidden); ?>;
+        console.log(widthTds)
+
         var $filterSearchValues = <?= json_encode($filterSearchValues); ?>;
         var $clickUrl = "<?= $click_url == 'javascript:;' ? false : $click_url; ?>";
         var $sort = <?= json_encode(explode('-', $sort)); ?>;
         var $select = <?= $select; ?>;
         var recordsCount = "<?= $recordsCount; ?>";
+        console.log($select)
         var serverSide = <?= $serverSide ? 'true' : 'false'; ?>;
         <?php
         if (isset($ajax['data']) && $ajax['data'] != "") {
@@ -196,6 +210,7 @@ $hidden_by_default = json_encode($hidden);
             serverSide: serverSide,
             ajax: ajax,
             sServerMethod: '<?= $method; ?>',
+            bAutoWidth: false,
             columnDefs: [
                 {
                     targets: 0,
@@ -207,10 +222,15 @@ $hidden_by_default = json_encode($hidden);
                     }
                 },
                 {
-                    "targets": hiddenByDefault,
-                    "visible": false,
-                    "searchable": true
+                    targets: hiddenByDefault,
+                    visible: false,
+                    searchable: true
+                },
+                {
+                    targets: widthTds,
+                    width: '100%'
                 }
+//                { width: '100%' }
             ],
             order: [
                 $sort
@@ -247,6 +267,8 @@ $hidden_by_default = json_encode($hidden);
                     fake.width(tableWrapper.find('table').width());
                 })
             }
+
+            $table.find('.order-item-product').closest('td').width('200px')
 
         });
 
@@ -406,7 +428,7 @@ $hidden_by_default = json_encode($hidden);
                             var hiddenColumns = returnValue;
                         }
                     }
-                    if (!data || !returnValue || hiddenColumns == undefined) {
+                    if (!data || !returnValue || hiddenColumns === undefined) {
                         hiddenColumns = hiddenByDefault;
                     }
                     var checkedCols = [];
