@@ -93,19 +93,19 @@ class ControllerOrder extends Controller
     function action_send_to_logist()
     {
         $this->getAccess($this->page, 'ch');
-        $order_item_id = isset($_GET['order_item_id']) ? intval($_GET['order_item_id']) : 0;
         $order_item_ids = isset($_GET['order_item_ids']) ? $_GET['order_item_ids'] : 0;
 
         if ($order_item_ids) {
             $order_item_ids = explode(',', $order_item_ids);
+            $json = null;
             foreach ($order_item_ids as $order_item) {
-                $this->model->updateItemField($order_item, 'status_id', SENT_TO_LOSIGT);
+                $json = $this->model->updateItemField($order_item, 'status_id', SENT_TO_LOSIGT);
             }
-        } elseif ($order_item_id) {
-            $this->model->updateItemField($order_item_id, 'status_id', SENT_TO_LOSIGT);
+            if (!is_null($json)) {
+                echo $json;
+            }
         }
 
-        header("Location: " . $_SERVER['HTTP_REFERER']);
     }
 
 //    function action_cancel_order()

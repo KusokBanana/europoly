@@ -257,10 +257,13 @@
                                 </div>
                                 <div class="actions">
                                     <a href="javascript:;" class="btn btn-default btn-sm"
+                                       data-placement="left" data-popout="true" data-singleton="true"
+                                       data-toggle="confirmation"
+                                       data-title="Are you sure to send to logist this items?"  id="sendToLogist">
+                                        <span class="glyphicon glyphicon-pencil"></span> Send to Logist </a>
+                                    <a href="javascript:;" class="btn btn-default btn-sm"
                                        data-toggle="modal" data-target="#modal_newOrderItem">
                                         <i class="fa fa-plus"></i> Add new </a>
-                                    <a href="javascript:;" class="btn btn-default btn-sm" id="sendToLogist">
-                                        <span class="glyphicon glyphicon-pencil"></span> Send to Logist </a>
                                 </div>
                             </div>
                             <div class="portlet-body">
@@ -709,24 +712,34 @@ require_once 'modals/cancel_order.php';
         $('#sendToLogist').on('click', function(e) {
             e.preventDefault();
 
-            var selected = $table_order_items.attr('data-selected');
-            if (selected === undefined) {
-                $('#notificationModal').modal().find('.modal-body')
-                    .text('Please select at least one item');
-                return false;
+            function sendToLogist() {
+                var selected = $table_order_items.attr('data-selected');
+                if (selected === undefined || !selected) {
+                    $('#notificationModal').modal().find('.modal-body')
+                        .text('Please select at least one item');
+                    return false;
+                }
+
+                $.ajax({
+                    url: '/order/send_to_logist',
+                    type: "GET",
+                    data: {
+                        order_item_ids: selected
+                    },
+                    success: function(data) {
+                        if (data) {
+                            data = JSON.parse(data);
+                            if (!data.success === 0) {
+                                $('#notificationModal').modal().find('.modal-body').text(data.message);
+                                return false;
+                            }
+                        }
+                        location.href = '';
+                    }
+                })
             }
 
-            $.ajax({
-                url: '/order/send_to_logist',
-                type: "GET",
-                data: {
-                    order_item_ids: selected
-                },
-                success: function(data) {
-                    location.href = '';
-                }
-            })
-
+            $(this).confirmation().on('confirmed.bs.confirmation', sendToLogist);
 
         })
     });

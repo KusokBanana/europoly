@@ -113,14 +113,6 @@ class ModelOrder extends Model
                                 '\" class=\"reserve-product-btn\" data-id=\"', order_items.item_id, '\">
                                     <span class=\'glyphicon glyphicon-heart\' title=\'Reserve Item\'></span>
                                 </a>',
-                                '<a data-toggle=\"confirmation\" data-title=\"Are you sure to send to logist the item?\" 
-                                    href=\"/order/send_to_logist?order_item_id=', order_items.item_id, '\"
-                                    class=\"', 
-                                    IF(orders.expected_date_of_issue IS NOT NULL AND orders.expected_date_of_issue, 
-                                    \"table-confirm-btn\", \"logist-issue-deny\"), '\" 
-                                    data-placement=\"left\" data-popout=\"true\" data-singleton=\"true\">
-                                        <span class=\'glyphicon glyphicon-download-alt\' title=\'Send to Logist\'></span>
-                                </a>',
                                 '<a data-toggle=\"confirmation\" data-title=\"Are you sure to delete the item?\" 
                                     href=\"/order/delete_order_item?order_id=', order_items.manager_order_id, 
                                     '&order_item_id=', order_items.item_id, '\" 
@@ -395,8 +387,9 @@ class ModelOrder extends Model
 
         if ($field == 'status_id' && $new_value == SENT_TO_LOSIGT) {
             $order = $this->getFirst("SELECT expected_date_of_issue FROM orders WHERE order_id = $orderId");
-            if (is_null($order['expected_date_of_issue']) || !$order['expected_date_of_issue'])
-                return false;
+            if (is_null($order['expected_date_of_issue']) || !$order['expected_date_of_issue']) {
+                return json_encode(['success' => 0, 'message' => "Order must have client's expected date of issue"]);
+            }
         }
 
         $this->update("UPDATE `order_items` SET `$field` = '$new_value' WHERE item_id = $order_item_id");
