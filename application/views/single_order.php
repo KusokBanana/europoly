@@ -38,7 +38,11 @@
                     <div class="caption">
                         <i class="icon-settings font-dark"></i>
                         <span class="caption-subject font-dark sbold uppercase"><?= $this->title ?>
-                            <span class="hidden-xs">| <?= $this->order['start_date'] ?> <span class="label label-warning" style="white-space: normal;"> <?= $this->order_status ?> </span> </span>
+                            <span class="hidden-xs">| <?= $this->order['start_date'] ?>
+                                <span class="label label-warning" style="white-space: normal;">
+                                    <?= $this->order_status ?>
+                                </span>
+                            </span>
                         </span>
                     </div>
                 </div>
@@ -129,7 +133,8 @@
                                 <div class="row static-info">
                                     <div class="col-md-5 name"> Downpayment Rate:</div>
                                     <div class="col-md-7 value">
-                                        <span><?= $this->order['downpayment_rate'] != null ? $this->order['downpayment_rate'] . ' %' : '' ?></span>
+                                        <span><?= $this->order['downpayment_rate'] != null ?
+                                                round($this->order['downpayment_rate'], 2) . ' %' : '' ?></span>
                                     </div>
                                 </div>
                                 <br/>
@@ -148,7 +153,7 @@
                                 </div>
                                 <div class="row static-info">
                                     <div class="col-md-5 name"> Manager Bonus:</div>
-                                    <div class="col-md-7 value"><?= $this->order['manager_bonus'] ?> €</div>
+                                    <div class="col-md-7 value"><?= round($this->order['manager_bonus'], 2) ?> €</div>
                                 </div>
                                 <br/>
                                 <div class="row static-info">
@@ -236,7 +241,7 @@
                                 <div class="row static-info">
                                     <div class="col-md-5 name"> Total Commission:</div>
                                     <div class="col-md-7 value">
-                                        <span> <?= $this->order['total_commission'] . ' &euro;' ?> </span>
+                                        <span> <?= round($this->order['total_commission'], 2) . ' &euro;' ?> </span>
                                     </div>
                                 </div>
                             </div>
@@ -254,6 +259,8 @@
                                     <a href="javascript:;" class="btn btn-default btn-sm"
                                        data-toggle="modal" data-target="#modal_newOrderItem">
                                         <i class="fa fa-plus"></i> Add new </a>
+                                    <a href="javascript:;" class="btn btn-default btn-sm" id="sendToLogist">
+                                        <span class="glyphicon glyphicon-pencil"></span> Send to Logist </a>
                                 </div>
                             </div>
                             <div class="portlet-body">
@@ -378,7 +385,8 @@
                             </div>
                             <div class="row static-info align-reverse">
                                 <div class="col-md-8 name"> Downpayment rate:</div>
-                                <div class="col-md-3 value"> <?= $this->order['downpayment_rate'] != null ? $this->order['downpayment_rate'] . ' %' : '' ?> </div>
+                                <div class="col-md-3 value"> <?= $this->order['downpayment_rate'] != null ?
+                                        round($this->order['downpayment_rate'], 2) . ' %' : '' ?> </div>
                             </div>
                         </div>
                     </div>
@@ -527,6 +535,7 @@ require_once 'modals/cancel_order.php';
                     ids.push(this[0]);
                 });
                 ids = ids.join();
+                $table_order_items.attr('data-selected', ids);
                 var docsBtns = $('div[data-id="docs"]').find('.list-items').find('.print-btn');
                 const delimiter = '&items=';
                 $.each(docsBtns, function() {
@@ -696,6 +705,30 @@ require_once 'modals/cancel_order.php';
                 searchable: false
             }]
         });
+
+        $('#sendToLogist').on('click', function(e) {
+            e.preventDefault();
+
+            var selected = $table_order_items.attr('data-selected');
+            if (selected === undefined) {
+                $('#notificationModal').modal().find('.modal-body')
+                    .text('Please select at least one item');
+                return false;
+            }
+
+            $.ajax({
+                url: '/order/send_to_logist',
+                type: "GET",
+                data: {
+                    order_item_ids: selected
+                },
+                success: function(data) {
+                    location.href = '';
+                }
+            })
+
+
+        })
     });
 </script>
 <style>

@@ -94,10 +94,17 @@ class ControllerOrder extends Controller
     {
         $this->getAccess($this->page, 'ch');
         $order_item_id = isset($_GET['order_item_id']) ? intval($_GET['order_item_id']) : 0;
-        if (!$order_item_id)
-            return false;
+        $order_item_ids = isset($_GET['order_item_ids']) ? $_GET['order_item_ids'] : 0;
 
-        $this->model->updateItemField($order_item_id, 'status_id', SENT_TO_LOSIGT);
+        if ($order_item_ids) {
+            $order_item_ids = explode(',', $order_item_ids);
+            foreach ($order_item_ids as $order_item) {
+                $this->model->updateItemField($order_item, 'status_id', SENT_TO_LOSIGT);
+            }
+        } elseif ($order_item_id) {
+            $this->model->updateItemField($order_item_id, 'status_id', SENT_TO_LOSIGT);
+        }
+
         header("Location: " . $_SERVER['HTTP_REFERER']);
     }
 

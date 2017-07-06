@@ -69,7 +69,8 @@
                                 $table_data = array_merge([
                                     'buttons' => $buttons,
                                     'ajax' => [
-                                        'url' => "/warehouse/dt?warehouse_id=$urlId",
+                                        'url' => "/warehouse/dt?warehouse_id=$urlId&table="
+                                            .$this->tableData['warehouse1']['table_id'],
                                     ],
                                     'hidden_by_default' => "[]",
                                     'click_url' => "javascript:;",
@@ -92,7 +93,8 @@
                                     $table_data = array_merge([
                                         'buttons' => $buttons,
                                         'ajax' => [
-                                            'url' => "/warehouse/dt?warehouse_id=$urlId&type=issue",
+                                            'url' => "/warehouse/dt?warehouse_id=$urlId&type=issue&table="
+                                                .$this->tableData['warehouse2']['table_id'],
                                         ],
                                         'hidden_by_default' => "[]",
                                         'click_url' => "javascript:;",
@@ -111,7 +113,8 @@
                                     $table_data = array_merge([
                                         'buttons' => $buttons,
                                         'ajax' => [
-                                            'url' => "/warehouse/dt?warehouse_id=$urlId&type=reserve",
+                                            'url' => "/warehouse/dt?warehouse_id=$urlId&type=reserve&table="
+                                                .$this->tableData['warehouse3']['table_id'],
                                         ],
                                         'hidden_by_default' => "[]",
                                         'click_url' => "javascript:;",

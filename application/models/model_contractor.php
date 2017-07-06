@@ -81,10 +81,10 @@ class ModelContractor extends ModelContractors
         }
 
         return [
-            'money' => $totalMoney,
-            'goods' => $totalGoods,
-            'services' => $totalServices,
-            'diff' => $totalGoods + $totalMoney + $totalServices
+            'money' => round($totalMoney, 2),
+            'goods' => round($totalGoods, 2),
+            'services' => round($totalServices, 2),
+            'diff' => round($totalGoods + $totalMoney + $totalServices, 2)
         ];
 
     }

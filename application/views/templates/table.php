@@ -192,7 +192,6 @@ $hidden_by_default = json_encode($hidden);
         var $sort = <?= json_encode(explode('-', $sort)); ?>;
         var $select = <?= $select; ?>;
         var recordsCount = "<?= $recordsCount; ?>";
-        console.log($select)
         var serverSide = <?= $serverSide ? 'true' : 'false'; ?>;
         <?php
         if (isset($ajax['data']) && $ajax['data'] != "") {

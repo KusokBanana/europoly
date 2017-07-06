@@ -26,7 +26,7 @@ class ModelAccountant extends Model
         array('dt' => 8, 'db' => "payments.currency"),
         array('dt' => 9, 'db' => "CAST(payments.sum as decimal(64, 2))"),
         array('dt' => 10, 'db' => "payments.direction"),
-        array('dt' => 11, 'db' => "payments.currency_rate"),
+        array('dt' => 11, 'db' => "CAST(payments.currency_rate as decimal(64, 2))"),
         array('dt' => 12, 'db' => "CAST(payments.sum_in_eur as decimal(64, 2))"),
         array('dt' => 13, 'db' => "payments.purpose_of_payment"),
         array('dt' => 14, 'db' => "CONCAT(users.first_name, ' ', users.last_name)"),

@@ -89,7 +89,7 @@ $isNewClient = !isset($this->client['client_id']);
                                     <label for="final_name">Final Name</label>
                                     <input name="final_name" id="final_name" value="<?= isset($this->client['final_name']) ?
                                         htmlspecialchars($this->client['final_name']) : '' ?>"
-                                           class="form-control disabled" disabled>
+                                           class="form-control" readonly>
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -718,11 +718,6 @@ $isNewClient = !isset($this->client['client_id']);
                         })
                     }
                 }
-                $('body').on('change keyup', '.final_name-handle', function() {
-                    var value = $('#name').val() + ' ' + $('#second_name').val();
-                    value = value.trim() + ' ' + $('#design_buro').val();
-                    $('#final_name').val(value.trim());
-                })
             });
         </script>
     <?php endif; ?>
@@ -779,6 +774,11 @@ $isNewClient = !isset($this->client['client_id']);
                     return false;
                 }
             });
+            $('body').on('change keyup', '.final_name-handle', function() {
+                var value = $('#name').val() + ' ' + $('#second_name').val();
+                value = value.trim() + ' ' + $('#design_buro').val();
+                $('#final_name').val(value.trim());
+            })
         });
     </script>
     <!-- END PAGE BASE CONTENT -->

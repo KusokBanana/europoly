@@ -63,7 +63,6 @@ require_once 'modals/new_brand.php';
 
         var $table = $('.portlet-body').find('table').DataTable();
         $table.on('draw.dt', function () {
-            console.log('lalala')
             $('.table-confirm-btn').confirmation({
                 rootSelector: '.table-confirm-btn'
             });

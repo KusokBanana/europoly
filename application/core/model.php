@@ -99,6 +99,8 @@ abstract class Model extends mysqli
         $list = [];
         if ($result = $this->query($query)) {
             while ($row = $result->fetch_assoc()) {
+                if (isset($row['is_deleted']) && $row['is_deleted'])
+                    continue;
                 array_push($list, $row);
             }
         }
@@ -182,11 +184,11 @@ abstract class Model extends mysqli
         array('dt' => 31, 'db' => 'products.weight'),
         array('dt' => 32, 'db' => 'products.units'),
         array('dt' => 33, 'db' => 'products.packing_type'),
-        array('dt' => 34, 'db' => 'products.purchase_price'),
-        array('dt' => 35, 'db' => 'products.purchase_price_currency'),
-        array('dt' => 36, 'db' => 'products.suppliers_discount'),
-        array('dt' => 37, 'db' => 'products.margin'),
-        array('dt' => 38, 'db' => 'products.sell_price'),
+        array('dt' => 34, 'db' => 'CAST(products.purchase_price as decimal(64, 2))'),
+        array('dt' => 35, 'db' => 'purchase_price_currency'),
+        array('dt' => 36, 'db' => 'CAST(products.suppliers_discount as decimal(64, 2))'),
+        array('dt' => 37, 'db' => 'CAST(products.margin as decimal(64, 2))'),
+        array('dt' => 38, 'db' => 'CAST(products.sell_price as decimal(64, 2))'),
         array('dt' => 39, 'db' => 'products.sell_price_currency'),
         array('dt' => 40, 'db' => 'products.category_id'),
     );

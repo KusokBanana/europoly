@@ -1,16 +1,17 @@
 <?php
 
 // Order Item Status
-define('DRAFT', 1);
+define('DRAFT', 1); // голубой
 define('HOLD', 2);
-define('SENT_TO_LOSIGT', 3);
+define('SENT_TO_LOSIGT', 3); // салатовый
 define('DRAFT_FOR_SUPPLIER', 4);
 define('CONFIRMED_BY_SUPPLIER', 5);
 define('ON_THE_WAY', 8);
-define('ON_STOCK', 9);
+define('ON_STOCK', 9); // темно-зеленый
 define('EXPECTS_ISSUE', 10);
 define('ISSUED', 11);
 define('RETURNED', 12);
+// reserved
 
 // Roles
 define('ROLE_ADMIN', 1);

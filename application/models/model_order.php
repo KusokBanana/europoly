@@ -472,7 +472,7 @@ class ModelOrder extends Model
         $tableData = [];
         $sourceItems = $this->getAssoc("SELECT * FROM order_items 
                     LEFT JOIN products ON (products.product_id = order_items.product_id)
-                    WHERE (ISNULL(order_items.manager_order_id) AND ISNULL(order_items.reserve_since_date) 
+                    WHERE (order_items.manager_order_id IS NULL AND order_items.reserve_since_date IS NULL 
                     AND order_items.product_id = $productId)");
         if (!empty($sourceItems)) {
             foreach ($sourceItems as $sourceItem) {
@@ -624,6 +624,9 @@ class ModelOrder extends Model
                 $this->updateItemField($itemId, 'amount', $ordered);
 
             }
+
+            $this->updateOrderPrice($order_id);
+
         }
     }
 
@@ -739,7 +742,7 @@ class ModelOrder extends Model
             $values['current_date'] = date('d-m-Y');
             $client = $this->getFirst("SELECT * FROM clients WHERE client_id = ${order['client_id']}");
             if ($client) {
-                $add[] = $client['name'];
+                $add[] = $client['legal_name'];
                 if (!is_null($client['inn']) && trim($client['inn']))
                     $add[] = 'ИНН ' . trim($client['inn']);
                 if (!is_null($client['legal_address']) && trim($client['legal_address']))
@@ -748,6 +751,7 @@ class ModelOrder extends Model
                     $add[] = 'тел.: ' . trim($client['mobile_number']);
                 $values['client'] = join(', ', $add);
             }
+//            $values['client'] = $client['legal_name'];
 
             $legalEntity = $this->getFirst("SELECT * FROM legal_entities 
                   WHERE legal_entity_id = ${order['legal_entity_id']}");

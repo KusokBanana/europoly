@@ -57,9 +57,9 @@ class ModelWarehouse extends ModelManagers_orders
                     IFNULL(CAST(products_warehouses.purchase_price as decimal(64, 2)), ''),
                 '</a>'), CAST(products_warehouses.purchase_price as decimal(64, 2)))"),
         array('dt' => 10, 'db' => 'products_warehouses.buy_and_taxes'),
-        array('dt' => 11, 'db' => 'products_warehouses.sell_price'),
-        array('dt' => 12, 'db' => 'products_warehouses.dealer_price'),
-        array('dt' => 13, 'db' => 'products_warehouses.total_price'),
+        array('dt' => 11, 'db' => 'CAST(products_warehouses.sell_price as decimal(64, 2))'),
+        array('dt' => 12, 'db' => 'CAST(products_warehouses.dealer_price as decimal(64, 2))'),
+        array('dt' => 13, 'db' => 'CAST(products_warehouses.total_price as decimal(64, 2))'),
         array('dt' => 14, 'db' => 'CAST((products_warehouses.purchase_price * products_warehouses.amount + products_warehouses.import_vat + products_warehouses.import_brokers_price + products_warehouses.import_tax + products_warehouses.delivery_price) as decimal(64, 2))'),
         array('dt' => 15, 'db' => 'CAST((products_warehouses.purchase_price * products_warehouses.amount + 
         products_warehouses.import_vat + products_warehouses.import_brokers_price + products_warehouses.import_tax +
@@ -71,12 +71,12 @@ class ModelWarehouse extends ModelManagers_orders
             orders.sales_manager_id, '\"><i class=\"glyphicon glyphicon-link\"></i></a>')"),
         array('dt' => 18, 'db' => "orders.start_date"),
         array('dt' => 19, 'db' => "status.name"),
-        array('dt' => 20, 'db' => "products_warehouses.purchase_price"),
-        array('dt' => 21, 'db' => "products_warehouses.purchase_price * products_warehouses.number_of_packs"),
-        array('dt' => 22, 'db' => "products_warehouses.sell_price"),
-        array('dt' => 23, 'db' => "products_warehouses.sell_price * products_warehouses.number_of_packs"),
-        array('dt' => 24, 'db' => "orders.total_downpayment"),
-        array('dt' => 25, 'db' => "orders.downpayment_rate"),
+        array('dt' => 20, 'db' => "CAST(products_warehouses.purchase_price as decimal(64, 2))"),
+        array('dt' => 21, 'db' => "CAST((products_warehouses.purchase_price * products_warehouses.number_of_packs) as decimal(64, 2))"),
+        array('dt' => 22, 'db' => "CAST(products_warehouses.sell_price as decimal(64, 2))"),
+        array('dt' => 23, 'db' => "CAST((products_warehouses.sell_price * products_warehouses.number_of_packs) as decimal(64, 2))"),
+        array('dt' => 24, 'db' => "CAST(orders.total_downpayment as decimal(64, 2))"),
+        array('dt' => 25, 'db' => "CAST(orders.downpayment_rate as decimal(64, 2))"),
         array('dt' => 26, 'db' => "orders.expected_date_of_issue"),
         array('dt' => 27, 'db' => "CONCAT('<a href=\"/suppliers_order?id=', products_warehouses.supplier_order_id, '\">',
             products_warehouses.supplier_order_id, '</a>')"),
@@ -88,12 +88,12 @@ class ModelWarehouse extends ModelManagers_orders
         array('dt' => 32, 'db' => "products_warehouses.warehouse_arrival_date"),
         array('dt' => 33, 'db' => "CONCAT('<a href=\"\client?id=', orders.client_id, '\">', client.final_name, '</a>')"),
         array('dt' => 34, 'db' => "CONCAT('<a href=\"\client?id=', orders.commission_agent_id, '\">', commission.final_name, '</a>')"),
-        array('dt' => 35, 'db' => "products_warehouses.discount_rate"),
-        array('dt' => 36, 'db' => "products_warehouses.reduced_price"),
-        array('dt' => 37, 'db' => "products_warehouses.manager_bonus_rate"),
-        array('dt' => 38, 'db' => "products_warehouses.manager_bonus"),
-        array('dt' => 39, 'db' => "products_warehouses.commission_rate"),
-        array('dt' => 40, 'db' => "products_warehouses.commission_agent_bonus"),
+        array('dt' => 35, 'db' => "CAST(products_warehouses.discount_rate as decimal(64, 2))"),
+        array('dt' => 36, 'db' => "CAST(products_warehouses.reduced_price as decimal(64, 2))"),
+        array('dt' => 37, 'db' => "CAST(products_warehouses.manager_bonus_rate as decimal(64, 2))"),
+        array('dt' => 38, 'db' => "CAST(products_warehouses.manager_bonus as decimal(64, 2))"),
+        array('dt' => 39, 'db' => "CAST(products_warehouses.commission_rate as decimal(64, 2))"),
+        array('dt' => 40, 'db' => "CAST(products_warehouses.commission_agent_bonus as decimal(64, 2))"),
         array('dt' => 41, 'db' => "products_warehouses.production_date"),
         array('dt' => 42, 'db' => "IFNULL(CONCAT(products_warehouses.reserve_since_date, 
             ' - ',products_warehouses.reserve_till_date), '')"),
@@ -155,7 +155,7 @@ class ModelWarehouse extends ModelManagers_orders
     var $where_reserve = '(products_warehouses.manager_order_id IS NOT NULL AND '.
     'products_warehouses.reserve_since_date IS NOT NULL)';
 
-    function getDTProductsForWarehouses($input, $warehouse_id = 0, $type, $printOpt)
+    function getDTProductsForWarehouses($input, $warehouse_id = 0, $type, $printOpt, $tableName = '')
     {
 
         if ($warehouse_id) {
@@ -187,14 +187,15 @@ class ModelWarehouse extends ModelManagers_orders
             $this->unLinkStrings($this->product_warehouses_columns, [27, 30, 33, 34]);
         }
 
-        $columns = $this->getColumns($this->product_warehouses_columns, 'warehouse', $this->tableName);
+        $columns = $this->getColumns($this->product_warehouses_columns, 'warehouse', $tableName);
 
         $ssp = [
             'columns' => $columns,
-            'columns_names' => $this->product_warehouses_column_names,
+            'columns_names' => $this->getColumns($this->product_warehouses_column_names,
+                'warehouse', $tableName, true),
             'db_table' => $this->products_warehouses_table,
             'page' => 'warehouse',
-            'table_name' => $this->tableName,
+            'table_name' => $tableName,
             'primary' => 'products_warehouses.item_id',
         ];
 
@@ -241,7 +242,7 @@ class ModelWarehouse extends ModelManagers_orders
         if ($_SESSION['perm'] <= SALES_MANAGER_PERM) {
             $this->unLinkStrings($this->product_warehouses_columns, [27, 30, 33, 34]);
         }
-        $columns = $this->getColumns($this->product_warehouses_columns, 'warehouse', $this->tableName);
+        $columns = $this->getColumns($this->product_warehouses_columns, 'warehouse', $table_id);
 
         $ssp = $this->getSspComplexJson($this->products_warehouses_table, "products_warehouses.item_id",
             $columns, null, null, $where);
