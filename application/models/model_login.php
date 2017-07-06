@@ -29,7 +29,6 @@ class ModelLogin extends Model
             $savedOrderColumnsJson = json_encode($savedOrderColumns);
             return $this->update("UPDATE users SET columns_order = '$savedOrderColumnsJson' WHERE user_id = $userId");
         }
-
     }
 
     function saveRecordsCount($count, $tableId)

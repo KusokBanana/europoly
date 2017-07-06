@@ -158,6 +158,8 @@ class ModelWarehouse extends ModelManagers_orders
     function getDTProductsForWarehouses($input, $warehouse_id = 0, $type, $printOpt, $tableName = '')
     {
 
+//        $input['columns'][2]['search']['value'] = 'Admonter SP1020 Oak robust rustic ng t&g 15x 185x1850 mm';
+
         if ($warehouse_id) {
             $where = ["products_warehouses.warehouse_id = $warehouse_id"];
         } else {
@@ -242,12 +244,12 @@ class ModelWarehouse extends ModelManagers_orders
         if ($_SESSION['perm'] <= SALES_MANAGER_PERM) {
             $this->unLinkStrings($this->product_warehouses_columns, [27, 30, 33, 34]);
         }
-        $columns = $this->getColumns($this->product_warehouses_columns, 'warehouse', $table_id);
+        $columns = $this->getColumns($this->product_warehouses_columns, 'warehouse', 'table_warehouse');
 
         $ssp = $this->getSspComplexJson($this->products_warehouses_table, "products_warehouses.item_id",
             $columns, null, null, $where);
 
-        $columnNames = $this->getColumns($this->product_warehouses_column_names, 'warehouse', $table_id, true);
+        $columnNames = $this->getColumns($this->product_warehouses_column_names, 'warehouse', 'table_warehouse', true);
 
         $rowValues = json_decode($ssp, true)['data'];
         $ignoreArray = ['Id', 'Quantity', 'Purchase Price', 'Buy + Transport + Taxes', 'Sell Price',

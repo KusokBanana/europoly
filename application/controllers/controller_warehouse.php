@@ -66,7 +66,8 @@ class ControllerWarehouse extends Controller
 
             $warehouse_id = intval($_GET['warehouse_id']);
             $type = isset($_GET['type']) ? $_GET['type'] : '';
-            $table = isset($_GET['table']) ? $_GET['table'] : '';
+//            $table = isset($_GET['table']) ? $_GET['table'] : '';
+            $table = 'table_warehouse';
             $this->model->getDTProductsForWarehouses($_POST, $warehouse_id, $type, $print, $table);
         } else {
             http_response_code(400);
@@ -188,7 +189,7 @@ class ControllerWarehouse extends Controller
         $tableData = [
             'table_id' => 'table_warehouses_products',
             'column_names' => $this->model->getColumns($this->model->product_warehouses_column_names,
-                $this->page, 'table_warehouses_products', true),
+                $this->page, 'table_warehouse', true),
             'originalColumns' => $roles->returnModelNames($this->model->product_warehouses_column_names, $this->page)
         ];
         $tableData = array_merge($tableData, $this->model->getSelects($id, 'table_warehouses_products'));
