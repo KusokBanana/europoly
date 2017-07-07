@@ -205,7 +205,7 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                                 break;
                                             case 'currency_rate':
                                                 if (sumInEurValue !== 0) {
-                                                    value = (sumInEurValue / currencyRateValue).format(2);
+                                                    value = (sumInEurValue * currencyRateValue).format(2); // TODO change here from "/"
 //                                                    value = (currencyRateValue * sumInEurValue).format(2);
                                                     sumInput.val(value);
                                                 } else if (sumValue !== 0) {
@@ -634,7 +634,6 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                                 },
                                                 success: function(data) {
                                                     var value = 0;
-                                                    console.log(data);
                                                     if (data) {
                                                         value = parseFloat(1/data).format(4);
                                                         course.val(value);

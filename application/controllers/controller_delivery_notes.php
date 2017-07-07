@@ -71,12 +71,6 @@ class ControllerDelivery_notes extends Controller
 
         $this->view->originalColumns_modal = $roles->returnModelNames($this->model->delivery_note_items_names, 'order');
 
-//        $array = $this->model->getSelectsModal();
-//        $selects = $array['selects'];
-//        $rows = $array['rows'];
-//        $this->view->selects_modal = $selects;
-//        $this->view->rows_modal = $rows;
-
         $this->view->title = "Delivery Note";
         $roles = new Roles();
         $this->view->access = $roles->getPageAccessAbilities($this->page);

@@ -178,7 +178,7 @@ class ModelDelivery_notes extends Model
 
         if ($printOpt) {
 
-//            $printOpt['where'] = $this->whereCondition;
+//            $printOpt['where'] = $this->whereCondition;  2564 1883 1235 876
             echo $this->printTable($input, $ssp, $printOpt);
             return true;
 
@@ -285,8 +285,11 @@ class ModelDelivery_notes extends Model
             $ids[] = $note['order_item_id'];
         }
         $ids = join(',', $ids);
-        $items = $this->getAssoc("SELECT * FROM order_items WHERE manager_order_id = $order_id
-          AND item_id NOT IN ($ids) AND status_id = " . ON_STOCK);
+        $notIn = '';
+        if ($ids)
+            $notIn = "AND item_id NOT IN ($ids)";
+        $items = $this->getAssoc("SELECT * FROM order_items WHERE manager_order_id = $order_id 
+          $notIn AND status_id = " . ON_STOCK);
 
         $res = [];
         foreach ($items as $item) {
@@ -348,7 +351,7 @@ class ModelDelivery_notes extends Model
         $docs = [
             [
                 'href' => "/delivery_notes/print_doc?note_id=$note_id",
-                'name' => 'Issue'
+                'name' => 'Print Delivery Note'
             ],
         ];
         return $docs;
