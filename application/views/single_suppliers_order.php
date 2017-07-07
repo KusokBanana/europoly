@@ -39,7 +39,7 @@
                 <h3>Supplier:</h3>
                 <ul class="list-unstyled">
                     <li>
-                        <a href="javascript:;" class="x-editable x-supplier_id"
+                        <a href="" class="x-editable x-supplier_id"
                            data-pk="<?= $this->order['order_id'] ?>" data-name="supplier_id"
                            data-value="<?= $this->order['supplier_id'] ?>"
                            data-url="/suppliers_order/change_field" data-original-title="Choose Supplier">
@@ -61,14 +61,14 @@
                 <ul class="list-unstyled">
                     <li>
                         <a class="btn btn-md blue hidden-print margin-bottom-5"
-                           href="javascript:;" data-toggle="modal" data-target="#modal_newOrderItem">
+                           href="" data-toggle="modal" data-target="#modal_newOrderItem">
                             <i class="fa fa-plus"></i> Add item
                         </a>
 <!--										<a class="btn btn-md blue margin-bottom-5" onclick="javascript:window.print();"> Print-->
 <!--											<i class="fa fa-print"></i>-->
 <!--										</a>-->
                         <a class="btn btn-md blue margin-bottom-5"
-                            href="javascript:;"
+                            href=""
                             onclick="return confirm('Are you sure to send order to Supplier?')">
                             Send Order to Supplier
                         </a>

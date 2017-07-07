@@ -42,16 +42,18 @@
 </div>
 
 <script>
-    var $table_order_item_product = $('#table_catalogue');
-    $table_order_item_product.find('tbody').on('click', 'tr', function () {
-        if ($table_order_item_product.find(".selected").length > 0) {
-            var pwids = Array.from($("#table_catalogue").DataTable().rows('.selected').data().map(function(product) {
-                return parseInt(product[0]);
-            }));
-            $("#field_product_ids").val(JSON.stringify(pwids));
-            $("#modal_pw_create").removeAttr('disabled');
-        } else {
-            $("#modal_pw_create").attr('disabled', 'disabled');
-        }
-    });
+    $(document).ready(function() {
+        var $table_order_item_product = $('#table_order_items_new_modal');
+        $table_order_item_product.find('tbody').on('click', 'tr', function () {
+            if ($table_order_item_product.find(".selected").length > 0) {
+                var pwids = Array.from($("#table_order_items_new_modal").DataTable().rows('.selected').data().map(function(product) {
+                    return parseInt(product[0]);
+                }));
+                $("#field_product_ids").val(JSON.stringify(pwids));
+                $("#modal_pw_create").removeAttr('disabled');
+            } else {
+                $("#modal_pw_create").attr('disabled', 'disabled');
+            }
+        });
+    })
 </script>
