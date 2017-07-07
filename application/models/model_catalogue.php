@@ -9,9 +9,15 @@ class ModelCatalogue extends Model
 
     public $tableName = "table_catalogue";
 
-    function getDTProducts($input, $printOpt, $page = false, $table = false)
+    function getDTProducts($input, $printOpt, $page = false, $table = false, $ids = null)
     {
         $where = ['products.is_deleted = 0'];
+        if ($ids !== null) {
+            if ($ids == '')
+                $where[] = "0";
+            else
+                $where[] = "products.id IN ($ids)";
+        }
         $table = ($table) ? $table : $this->tableName;
         $page = ($page) ? $page : 'catalogue';
         $columns = $this->getColumns($this->full_product_columns, $page, $table);

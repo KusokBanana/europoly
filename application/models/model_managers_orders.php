@@ -256,7 +256,6 @@ class ModelManagers_orders extends Model
 
         }
 
-
         if (!empty($rowValues)) {
             $selects = [];
             foreach ($rowValues as $product) {

@@ -79,6 +79,12 @@
                 </ul>
             </li>
         <?php endif; ?>
+        <li id="nav-delivery_notes" class="nav-item">
+            <a href="/delivery_notes" class="nav-link nav-toggle">
+                <i class="icon-bar-chart"></i>
+                <span class="title">Delivery Notes</span>
+            </a>
+        </li>
         <?php if ($_SESSION['perm'] >= SALES_MANAGER_PERM || $_SESSION['user_role'] == ROLE_WAREHOUSE): ?>
             <li id="nav-warehouse" class="nav-item">
                 <a href="javascript:;" class="nav-link nav-toggle">

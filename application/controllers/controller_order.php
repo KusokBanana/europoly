@@ -76,8 +76,6 @@ class ControllerOrder extends Controller
         } else {
             $this->getAccess('none', 'v');
         }
-
-
     }
 
     function action_parse()
@@ -101,6 +99,19 @@ class ControllerOrder extends Controller
             foreach ($order_item_ids as $order_item) {
                 $json = $this->model->updateItemField($order_item, 'status_id', SENT_TO_LOSIGT);
             }
+            if (!is_null($json)) {
+                echo $json;
+            }
+        }
+    }
+
+    function action_ship_to_customer()
+    {
+        $this->getAccess($this->page, 'ch');
+        $order_item_ids = isset($_GET['order_item_ids']) ? $_GET['order_item_ids'] : 0;
+
+        if ($order_item_ids) {
+            $json = $this->model->shipToCustomer($order_item_ids);
             if (!is_null($json)) {
                 echo $json;
             }

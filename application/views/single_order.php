@@ -259,6 +259,11 @@
                                     <a href="javascript:;" class="btn btn-default btn-sm"
                                        data-placement="left" data-popout="true" data-singleton="true"
                                        data-toggle="confirmation"
+                                       data-title="Are you sure to ship to customer?"  id="shipToCustomer">
+                                        <i class="fa fa-ship" aria-hidden="true"></i> Ship to customer </a>
+                                    <a href="javascript:;" class="btn btn-default btn-sm"
+                                       data-placement="left" data-popout="true" data-singleton="true"
+                                       data-toggle="confirmation"
                                        data-title="Are you sure to send to logist this items?"  id="sendToLogist">
                                         <span class="glyphicon glyphicon-pencil"></span> Send to Logist </a>
                                     <a href="javascript:;" class="btn btn-default btn-sm"
@@ -709,16 +714,24 @@ require_once 'modals/cancel_order.php';
             }]
         });
 
+        function getSelected() {
+            var selected = $table_order_items.attr('data-selected');
+            if (selected === undefined || !selected) {
+                $('#notificationModal').modal().find('.modal-body')
+                    .text('Please select at least one item');
+                return false;
+            }
+            return selected;
+        }
+
         $('#sendToLogist').on('click', function(e) {
             e.preventDefault();
 
             function sendToLogist() {
-                var selected = $table_order_items.attr('data-selected');
-                if (selected === undefined || !selected) {
-                    $('#notificationModal').modal().find('.modal-body')
-                        .text('Please select at least one item');
+
+                var selected = getSelected;
+                if (!selected())
                     return false;
-                }
 
                 $.ajax({
                     url: '/order/send_to_logist',
@@ -729,7 +742,7 @@ require_once 'modals/cancel_order.php';
                     success: function(data) {
                         if (data) {
                             data = JSON.parse(data);
-                            if (!data.success === 0) {
+                            if (data.success === 0) {
                                 $('#notificationModal').modal().find('.modal-body').text(data.message);
                                 return false;
                             }
@@ -740,6 +753,37 @@ require_once 'modals/cancel_order.php';
             }
 
             $(this).confirmation().on('confirmed.bs.confirmation', sendToLogist);
+
+        });
+        $('#shipToCustomer').on('click', function(e) {
+            e.preventDefault();
+
+            function shipToCustomer() {
+
+                var selected = getSelected;
+                if (!selected())
+                    return false;
+
+                $.ajax({
+                    url: '/order/ship_to_customer',
+                    type: "GET",
+                    data: {
+                        order_item_ids: selected
+                    },
+                    success: function(data) {
+                        if (data) {
+                            data = JSON.parse(data);
+                            if (data.success === 0) {
+                                $('#notificationModal').modal().find('.modal-body').text(data.message);
+                                return false;
+                            }
+                        }
+                        location.href = '';
+                    }
+                })
+            }
+
+            $(this).confirmation().on('confirmed.bs.confirmation', shipToCustomer);
 
         })
     });

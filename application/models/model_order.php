@@ -62,8 +62,8 @@ class ModelOrder extends Model
                 IFNULL(CAST((order_items.sell_price * 
                 (100 - order_items.discount_rate)) * order_items.amount/100 as decimal(64, 2)), ''),
                 '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Sell Value\">',
-                    IFNULL(CAST((order_items.sell_price * 
-                (100 - order_items.discount_rate)) * order_items.amount/100 as decimal(64, 2)), ''),
+                    IFNULL(CAST(((order_items.sell_price * 
+                (100 - order_items.discount_rate)) * order_items.amount/100) as decimal(64, 2)), ''),
                 '</a>')"),
             array('dt' => 11, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-commission_rate\" data-pk=\"',
                 order_items.item_id,
@@ -623,6 +623,32 @@ class ModelOrder extends Model
         }
     }
 
+    public function shipToCustomer($idsString)
+    {
+
+        $items = $this->getAssoc("SELECT * FROM order_items WHERE item_id IN ($idsString) AND status_id = " . ON_STOCK);
+        $json = null;
+        $count = (substr_count($idsString, ',') + 1);
+
+        if ($count !== count($items))
+            return json_encode(['success' => 0, 'message' => 'All items must have status "On Stock"!']);
+
+        $order_id = $items[0]['manager_order_id'];
+        $this->insert("INSERT INTO delivery_note (date, order_id) VALUES (NOW(), $order_id)");
+        $noteId = $this->insert_id;
+
+        foreach ($items as $item) {
+
+            $this->updateItemField($item['item_id'], 'status_id', EXPECTS_ISSUE);
+            $this->insert("INSERT INTO delivery_note_items (order_item_id, note_id) 
+              VALUES (${item['item_id']}, $noteId)");
+
+        }
+
+        return $json;
+
+    }
+
     public function getItemStatusName($status_id)
     {
         $status = $this->getFirst("SELECT name FROM items_status WHERE status_id = $status_id");
@@ -632,13 +658,6 @@ class ModelOrder extends Model
     public function getLegalEntities()
     {
         return $this->getAssoc("SELECT legal_entity_id as value, name as text FROM legal_entities");
-    }
-    public function getLegalEntityName($id)
-    {
-        if ($id == null)
-            return '';
-        $name = $this->getFirst("SELECT name FROM legal_entities WHERE legal_entity_id = $id");
-        return isset($name['name']) ? $name['name'] : '';
     }
 
     public function validateItemField($itemId, $name, $value)

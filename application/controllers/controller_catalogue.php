@@ -72,10 +72,11 @@ class ControllerCatalogue extends Controller
                 'filters' => isset($_POST['filters']) && $_POST['filters'] ? json_decode($_POST['filters'], true) : [],
             ];
         }
+        $ids = isset($_GET['ids']) ? $_GET['ids'] : '';
         $table = isset($_GET['table']) ? $_GET['table'] : false;
         $page = isset($_GET['page']) ? $_GET['page'] : false;
 
-        $this->model->getDTProducts($_POST, $print, $table, $page);
+        $this->model->getDTProducts($_POST, $print, $table, $page, $ids);
     }
 
     function action_add()

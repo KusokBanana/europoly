@@ -332,6 +332,11 @@ abstract class Model extends mysqli
         return $this->getById('users', 'user_id', $user_id);
     }
 
+    function getDeliveryNote($delivery_note_id)
+    {
+        return $this->getById('delivery_note', 'id', $delivery_note_id);
+    }
+
     function deleteUser($user_id)
     {
         return $this->update("UPDATE users SET is_deleted = 1 WHERE user_id = $user_id");
@@ -349,6 +354,14 @@ abstract class Model extends mysqli
     {
         $status = $this->getFirst("SELECT name FROM items_status WHERE status_id = $status_id");
         return ($status) ? $status['name'] : '';
+    }
+
+    public function getLegalEntityName($id)
+    {
+        if ($id == null)
+            return '';
+        $name = $this->getFirst("SELECT name FROM legal_entities WHERE legal_entity_id = $id");
+        return isset($name['name']) ? $name['name'] : '';
     }
 
     function getClientsOfSalesManager($sales_manager_id = false)
