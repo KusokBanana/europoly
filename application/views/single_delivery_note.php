@@ -109,7 +109,7 @@
                                     <a href="/delivery_notes/issue?note_id=<?= $this->note['id'] ?>"
                                        class="btn btn-default btn-sm">
                                         <i class="fa fa-plus"></i> Issue </a>
-                                    <a href="javascript:;" class="btn btn-default btn-sm"
+                                    <a class="btn btn-default btn-sm"
                                        data-toggle="modal" data-target="#modal_newOrderItem">
                                         <i class="fa fa-plus"></i> Add new </a>
                                 </div>

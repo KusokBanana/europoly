@@ -103,8 +103,8 @@ class ControllerDelivery_notes extends Controller
         $this->getAccess($this->page, 'ch');
         $items = isset($_POST['product_ids']) ? $_POST['product_ids'] : false;
         $note_id = isset($_POST['note_id']) ? $_POST['note_id'] : false;
-        $brand_id = $this->model->add($items, $note_id);
-        header("Location: /brand?id=" . $brand_id);
+        $this->model->add($items, $note_id);
+        header("Location: " . $_SERVER['HTTP_REFERER']);
     }
 
     function action_issue()
@@ -114,6 +114,7 @@ class ControllerDelivery_notes extends Controller
         if ($note_id) {
             $this->model->issue($note_id);
         }
+        header("Location: " . $_SERVER['HTTP_REFERER']);
 
     }
 

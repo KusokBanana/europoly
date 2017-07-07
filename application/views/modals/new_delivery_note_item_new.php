@@ -15,6 +15,7 @@
                                 <thead>
                                 <tr>
                                     <?php
+                                    unset($this->column_names[16]);
                                     $column_name_ids = [];
                                     if (!empty($this->column_names)) {
                                         foreach ($this->column_names as $key => $column_name) {
@@ -40,7 +41,7 @@
                 <div class="modal-footer">
                     <div class="form-actions right">
                         <button type="button" class="btn default" data-dismiss="modal">Cancel</button>
-                        <button id="modal_pw_create" type="submit" class="btn green" disabled>Create</button>
+                        <button id="modal_pw_create" type="submit" class="btn green">Create</button>
                     </div>
                 </div>
             </form>

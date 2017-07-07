@@ -92,36 +92,49 @@ class ModelDelivery_notes extends Model
                                 </a>')"),
     ];
 
-    function getTable()
+    function getTable($isWithNote = true)
     {
 
-        return 'delivery_note_items ' .
-            'left join order_items on order_items.item_id = delivery_note_items.order_item_id ' .
-            'left join products on order_items.product_id = products.product_id ' .
-            'left join orders on order_items.manager_order_id = orders.order_id ' .
-            $this->full_products_table_addition . ' ' .
-            'left join items_status as status on order_items.status_id = status.status_id';
+        if ($isWithNote) {
+            $table = 'delivery_note_items ' .
+                'left join order_items on order_items.item_id = delivery_note_items.order_item_id ' .
+                'left join products on order_items.product_id = products.product_id ' .
+                'left join orders on order_items.manager_order_id = orders.order_id ' .
+                $this->full_products_table_addition . ' ' .
+                'left join items_status as status on order_items.status_id = status.status_id';
+        } else {
+            $table = 'order_items ' .
+                'left join products on order_items.product_id = products.product_id ' .
+                'left join orders on order_items.manager_order_id = orders.order_id ' .
+                $this->full_products_table_addition . ' ' .
+                'left join items_status as status on order_items.status_id = status.status_id';
+        }
+
+        return $table;
 
     }
 
     function getDTOrderItems($note_id, $input, $ids = null)
     {
 
-        $table = $this->getTable();
-
         $where = ['order_items.is_deleted = 0'];
 
         if ($ids) {
+            $table = $this->getTable(false);
             $where[] = "order_items.item_id IN ($ids)";
+            $primary = 'order_items.item_id';
+            unset($this->columns[16]);
         } else {
+            $table = $this->getTable();
             $where[] = "delivery_note_items.note_id = $note_id";
+            $primary = "delivery_note_items.id";
         }
 
         $roles = new Roles();
 
         $columns = $roles->returnModelColumns($this->columns, 'order');
 
-        return $this->sspComplex($table, "delivery_note_items.id", $columns, $input, null, $where);
+        return $this->sspComplex($table, $primary, $columns, $input, null, $where);
     }
 
     var $delivery_note_items_names = [
@@ -160,7 +173,7 @@ class ModelDelivery_notes extends Model
             'db_table' => $this->delivery_notes_table,
             'page' => 'deliveryNotes',
             'table_name' => $this->tableNames[0],
-            'primary' => 'order_items.item_id',
+            'primary' => 'delivery_note.id',
         ];
 
         if ($printOpt) {
@@ -277,7 +290,7 @@ class ModelDelivery_notes extends Model
 
         $res = [];
         foreach ($items as $item) {
-            $res[] = $item['product_id'];
+            $res[] = $item['item_id'];
         }
         array_unique($res);
         return join(',', $res);
@@ -286,14 +299,12 @@ class ModelDelivery_notes extends Model
     function deleteItem($item_id)
     {
 
-        $item = $this->getFirst("SELECT * FROM delivery_note WHERE id = $item_id");
+        $item = $this->getFirst("SELECT * FROM delivery_note_items WHERE id = $item_id");
         if ($item) {
-
             $order_item = $item['order_item_id'];
             $this->update("UPDATE order_items SET status_id = " . ON_STOCK .
                 " WHERE item_id = $order_item");
-            $this->delete("DELETE FROM delivery_note WHERE id = $item_id");
-
+            $this->delete("DELETE FROM delivery_note_items WHERE id = $item_id");
         }
 
     }
