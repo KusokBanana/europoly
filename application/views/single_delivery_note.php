@@ -43,7 +43,7 @@
             </div>
             <div class="portlet-body">
                 <div class="row">
-                    <div class="col-xs-12">
+                    <div class="col-xs-6">
                         <div class="portlet green-meadow box">
                             <div class="portlet-title">
                                 <div class="caption">
@@ -53,7 +53,7 @@
                             <div class="portlet-body">
 
                                 <div class="row">
-                                    <div class="col-xs-6 col-md-3">
+                                    <div class="col-xs-6">
                                         <div class="row static-info">
                                             <div class="col-md-5 name"> Delivery Note ID: </div>
                                             <div class="col-md-7 value">
@@ -74,7 +74,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-xs-6 col-md-3">
+                                    <div class="col-xs-6">
                                         <div class="row static-info">
                                             <div class="col-md-5 name"> Customer Name:</div>
                                             <div class="col-md-7 value">

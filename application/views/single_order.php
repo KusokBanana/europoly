@@ -368,7 +368,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12 col-sm-12">
-                        <div class="portlet blue-hoki box">
+                        <div class="portlet green box">
                             <div class="portlet-title">
                                 <div class="caption">
                                     <i class="fa fa-cogs"></i> Delivery Notes </div>
