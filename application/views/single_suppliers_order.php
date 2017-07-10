@@ -67,11 +67,6 @@
 <!--										<a class="btn btn-md blue margin-bottom-5" onclick="javascript:window.print();"> Print-->
 <!--											<i class="fa fa-print"></i>-->
 <!--										</a>-->
-                        <a class="btn btn-md blue margin-bottom-5"
-                            href=""
-                            onclick="return confirm('Are you sure to send order to Supplier?')">
-                            Send Order to Supplier
-                        </a>
                     </li>
                 </ul>
             </div>
@@ -242,6 +237,9 @@
                 success: function () {
                     location.reload();
                 }
+            }).on('shown', function(e, editable) {
+                var popover = editable.input.$input.closest('.popover');
+                popover.closest('.table-scrollable').parent().append(popover);
             });
         });
 

@@ -91,6 +91,16 @@
                                     </div>
                                 </div>
                                 <div class="row static-info">
+                                    <div class="col-md-5 name"> Evropoly Contractor:</div>
+                                    <div class="col-md-7 value">
+                                        <a href="javascript:;" id="editable-legal_entity" class='x-editable'
+                                           data-pk="<?= $this->order['order_id'] ?>"
+                                           data-name="legal_entity_id" data-value="<?= $this->order['legal_entity_id'] ?>"
+                                           data-url='/order/change_field' data-original-title='Choose Contractor:'>
+                                            <?= $this->legalEntityName ?></a>
+                                    </div>
+                                </div>
+                                <div class="row static-info">
                                     <div class="col-md-5 name"> Order ID: </div>
                                     <div class="col-md-7 value">
                                         <a href="javascript:;" id="editable-visible_order_id" class='x-editable'
@@ -99,16 +109,6 @@
                                            data-url='/order/change_field' data-original-title='Enter Visible ID:'>
                                             <?= $this->order['visible_order_id'] !== null ? $this->order['visible_order_id']
                                                 : ' '?></a>
-                                    </div>
-                                </div>
-                                <div class="row static-info">
-                                    <div class="col-md-5 name"> Evropoly Contractor:</div>
-                                    <div class="col-md-7 value">
-                                        <a href="javascript:;" id="editable-legal_entity" class='x-editable'
-                                           data-pk="<?= $this->order['order_id'] ?>"
-                                           data-name="legal_entity_id" data-value="<?= $this->order['legal_entity_id'] ?>"
-                                           data-url='/order/change_field' data-original-title='Choose Contractor:'>
-                                            <?= $this->legalEntityName ?></a>
                                     </div>
                                 </div>
                                 <div class="row static-info">
@@ -323,9 +323,11 @@
                                                value="<?= round($this->order['total_price'], 2) ?>">
                                         <?php endif; ?>
                                     </form>
-                                    <a href="javascript:void;" onclick="$('#payment-form').submit()"
-                                       class="btn btn-default btn-sm">
-                                        <i class="fa fa-plus"></i> Add new </a>
+                                    <?php if ($this->user->role_id != ROLE_SALES_MANAGER): ?>
+                                        <a href="javascript:void;" onclick="$('#payment-form').submit()"
+                                           class="btn btn-default btn-sm">
+                                            <i class="fa fa-plus"></i> Add new </a>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                             <div class="portlet-body">

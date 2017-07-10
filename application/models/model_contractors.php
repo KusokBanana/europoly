@@ -36,7 +36,7 @@ class ModelContractors extends ModelClients
         'Type',
         'Design Buro',
         'Second Name',
-        'Client Category 2',
+//        'Client Category 2',
         'Is Agree for Formation',
         'Delete',
     ];

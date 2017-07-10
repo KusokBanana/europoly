@@ -13,7 +13,7 @@
                     </div>
                     <div class="form-group">
                         <label>Supplier</label>
-                        <select name="supplier" class="form-control select2-select" required>
+                        <select name="supplier_id" class="form-control select2-select" required>
                             <option value=""></option>
                             <?php
                             if (!empty($this->suppliers)):

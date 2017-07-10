@@ -35,21 +35,21 @@ class ModelBrands extends Model
             $this->columns, $input, $where);
     }
 
-    function addBrand($name, $supplier)
+    function addBrand($name, $supplier_id)
     {
 
-        $supplierFind = $this->getFirst("SELECT supplier_id FROM suppliers WHERE name = '$supplier'");
-        if ($supplierFind)
-            $supplier = $supplierFind['supplier_id'];
-        else {
-            $newSupplier = $this->insert("INSERT INTO `suppliers`(`name`)
-            VALUES ('$supplier')");
-            $supplier = $newSupplier;
-        }
+//        $supplierFind = $this->getFirst("SELECT supplier_id FROM suppliers WHERE supplier_id = $supplier_id");
+//        if ($supplierFind)
+//            $supplier = $supplierFind['supplier_id'];
+//        else {
+//            $newSupplier = $this->insert("INSERT INTO `suppliers`(`name`)
+//            VALUES ('$supplier')");
+//            $supplier = $newSupplier;
+//        }
 
         return $this->insert("
             INSERT INTO `brands`(`name`, `supplier_id`)
-            VALUES ('$name', '$supplier')");
+            VALUES ('$name', $supplier_id)");
     }
     function getSuppliersIdNames()
     {

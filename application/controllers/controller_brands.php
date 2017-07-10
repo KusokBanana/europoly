@@ -36,7 +36,7 @@ class ControllerBrands extends Controller
     {
         $this->getAccess($this->page, 'ch');
         $brand_id = $this->model->addBrand($this->escape_and_empty_to_null($_POST['name']),
-            $this->escape_and_empty_to_null($_POST['supplier']));
+            $this->escape_and_empty_to_null($_POST['supplier_id']));
         header("Location: /brand?id=" . $brand_id);
     }
 
