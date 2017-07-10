@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" serverName="europoly" persistUploadOnCheckin="false">
+  <component name="PublishConfigData" serverName="europoly" uploadOnCheckin="4b001fc0-8144-410a-ba4c-669dfa54c1fc">
     <serverData>
       <paths name="arkham">
         <serverdata>
@@ -115,5 +115,6 @@
         </serverdata>
       </paths>
     </serverData>
+    <option name="myUploadOnCheckinName" value="europoly" />
   </component>
 </project>

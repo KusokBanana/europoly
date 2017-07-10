@@ -114,7 +114,9 @@
                                 </div>
                                 <div class="actions">
                                     <a href="/delivery_notes/issue?note_id=<?= $this->note['id'] ?>"
-                                       class="btn btn-default btn-sm">
+                                       data-toggle="confirmation" data-title="Are you sure to delete the item?"
+                                       class="table-confirm-btn btn btn-default btn-sm" data-placement="left" data-popout="true"
+                                       data-singleton="true">
                                         <i class="fa fa-plus"></i> Issue </a>
                                     <a class="btn btn-default btn-sm"
                                        data-toggle="modal" data-target="#modal_newOrderItem">
