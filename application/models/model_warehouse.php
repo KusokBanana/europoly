@@ -29,7 +29,7 @@ class ModelWarehouse extends ModelManagers_orders
             data-name="warehouse_id" data-value="\', products_warehouses.warehouse_id, \'" data-url="/warehouse/change_item_field" 
             data-original-title="Change Warehouse">\', IFNULL(warehouses.name, \'no name\'), \'</a>
             <a href="/warehouse?id=\', products_warehouses.warehouse_id, \'"><i class="glyphicon glyphicon-link"></i></a>\')'),
-        array('dt' => 5, 'db' => "products_warehouses.amount"),
+        array('dt' => 5, 'db' => "CAST(products_warehouses.amount as decimal(64, 3))"),
 //        array('dt' => 5, 'db' => "IF(ISNULL(products_warehouses.manager_order_id),
 //            CONCAT('<a href=\"javascript:;\" class=\"x-editable x-amount\" data-pk=\"',
 //                products_warehouses.item_id,
@@ -40,7 +40,7 @@ class ModelWarehouse extends ModelManagers_orders
 //                '</a>'),
 //                products_warehouses.amount)"),
         array('dt' => 6, 'db' => 'products.units'),
-        array('dt' => 7, 'db' => "products_warehouses.number_of_packs"),
+        array('dt' => 7, 'db' => "CAST(products_warehouses.number_of_packs as decimal(64, 3))"),
 //        array('dt' => 7, 'db' => "IF(ISNULL(products_warehouses.manager_order_id),
 //            CONCAT('<a href=\"javascript:;\" class=\"x-editable x-number_of_packs\" data-pk=\"',
 //                products_warehouses.item_id,

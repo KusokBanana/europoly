@@ -620,8 +620,8 @@ abstract class Model extends mysqli
             $products['pack_type'][] = $product['packing_type'];
             $products['weight'][] = $weight;
 //            $products['weight'][] = $product['weight'];
-            $products['amount'][] = round($orderItem['amount'], 2);
-            $products['packs_number'][] = round($orderItem['number_of_packs'], 2);
+            $products['amount'][] = round($orderItem['amount'], 3);
+            $products['packs_number'][] = round($orderItem['number_of_packs'], 3);
             $products['production_date'][] = $orderItem['production_date'];
             $products['warehouse'][] = isset($warehouse) && $warehouse ? $warehouse['name'] : ' ';
 
@@ -653,8 +653,8 @@ abstract class Model extends mysqli
         $values['sum_string'] = NumbersToStrings::num2str($values['sum'], $values['currency']);
         $values['opt_sum_string'] = NumbersToStrings::num2str($values['opt_sum'], $values['currency']);
         $values['total_weight'] = round($values['total_weight'], 2);
-        $values['total_packs_number'] = round($values['total_packs_number'], 2);
-        $values['amount'] = round($values['amount'], 2);
+        $values['total_packs_number'] = round($values['total_packs_number'], 3);
+        $values['amount'] = round($values['amount'], 3);
 
         return ['products' => $products, 'values' => $values];
     }
