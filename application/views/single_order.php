@@ -256,10 +256,11 @@
                                     <i class="fa fa-cogs"></i>Items
                                 </div>
                                 <div class="actions">
-                                    <a href="javascript:;" class="btn btn-default btn-sm"
-                                       data-placement="left" data-popout="true" data-singleton="true"
-                                       data-toggle="confirmation"
-                                       data-title="Are you sure to ship to customer?"  id="shipToCustomer">
+                                    <a class="btn btn-default btn-sm" id="joinProduct">
+                                        <i class="fa fa-columns" aria-hidden="true"></i> Join Products </a>
+                                    <a class="btn btn-default btn-sm" id="splitProduct">
+                                        <i class="fa fa-columns" aria-hidden="true"></i> Split Product </a>
+                                    <a class="btn btn-default btn-sm" id="shipToCustomer">
                                         <i class="fa fa-ship" aria-hidden="true"></i> Ship to customer </a>
                                     <a href="javascript:;" class="btn btn-default btn-sm"
                                        data-placement="left" data-popout="true" data-singleton="true"
@@ -408,6 +409,7 @@
 <?php
 require_once 'modals/new_order_item.php';
 require_once 'modals/cancel_order.php';
+require_once 'modals/shipment_to_customer_modal_amount.php';
 ?>
 
 <script>
@@ -757,35 +759,131 @@ require_once 'modals/cancel_order.php';
         });
         $('#shipToCustomer').on('click', function(e) {
             e.preventDefault();
+            var selected = getSelected;
+            if (!selected())
+                return false;
 
-            function shipToCustomer() {
-
-                var selected = getSelected;
-                if (!selected())
-                    return false;
-
-                $.ajax({
-                    url: '/order/ship_to_customer',
-                    type: "GET",
-                    data: {
-                        order_item_ids: selected
-                    },
-                    success: function(data) {
-                        if (data) {
-                            data = JSON.parse(data);
-                            if (data.success === 0) {
-                                $('#notificationModal').modal().find('.modal-body').text(data.message);
-                                return false;
-                            }
+            $.ajax({
+                url: '/order/ship_to_customer',
+                type: "GET",
+                data: {
+                    order_item_ids: selected,
+                    actionId: 1
+                },
+                success: function(data) {
+                    if (data) {
+                        data = JSON.parse(data);
+                        if (data.success === 0) {
+                            $('#notificationModal').modal().find('.modal-body').text(data.message);
+                            return false;
                         }
-                        location.href = '';
+                        var modal = $('#modal_shipment_to_customer_modal_amount');
+                        var tbody = modal.find('table tbody').empty();
+
+                        var tr = '';
+                        if (data.length) {
+                            $.each(data, function() {
+                                var td = '<tr><td>' + this.name + '</td>';
+                                td += '<td><input type="hidden" class="total" name="ship[' +
+                                    this.item_id + '][total_amount]" ' + 'value="' + this.amount + '" />' +
+                                    this.amount_string + '</td>';
+                                td += '<td>' + '<input type="text" class="amount" value="' +
+                                    this.amount + '" ' + 'name="ship[' + this.item_id + '][amount]" ' +
+                                    'max="'+this.amount+'" min="0" /></td>';
+                                td += '<td>' + this.number_of_packs_string + '</td></tr>';
+                                tr += td;
+                            });
+                            tbody.append(tr);
+                            modal.find('.order_item_ids').val(selected);
+                            modal.modal();
+                        }
+
+
                     }
-                })
+//                        if (data) {
+//                            data = JSON.parse(data);
+//                            if (data.success === 0) {
+//                                $('#notificationModal').modal().find('.modal-body').text(data.message);
+//                                return false;
+//                            }
+//                        }
+//                        location.href = '';
+                }
+            })
+//            $(this).confirmation().on('confirmed.bs.confirmation', shipToCustomer);
+
+        });
+
+        $('#splitProduct').on('click', function() {
+
+            var selected = getSelected();
+            var count = (selected.split(',').length);
+            if (count !== 1) {
+                $('#notificationModal').modal().find('.modal-body')
+                    .text('Need to choose only one item!');
+                return false;
             }
 
-            $(this).confirmation().on('confirmed.bs.confirmation', shipToCustomer);
+            $.ajax({
+                url: '/order/split',
+                data: {
+                    order_item_id: selected,
+                    action_id: 1
+                },
+                success: function(data) {
+                    if (data) {
+                        data = JSON.parse(data);
+                        if (data.success === 0) {
+                            $('#notificationModal').modal().find('.modal-body').text(data.message);
+                            return false;
+                        }
+
+                        var modal = $('#modal_order_split');
+                        var table = modal.find('table');
+
+                        var tr = table.find('tbody tr').attr('data-item_id', data.item_id).attr('data-amount', data.amount);
+                        var td = '<td><input type="hidden" name="item_id" value="' +
+                            data.item_id + '" />' + data.name + '</td>';
+                        td += '<td>' + data.amount + '</td>';
+                        td += '<td><input type="text" name="amount_1" value="' + (data.amount / 2) + '" /></td>';
+                        td += '<td><input type="text" name="amount_2" value="' + (data.amount / 2) + '" /></td>';
+                        tr.empty().append(td);
+                        modal.modal();
+                    }
+                }
+            })
+
+        });
+
+        $('#joinProduct').on('click', function() {
+            var selected = getSelected();
+            var count = selected.split(',').length;
+            if (count !== 2) {
+                $('#notificationModal').modal().find('.modal-body')
+                    .text('Need to choose only two items!');
+                return false;
+            }
+
+            $.ajax({
+                url: '/order/join',
+                data: {
+                    order_item_ids: selected,
+                    action_id: 1
+                },
+                success: function(data) {
+                    if (data) {
+                        data = JSON.parse(data);
+                        if (data.success === 0) {
+                            $('#notificationModal').modal().find('.modal-body').text(data.message);
+                            return false;
+                        }
+                    }
+                    location.href = '';
+                }
+            })
 
         })
+
     });
 </script>
 <style>
@@ -796,6 +894,7 @@ require_once 'modals/cancel_order.php';
 <?php
 include_once 'application/views/modals/reserve.php';
 include_once 'application/views/modals/return.php';
+include_once 'application/views/modals/order_split.php';
 ?>
 <!-- TODO переместить в нормальные скрипты и стили -->
 <script>

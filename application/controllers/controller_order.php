@@ -28,8 +28,9 @@ class ControllerOrder extends Controller
         if (($_SESSION["user_role"] == ROLE_SALES_MANAGER &&
                 ($order['sales_manager_id'] == $userId ||
                     $this->view->client['sales_manager_id'] == $userId ||
-                    $this->view->client['operational_manager_id'] == $userId )
-            ) || $_SESSION["perm"] >= OPERATING_MANAGER_PERM) {
+                    $this->view->client['operational_manager_id'] == $userId)
+            ) || $_SESSION["perm"] >= OPERATING_MANAGER_PERM
+        ) {
 
             $this->view->order_status = $this->model->getItemStatusName($order['order_status_id']);
             $this->view->sales_manager = $this->model->getUser($order["sales_manager_id"]);
@@ -108,24 +109,74 @@ class ControllerOrder extends Controller
     function action_ship_to_customer()
     {
         $this->getAccess($this->page, 'ch');
-        $order_item_ids = isset($_GET['order_item_ids']) ? $_GET['order_item_ids'] : 0;
+        $actionId = isset($_GET['actionId']) ? $_GET['actionId'] : false;
 
-        if ($order_item_ids) {
+        if ($actionId == 1) {
+            $order_item_ids = isset($_GET['order_item_ids']) ? $_GET['order_item_ids'] : false;
+            $items = $this->model->getItemsFromStringIds($order_item_ids);
+            if (!is_array($items)) {
+                echo $items;
+                return 0;
+            }
+            $items = $this->model->shipToCustomerGetProducts($order_item_ids);
+            echo json_encode($items);
+            return 1;
+        } elseif ($actionId == 2) {
+            $ship = isset($_POST['ship']) ? $_POST['ship'] : false;
+            $order_item_ids = isset($_POST['order_items_ids']) ? $_POST['order_items_ids'] : false;
             $json = $this->model->shipToCustomer($order_item_ids);
             if (!is_null($json)) {
                 echo $json;
+                return 0;
             }
+            $this->model->shipToCustomer($ship);
+            header("Location: " . $_SERVER['HTTP_REFERER']);
         }
 
     }
 
-//    function action_cancel_order()
-//    {
-//        $this->getAccess($this->page, 'ch');
-//        $this->model->cancelOrder($this->escape_and_empty_to_null($_POST['order_id']),
-//            $this->escape_and_empty_to_null($_POST['cancel_reason']));
-//        header("Location: " . $_SERVER['HTTP_REFERER']);
-//    }
+    function action_split()
+    {
+
+        $order_item_id = isset($_GET['order_item_id']) ? $_GET['order_item_id'] : false;
+        $actionId = isset($_GET['action_id']) ? $_GET['action_id'] : false;
+        switch ($actionId) {
+            case 1:
+                $item = $this->model->getFirst("SELECT order_items.amount as amount, order_items.item_id, " .
+                    "products.name as name, order_items.status_id as status_id " .
+                    "FROM order_items " .
+                    "LEFT JOIN products ON (order_items.product_id = products.product_id) " .
+                    "WHERE item_id = $order_item_id");
+                $status_id = $item['status_id'];
+                if (intval($status_id) > ON_STOCK) {
+                    echo json_encode(['success' => 0, 'message' => 'Item must have status less than On Stock!']);
+                    return false;
+                }
+                echo json_encode($item);
+                return true;
+            case 2:
+                $amount_1 = isset($_POST['amount_1']) ? $_POST['amount_1'] : false;
+                $amount_2 = isset($_POST['amount_2']) ? $_POST['amount_2'] : false;
+                $item_id = isset($_POST['item_id']) ? $_POST['item_id'] : false;
+                if ($amount_1 && $amount_2 && $item_id) {
+                    $this->model->split($item_id, $amount_1);
+                    header("Location: " . $_SERVER['HTTP_REFERER']);
+                }
+        }
+    }
+
+    function action_join()
+    {
+
+        $order_item_ids = isset($_GET['order_item_ids']) ? $_GET['order_item_ids'] : false;
+        $actionId = isset($_GET['action_id']) ? $_GET['action_id'] : false;
+
+        switch ($actionId) {
+            case 1:
+                $this->model->join($order_item_ids);
+        }
+
+    }
 
     function action_delete_commission_agent()
     {

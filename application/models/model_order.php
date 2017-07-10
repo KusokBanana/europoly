@@ -623,29 +623,135 @@ class ModelOrder extends Model
         }
     }
 
-    public function shipToCustomer($idsString)
+    public function getItemsFromStringIds($idsString)
     {
 
         $items = $this->getAssoc("SELECT * FROM order_items WHERE item_id IN ($idsString) AND status_id = " . ON_STOCK);
-        $json = null;
         $count = (substr_count($idsString, ',') + 1);
 
         if ($count !== count($items))
             return json_encode(['success' => 0, 'message' => 'All items must have status "On Stock"!']);
 
-        $order_id = $items[0]['manager_order_id'];
-        $this->insert("INSERT INTO delivery_note (date, order_id) VALUES (NOW(), $order_id)");
-        $noteId = $this->insert_id;
+        return $items;
+    }
 
-        foreach ($items as $item) {
+    public function shipToCustomer($ship)
+    {
 
-            $this->updateItemField($item['item_id'], 'status_id', EXPECTS_ISSUE);
-            $this->insert("INSERT INTO delivery_note_items (order_item_id, note_id) 
-              VALUES (${item['item_id']}, $noteId)");
+        if (!empty($ship)) {
+            $noteId = false;
+            foreach ($ship as $itemId => $item) {
 
+                $orderItem = $this->getFirst("SELECT * FROM order_items WHERE item_id = $itemId");
+                $order_id = $orderItem['manager_order_id'];
+
+                $totalAmount = $item['total_amount'];
+                $amount = $item['amount'];
+                $order_item_id = $itemId;
+
+                if ($amount > $totalAmount)
+                    continue;
+
+                if ($amount < $totalAmount) {
+                    $order_item_id = $this->split($itemId, $amount);
+                    if (!$order_item_id) {
+                        return false;
+                    }
+                }
+
+                if (!$noteId) {
+                    $this->insert("INSERT INTO delivery_note (date, order_id) VALUES (NOW(), $order_id)");
+                    $noteId = $this->insert_id;
+                }
+
+                $this->updateItemField($order_item_id, 'status_id', EXPECTS_ISSUE);
+                $this->insert("INSERT INTO delivery_note_items (order_item_id, note_id) 
+                  VALUES ($order_item_id, $noteId)");
+            }
         }
 
-        return $json;
+        return null;
+
+    }
+
+    public function split($item_id, $amount)
+    {
+
+        $item = $this->getFirst("SELECT * FROM order_items WHERE item_id = $item_id");
+
+        if (floatval($item['amount']) <= floatval($amount)) {
+            return false;
+        }
+
+        unset($item['item_id']);
+
+        $temp = Helper::getNamesAndValues($item);
+        $names = $temp['names'];
+        $values = $temp['values'];
+
+        $amount_1 = $amount;
+        $amount_2 = floatval($item['amount']) - floatval($amount_1);
+
+        $this->insert("INSERT INTO order_items (`$names`) VALUES ('$values')");
+        $newId = $this->insert_id;
+        $this->updateItemField($item_id, 'amount', $amount_2);
+        $this->updateItemField($newId, 'amount', $amount_1);
+        return $newId;
+
+    }
+
+    public function join($itemIds)
+    {
+
+        $itemIds = explode(',', $itemIds);
+
+        $item_1 = $this->getFirst("SELECT * FROM order_items WHERE item_id = ${itemIds[0]}");
+        $item_2 = $this->getFirst("SELECT * FROM order_items WHERE item_id = ${itemIds[1]}");
+
+        $diff = [];
+
+        foreach ($item_1 as $name => $value) {
+            if (!in_array($name, ['amount', 'item_id', 'number_of_packs', 'manager_bonus', 'commission_agent_bonus'])) {
+                if ($item_2[$name] !== $value) {
+                    $diff[] = $name;
+                }
+            }
+        }
+
+        if (!empty($diff)) {
+            $name = Helper::getOrderItemLabel($diff[count($diff) - 1]);
+            $message = "$name don't match";
+            echo json_encode(['success' => 0, 'message' => $message]);
+            return false;
+        }
+
+        $amount_1 = $item_1['amount'];
+        $amount_2 = $item_2['amount'];
+
+        $totalAmount = intval($amount_1) + intval($amount_2);
+
+        $this->delete("DELETE FROM order_items WHERE item_id = ${item_2['item_id']}");
+        $this->updateItemField($item_1['item_id'], 'amount', $totalAmount);
+
+    }
+
+    public function shipToCustomerGetProducts($idsString)
+    {
+
+        $items = $this->getAssoc("SELECT products.visual_name as name, " .
+        "CONCAT(order_items.amount, ' ', products.units) as amount_string, " .
+        "CONCAT(order_items.number_of_packs, ' ', products.packing_type) as number_of_packs_string, " .
+        "order_items.amount as amount, order_items.item_id as item_id FROM order_items " .
+        "LEFT JOIN products ON (order_items.product_id = products.product_id) WHERE item_id IN ($idsString)");
+
+        return $items;
+
+    }
+
+    public function getItemAmounts($id)
+    {
+
+
 
     }
 
