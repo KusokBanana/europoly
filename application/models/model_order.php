@@ -720,7 +720,7 @@ class ModelOrder extends Model
 
         if (!empty($diff)) {
             $name = Helper::getOrderItemLabel($diff[count($diff) - 1]);
-            $message = "$name don't match";
+            $message = "$name doesn't match";
             echo json_encode(['success' => 0, 'message' => $message]);
             return false;
         }
@@ -728,7 +728,7 @@ class ModelOrder extends Model
         $amount_1 = $item_1['amount'];
         $amount_2 = $item_2['amount'];
 
-        $totalAmount = intval($amount_1) + intval($amount_2);
+        $totalAmount = floatval($amount_1) + floatval($amount_2);
 
         $this->delete("DELETE FROM order_items WHERE item_id = ${item_2['item_id']}");
         $this->updateItemField($item_1['item_id'], 'amount', $totalAmount);

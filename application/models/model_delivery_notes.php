@@ -148,7 +148,7 @@ class ModelDelivery_notes extends Model
             'db_table' => $this->delivery_notes_table,
             'page' => 'deliveryNotes',
             'table_name' => $this->tableNames[0],
-            'primary' => 'delivery_note_items.id',
+            'primary' => 'delivery_note.id',
         ];
 
         $this->sspComplex($ssp['db_table'], $ssp['primary'],

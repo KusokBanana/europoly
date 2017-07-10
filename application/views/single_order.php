@@ -256,7 +256,10 @@
                                     <i class="fa fa-cogs"></i>Items
                                 </div>
                                 <div class="actions">
-                                    <a class="btn btn-default btn-sm" id="joinProduct">
+                                    <a class="btn btn-default btn-sm" id="joinProduct"
+                                       data-placement="left" data-popout="true" data-singleton="true"
+                                       data-toggle="confirmation"
+                                       data-title="Are you sure to join this items?">
                                         <i class="fa fa-columns" aria-hidden="true"></i> Join Products </a>
                                     <a class="btn btn-default btn-sm" id="splitProduct">
                                         <i class="fa fa-columns" aria-hidden="true"></i> Split Product </a>
@@ -882,8 +885,10 @@ require_once 'modals/shipment_to_customer_modal_amount.php';
                         var td = '<td><input type="hidden" name="item_id" value="' +
                             data.item_id + '" />' + data.name + '</td>';
                         td += '<td>' + data.amount + '</td>';
-                        td += '<td><input type="text" name="amount_1" value="' + (data.amount / 2) + '" /></td>';
-                        td += '<td><input type="text" name="amount_2" value="' + (data.amount / 2) + '" /></td>';
+                        td += '<td><input type="text" name="amount_1" id="amount_1" class="form-control"' +
+                            ' value="' + (data.amount / 2) + '" /></td>';
+                        td += '<td><input type="text" name="amount_2" id="amount_2" readonly ' +
+                            'class="form-control" value="' + (data.amount / 2) + '" /></td>';
                         tr.empty().append(td);
                         modal.modal();
                     }
@@ -894,31 +899,37 @@ require_once 'modals/shipment_to_customer_modal_amount.php';
 
         $('#joinProduct').on('click', function() {
             var selected = getSelected();
+            if (selected === undefined) {
+                $('#notificationModal').modal().find('.modal-body')
+                    .text('Need to choose only two items!');
+                return false;
+            }
             var count = selected.split(',').length;
             if (count !== 2) {
                 $('#notificationModal').modal().find('.modal-body')
                     .text('Need to choose only two items!');
                 return false;
-            }
-
-            $.ajax({
-                url: '/order/join',
-                data: {
-                    order_item_ids: selected,
-                    action_id: 1
-                },
-                success: function(data) {
-                    if (data) {
-                        data = JSON.parse(data);
-                        if (data.success === 0) {
-                            $('#notificationModal').modal().find('.modal-body').text(data.message);
-                            return false;
+            } else {
+                $(this).confirmation().on('confirmed.bs.confirmation', function() {
+                    $.ajax({
+                        url: '/order/join',
+                        data: {
+                            order_item_ids: selected,
+                            action_id: 1
+                        },
+                        success: function(data) {
+                            if (data) {
+                                data = JSON.parse(data);
+                                if (data.success === 0) {
+                                    $('#notificationModal').modal().find('.modal-body').text(data.message);
+                                    return false;
+                                }
+                            }
+                            location.href = '';
                         }
-                    }
-                    location.href = '';
-                }
-            })
-
+                    })
+                });
+            }
         });
 
         var $delivery_notes_column_name_ids = <?= json_encode($delivery_notes_column_name_ids); ?>;
