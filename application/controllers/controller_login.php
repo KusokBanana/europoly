@@ -67,10 +67,10 @@ class ControllerLogin extends Controller
             $sort = $_POST["sort"];
             $tableId = $_POST['tableId'];
 
-            $currentSort = isset($_COOKIE['sort_columns']) ? $_COOKIE['sort_columns'] : [];
+            $currentSort = isset($_SESSION['sort_columns']) ? $_SESSION['sort_columns'] : [];
             $currentSort[$tableId] = $sort;
 //            setcookie('sort_columns', $currentSort);
-            $_COOKIE['sort_columns'] = $currentSort;
+            $_SESSION['sort_columns'] = $currentSort;
         }
     }
 
