@@ -152,6 +152,7 @@ class Roles {
                 'staff' => true,
                 'brands' => true,
                 'client' => true,
+                'deliveryNotes' => true,
             ],
             'd' => [ // delete
                 'order' => true,
@@ -172,9 +173,11 @@ class Roles {
                 'suppliersOrders' => true,
                 'warehouse' => true,
                 'sentToLogist' => true,
+                'deliveryNotes' => true,
             ],
             'p' => [ // print
-                'order' => true
+                'order' => true,
+                'deliveryNotes' => true
             ]
         ],
         ROLE_ACCOUNTANT => [
@@ -227,6 +230,7 @@ class Roles {
                 'suppliersOrders' => true,
                 'suppliersOrder' => true,
                 'truck' => true,
+                'deliveryNotes' => true,
             ],
             'd' => [ // delete
                 'order' => true,
@@ -245,6 +249,7 @@ class Roles {
                 'suppliersOrders' => true,
                 'suppliersOrder' => true,
                 'truck' => true,
+                'deliveryNotes' => true,
             ],
             'v' => [ // visit
                 'brands' => true,
@@ -267,6 +272,7 @@ class Roles {
                 'contractors' => false,
                 'suppliersOrder' => true,
                 'truck' => true,
+                'deliveryNotes' => true,
             ],
             'p' => [ // print
                 'order' => true,
@@ -274,6 +280,7 @@ class Roles {
                 'truck' => true,
                 'warehouse' => true,
                 'payment' => true,
+                'deliveryNotes' => true,
             ]
         ],
     ];
