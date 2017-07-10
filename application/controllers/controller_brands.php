@@ -20,9 +20,9 @@ class ControllerBrands extends Controller
         $this->view->suppliers = $this->model->getSuppliersIdNames();
 
         $this->view->tableName = $this->model->tableName;
-        $this->view->column_names = $this->model->getColumns($this->model->columnNames,
+        $this->view->column_names = $this->model->getColumns($this->model->getColumnNames(),
             $this->page, $this->model->tableName, true);
-        $this->view->originalColumns = $roles->returnModelNames($this->model->columnNames, $this->page);
+        $this->view->originalColumns = $roles->returnModelNames($this->model->getColumnNames(), $this->page);
 
         $this->view->build('templates/template.php', 'brands.php');
     }

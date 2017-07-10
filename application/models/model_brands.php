@@ -28,8 +28,21 @@ class ModelBrands extends Model
         $this->connect_db();
     }
 
+    function getColumnNames()
+    {
+        if ($this->user->role_id == ROLE_SALES_MANAGER) {
+            unset($this->columnNames[3]);
+        }
+        return $this->columnNames;
+    }
+
     function getDTBrands($input)
     {
+
+        if ($this->user->role_id == ROLE_SALES_MANAGER) {
+            unset($this->columns[3]);
+        }
+
         $where = "brands.is_deleted = 0";
         $this->sspComplex('brands left join suppliers on suppliers.supplier_id = brands.supplier_id', "brand_id",
             $this->columns, $input, $where);
