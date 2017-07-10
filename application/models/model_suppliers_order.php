@@ -8,7 +8,7 @@ class ModelSuppliers_order extends ModelOrder
         array('dt' => 1, 'db' => "CONCAT('<a href=\"/product?id=',
                 products.product_id, '\">', IFNULL(products.visual_name, 'Enter Visual Name!'), '</a>')"),
         array('dt' => 2, 'db' => "IF(suppliers_orders_items.manager_order_id IS NOT NULL, 
-            CONCAT(suppliers_orders_items.amount, ' ', products.units),
+            CONCAT(suppliers_orders_items.amount, ' ', IFNULL(products.units, ' ')),
             CONCAT('<a href=\"javascript:;\" class=\"x-editable x-amount\" data-pk=\"',
                 suppliers_orders_items.item_id,
                 '\" data-name=\"amount\" data-value=\"',

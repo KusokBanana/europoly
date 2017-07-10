@@ -43,7 +43,7 @@
             </div>
             <div class="portlet-body">
                 <div class="row">
-                    <div class="col-md-6 col-md-offset-3">
+                    <div class="col-xs-12">
                         <div class="portlet green-meadow box">
                             <div class="portlet-title">
                                 <div class="caption">
@@ -52,48 +52,55 @@
                             </div>
                             <div class="portlet-body">
 
-                                <div class="row static-info">
-                                    <div class="col-md-5 name"> Delivery Note ID: </div>
-                                    <div class="col-md-7 value">
-                                        <?= $this->note['id'] ?>
+                                <div class="row">
+                                    <div class="col-xs-6 col-md-3">
+                                        <div class="row static-info">
+                                            <div class="col-md-5 name"> Delivery Note ID: </div>
+                                            <div class="col-md-7 value">
+                                                <?= $this->note['id'] ?>
+                                            </div>
+                                        </div>
+                                        <div class="row static-info">
+                                            <div class="col-md-5 name"> Legal Entity Evropoly:</div>
+                                            <div class="col-md-7 value"><?= $this->legalEntityName ?></div>
+                                        </div>
+                                        <div class="row static-info">
+                                            <div class="col-md-5 name"> Manager Order ID:</div>
+                                            <div class="col-md-7 value">
+                                                <a href="/order?id=<?= $this->order['order_id'] ?>">
+                                                    <?= $this->order['visible_order_id'] ?
+                                                        $this->order['visible_order_id'] : $this->order['order_id'] ?>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6 col-md-3">
+                                        <div class="row static-info">
+                                            <div class="col-md-5 name"> Customer Name:</div>
+                                            <div class="col-md-7 value">
+                                                <a href="/client?id=<?= $this->order['client_id'] ?>">
+                                                    <?= $this->client['final_name'] ?>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="row static-info">
+                                            <div class="col-md-5 name"> Commission Agent:</div>
+                                            <div class="col-md-7 value">
+                                                <a href="/client?id=<?= $this->order['commission_agent_id'] ?>">
+                                                    <?= $this->commission_agent['final_name'] ?>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="row static-info">
+                                            <div class="col-md-5 name"> Manager:</div>
+                                            <div class="col-md-7 value">
+                                                <?= $this->sales_manager['first_name'] . ' ' .
+                                                $this->sales_manager['last_name'] ?>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="row static-info">
-                                    <div class="col-md-5 name"> Legal Entity Evropoly:</div>
-                                    <div class="col-md-7 value"><?= $this->legalEntityName ?></div>
-                                </div>
-                                <div class="row static-info">
-                                    <div class="col-md-5 name"> Customer Name:</div>
-                                    <div class="col-md-7 value">
-                                        <a href="/client?id=<?= $this->order['client_id'] ?>">
-                                            <?= $this->client['final_name'] ?>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="row static-info">
-                                    <div class="col-md-5 name"> Commission Agent:</div>
-                                    <div class="col-md-7 value">
-                                        <a href="/client?id=<?= $this->order['commission_agent_id'] ?>">
-                                            <?= $this->commission_agent['final_name'] ?>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="row static-info">
-                                    <div class="col-md-5 name"> Manager Order ID:</div>
-                                    <div class="col-md-7 value">
-                                        <a href="/order?id=<?= $this->order['order_id'] ?>">
-                                            <?= $this->order['visible_order_id'] ?
-                                                $this->order['visible_order_id'] : $this->order['order_id'] ?>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="row static-info">
-                                    <div class="col-md-5 name"> Manager:</div>
-                                    <div class="col-md-7 value">
-                                        <?= $this->sales_manager['first_name'] . ' ' .
-                                        $this->sales_manager['last_name'] ?>
-                                    </div>
-                                </div>
+
                             </div>
                         </div>
                     </div>
