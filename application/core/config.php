@@ -6,6 +6,7 @@ define('HOLD', 2);
 define('SENT_TO_LOSIGT', 3); // салатовый
 define('DRAFT_FOR_SUPPLIER', 4);
 define('CONFIRMED_BY_SUPPLIER', 5);
+define('PRODUCED', 6);
 define('ON_THE_WAY', 8);
 define('ON_STOCK', 9); // темно-зеленый
 define('EXPECTS_ISSUE', 10);

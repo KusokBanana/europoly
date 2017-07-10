@@ -210,12 +210,28 @@
                 }
             });
 //PHP endif
-            $('.x-item_status').editable({
-                type: "select",
-                inputclass: 'form-control input-medium',
-                source: item_statuses,
-                success: function () {
-                    location.reload();
+            $.each($('.x-item_status'), function() {
+                var $input = $(this);
+                var val = $input.attr('data-value');
+                var isApply = false;
+                $.each(item_statuses, function() {
+                    if (this.value === val) {
+                        isApply = true;
+                        return false;
+                    }
+                });
+                if (isApply) {
+                    $input.editable({
+                        type: "select",
+                        inputclass: 'form-control input-medium',
+                        source: item_statuses,
+                        success: function () {
+                            location.reload();
+                        }
+                    });
+                } else {
+                    var text = $input.text();
+                    $input.replaceWith(text);
                 }
             });
             $('.x-supplier_id').editable({
