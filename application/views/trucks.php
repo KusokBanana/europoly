@@ -39,14 +39,14 @@
                     <div class="tabbable-custom nav-justified">
                         <ul class="nav nav-tabs nav-justified">
                             <li class="active">
-                                <a href="#tab_1_1" data-toggle="tab"> Items view </a>
+                                <a href="#tab_1_2" data-toggle="tab"> Trucks view </a>
                             </li>
                             <li>
-                                <a href="#tab_1_2" data-toggle="tab"> Trucks view </a>
+                                <a href="#tab_1_1" data-toggle="tab"> Items view </a>
                             </li>
                         </ul>
                         <div class="tab-content">
-                            <div class="tab-pane fade active in" id="tab_1_1">
+                            <div class="tab-pane fade" id="tab_1_1">
                                 <div class="portlet-body">
                                     <?php
                                     $table_data = [
@@ -65,7 +65,7 @@
                                     ?>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="tab_1_2">
+                            <div class="tab-pane fade active in" id="tab_1_2">
                                 <div class="portlet-body">
                                     <?php
                                     $table_data = [
