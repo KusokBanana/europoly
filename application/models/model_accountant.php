@@ -105,6 +105,8 @@ class ModelAccountant extends Model
             $where[] = "payments.category = '" . $input['products']['contractor_type'] . "'";
         }
 
+        $columns = $this->getColumns($columns, 'accountant', $this->tableName);
+
         $ssp = [
             'columns' => $columns,
             'columns_names' => $this->payments_column_names,
