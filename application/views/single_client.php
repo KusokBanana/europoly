@@ -48,7 +48,7 @@ $isNewClient = !isset($this->client['client_id']);
 <div class="row ">
     <div class="col-md-12">
         <!-- BEGIN SAMPLE FORM PORTLET-->
-        <form action="<?= !$isNewClient ? '/client/update_client?client_id=' . $this->client['client_id'] :
+        <form id="clientForm" action="<?= !$isNewClient ? '/client/update_client?client_id=' . $this->client['client_id'] :
             '/client/create_client' ?>" method="post">
             <div class="portlet light bordered">
                 <div class="portlet-title">
@@ -74,6 +74,8 @@ $isNewClient = !isset($this->client['client_id']);
                                     <input name="name" id="name" value="<?= isset($this->client['name']) ?
                                         htmlspecialchars($this->client['name']) : '' ?>"
                                            class="form-control final_name-handle" required>
+                                    <span class="alert-success"></span>
+                                    <span class="alert-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -403,6 +405,8 @@ $isNewClient = !isset($this->client['client_id']);
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
+                                <span class="alert-success"></span>
+                                <span class="alert-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label for="sales_manager_id">Responsible Manager</label>
@@ -529,7 +533,6 @@ $isNewClient = !isset($this->client['client_id']);
                 var $existClientAdditions = <?= json_encode($this->primaryForm) ?>;
                 var currentDate = '<?= date('Y-m-d') ?>';
                 var isAdmin = <?= ($this->user->role_id === ROLE_ADMIN) ? 'true' : 'false' ?>;
-                console.log(isAdmin);
 
                 if ($existClientAdditions && $existClientAdditions.length) {
                     $.each($existClientAdditions, function(index) {
@@ -721,6 +724,7 @@ $isNewClient = !isset($this->client['client_id']);
             });
         </script>
     <?php endif; ?>
+    <script src="/assets/global/plugins/jquery-validation/js/jquery.validate.min.js"></script>
     <script>
         $(document).ready(function() {
             var $field_country = $("#field_country");
@@ -774,11 +778,72 @@ $isNewClient = !isset($this->client['client_id']);
                     return false;
                 }
             });
+            // basic validation
+            var handleValidation1 = function() {
+                // for more info visit the official plugin documentation:
+                // http://docs.jquery.com/Plugins/Validation
+
+                var form1 = $('#clientForm');
+                var error1 = $('.alert-danger', form1);
+                var success1 = $('.alert-success', form1);
+
+                form1.validate({
+                    errorElement: 'span', //default input error message container
+                    errorClass: 'help-block help-block-error', // default input error message class
+                    focusInvalid: false, // do not focus the last invalid input
+                    ignore: "",  // validate all fields including form hidden input
+                    messages: {
+                        select_multi: {
+                            maxlength: jQuery.validator.format("Max {0} items allowed for selection"),
+                            minlength: jQuery.validator.format("At least {0} items must be selected")
+                        }
+                    },
+                    rules: {
+                        name: {
+                            minlength: 2,
+                            required: true
+                        },
+                        type: {
+                            required: true
+                        }
+                    },
+
+                    invalidHandler: function (event, validator) { //display error alert on form submit
+                        success1.hide();
+                        error1.show();
+                        App.scrollTo(error1, -200);
+                    },
+
+                    highlight: function (element) { // hightlight error inputs
+                        $(element)
+                            .closest('.form-group').addClass('has-error'); // set error class to the control group
+                    },
+
+                    unhighlight: function (element) { // revert the change done by hightlight
+                        $(element)
+                            .closest('.form-group').removeClass('has-error'); // set error class to the control group
+                    },
+
+                    success: function (label) {
+                        label
+                            .closest('.form-group').removeClass('has-error'); // set success class to the control group
+                    },
+
+                    submitHandler: function (form) {
+                        success1.show();
+                        error1.hide();
+                        form.submit();
+                    }
+                });
+
+
+            };
+            handleValidation1();
             $('body').on('change keyup', '.final_name-handle', function() {
                 var value = $('#name').val() + ' ' + $('#second_name').val();
                 value = value.trim() + ' ' + $('#design_buro').val();
                 $('#final_name').val(value.trim());
-            })
+            });
         });
     </script>
     <!-- END PAGE BASE CONTENT -->

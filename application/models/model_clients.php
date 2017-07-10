@@ -39,8 +39,8 @@ class ModelClients extends Model
         array('dt' => 28, 'db' => "clients.type"),
         array('dt' => 29, 'db' => "clients.design_buro"),
         array('dt' => 30, 'db' => "clients.second_name"),
-        array('dt' => 31, 'db' => "clients.client_category_2"),
-        array('dt' => 32, 'db' => "IF(clients.is_agree_for_formation IS NOT NULL, 
+//        array('dt' => 31, 'db' => "clients.client_category_2"),
+        array('dt' => 31, 'db' => "IF(clients.is_agree_for_formation IS NOT NULL, 
         IF(clients.is_agree_for_formation, 'Yes', 'No'), '')"),
 
     ];
@@ -57,7 +57,7 @@ class ModelClients extends Model
         'Change Type',
         'Email',
         'Mobile Number',
-        'Category',
+        'Client Category',
         'INN',
         'Source',
         'Legal Address',
@@ -74,10 +74,10 @@ class ModelClients extends Model
         'Needful Actions',
         'Comments',
         'Legal Name',
-        '_type',
+        'Category',
         'Design Buro',
         'Second Name',
-        'Client Category 2',
+//        'Client Category 2',
         'Is Agree for Formation',
     ];
 

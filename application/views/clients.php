@@ -50,33 +50,33 @@
                                 </div>
                             </div>
                             <div class="tabbable-line tabbable-custom-profile">
-                                <ul class="nav nav-tabs filter-tabs">
-                                    <li class="active">
-                                        <a data-toggle="tab"
-                                           class="tab-filter tab-filter-filter-first"
-                                           data-filter-value="<?= CLIENT_TYPE_END_CUSTOMER ?>"
-                                           data-filter-name="type"> End-Customers </a>
-                                    </li>
-                                    <li>
-                                        <a data-toggle="tab"
-                                           class="tab-filter"
-                                           data-filter-value="<?= CLIENT_TYPE_COMISSION_AGENT ?>"
-                                           data-filter-name="type"> Commission Agents </a>
-                                    </li>
-                                    <li>
-                                        <a data-toggle="tab"
-                                           class="tab-filter"
-                                           data-filter-value="<?= CLIENT_TYPE_DEALER ?>"
-                                           data-filter-name="type"> Dealers </a>
-                                    </li>
-                                </ul>
+<!--                                <ul class="nav nav-tabs filter-tabs">-->
+<!--                                    <li class="active">-->
+<!--                                        <a data-toggle="tab"-->
+<!--                                           class="tab-filter tab-filter-filter-first"-->
+<!--                                           data-filter-value="--><?//= CLIENT_TYPE_END_CUSTOMER ?><!--"-->
+<!--                                           data-filter-name="type"> End-Customers </a>-->
+<!--                                    </li>-->
+<!--                                    <li>-->
+<!--                                        <a data-toggle="tab"-->
+<!--                                           class="tab-filter"-->
+<!--                                           data-filter-value="--><?//= CLIENT_TYPE_COMISSION_AGENT ?><!--"-->
+<!--                                           data-filter-name="type"> Commission Agents </a>-->
+<!--                                    </li>-->
+<!--                                    <li>-->
+<!--                                        <a data-toggle="tab"-->
+<!--                                           class="tab-filter"-->
+<!--                                           data-filter-value="--><?//= CLIENT_TYPE_DEALER ?><!--"-->
+<!--                                           data-filter-name="type"> Dealers </a>-->
+<!--                                    </li>-->
+<!--                                </ul>-->
                                 <div class="tab-content" style="padding: 10px;">
                                     <div class="tab-pane active">
                                         <div class="portlet-body">
                                             <?php
                                             $buttons = [
                                                 '<a class="btn sbold green" id="createClientBtn"
-                                                        href="client?id=new&category=">
+                                                        href="client?id=new">
                                                             Add Client <i class="fa fa-plus"></i>
                                                     </a>'
                                             ];
@@ -143,17 +143,17 @@
         });
     <?php endif; ?>
 
-    $('.tab-filter').on('click', function() {
-
-        var createBtn = $('#createClientBtn');
-        if (createBtn.length) {
-            var href = createBtn.attr('href');
-            var explodedHref = href.split('category=');
-            explodedHref[1] = $(this).attr('data-filter-value');
-            href = explodedHref.join('category=');
-            createBtn.attr('href', href);
-        }
-
-    });
+//    $('.tab-filter').on('click', function() {
+//
+//        var createBtn = $('#createClientBtn');
+//        if (createBtn.length) {
+//            var href = createBtn.attr('href');
+//            var explodedHref = href.split('category=');
+//            explodedHref[1] = $(this).attr('data-filter-value');
+//            href = explodedHref.join('category=');
+//            createBtn.attr('href', href);
+//        }
+//
+//    });
 
 </script>
