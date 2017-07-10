@@ -367,6 +367,43 @@
                     </div>
                 </div>
                 <div class="row">
+                    <div class="col-md-12 col-sm-12">
+                        <div class="portlet blue-hoki box">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <i class="fa fa-cogs"></i> Delivery Notes </div>
+                            </div>
+                            <div class="portlet-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-bordered table-striped" id="table-delivery_notes">
+                                        <thead>
+                                        <tr>
+                                            <?php
+                                            $delivery_notes_column_name_ids = [];
+                                            if (!empty($this->delivery_notes_columns)) {
+                                                foreach ($this->delivery_notes_columns as $key => $column_name) {
+                                                    if (!$key)
+                                                        $column_name = '';
+                                                    echo '<th>' . $column_name . '</th>';
+                                                    if ($key)
+                                                        $delivery_notes_column_name_ids[] = $key;
+                                                }
+                                            }
+                                            ?>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td colspan="12" class="dataTables_empty">Loading data from server...</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-md-6"></div>
                     <div class="col-md-6">
                         <div class="well">
@@ -799,8 +836,6 @@ require_once 'modals/shipment_to_customer_modal_amount.php';
                             modal.find('.order_item_ids').val(selected);
                             modal.modal();
                         }
-
-
                     }
 //                        if (data) {
 //                            data = JSON.parse(data);
@@ -884,7 +919,30 @@ require_once 'modals/shipment_to_customer_modal_amount.php';
                 }
             })
 
-        })
+        });
+
+        var $delivery_notes_column_name_ids = <?= json_encode($delivery_notes_column_name_ids); ?>;
+        var $tableDeliveryNotes = $("#table-delivery_notes");
+        $tableDeliveryNotes.DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: '/delivery_notes/dt_for_order',
+                data: {
+                    'order_id': <?= $this->order["order_id"] ?>
+                }
+            },
+            dom: '<t>ip',
+            columnDefs: [{
+                targets: $delivery_notes_column_name_ids,
+                searchable: false,
+                orderable: false
+            }, {
+                targets: [0],
+                visible: false,
+                searchable: false
+            }]
+        });
 
     });
 </script>

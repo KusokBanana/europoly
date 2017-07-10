@@ -951,4 +951,11 @@ class ModelOrder extends Model
         }
     }
 
+    function getDeliveryNotesColumns()
+    {
+        require_once 'model_delivery_notes.php';
+        $deliveryNote = new ModelDelivery_notes();
+        return $deliveryNote->delivery_notes_columns_names;
+    }
+
 }

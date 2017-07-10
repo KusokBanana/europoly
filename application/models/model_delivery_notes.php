@@ -137,6 +137,25 @@ class ModelDelivery_notes extends Model
         return $this->sspComplex($table, $primary, $columns, $input, null, $where);
     }
 
+    function getDTForOrder($order_id, $input)
+    {
+        $where = ['order_items.is_deleted = 0', 'orders.order_id = ' . $order_id];
+
+        $columns = $this->delivery_notes_columns;
+        $ssp = [
+            'columns' => $columns,
+            'columns_names' => $this->delivery_notes_columns_names,
+            'db_table' => $this->delivery_notes_table,
+            'page' => 'deliveryNotes',
+            'table_name' => $this->tableNames[0],
+            'primary' => 'delivery_note_items.id',
+        ];
+
+        $this->sspComplex($ssp['db_table'], $ssp['primary'],
+            $ssp['columns'], $input, null, $where);
+
+    }
+
     var $delivery_note_items_names = [
         'Id',
         'Product',

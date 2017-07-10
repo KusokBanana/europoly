@@ -69,6 +69,8 @@ class ControllerOrder extends Controller
             $this->view->legalEntities = $this->model->getLegalEntities();
             $this->view->legalEntityName = $this->model->getLegalEntityName($order['legal_entity_id']);
 
+            $this->view->delivery_notes_columns = $this->model->getDeliveryNotesColumns();
+
             $clientsFor = $this->user->role_id == ROLE_ADMIN ? false : $order["sales_manager_id"];
             $this->view->clients = $this->model->getClientsOfSalesManager($clientsFor);
             $this->view->commission_agents = $this->model->getCommissionAgentsOfManager($order["sales_manager_id"]);

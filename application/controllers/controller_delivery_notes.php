@@ -131,4 +131,12 @@ class ControllerDelivery_notes extends Controller
             echo $result;
         }
     }
+
+    function action_dt_for_order()
+    {
+        $order_id = isset($_GET['order_id']) ? $_GET['order_id'] : false;
+        $this->model->getDTForOrder($order_id, $_GET);
+    }
+
+
 }
