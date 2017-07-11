@@ -23,53 +23,54 @@ else {
 ?>
 <div class="modal-dialog <?= !$isError ? 'modal-full' : '' ?>">
     <div class="modal-content">
-        <form method="POST" action="/suppliers_orders/add_suppliers_order">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 class="modal-title">Supplier Order</h4>
-            </div>
-            <div class="modal-body">
-                <?php if (!$isError): ?>
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+            <h4 class="modal-title">Supplier Order</h4>
+        </div>
+        <div class="modal-body">
+            <?php if (!$isError): ?>
+                <?php
+                    $table_data = [
+                        'buttons' => [],
+                        'table_id' => "new_supplier_order_table",
+                        'ajax' => [
+                            'url' => "/sent_to_logist/to_supplier?ids=".join(',',$products),
+//                                'url' => "/managers_orders/dt_managers_orders_to_suppliers",
+                            'data' => json_encode($products)
+                        ],
+                        'column_names' => $columnNames,
+                        'hidden_by_default' => "[]",
+                        'click_url' => "javascript:;"
+                    ];
+                    include '../templates/table.php';
+                foreach ($products as $key => $product) {
+                    echo "<input type='hidden' name='suppliers_products[" . $key .
+                        "]' value='".$product."'>";
+                }
+                ?>
+                <form method="POST" action="/suppliers_orders/add_suppliers_order">
                     <input type="hidden" id="field_order_id" name="order_id" value="">
                     <input type="hidden" id="field_product_ids" name="product_ids">
-                    <?php
-                        $table_data = [
-                            'buttons' => [],
-                            'table_id' => "new_supplier_order_table",
-                            'ajax' => [
-                                'url' => "/managers_orders/dt_managers_orders_to_suppliers",
-                                'data' => json_encode($products)
-                            ],
-                            'column_names' => $columnNames,
-                            'hidden_by_default' => "[]",
-                            'click_url' => "javascript:;"
-                        ];
-                        include '../templates/table.php';
-                    foreach ($products as $key => $product) {
-                        echo "<input type='hidden' name='suppliers_products[" . $key .
-                            "]' value='".$product."'>";
-                    }
-                    ?>
-                <div class="form-group">
-                    <label for="suppliers_order_id">Add to Supplier Order:</label>
-                    <select id="suppliers_order_id" name="suppliers_order_id" class="form-control" required>
-                        <option selected value="0">New Order</option>
-                    </select>
+                    <div class="form-group">
+                        <label for="suppliers_order_id">Add to Supplier Order:</label>
+                        <select id="suppliers_order_id" name="suppliers_order_id" class="form-control" required>
+                            <option selected value="0">New Order</option>
+                        </select>
+                    </div>
+                </form>
+            <?php else: ?>
+                <h4 class="text-danger text-center"><?= $errorMessage ?></h4>
+            <?php endif; ?>
                 </div>
-                <?php else: ?>
-                    <h4 class="text-danger text-center"><?= $errorMessage ?></h4>
-                <?php endif; ?>
-            </div>
-            <div class="modal-footer">
-                <div class="form-actions right">
-                    <button type="button" class="btn default" data-dismiss="modal">Cancel</button>
-                    <?php if (!$isError): ?>
-                        <button type="submit" class="btn green">Create</button>
-                    <?php endif; ?>
+                <div class="modal-footer">
+                    <div class="form-actions right">
+                        <button type="button" class="btn default" data-dismiss="modal">Cancel</button>
+                        <?php if (!$isError): ?>
+                            <button type="submit" class="btn green">Create</button>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </div>
-        </form>
-    </div>
     <!-- /.modal-content -->
 </div>
 <!-- /.modal-dialog -->

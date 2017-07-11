@@ -264,17 +264,19 @@
                     return false;
 
                 var tableScrollable = table.closest('.table-scrollable');
-                if (tableScrollable.length)
+                if (tableScrollable.length) {
                     var tableWrapper = tableScrollable;
+                }
                 else {
                     var tableResponsive = table.closest('.table-responsive');
 
                     if (tableResponsive.length) {
+
                         tableWrapper = tableResponsive;
                     }
                 }
 
-                if (tableWrapper == undefined || !tableWrapper.length)
+                if (tableWrapper === undefined || !tableWrapper.length)
                     return false;
 
                 var topScrollCode = '<div class="top-scroll"><div class="fake"></div></div>';
@@ -283,13 +285,15 @@
                 var topScroll = tableWrapper.prev('.top-scroll');
                 var fake = topScroll.find('.fake');
 
-                topScroll.width(tableWrapper.width());
+                var tableScrollBody = tableWrapper.find('.dataTables_scrollBody');
+
+                topScroll.width(tableScrollBody.width());
                 fake.width(table.width());
 
                 topScroll.on('scroll', function(e){
-                    tableWrapper.scrollLeft($(this).scrollLeft());
+                    tableScrollBody.scrollLeft($(this).scrollLeft());
                 });
-                tableWrapper.on('scroll', function(e){
+                tableScrollBody.on('scroll', function(e){
                     topScroll.scrollLeft($(this).scrollLeft());
 
                     // for fixed table header

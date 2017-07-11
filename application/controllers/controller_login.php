@@ -56,6 +56,8 @@ class ControllerLogin extends Controller
             $tableId = $_POST['tableId'];
             if (in_array($tableId, ["table_warehouses_products","table_warehouses_products_issue","table_warehouses_products_reserved"]))
                 $tableId = 'table_warehouse';
+            if (in_array($tableId, ["new_supplier_order_table", "sent_to_logist"]))
+                $tableId = 'sent_to_logist';
             if (in_array($tableId, ["table_end_customers","table_commission_agents","table_dealers"]))
                 $tableId = 'table_clients';
             echo $this->model->saveOrderColumns($columns, $tableId);

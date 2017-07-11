@@ -85,12 +85,16 @@
     <thead>
     <tr>
         <?php
+        $bigColumnIds = [];
         foreach ($column_names as $column_id => $column_name) {
             if ($column_id == 0) {
                 echo '<th></th>';
             } else {
                 $input = '<input type="text" class="form-control column-filter-input" style="width: 100%" 
                             onclick="$(this).focus(); event.stopPropagation()" />';
+                if (in_array($column_name, ['Visual Name', 'Product', 'Client'])) {
+                    $bigColumnIds[] = $column_id;
+                }
                 if ($selectSearch && isset($selectSearch[$column_name]) && !empty($selectSearch[$column_name])) {
                     $input .= '<select class="column-filter-select hidden form-control" 
                                         onclick="$(this).focus(); event.stopPropagation()">';
@@ -140,6 +144,20 @@
     table .es-input {
         background-color: #fff;
     }
+    table tbody tr {
+        max-height: 25px !important;
+    }
+    .dataTables_scrollHead {
+        /*overflow: visible !important;*/
+        overflow-x: hidden !important;
+    }
+    <?php
+     foreach ($bigColumnIds as $bigColumnId) {
+         echo 'table th:nth-child('.($bigColumnId + 1).'), table td:nth-child('.($bigColumnId + 1).') { ' .
+                'min-width: 250px !important; ' .
+              '}';
+     }
+     ?>
 </style>
 <?php
 $hidden = [];
@@ -184,9 +202,7 @@ $hidden_by_default = json_encode($hidden);
             hiddenByDefault.push($mustHidden);
         }
 
-        var widthTds = <?= json_encode($notHidden); ?>;
-        console.log(widthTds)
-
+        var widthTds = <?= '[' . implode(',', $notHidden) . ']'; ?>;
         var $filterSearchValues = <?= json_encode($filterSearchValues); ?>;
         var $clickUrl = "<?= $click_url == 'javascript:;' ? false : $click_url; ?>";
         var $sort = <?= json_encode(explode('-', $sort)); ?>;
@@ -210,6 +226,10 @@ $hidden_by_default = json_encode($hidden);
             ajax: ajax,
             sServerMethod: '<?= $method; ?>',
             bAutoWidth: false,
+            scrollY: "600px",
+            scrollX: true,
+            scrollCollapse: true,
+//            paging: false,
             columnDefs: [
                 {
                     targets: 0,
@@ -224,20 +244,25 @@ $hidden_by_default = json_encode($hidden);
                     targets: hiddenByDefault,
                     visible: false,
                     searchable: true
-                },
+                }/*,
                 {
-                    targets: widthTds,
-                    width: '100%'
-                }
+                    targets: widthTds
+//                    width: '200px',
+                }*/
 //                { width: '100%' }
             ],
             order: [
                 $sort
             ],
+            autoWidth: false,
             orderCellsTop: true,
             select: $select,
             colReorder: false,
             deferRender: true,
+//            dom: 'Zlfrtip',
+//            colResize: {
+//                "tableWidthFixed": false
+//            },
             displayLength: recordsCount
         });
 
@@ -246,6 +271,7 @@ $hidden_by_default = json_encode($hidden);
         <?= $globalTable ?> = table;
         <?php endif; ?>
 
+
         $table.on('draw.dt', function () {
             var tableConfirmBtn = $('.table-confirm-btn');
             if (tableConfirmBtn.length) {
@@ -253,6 +279,7 @@ $hidden_by_default = json_encode($hidden);
                     rootSelector: '.table-confirm-btn'
                 });
             }
+            $('.dataTables_scrollHead').css('overflow', '').css('position', '');
             reOrderColumns();
 
             // resize top scroll after load data
@@ -342,8 +369,33 @@ $hidden_by_default = json_encode($hidden);
         }
 
         var tableId = $table.attr('id');
+        var headerTable = $('#' + tableId + '_wrapper .dataTables_scrollHead');
+        reHeightHeader();
+        function reHeightHeader(isTab)
+        {
+            if (headerTable.hasClass('set')) {
+                return false;
+            }
+
+            if (parseInt(headerTable.css('height'))) {
+                headerTable.addClass('set');
+            }
+
+            var headerBottomPoint = headerTable.offset().top + headerTable.css('height');
+            var tableTopPoint = $table.offset().top;
+            var qwe = tableTopPoint - headerBottomPoint;
+
+            headerTable.css('height', (parseInt(headerTable.css('height')) + qwe) + 'px');
+            $table.closest('.dataTables_scrollBody').css('top', '-' + qwe + 'px');
+        }
+
+        $(document).on('shown.bs.tab', function(event){
+            reHeightHeader();
+        });
+
+        $table.find('input, select').remove();
+
         var columnChoose = $('#'+tableId+'_columns_choose');
-        columnChoose.css('height', '405px').css('overflow-y', 'auto');
         var $inputs = columnChoose.find('input');
         if (hiddenByDefault.length) {
             hiddenByDefault.forEach(function (item) {
@@ -368,7 +420,7 @@ $hidden_by_default = json_encode($hidden);
             column.visible(!isVisible);
 
             if (!isVisible) {
-                select = $table.find('th[data-header-id="'+thId+'"]').find('.column-filter-input');
+                select = headerTable.find('th[data-header-id="'+thId+'"]').find('.column-filter-input');
                 select.on('click', replaceSelectsByEditable);
             }
 
@@ -381,7 +433,7 @@ $hidden_by_default = json_encode($hidden);
             }
 
             saveHiddenColumnsInCookie();
-            });
+        });
 
         // Save hidden columns in cookies
         function saveHiddenColumnsInCookie() {
@@ -456,7 +508,7 @@ $hidden_by_default = json_encode($hidden);
                 var filterValue = $(this).attr('data-filter-value');
                 if (hiddenTabFilters[filterName] !== undefined) {
                     table.columns(hiddenTabFilters[filterName]).search(filterValue).draw();
-                    if (filterName == 'category_id' && filterValue == '0')
+                    if (filterName === 'category_id' && filterValue === '0')
                         location.reload();
                 }
             });
@@ -485,7 +537,7 @@ $hidden_by_default = json_encode($hidden);
         }
 
         // replace selects by editable selects
-        $.each($table.find('.column-filter-input'), function() {
+        $.each(headerTable.find('.column-filter-input'), function() {
             $(this).on('click', replaceSelectsByEditable);
         });
 
@@ -519,7 +571,7 @@ $hidden_by_default = json_encode($hidden);
         }
 
         function getTableFilters() {
-            var editableSelects = $table.find('.es-input, .column-filter-input');
+            var editableSelects = headerTable.find('.es-input, .column-filter-input');
             var filter = [];
             $.each(editableSelects, function() {
                 if ($(this).val()) {
@@ -541,6 +593,9 @@ $hidden_by_default = json_encode($hidden);
             var lis = ul.find('li');
             var currentIndex = select.closest('th').attr('data-header-id');
             var filter = getTableFilters();
+            console.log(currentIndex);
+            console.log(filter);
+            $('.dataTables_scrollHead').css('position', 'relative').css('border', '0px').css('width', '100%');
 
             if ($filterSearchValues && filter.length) {
                 $.each($filterSearchValues, function() {
@@ -609,7 +664,7 @@ $hidden_by_default = json_encode($hidden);
             }
         }
 
-        $table.on('focus', '.column-filter-select', function(e) {
+        headerTable.on('focus', '.column-filter-select', function(e) {
             e.stopPropagation();
             filterSelectsValues($(this))
         });
@@ -617,90 +672,90 @@ $hidden_by_default = json_encode($hidden);
         // fixed header of table
         function fixedHeader() {
 
-            scrollHandler();
-            $(window).on('scroll', scrollHandler);
+//            scrollHandler();
+//            $(window).on('scroll', scrollHandler);
 
-            function scrollHandler() {
-                var top = $table[0].getBoundingClientRect().top;
-                var tableMainDiv = $table.closest('.portlet-body');
-                var tableId = $table.attr('id');
-                var fixedTable = tableMainDiv.find('.fixed-table');
-                var tableDad = $table.closest('#'+tableId+'_wrapper');
-                var tableWrapper = $table.closest('.table-scrollable');
-                var fixedTopScroll = $('.fixed-top-scroll');
-
-                // not appear on click tabs
-                if (tableDad.closest('.tab-pane').length && !tableDad.closest('.tab-pane').hasClass('active'))
-                    return;
-
-                if (top <= 3) {
-                    if (!fixedTable.length) {
-                        fixedTable = $table.clone();
-                        fixedTable.find('tbody').remove();
-                        tableDad.css('position', 'relative').css('overflow', 'hidden');
-                        fixedTable.css('position', 'absolute').css('top', '20px')
-                            .css('background-color', '#ebeaff').addClass('fixed-table');
-                        tableDad.children(':first-child').before(fixedTable);
-
-                        var topScroll = tableMainDiv.find('.top-scroll');
-                        if (topScroll.length) {
-                            var cloneTopScroll = topScroll.clone();
-                            fixedTable.before(cloneTopScroll);
-                            cloneTopScroll.css('position', 'absolute').css('top', '20px').addClass('fixed-top-scroll');
-                            fixedTable.css('top', '40px');
-                            cloneTopScroll.on('scroll', function(e){
-                                tableWrapper.scrollLeft($(this).scrollLeft());
-                            });
-                            tableWrapper.on('scroll', function(e){
-                                cloneTopScroll.scrollLeft($(this).scrollLeft());
-                            });
-                            cloneTopScroll.scrollLeft(tableWrapper.scrollLeft());
-                        }
-
-                        fixedTable.addClass('fixed-table-head');
-                        if (tableWrapper.length) {
-                            fixedTable.css('left', -tableWrapper.scrollLeft() + 'px');
-                        }
-
-                        var tds = $table.find('thead th');
-                        $.each(tds, function() {
-                            var index = $(this).index(),
-                                width = $(this).css('width');
-
-                            fixedTable.find('th').eq(index).css('min-width', width);
-                            fixedTable.find('input').attr('disabled', '')
-                        });
-//                        addFilterSelects();
-//                        tableSearch(fixedTable.dataTable()); TODO сделать поиск по столбцам у фиксированного хедера
-
-                    } else {
-                        var topMax = tableDad.find('.table-scrollable').offset().top,
-                            bottomMax = topMax + +tableDad.find('.table-scrollable').css('height').slice(0,-2),
-                            currentWindowOffset = $(window).scrollTop(),
-                            fixedTableHeight = +fixedTable.css('height').slice(0,-2);
-
-                        if (currentWindowOffset <= bottomMax) {
-
-                            var needOffset = (currentWindowOffset + 60 + fixedTableHeight <= bottomMax) ?
-                                currentWindowOffset + 60 : bottomMax - fixedTableHeight + 30;
-
-                            if (fixedTopScroll.length) {
-                                fixedTopScroll.css('top', (needOffset - topMax + 7) + 'px');
-                                needOffset += 20;
-                            }
-                            fixedTable.css('top', (needOffset - topMax) + 'px');
-                        }
-
-                    }
-                } else {
-                    if (fixedTable.length) {
-                        fixedTable.remove();
-                        if (fixedTopScroll.length) {
-                            fixedTopScroll.remove();
-                        }
-                    }
-                }
-            }
+//            function scrollHandler() {
+//                var top = $table[0].getBoundingClientRect().top;
+//                var tableMainDiv = $table.closest('.portlet-body');
+//                var tableId = $table.attr('id');
+//                var fixedTable = tableMainDiv.find('.fixed-table');
+//                var tableDad = $table.closest('#'+tableId+'_wrapper');
+//                var tableWrapper = $table.closest('.table-scrollable');
+//                var fixedTopScroll = $('.fixed-top-scroll');
+//
+//                // not appear on click tabs
+//                if (tableDad.closest('.tab-pane').length && !tableDad.closest('.tab-pane').hasClass('active'))
+//                    return;
+//
+//                if (top <= 3) {
+//                    if (!fixedTable.length) {
+//                        fixedTable = $table.clone();
+//                        fixedTable.find('tbody').remove();
+//                        tableDad.css('position', 'relative').css('overflow', 'hidden');
+//                        fixedTable.css('position', 'absolute').css('top', '20px')
+//                            .css('background-color', '#ebeaff').addClass('fixed-table');
+//                        tableDad.children(':first-child').before(fixedTable);
+//
+//                        var topScroll = tableMainDiv.find('.top-scroll');
+//                        if (topScroll.length) {
+//                            var cloneTopScroll = topScroll.clone();
+//                            fixedTable.before(cloneTopScroll);
+//                            cloneTopScroll.css('position', 'absolute').css('top', '20px').addClass('fixed-top-scroll');
+//                            fixedTable.css('top', '40px');
+//                            cloneTopScroll.on('scroll', function(e){
+//                                tableWrapper.scrollLeft($(this).scrollLeft());
+//                            });
+//                            tableWrapper.on('scroll', function(e){
+//                                cloneTopScroll.scrollLeft($(this).scrollLeft());
+//                            });
+//                            cloneTopScroll.scrollLeft(tableWrapper.scrollLeft());
+//                        }
+//
+//                        fixedTable.addClass('fixed-table-head');
+//                        if (tableWrapper.length) {
+//                            fixedTable.css('left', -tableWrapper.scrollLeft() + 'px');
+//                        }
+//
+//                        var tds = $table.find('thead th');
+//                        $.each(tds, function() {
+//                            var index = $(this).index(),
+//                                width = $(this).css('width');
+//
+//                            fixedTable.find('th').eq(index).css('min-width', width);
+//                            fixedTable.find('input').attr('disabled', '')
+//                        });
+////                        addFilterSelects();
+////                        tableSearch(fixedTable.dataTable()); TODO сделать поиск по столбцам у фиксированного хедера
+//
+//                    } else {
+//                        var topMax = tableDad.find('.table-scrollable').offset().top,
+//                            bottomMax = topMax + +tableDad.find('.table-scrollable').css('height').slice(0,-2),
+//                            currentWindowOffset = $(window).scrollTop(),
+//                            fixedTableHeight = +fixedTable.css('height').slice(0,-2);
+//
+//                        if (currentWindowOffset <= bottomMax) {
+//
+//                            var needOffset = (currentWindowOffset + 60 + fixedTableHeight <= bottomMax) ?
+//                                currentWindowOffset + 60 : bottomMax - fixedTableHeight + 30;
+//
+//                            if (fixedTopScroll.length) {
+//                                fixedTopScroll.css('top', (needOffset - topMax + 7) + 'px');
+//                                needOffset += 20;
+//                            }
+//                            fixedTable.css('top', (needOffset - topMax) + 'px');
+//                        }
+//
+//                    }
+//                } else {
+//                    if (fixedTable.length) {
+//                        fixedTable.remove();
+//                        if (fixedTopScroll.length) {
+//                            fixedTopScroll.remove();
+//                        }
+//                    }
+//                }
+//            }
 
         }
         // not appear in modal windows

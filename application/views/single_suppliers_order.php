@@ -18,14 +18,10 @@
 <div class="page-fixed-main-content" <?= $this->isSidebarClosed() ? 'style="margin-left:0"' : '' ?>>
     <!-- BEGIN PAGE BASE CONTENT -->
     <div class="invoice">
-        <div class="row invoice-logo">
-            <div class="col-xs-6 invoice-logo-space">
-                <img src="../assets/pages/media/invoice/adminter.png" class="img-responsive" alt="" /> </div>
-            <div class="col-xs-6">
-                <span class="caption-subject font-dark sbold uppercase"><?= $this->title ?>
-                    <span class="hidden-xs">| <?= $this->order['supplier_date_of_order'] ?> </span>
-                </span>
-            </div>
+        <div class="invoice-logo">
+            <span class="caption-subject font-dark sbold uppercase"><?= $this->title ?>
+                <span class="hidden-xs">| <?= $this->order['supplier_date_of_order'] ?> </span>
+            </span>
         </div>
         <hr/>
         <div class="row">

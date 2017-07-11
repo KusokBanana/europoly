@@ -32,7 +32,7 @@
                 <div class="portlet-title">
                     <div class="caption">
                         <i class="icon-social-dribbble font-dark"></i>
-                        <span class="caption-subject bold uppercase font-dark">Managers' Order</span>
+                        <span class="caption-subject bold uppercase font-dark">Requests to Logist</span>
                     </div>
                     <?php if($this->access): ?>
                         <div class="actions">
@@ -67,7 +67,7 @@
                                             if (products.length) {
                                                 products.each(function(i, elem) {
                                                     var brand = $(elem).closest('tr').find('.brand-cell').text();
-                                                    if (i>0 && brandStr != brand) {
+                                                    if (i>0 && brandStr !== brand) {
                                                         brandError = true;
                                                     }
                                                     brandStr = brand;

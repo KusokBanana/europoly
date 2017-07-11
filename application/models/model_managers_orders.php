@@ -96,7 +96,7 @@ class ModelManagers_orders extends Model
             managers.first_name, ' ', managers.last_name, '</a>')"),
         array('dt' => 3, 'db' => "orders.start_date"),
         array('dt' => 4, 'db' => "status.name"),
-        array('dt' => 5, 'db' => "orders.total_price"),
+        array('dt' => 5, 'db' => "CAST(orders.total_price as decimal(64,2))"),
         array('dt' => 6, 'db' => "orders.total_downpayment"),
         array('dt' => 7, 'db' => "orders.downpayment_rate"),
         array('dt' => 8, 'db' => "orders.expected_date_of_issue"),

@@ -8,9 +8,13 @@ class ModelSent_to_logist extends ModelManagers_orders
 
     var $statusesFilter = 3;
 
-    function getDTManagersOrders($input, $printOpt)
+    function getDTManagersOrders($input, $printOpt, $ids = false)
     {
         $where = ["order_items.status_id = '$this->statusesFilter'"];
+
+        if ($ids !== false) {
+            $where[] = "order_items.item_id IN ($ids)";
+        }
 
         if ($this->user->role_id == ROLE_SALES_MANAGER) {
             $where[] = "(orders.sales_manager_id = " . $this->user->user_id . ' OR '.
@@ -32,11 +36,9 @@ class ModelSent_to_logist extends ModelManagers_orders
         ];
 
         if ($printOpt) {
-
             $printOpt['where'] = $where;
             echo $this->printTable($input, $ssp, $printOpt);
             return true;
-
         }
 
         $this->sspComplex($ssp['db_table'], $ssp['primary'],

@@ -14,7 +14,7 @@ class ControllerSent_to_logist extends Controller
     function action_index($action_param = null, $action_data = null)
     {
         $this->getAccess($this->page, 'v');
-        $this->view->title = "Sent to logist";
+        $this->view->title = "Requests to Logist";
         $roles = new Roles();
         $this->view->access = $roles->returnAccessAbilities($this->page, 'ch');
 
@@ -51,7 +51,15 @@ class ControllerSent_to_logist extends Controller
                 'filters' => isset($_GET['filters']) && $_GET['filters'] ? json_decode($_GET['filters'], true) : [],
             ];
         }
-
-        $this->model->getDTManagersOrders($_GET, $print);
+        $ids = isset($_GET['ids']) ? $_GET['ids'] : false;
+        $this->model->getDTManagersOrders($_GET, $print, $ids);
     }
+
+    function action_to_supplier()
+    {
+        $ids = isset($_GET['ids']) ? $_GET['ids'] : false;
+        $this->model->getDTManagersOrders($_GET, false, $ids);
+
+    }
+
 }
