@@ -29,7 +29,6 @@
     <!-- BEGIN PAGE LEVEL PLUGINS -->
     <link href="/assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css"/>
     <link href="/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css"/>
-    <link href="/assets/global/plugins/bootstrap-editable/bootstrap-editable/css/bootstrap-editable.css" rel="stylesheet" type="text/css"/>
     <!-- END PAGE LEVEL PLUGINS -->
     <!-- BEGIN THEME GLOBAL STYLES -->
     <link href="/assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css"/>
@@ -44,6 +43,12 @@
     <link href="/assets/global/plugins/jquery-editable-select-master/dist/jquery-editable-select.min.css" rel="stylesheet">
     <link href="/assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.css" rel="stylesheet">
 
+    <link href="//datatables.net/download/build/dataTables.fixedHeader.nightly.css?_=67f9e44416b4ab8fcae6a5a3e8455094.css" rel="stylesheet" type="text/css" />
+
+    <link href="//datatables.net/download/build/nightly/jquery.dataTables.css?_=d19ecea59b598f607542abf22a99ef9a.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+
     <!-- END THEME LAYOUT STYLES -->
     <link rel="shortcut icon" href="favicon.ico"/>
 
@@ -51,7 +56,6 @@
     <script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/bootstrap-editable/bootstrap-editable/js/bootstrap-editable.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/select2/js/select2.full.js" type="text/javascript"></script>
-
     <style>
         tbody tr {
             cursor: pointer;
@@ -192,6 +196,7 @@
 <script src="/assets/global/plugins/moment.min.js" type="text/javascript"></script>
 <script src="/assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
 <script src="/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
+
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN THEME GLOBAL SCRIPTS -->
 <script src="/assets/global/scripts/app.min.js" type="text/javascript"></script>
@@ -203,6 +208,9 @@
 <script src="/assets/global/plugins/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
 <script src="/assets/global/plugins/jquery-editable-select-master/dist/jquery-editable-select.min.js"
         type="text/javascript"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="/assets/colresizable/colResizable-1.6.js"></script>
+
 <!-- END THEME LAYOUT SCRIPTS -->
 <script>
     $(document).ready(function () {
