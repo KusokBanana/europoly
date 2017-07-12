@@ -271,6 +271,7 @@ $hidden_by_default = json_encode($hidden);
         <?= $globalTable ?> = table;
         <?php endif; ?>
 
+        var tableId = $table.attr('id');
 
         $table.on('draw.dt', function () {
             var tableConfirmBtn = $('.table-confirm-btn');
@@ -297,6 +298,40 @@ $hidden_by_default = json_encode($hidden);
             $table.find('.order-item-product').closest('td').width('200px')
 
         });
+        table.on('draw', function() {
+            $table.find('thead').find('input, select, ul').remove();
+            reHeightHeader();
+            function reHeightHeader()
+            {
+                var headerTable = $('#' + tableId + '_wrapper .dataTables_scrollHead');
+                if (headerTable.hasClass('set')) {
+                    return false;
+                }
+                console.log(parseInt(headerTable.css('height')), 'height');
+                if (parseInt(headerTable.css('height'))) {
+                    headerTable.addClass('set');
+                } else {
+                    return false;
+                }
+
+                var headerBottomPoint = headerTable.offset().top + parseInt(headerTable.css('height'));
+                var tableTopPoint = $table.offset().top;
+                var qwe = tableTopPoint - headerBottomPoint;
+                console.log(tableTopPoint, qwe, headerTable, $table);
+
+                headerTable.css('height', (parseInt(headerTable.css('height')) + qwe + 200) + 'px');
+                $table.closest('.dataTables_scrollBody')
+                    .css('border-top', '2px solid #e7ecf1')
+                    .css('top', '-' + (qwe + 200) + 'px');
+            }
+
+            $(document).on('shown.bs.tab', function(event){
+                setTimeout(function() {
+                    reHeightHeader();
+                }, 2000);
+            });
+        });
+        var headerTable = $('#' + tableId + '_wrapper .dataTables_scrollHead');
 
         $table.on( 'order.dt', function () {
             var order = table.order();
@@ -367,33 +402,6 @@ $hidden_by_default = json_encode($hidden);
                 }
             }
         }
-
-        var tableId = $table.attr('id');
-        var headerTable = $('#' + tableId + '_wrapper .dataTables_scrollHead');
-        reHeightHeader();
-        function reHeightHeader(isTab)
-        {
-            if (headerTable.hasClass('set')) {
-                return false;
-            }
-
-            if (parseInt(headerTable.css('height'))) {
-                headerTable.addClass('set');
-            }
-
-            var headerBottomPoint = headerTable.offset().top + headerTable.css('height');
-            var tableTopPoint = $table.offset().top;
-            var qwe = tableTopPoint - headerBottomPoint;
-
-            headerTable.css('height', (parseInt(headerTable.css('height')) + qwe) + 'px');
-            $table.closest('.dataTables_scrollBody').css('top', '-' + qwe + 'px');
-        }
-
-        $(document).on('shown.bs.tab', function(event){
-            reHeightHeader();
-        });
-
-        $table.find('input, select').remove();
 
         var columnChoose = $('#'+tableId+'_columns_choose');
         var $inputs = columnChoose.find('input');

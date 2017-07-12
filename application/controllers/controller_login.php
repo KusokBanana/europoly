@@ -1,5 +1,5 @@
 <?php
-
+require_once ($_SERVER['DOCUMENT_ROOT'] . '/assets/PHPMailer/PHPMailerAutoload.php');
 class ControllerLogin extends Controller
 {
     public function __construct()
@@ -84,6 +84,5 @@ class ControllerLogin extends Controller
             $this->model->saveRecordsCount($count, $tableId);
         }
     }
-
 
 }
