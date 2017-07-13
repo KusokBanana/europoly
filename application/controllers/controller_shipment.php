@@ -56,7 +56,7 @@ class ControllerShipment extends Controller
             ];
         }
 
-        $this->model->getDTSuppliersOrders($_GET, $print);
+        $this->model->getDTSuppliersOrders($_POST, $print);
     }
 
     function action_dt_trucks_reduce()

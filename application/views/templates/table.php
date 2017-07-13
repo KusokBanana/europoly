@@ -164,7 +164,7 @@
     }
     <?php
      foreach ($bigColumnIds as $bigColumnId) {
-         echo 'table th:nth-child('.($bigColumnId + 1).'), table td:nth-child('.($bigColumnId + 1).') { ' .
+         echo 'table#'.$table_id.' th:nth-child('.($bigColumnId + 1).'), table td:nth-child('.($bigColumnId + 1).') { ' .
                 'min-width: 250px !important; ' .
               '}';
      }

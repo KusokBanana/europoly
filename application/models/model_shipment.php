@@ -52,7 +52,11 @@ class ModelShipment extends ModelManagers_orders
         array('dt' => 33, 'db' => "trucks_items.commission_rate"),
         array('dt' => 34, 'db' => "trucks_items.commission_agent_bonus"),
         array('dt' => 35, 'db' => "trucks_items.production_date"),
-        array('dt' => 36, 'db' => "IFNULL(CONCAT(trucks_items.reserve_since_date, ' - ',
+        array('dt' => 36, 'db' => "transport.name"),
+        array('dt' => 37, 'db' => "customs.name"),
+        array('dt' => 38, 'db' => "trucks.shipment_price"),
+        array('dt' => 39, 'db' => "trucks_items.import_tax"),
+        array('dt' => 40, 'db' => "IFNULL(CONCAT(trucks_items.reserve_since_date, ' - ',
             trucks_items.reserve_till_date), '')"),
 
     ];
@@ -94,6 +98,10 @@ class ModelShipment extends ModelManagers_orders
         'Commission Rate',
         'Commission Agent Bonus',
         'Production Date',
+        'Delivery Company',
+        'Customs',
+        'Delivery Price',
+        'Customs Price',
         'Reserve Period',
     ];
 
@@ -157,12 +165,17 @@ class ModelShipment extends ModelManagers_orders
         left join clients as client on (orders.client_id = client.client_id)
         left join clients as commission on (orders.commission_agent_id = commission.client_id)
         left join items_status as status on trucks_items.status_id = status.status_id
+        left join customs ON (customs.custom_id = trucks.custom_id)
+        left join transportation_companies as transport ON (transport.transportation_company_id = trucks.transportation_company_id)
     ';
 
     var $suppliers_orders_table_reduce = 'trucks 
                                           left join order_items on trucks.id = order_items.truck_id
                                           left join orders on orders.order_id = order_items.manager_order_id
                                           left join clients client on orders.client_id = client.client_id 
+                                          left join transportation_companies as transport ON 
+                                            (transport.transportation_company_id = trucks.transportation_company_id)
+                                          left join customs ON (customs.custom_id = trucks.custom_id)
                                           left join items_status as status on trucks.status_id = status.status_id';
 
     var $filterWhere = ["trucks_items.truck_id IS NOT NULL", "trucks_items.warehouse_id IS NULL"];
@@ -207,7 +220,11 @@ class ModelShipment extends ModelManagers_orders
         array('dt' => 2, 'db' => "trucks.supplier_departure_date"),
         array('dt' => 3, 'db' => "trucks.warehouse_arrival_date"),
         array('dt' => 4, 'db' => "trucks.shipment_price"),
-        array('dt' => 5, 'db' => "status.name"),
+        array('dt' => 5, 'db' => "transport.name"),
+        array('dt' => 6, 'db' => "customs.name"),
+        array('dt' => 7, 'db' => "trucks.shipment_price"),
+        array('dt' => 8, 'db' => "SUM(order_items.import_tax)"),
+        array('dt' => 9, 'db' => "status.name"),
     ];
 
     var $suppliers_orders_column_names_reduce = [
@@ -216,6 +233,10 @@ class ModelShipment extends ModelManagers_orders
         'Supplier Departure Date',
         'Warehouse Arrival Date',
         'Shipment Price',
+        'Delivery Company',
+        'Customs',
+        'Delivery Price',
+        'Customs Price',
         'Status',
     ];
 

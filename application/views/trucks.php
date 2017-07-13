@@ -59,7 +59,8 @@
                                         'click_url' => "javascript:;",
                                         'selectSearch' => $this->selects,
                                         'filterSearchValues' => $this->rows,
-                                        'originalColumns' => $this->originalColumns
+                                        'originalColumns' => $this->originalColumns,
+                                        'method' => "POST",
                                     ];
                                     include 'application/views/templates/table.php'
                                     ?>

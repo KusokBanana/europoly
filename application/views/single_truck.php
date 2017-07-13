@@ -112,15 +112,15 @@
         <div class="row">
             <div class="col-xs-3">
                 <div>
-                    Weight Sum: <?= $this->sums['weight'] ?>
+                    Weight Sum: <?= round($this->sums['weight'], 3) ?>
                 </div>
                 <br>
                 <div>
-                    # of packs Sum: <?= $this->sums['number_of_packs'] ?>
+                    # of packs Sum: <?= round($this->sums['number_of_packs'], 3) ?>
                 </div>
                 <br>
                 <div>
-                    Total price Sum: <?= $this->sums['totalPrice'] ?>
+                    Total price Sum: <?= round($this->sums['totalPrice'], 2) ?>
                 </div>
             </div>
         </div>
