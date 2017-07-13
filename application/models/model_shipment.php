@@ -190,6 +190,8 @@ class ModelShipment extends ModelManagers_orders
             $this->unLinkStrings($this->suppliers_orders_columns, [1, 7, 27, 28]);
         }
 
+        $this->filterWhere[] = 'trucks_items.status_id >= ' . ON_THE_WAY;
+
         $columns = $this->getColumns($this->suppliers_orders_columns, 'shipment', $this->tableNames[0]);
 
         $ssp = [

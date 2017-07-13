@@ -8,7 +8,7 @@ class ModelTruck extends ModelOrder
         array('dt' => 0, 'db' => "trucks_items.item_id"),
         array('dt' => 1, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
             IF(trucks_items.status_id < ".ON_STOCK.",
-            CONCAT('<a data-href=\"/truck/put_item_to_warehouse?truck_item_id=', trucks_items.item_id, '\" 
+            CONCAT('<a data-href=\"/truck/put_to_the_warehouse?truck_item_id=', trucks_items.item_id, '\" 
                        class=\"put-to-warehouse\">
                             <span class=\'glyphicon glyphicon-home\' title=\'Put to Warehouse\'></span>
                             </a>'),
@@ -218,16 +218,64 @@ class ModelTruck extends ModelOrder
             $input, null, "trucks_items.truck_id = $order_id");
     }
 
-    function putToTheWarehouse($truckId, $warehouse_id)
+    function putToTheWarehouse($items, $warehouse_id)
     {
-        $truckItems = $this->getAssoc("SELECT * FROM order_items WHERE truck_id = $truckId 
-          AND status_id = " . ON_THE_WAY);
-        foreach ($truckItems as $truckItem) {
-            if ($truckItem['warehouse_arrival_date'] == null)
-                $this->putItemToWarehouse($truckItem['item_id'], $warehouse_id, true);
+        if (!empty($items)) {
+
+            $ids = [];
+
+            foreach ($items as $item_id => $amount) {
+                $item = $this->getFirst("SELECT item_id, status_id, warehouse_arrival_date, amount FROM order_items 
+                  WHERE item_id = $item_id AND status_id = " . ON_THE_WAY . " AND warehouse_arrival_date IS NULL AND 
+                  amount > 0");
+                if (floatval($item['amount']) > floatval($amount)) {
+                    $item_id = $this->split($item_id, $amount);
+                    if (!$item_id)
+                        continue;
+                } elseif (floatval($item['amount']) < floatval($amount)) {
+                    continue;
+                }
+
+                $ids[] = $item_id;
+                $this->putItemToWarehouse($item_id, $warehouse_id, true);
+            }
+
+            if (!empty($ids)) {
+                $this->addLog(LOG_DELIVERY_TO_WAREHOUSE, ['items' => $ids, 'warehouse_id' => $warehouse_id]);
+            }
+
         }
-        $this->addLog(LOG_DELIVERY_TO_WAREHOUSE, ['items' => $truckItems, 'warehouse_id' => 1]);
 //        return $this->printDoc($truckId);
+    }
+
+    function getItemsToPutToWarehouse($truck_id, $truck_item_id)
+    {
+
+        if ($truck_id) {
+            $items = $this->getAssoc("SELECT order_items.amount as amount, order_items.item_id, " .
+                "products.visual_name as name, order_items.truck_id, order_items.status_id as status_id " .
+                "FROM order_items " .
+                "LEFT JOIN products ON (order_items.product_id = products.product_id) " .
+                "WHERE order_items.truck_id = $truck_id AND order_items.status_id = " . ON_THE_WAY);
+
+            if (!empty($items)) {
+                return json_encode($items);
+            } else {
+                return json_encode(['success' => 0, 'message' => 'There are no items with status "On the Way"']);
+            }
+        } elseif ($truck_item_id) {
+            $item = $this->getFirst("SELECT order_items.amount as amount, order_items.item_id, " .
+                "products.visual_name as name, order_items.status_id as status_id " .
+                "FROM order_items " .
+                "LEFT JOIN products ON (order_items.product_id = products.product_id) " .
+                "WHERE order_items.item_id = $truck_item_id AND order_items.status_id = " . ON_THE_WAY);
+            if ($item) {
+                return json_encode([$item]);
+            } else {
+                return json_encode(['success' => 0, 'message' => 'Item is incorrect']);
+            }
+        }
+
     }
 
     public function printDoc($truckId, $type = '')
@@ -417,7 +465,7 @@ class ModelTruck extends ModelOrder
     public function getStatusList()
     {
         $statusList = parent::getStatusList();
-        return array_slice($statusList, 5, 3);
+        return array_slice($statusList, 7, 5);
     }
 
     public function getDelivery($truck_id)

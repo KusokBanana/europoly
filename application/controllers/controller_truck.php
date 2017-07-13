@@ -56,10 +56,22 @@ class ControllerTruck extends Controller
     function action_put_to_the_warehouse()
     {
         $this->getAccess($this->page, 'ch');
-        $warehouse_id = $_POST['warehouse_id'];
-        $truck_id = $_GET['truck_id'];
-        $this->model->putToTheWarehouse($truck_id, $warehouse_id);
-        header("Location: " . $_SERVER['HTTP_REFERER']);
+        $truck_id = Helper::arrGetVal($_GET, 'truck_id');
+        $truck_item_id = Helper::arrGetVal($_GET, 'truck_item_id');
+        $action_id = $_GET['action_id'];
+
+        switch ($action_id) {
+            case 1:
+                $items = $this->model->getItemsToPutToWarehouse($truck_id, $truck_item_id);
+                echo $items;
+                return true;
+            case 2:
+                $amounts = Helper::arrGetVal($_POST, 'amounts');
+                $warehouse_id = Helper::arrGetVal($_POST, 'warehouse_id');
+                $this->model->putToTheWarehouse($amounts, $warehouse_id);
+                header("Location: " . $_SERVER['HTTP_REFERER']);
+        }
+
     }
 
     function action_print_doc()

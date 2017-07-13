@@ -679,7 +679,7 @@ class ModelOrder extends Model
 
         $item = $this->getFirst("SELECT * FROM order_items WHERE item_id = $item_id");
 
-        if (floatval($item['amount']) <= floatval($amount)) {
+        if (!$item || floatval($item['amount']) <= floatval($amount)) {
             return false;
         }
 
@@ -745,13 +745,6 @@ class ModelOrder extends Model
         "LEFT JOIN products ON (order_items.product_id = products.product_id) WHERE item_id IN ($idsString)");
 
         return $items;
-
-    }
-
-    public function getItemAmounts($id)
-    {
-
-
 
     }
 

@@ -9,9 +9,9 @@
 class Helper
 {
 
-    public static function arrGetVal($arr, $index)
+    public static function arrGetVal($arr, $index, $return = false)
     {
-        return isset($arr[$index]) ? $arr[$index] : false;
+        return isset($arr[$index]) ? $arr[$index] : $return;
     }
 
     public static function varDump($array, $isWithTypes = false)

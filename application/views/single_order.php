@@ -458,7 +458,7 @@ require_once 'modals/shipment_to_customer_modal_amount.php';
     $(document).ready(function () {
         var managers = <?= $this->toJsList($this->managers, "user_id") ?>;
         var commission_agents = <?= $this->toJsList($this->commission_agents, "client_id") ?>;
-        var clients = <?= $this->toJsList($this->clients, "client_id") ?>;
+        var clients = <?= json_encode($this->clients) ?>;
         var item_statuses = <?= json_encode($this->statusList); ?>;
         var $column_name_ids = <?= json_encode($column_name_ids); ?>;
         var legalEntities = <?= json_encode($this->legalEntities); ?>;
@@ -594,7 +594,6 @@ require_once 'modals/shipment_to_customer_modal_amount.php';
                     var href = $(this).attr('href');
                     var hrefArray = href.split(delimiter);
                     hrefArray[1] = delimiter + ids;
-                    console.log(href, hrefArray);
                     $(this).attr('href', hrefArray.join(''));
                 })
             });
@@ -840,17 +839,8 @@ require_once 'modals/shipment_to_customer_modal_amount.php';
                             modal.modal();
                         }
                     }
-//                        if (data) {
-//                            data = JSON.parse(data);
-//                            if (data.success === 0) {
-//                                $('#notificationModal').modal().find('.modal-body').text(data.message);
-//                                return false;
-//                            }
-//                        }
-//                        location.href = '';
                 }
             })
-//            $(this).confirmation().on('confirmed.bs.confirmation', shipToCustomer);
 
         });
 
@@ -879,16 +869,19 @@ require_once 'modals/shipment_to_customer_modal_amount.php';
                         }
 
                         var modal = $('#modal_order_split');
+                        modal.find('.modal-title').text('Split Products');
+                        modal.find('#splitSubmit').text('Split');
+                        modal.find('form').attr('action', '/order/split?action_id=2');
                         var table = modal.find('table');
 
                         var tr = table.find('tbody tr').attr('data-item_id', data.item_id).attr('data-amount', data.amount);
                         var td = '<td><input type="hidden" name="item_id" value="' +
                             data.item_id + '" />' + data.name + '</td>';
                         td += '<td>' + data.amount + '</td>';
-                        td += '<td><input type="text" name="amount_1" id="amount_1" class="form-control"' +
+                        td += '<td><input type="text" name="amount_1" class="form-control amount_1"' +
                             ' value="' + (data.amount / 2) + '" /></td>';
-                        td += '<td><input type="text" name="amount_2" id="amount_2" readonly ' +
-                            'class="form-control" value="' + (data.amount / 2) + '" /></td>';
+                        td += '<td><input type="text" name="amount_2" readonly ' +
+                            'class="form-control amount_2" value="' + (data.amount / 2) + '" /></td>';
                         tr.empty().append(td);
                         modal.modal();
                     }
@@ -965,7 +958,7 @@ require_once 'modals/shipment_to_customer_modal_amount.php';
 <?php
 include_once 'application/views/modals/reserve.php';
 include_once 'application/views/modals/return.php';
-include_once 'application/views/modals/order_split.php';
+include_once 'application/views/modals/split.php';
 ?>
 <!-- TODO переместить в нормальные скрипты и стили -->
 <script>

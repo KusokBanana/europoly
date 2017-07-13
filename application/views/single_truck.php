@@ -182,6 +182,7 @@
 </div>
 
 <?php require_once 'modals/new_truck_item.php'; ?>
+<?php require_once 'modals/split.php'; ?>
 <!-- END CONTAINER -->
 <script>
     $(document).ready(function () {
@@ -189,6 +190,7 @@
         var transports = <?= json_encode($this->delivery['list']) ?>;
         var customs = <?= json_encode($this->customs['list']) ?>;
         var $column_name_ids = <?= json_encode($column_name_ids); ?>;
+        var warehouses = <?= json_encode($this->warehouses); ?>;
         var $table_order_items = $("#table_truck_items");
         $table_order_items.DataTable({
             processing: true,
@@ -285,7 +287,55 @@
 
         $('body').on('click', '.put-to-warehouse', function(e) {
             e.preventDefault();
-            $('#modal_choose_warehouse').modal().find('form').attr('action', $(this).attr('data-href'));
+            var href = $(this).attr('data-href');
+
+            $.ajax({
+                url: href,
+                type: "GET",
+                data: {
+                    action_id: 1
+                },
+                success: function(data) {
+                    if (data) {
+                        data = JSON.parse(data);
+                        if (data.success === 0) {
+                            $('#notificationModal').modal().find('.modal-body').text(data.message);
+                            return false;
+                        }
+
+                        var modal = $('#modal_order_split');
+                        modal.attr('data-type', 'truck').find('.modal-title').text('Put to the warehouse');
+                        modal.find('#splitSubmit').text('Put');
+                        modal.find('form').attr('action', '/truck/put_to_the_warehouse?action_id=2');
+                        var tbody = modal.find('table tbody').empty();
+
+                        console.log(data);
+
+                        modal.find('table').before('<label for="warehouse_id_choose">Warehouse</label>'+
+                            '<select name="warehouse_id" id="warehouse_id_choose" class="form-control"></select>');
+                        $.each(warehouses, function() {
+                            var option = '<option value="' + this.value + '">' + this.text + '</option>';
+                            $('#warehouse_id_choose').append(option);
+                        });
+
+                        $.each(data, function() {
+                            var tr = '<tr data-item_id="'+this.item_id+'" data-amount="'+this.amount+'">';
+                            var td = '<td>' + this.name + '</td>';
+                            td += '<td>' + this.amount + '</td>';
+                            td += '<td><input type="text" name="amounts['+this.item_id+']" ' +
+                                'class="form-control amount_1" ' +
+                                'value="' + (this.amount) + '" /></td>';
+                            td += '<td><input type="text" readonly ' +
+                                'class="form-control amount_2" value="' + (0) + '" /></td>';
+                            tr += td + '</tr>';
+                            tbody.append(tr);
+                        });
+
+                        modal.modal();
+                    }
+                }
+            })
+
         });
 
         $table_order_items.find('tbody').on('click', 'tr td', function (e) {

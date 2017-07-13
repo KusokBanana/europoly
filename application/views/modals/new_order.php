@@ -29,7 +29,7 @@
                             <option disabled selected value></option>
                             <?php
                             foreach ($this->clients as $client) {
-                                echo "<option value='{$client["client_id"]}'>{$client["name"]}</option>";
+                                echo "<option value='{$client["value"]}'>{$client["text"]}</option>";
                             }
                             ?>
                         </select>

@@ -367,7 +367,8 @@ abstract class Model extends mysqli
     function getClientsOfSalesManager($sales_manager_id = false)
     {
         $where = $sales_manager_id ? "sales_manager_id = $sales_manager_id OR operational_manager_id = $sales_manager_id" : 1;
-        return $this->getAssoc("SELECT client_id, final_name as name FROM clients WHERE $where");
+        $where = '(' . $where . ') AND client_id IS NOT NULL AND final_name IS NOT NULL';
+        return $this->getAssoc("SELECT client_id as value, final_name as text FROM clients WHERE $where");
     }
 
     public function updateOrderPayment($payment_id)
