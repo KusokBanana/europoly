@@ -23,11 +23,12 @@ else {
 ?>
 <div class="modal-dialog <?= !$isError ? 'modal-full' : '' ?>">
     <div class="modal-content">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-            <h4 class="modal-title">Supplier Order</h4>
-        </div>
-        <div class="modal-body">
+        <form method="POST" action="/suppliers_orders/add_suppliers_order">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Supplier Order</h4>
+            </div>
+            <div class="modal-body">
             <?php if (!$isError): ?>
                 <?php
                     $table_data = [
@@ -48,29 +49,28 @@ else {
                         "]' value='".$product."'>";
                 }
                 ?>
-                <form method="POST" action="/suppliers_orders/add_suppliers_order">
-                    <input type="hidden" id="field_order_id" name="order_id" value="">
-                    <input type="hidden" id="field_product_ids" name="product_ids">
-                    <div class="form-group">
-                        <label for="suppliers_order_id">Add to Supplier Order:</label>
-                        <select id="suppliers_order_id" name="suppliers_order_id" class="form-control" required>
-                            <option selected value="0">New Order</option>
-                        </select>
-                    </div>
-                </form>
+                <input type="hidden" id="field_order_id" name="order_id" value="">
+<!--                <input type="hidden" id="field_product_ids" name="suppliers_products">-->
+                <div class="form-group">
+                    <label for="suppliers_order_id">Add to Supplier Order:</label>
+                    <select id="suppliers_order_id" name="suppliers_order_id" class="form-control" required>
+                        <option selected value="0">New Order</option>
+                    </select>
+                </div>
             <?php else: ?>
                 <h4 class="text-danger text-center"><?= $errorMessage ?></h4>
             <?php endif; ?>
-                </div>
-                <div class="modal-footer">
-                    <div class="form-actions right">
-                        <button type="button" class="btn default" data-dismiss="modal">Cancel</button>
-                        <?php if (!$isError): ?>
-                            <button type="submit" class="btn green">Create</button>
-                        <?php endif; ?>
-                    </div>
+            </div>
+            <div class="modal-footer">
+                <div class="form-actions right">
+                    <button type="button" class="btn default" data-dismiss="modal">Cancel</button>
+                    <?php if (!$isError): ?>
+                        <button type="submit" class="btn green">Create</button>
+                    <?php endif; ?>
                 </div>
             </div>
+        </form>
+    </div>
     <!-- /.modal-content -->
 </div>
 <!-- /.modal-dialog -->
@@ -98,8 +98,6 @@ else {
 <!--    $table_order_item_product.find('tbody').on('click', 'tr', function () {-->
 <!--        if ($table_order_item_product.find(".selected").length > 0) {-->
 <!--            var pwids = Array.from($("#new_supplier_order_table").DataTable().rows('.selected').data().map(function(product) {-->
-<!--                console.log(product);-->
-<!--                console.log(pwids);-->
 <!--                return parseInt(product[0]);-->
 <!--            }));-->
 <!--            $("#field_product_ids").val(JSON.stringify(pwids));-->

@@ -199,6 +199,11 @@
             },
             dom: '<t>ip',
             order: [[0, 'asc']],
+            bAutoWidth: false,
+            scrollY: "600px",
+            scrollX: true,
+            scrollCollapse: true,
+            deferRender: true,
             columnDefs: [
                 {
                     targets: $column_name_ids,

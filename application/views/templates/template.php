@@ -304,10 +304,10 @@
                     topScroll.scrollLeft($(this).scrollLeft());
 
                     // for fixed table header
-                    var fixedHeader = $('.fixed-table-head');
-                    if (fixedHeader.length) {
-                        fixedHeader.css('left', -$(this).scrollLeft() + 'px');
-                    }
+//                    var fixedHeader = $('.fixed-table-head');
+//                    if (fixedHeader.length) {
+//                        fixedHeader.css('left', -$(this).scrollLeft() + 'px');
+//                    }
 
                 });
                 table.attr('data-top-scroll', true);
