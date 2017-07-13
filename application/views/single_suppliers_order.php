@@ -42,6 +42,15 @@
                             <?= $this->supplier['name'] ?>
                         </a>
                     </li>
+                    <li><br>
+                        <span>Supplier Verification ID: </span>
+                        <a href="" class="x-editable x-supplier_verification"
+                           data-pk="<?= $this->order['order_id'] ?>" data-name="supplier_verification"
+                           data-value="<?= $this->order['supplier_verification'] ?>"
+                           data-url="/suppliers_order/change_field" data-original-title="Choose Supplier">
+                            <?= $this->order['supplier_verification'] ?>
+                        </a>
+                    </li>
                 </ul>
             </div>
             <div class="col-xs-4">
@@ -149,7 +158,7 @@
             </div>
         </div>
     </div>
-</div>
+
 <?php require_once 'modals/new_supplier_order_item.php'; ?>
 <!-- END CONTAINER -->
 <script>
@@ -159,6 +168,7 @@
         var suppliers = <?= json_encode($this->supplier['list']); ?>;
         var $column_name_ids = <?= json_encode($column_name_ids); ?>;
         var $table_order_items = $("#table_order_items");
+        var serialNumber = 0;
         $table_order_items.DataTable({
             processing: true,
             serverSide: true,
@@ -169,15 +179,20 @@
                 }
             },
             dom: '<t>ip',
-            columnDefs: [{
-                targets: $column_name_ids,
-                searchable: false,
-                orderable: false
-            }, {
-                targets: [0],
-                visible: false,
-                searchable: false
-            }]
+            order: [[0, 'asc']],
+            columnDefs: [
+                {
+                    targets: $column_name_ids,
+                    searchable: false,
+                    orderable: false
+                },
+                {
+                    targets: 0,
+                    visible: true,
+                    orderable: true,
+                    searchable: false
+                }
+            ]
         });
         $table_order_items.on('draw.dt', function () {
             $('.table-confirm-btn').confirmation({
@@ -234,6 +249,13 @@
                 type: "select2",
                 inputclass: 'form-control input-medium',
                 source: suppliers,
+                success: function () {
+                    location.reload();
+                }
+            });
+            $('.x-supplier_verification').editable({
+                type: "text",
+                inputclass: 'form-control input-medium',
                 success: function () {
                     location.reload();
                 }
