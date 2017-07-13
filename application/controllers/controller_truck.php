@@ -29,6 +29,7 @@ class ControllerTruck extends Controller
         $this->view->delivery = $this->model->getDelivery($_GET['id']);
         $this->view->customs = $this->model->getCustoms($_GET['id']);
         $this->view->sums = $this->model->getSums($_GET['id']);
+        $this->view->warehouses = $this->model->getWarehousesIdNames();
 
         $this->view->access = $roles->getPageAccessAbilities($this->page);
         if ($this->view->access['p']) {
@@ -55,7 +56,10 @@ class ControllerTruck extends Controller
     function action_put_to_the_warehouse()
     {
         $this->getAccess($this->page, 'ch');
-        echo $this->model->putToTheWarehouse($_GET['truck_id']);
+        $warehouse_id = $_POST['warehouse_id'];
+        $truck_id = $_GET['truck_id'];
+        $this->model->putToTheWarehouse($truck_id, $warehouse_id);
+        header("Location: " . $_SERVER['HTTP_REFERER']);
     }
 
     function action_print_doc()
@@ -71,7 +75,9 @@ class ControllerTruck extends Controller
     function action_put_item_to_warehouse()
     {
         $this->getAccess($this->page, 'ch');
-        $warehouseId = $this->model->putItemToWarehouse($_GET['truck_item_id']);
+        $warehouse_id = $_POST['warehouse_id'];
+        $truck_item_id = $_GET['truck_item_id'];
+        $this->model->putItemToWarehouse($truck_item_id, $warehouse_id);
         header("Location: " . $_SERVER['HTTP_REFERER']);
     }
 

@@ -6,10 +6,25 @@ class ModelTruck extends ModelOrder
 {
     var $truck_columns = [
         array('dt' => 0, 'db' => "trucks_items.item_id"),
-        array('dt' => 1, 'db' => "CONCAT('<a href=\"/product?id=',
+        array('dt' => 1, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
+            IF(trucks_items.status_id < ".ON_STOCK.",
+            CONCAT('<a data-href=\"/truck/put_item_to_warehouse?truck_item_id=', trucks_items.item_id, '\" 
+                       class=\"put-to-warehouse\">
+                            <span class=\'glyphicon glyphicon-home\' title=\'Put to Warehouse\'></span>
+                            </a>'),
+             ''),
+            CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to delete the item?\" 
+                       href=\"/truck/delete_order_item?order_id=', trucks_items.truck_id, '&order_item_id=', 
+                        trucks_items.item_id, '\"
+                        class=\"table-confirm-btn\" data-placement=\"right\" data-popout=\"true\" 
+                        data-singleton=\"true\">
+                            <span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span>
+                        </a>'),
+        '</div>')"),
+        array('dt' => 2, 'db' => "CONCAT('<a href=\"/product?id=',
                 trucks_items.product_id,
                 '\">', IFNULL(products.visual_name, 'Enter Visual Name!'), '</a>')"),
-        array('dt' => 2, 'db' => "CONCAT(CAST(trucks_items.amount as decimal(64,3)), ' ', IFNULL(products.units, ''))"),
+        array('dt' => 3, 'db' => "CONCAT(CAST(trucks_items.amount as decimal(64,3)), ' ', IFNULL(products.units, ''))"),
 //        array('dt' => 2, 'db' => "IF(trucks_items.status_id > 8,
 //                CONCAT(CAST(trucks_items.amount as decimal(64,3)), ' ', IFNULL(products.units, '')),
 //                CONCAT('<a href=\"javascript:;\" class=\"x-editable x-amount\" data-pk=\"',
@@ -19,7 +34,7 @@ class ModelTruck extends ModelOrder
 //                '\" data-url=\"/truck/change_item_field\" data-original-title=\"Enter Quantity\">',
 //                    IFNULL(CONCAT(CAST(trucks_items.amount as decimal(64, 3)), ' ', products.units), ''),
 //                '</a>'))"),
-        array('dt' => 3, 'db' => "CONCAT(CAST(trucks_items.number_of_packs as decimal(64, 3)), ' ', 
+        array('dt' => 4, 'db' => "CONCAT(CAST(trucks_items.number_of_packs as decimal(64, 3)), ' ', 
             IFNULL(products.packing_type, ''))"),
 //        array('dt' => 3, 'db' => "IF(trucks_items.status_id > 8,
 //                CONCAT(CAST(trucks_items.number_of_packs as decimal(64, 3)), ' ', IFNULL(products.packing_type, '')),
@@ -30,37 +45,37 @@ class ModelTruck extends ModelOrder
 //                '\" data-url=\"/truck/change_item_field\" data-original-title=\"Enter Number of Packs\">',
 //                    CONCAT(CAST(trucks_items.number_of_packs as decimal(64, 3)), ' ', IFNULL(products.packing_type, '')),
 //                '</a>'))"),
-        array('dt' => 4, 'db' => "IFNULL(CAST(trucks_items.purchase_price as decimal(64, 2)), '')"),
-        array('dt' => 5, 'db' => "IFNULL(CAST(trucks_items.purchase_price * trucks_items.amount as decimal(64, 2)), '')"),
-        array('dt' => 6, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-item_status\" data-pk=\"',
+        array('dt' => 5, 'db' => "IFNULL(CAST(trucks_items.purchase_price as decimal(64, 2)), '')"),
+        array('dt' => 6, 'db' => "IFNULL(CAST(trucks_items.purchase_price * trucks_items.amount as decimal(64, 2)), '')"),
+        array('dt' => 7, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-item_status\" data-pk=\"',
                 trucks_items.item_id,
                 '\" data-name=\"status_id\" data-value=\"',
                 trucks_items.status_id,
                 '\" data-url=\"/truck/change_item_field\" data-original-title=\"Choose Item Status\">',
                     status.name,
                 '</a>')"),
-        array('dt' => 7, 'db' => "CAST(products.weight * trucks_items.amount as decimal(64, 3))"),
-        array('dt' => 8, 'db' => "CONCAT(orders.downpayment_rate, ' %')"),
-        array('dt' => 9, 'db' => "orders.expected_date_of_issue"),
-        array('dt' => 10, 'db' => "CONCAT('<a href=\"/sales_manager?id=', orders.sales_manager_id, '\">', 
+        array('dt' => 8, 'db' => "CAST(products.weight * trucks_items.amount as decimal(64, 3))"),
+        array('dt' => 9, 'db' => "CONCAT(orders.downpayment_rate, ' %')"),
+        array('dt' => 10, 'db' => "orders.expected_date_of_issue"),
+        array('dt' => 11, 'db' => "CONCAT('<a href=\"/sales_manager?id=', orders.sales_manager_id, '\">', 
             managers.first_name, ' ', managers.last_name, '</a>')"),
-        array('dt' => 11, 'db' => "CONCAT('<a href=\"/order?id=',
+        array('dt' => 12, 'db' => "CONCAT('<a href=\"/order?id=',
                 trucks_items.manager_order_id,
                 '\">', trucks_items.manager_order_id,
                  IF(trucks_items.reserve_since_date IS NULL, '', 
                  (CONCAT(' (reserved ', trucks_items.reserve_since_date, ')'))), '</a>')"),
-        array('dt' => 12, 'db' => "CONCAT('<a href=\"/suppliers_order?id=',
+        array('dt' => 13, 'db' => "CONCAT('<a href=\"/suppliers_order?id=',
                 trucks_items.supplier_order_id,
                 '\">', trucks_items.supplier_order_id, '</a>')"),
-        array('dt' => 13, 'db' => "clients.final_name"),
-        array('dt' => 14, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-import_VAT\" data-pk=\"',
+        array('dt' => 14, 'db' => "clients.final_name"),
+        array('dt' => 15, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-import_VAT\" data-pk=\"',
                 trucks_items.item_id,
                 '\" data-name=\"import_VAT\" data-value=\"',
                 IFNULL(CAST(trucks_items.import_VAT as decimal(64, 2)), 0),
                 '\" data-url=\"/truck/change_item_field\" data-original-title=\"Enter Import VAT\">',
                     IFNULL(CAST(trucks_items.import_VAT as decimal(64, 2)), 0),
                 '</a>')"),
-        array('dt' => 15, 'db' => "CONCAT('<a href=\"javascript:;\" 
+        array('dt' => 16, 'db' => "CONCAT('<a href=\"javascript:;\" 
                 class=\"x-editable x-import_brokers_price\" data-pk=\"',
                 trucks_items.item_id,
                 '\" data-name=\"import_brokers_price\" data-value=\"',
@@ -68,37 +83,21 @@ class ModelTruck extends ModelOrder
                 '\" data-url=\"/truck/change_item_field\" data-original-title=\"Enter Import Brokers Price\">',
                     IFNULL(CAST(trucks_items.import_brokers_price as decimal(64, 2)), 0),
                 '</a>')"),
-        array('dt' => 16, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-import_tax\" data-pk=\"',
+        array('dt' => 17, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-import_tax\" data-pk=\"',
                 trucks_items.item_id,
                 '\" data-name=\"import_tax\" data-value=\"',
                 IFNULL(CAST(trucks_items.import_tax as decimal(64, 2)), 0),
                 '\" data-url=\"/truck/change_item_field\" data-original-title=\"Enter Customs Price\">',
                     IFNULL(CAST(trucks_items.import_tax as decimal(64, 2)), 0),
                 '</a>')"),
-        array('dt' => 17, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-delivery_price\" data-pk=\"',
+        array('dt' => 18, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-delivery_price\" data-pk=\"',
                 trucks_items.item_id,
                 '\" data-name=\"delivery_price\" data-value=\"',
                 IFNULL(CAST(trucks_items.delivery_price as decimal(64, 2)), 0),
                 '\" data-url=\"/truck/change_item_field\" data-original-title=\"Enter Delivery Price\">',
                     IFNULL(CAST(trucks_items.delivery_price as decimal(64, 2)), 0),
                 '</a>')"),
-        array('dt' => 18, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
-                        CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to delete the item?\" 
-                                   href=\"/truck/delete_order_item?order_id=', trucks_items.truck_id, '&order_item_id=', 
-                                    trucks_items.item_id, '\"
-                                    class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" 
-                                    data-singleton=\"true\">
-                                        <span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span>
-                                    </a>'),
-                        IF(trucks_items.status_id < ".ON_STOCK.",
-                        CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to put to warehouse the item?\" 
-                                   href=\"/truck/put_item_to_warehouse?truck_item_id=', trucks_items.item_id, '\" 
-                                   class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" 
-                                    data-singleton=\"true\">
-                                        <span class=\'glyphicon glyphicon-home\' title=\'Put to Warehouse\'></span>
-                                        </a>'),
-                         ''),
-                '</div>')")
+        array('dt' => 19, 'db' => "suppliers_orders.production_date"),
     ];
 
     var $suppliers_orders_column_names = [
@@ -128,6 +127,7 @@ class ModelTruck extends ModelOrder
 
     var $truck_column_names = [
         'ID',
+        'Actions',
         'Product',
         'Quantity',
         '# of packs ',
@@ -136,7 +136,7 @@ class ModelTruck extends ModelOrder
         'Status',
         'Weight',
         'Downpayment rate, % ',
-        'Client\'s',
+        'Client\'s expected date of issue',
         'Manager',
         'Managers order id ',
         'Suppliers order id ',
@@ -145,7 +145,7 @@ class ModelTruck extends ModelOrder
         'Import Brokers Price ',
         'Import Tax ',
         'Delivery Price ',
-        'Actions'
+        'Production Date'
     ];
 
     function getDTTrucks($truck_id, $input)
@@ -153,6 +153,7 @@ class ModelTruck extends ModelOrder
         $trucks_table = 'order_items as trucks_items
             left join products on trucks_items.product_id = products.product_id ' . $this->full_products_table_addition .' 
             left join trucks on trucks.id = trucks_items.truck_id
+            left join suppliers_orders on suppliers_orders.order_id = trucks_items.supplier_order_id
             left join orders on trucks_items.manager_order_id = orders.order_id
             left join clients on orders.client_id = clients.client_id
             left join items_status as status on trucks_items.status_id = status.status_id
@@ -217,15 +218,16 @@ class ModelTruck extends ModelOrder
             $input, null, "trucks_items.truck_id = $order_id");
     }
 
-    function putToTheWarehouse($truckId)
+    function putToTheWarehouse($truckId, $warehouse_id)
     {
-        $truckItems = $this->getAssoc("SELECT * FROM order_items WHERE truck_id = $truckId");
+        $truckItems = $this->getAssoc("SELECT * FROM order_items WHERE truck_id = $truckId 
+          AND status_id = " . ON_THE_WAY);
         foreach ($truckItems as $truckItem) {
             if ($truckItem['warehouse_arrival_date'] == null)
-                $this->putItemToWarehouse($truckItem['item_id'], true);
+                $this->putItemToWarehouse($truckItem['item_id'], $warehouse_id, true);
         }
         $this->addLog(LOG_DELIVERY_TO_WAREHOUSE, ['items' => $truckItems, 'warehouse_id' => 1]);
-        return $this->printDoc($truckId);
+//        return $this->printDoc($truckId);
     }
 
     public function printDoc($truckId, $type = '')
@@ -256,13 +258,13 @@ class ModelTruck extends ModelOrder
         }
     }
 
-    function putItemToWarehouse($itemId, $isLogged = false)
+    function putItemToWarehouse($itemId, $warehouse_id, $isLogged = false)
     {
         if (!$itemId)
             return false;
 
         $truckItem = $this->getFirst("SELECT product_id, amount, import_tax, import_brokers_price, import_VAT, truck_id 
-                          FROM order_items WHERE item_id = $itemId");
+                          FROM order_items WHERE item_id = $itemId AND status_id = " . ON_THE_WAY);
 
         $product = $this->getFirst("SELECT * FROM products WHERE product_id = ${truckItem['product_id']}");
 
@@ -272,7 +274,7 @@ class ModelTruck extends ModelOrder
 
         $buyAndExpenses *= $truckItem['amount'];
 
-        $warehouseId = $this->insert("UPDATE order_items SET warehouse_id = 1, total_price = $totalPrice,
+        $this->update("UPDATE order_items SET warehouse_id = $warehouse_id, total_price = $totalPrice,
  	      buy_and_taxes = $buyAndExpenses, warehouse_arrival_date = NOW(), status_id = ".ON_STOCK." WHERE item_id = $itemId");
 
         $this->updateItemsStatus($truckItem['truck_id']);
@@ -280,7 +282,7 @@ class ModelTruck extends ModelOrder
         if (!$isLogged)
             $this->addLog(LOG_DELIVERY_TO_WAREHOUSE, ['items' => [$itemId]]);
 
-        return $warehouseId;
+        return true;
     }
 
     public function getOrder($order_id)
@@ -502,10 +504,10 @@ class ModelTruck extends ModelOrder
     public function getDocuments($truck_id)
     {
         $docs = [
-            [
-                'href' => "/truck/print_doc?truck_id=$truck_id",
-                'name' => 'Print'
-            ],
+//            [
+//                'href' => "/truck/print_doc?truck_id=$truck_id",
+//                'name' => 'Print'
+//            ],
         ];
         return $docs;
     }

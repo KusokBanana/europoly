@@ -5,9 +5,23 @@ class ModelSuppliers_order extends ModelOrder
 {
     var $suppliers_orders_columns = [
         array('dt' => 0, 'db' => "suppliers_orders_items.item_id"),
-        array('dt' => 1, 'db' => "CONCAT('<a href=\"/product?id=',
+        array('dt' => 1, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
+            CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to delete the item?\" 
+            href=\"/suppliers_order/delete_order_item?order_id=', suppliers_orders_items.supplier_order_id,
+                '&order_item_id=', suppliers_orders_items.item_id, '\"
+            class=\"table-confirm-btn\" data-placement=\"right\" data-popout=\"true\" data-singleton=\"true\">
+                <span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span>
+            </a>'),
+            IF(suppliers_orders_items.reserve_since_date IS NOT NULL,
+            CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to delete from reserve the item?\"  
+            href=\"/suppliers_order/delete_from_reserve?order_item_id=', suppliers_orders_items.item_id, '\"
+            class=\"table-confirm-btn\" data-placement=\"right\" data-popout=\"true\" data-singleton=\"true\">
+                <span class=\'glyphicon glyphicon-remove\' title=\'Delete from reserve\'></span>
+            </a>'), ''),
+        '</div>')"),
+        array('dt' => 2, 'db' => "CONCAT('<a href=\"/product?id=',
                 products.product_id, '\">', IFNULL(products.visual_name, 'Enter Visual Name!'), '</a>')"),
-        array('dt' => 2, 'db' => "IF(suppliers_orders_items.manager_order_id IS NOT NULL, 
+        array('dt' => 3, 'db' => "IF(suppliers_orders_items.manager_order_id IS NOT NULL, 
             CONCAT(CAST(suppliers_orders_items.amount as decimal(64,3)), ' ', IFNULL(products.units, ' ')),
             CONCAT('<a href=\"javascript:;\" class=\"x-editable x-amount\" data-pk=\"',
                 suppliers_orders_items.item_id,
@@ -16,7 +30,7 @@ class ModelSuppliers_order extends ModelOrder
                 '\" data-url=\"/suppliers_order/change_item_field\" data-original-title=\"Enter Quantity\">',
                     IFNULL(CONCAT(CAST(suppliers_orders_items.amount as decimal(64,3)), ' ', products.units), ''),
                 '</a>'))"),
-        array('dt' => 3, 'db' => "IF(suppliers_orders_items.manager_order_id IS NOT NULL,
+        array('dt' => 4, 'db' => "IF(suppliers_orders_items.manager_order_id IS NOT NULL,
             CONCAT(CAST(suppliers_orders_items.number_of_packs as decimal(64,3)), ' ', IFNULL(products.packing_type, '')),
             CONCAT('<a href=\"javascript:;\" class=\"x-editable x-number_of_packs\" data-pk=\"',
                 suppliers_orders_items.item_id,
@@ -26,55 +40,42 @@ class ModelSuppliers_order extends ModelOrder
                     IFNULL(CONCAT(CAST(suppliers_orders_items.number_of_packs as decimal(64, 3)), ' ', 
                     IFNULL(products.packing_type, '')), ''),
                 '</a>'))"),
-        array('dt' => 4, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-purchase_price\" data-pk=\"',
+        array('dt' => 5, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-purchase_price\" data-pk=\"',
                 suppliers_orders_items.item_id,
                 '\" data-name=\"purchase_price\" data-value=\"',
                 IFNULL(CAST(suppliers_orders_items.purchase_price as decimal(64, 2)), ''),
                 '\" data-url=\"/suppliers_order/change_item_field\" data-original-title=\"Enter Purchase Price\">',
                     IFNULL(CAST(suppliers_orders_items.purchase_price as decimal(64, 2)), ''),
                 '</a>')"),
-        array('dt' => 5, 'db' => "IFNULL(CAST(suppliers_orders_items.purchase_price * suppliers_orders_items.amount as decimal(64, 2)), '')"),
-        array('dt' => 6, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-item_status\" data-pk=\"',
+        array('dt' => 6, 'db' => "IFNULL(CAST(suppliers_orders_items.purchase_price * suppliers_orders_items.amount as decimal(64, 2)), '')"),
+        array('dt' => 7, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-item_status\" data-pk=\"',
                 suppliers_orders_items.item_id,
                 '\" data-name=\"status_id\" data-value=\"',
                 suppliers_orders_items.status_id,
                 '\" data-url=\"/suppliers_order/change_item_field\" data-original-title=\"Choose Item Status\">',
                     status.name,
                 '</a>')"),
-        array('dt' => 7, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-production_date\" data-pk=\"',
+        array('dt' => 8, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-production_date\" data-pk=\"',
                 suppliers_orders_items.item_id,
                 '\" data-name=\"production_date\" data-value=\"', IFNULL(suppliers_orders_items.production_date, ''),
                 '\" data-url=\"/suppliers_order/change_item_field\" data-original-title=\"Choose Production Date\">',
                     IFNULL(suppliers_orders_items.production_date, ''),
                 '</a>')"),
-        array('dt' => 8, 'db' => "CAST(products.weight * suppliers_orders_items.amount as decimal(64, 3))"),
-        array('dt' => 9, 'db' => "CONCAT(orders.downpayment_rate, ' %')"),
-        array('dt' => 10, 'db' => "orders.expected_date_of_issue"),
-        array('dt' => 11, 'db' => "CONCAT('<a href=\"/sales_manager?id=', orders.sales_manager_id, '\">', 
+        array('dt' => 9, 'db' => "CAST(products.weight * suppliers_orders_items.amount as decimal(64, 3))"),
+        array('dt' => 10, 'db' => "CONCAT(orders.downpayment_rate, ' %')"),
+        array('dt' => 11, 'db' => "orders.expected_date_of_issue"),
+        array('dt' => 12, 'db' => "CONCAT('<a href=\"/sales_manager?id=', orders.sales_manager_id, '\">', 
             managers.first_name, ' ', managers.last_name, '</a>')"),
-        array('dt' => 12, 'db' => "CONCAT('<a href=\"/order?id=',
+        array('dt' => 13, 'db' => "CONCAT('<a href=\"/order?id=',
                 suppliers_orders_items.manager_order_id,
                 '\">', suppliers_orders_items.manager_order_id,
                  IF(suppliers_orders_items.reserve_since_date IS NULL, '', (CONCAT(' (reserved ', suppliers_orders_items.reserve_since_date, ')'))), '</a>')"),
-        array('dt' => 13, 'db' => "clients.final_name"),
-        array('dt' => 14, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
-                        CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to delete the item?\" 
-                        href=\"/suppliers_order/delete_order_item?order_id=', suppliers_orders_items.supplier_order_id,
-                            '&order_item_id=', suppliers_orders_items.item_id, '\"
-                        class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" data-singleton=\"true\">
-                            <span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span>
-                        </a>'),
-                        IF(suppliers_orders_items.reserve_since_date IS NOT NULL,
-                        CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to delete from reserve the item?\"  
-                        href=\"/suppliers_order/delete_from_reserve?order_item_id=', suppliers_orders_items.item_id, '\"
-                        class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" data-singleton=\"true\">
-                            <span class=\'glyphicon glyphicon-remove\' title=\'Delete from reserve\'></span>
-                        </a>'), ''),
-                '</div>')")
-];
+        array('dt' => 14, 'db' => "clients.final_name"),
+    ];
 
     var $suppliers_orders_column_names = [
         'ID',
+        'Actions',
         'Product',
         'Quantity',
         '# of packs',
@@ -88,7 +89,6 @@ class ModelSuppliers_order extends ModelOrder
         'Manager',
         'Managers order id ',
         'Client',
-        'Actions',
     ];
 
     function getDTOrderItems($order_id, $input)

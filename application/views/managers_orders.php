@@ -30,6 +30,15 @@
         <div class="col-md-12">
             <div class="portlet light bordered">
                 <div class="portlet-title">
+                    <div class="actions">
+                        <?php
+                        if ($this->access['ch'])
+                            echo '<button class="btn sbold green" data-toggle="modal" 
+                                        data-target="#modal_newOrder">
+                                        Add New Order <i class="fa fa-plus"></i>'.
+                                  '</button>';
+                        ?>
+                    </div>
                     <div class="caption">
                         <i class="icon-social-dribbble font-dark"></i>
                         <span class="caption-subject bold uppercase font-dark">Managers' Orders</span>
@@ -49,14 +58,8 @@
                             <div class="tab-pane fade" id="tab_1_1">
                                 <div class="portlet-body">
                                     <?php
-                                    $buttons = [];
-                                    if ($this->access['ch'])
-                                        $buttons = ['<button class="btn sbold green" data-toggle="modal" 
-                                                            data-target="#modal_newOrder">
-                                                        Add New Order <i class="fa fa-plus"></i>
-                                                    </button>'];
                                     $table_data = [
-                                        'buttons' => $buttons,
+                                        'buttons' => [],
                                         'table_id' => $this->tableNames[0],
                                         'ajax' => [
                                             'url' => "/managers_orders/dt_managers_orders"

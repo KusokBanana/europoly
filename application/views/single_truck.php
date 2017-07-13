@@ -52,6 +52,28 @@
                             <?= $this->delivery['name'] ?>
                         </a>
                     </div>
+                    <br>
+                    <div>
+                        <span>Dispatch Date: </span>
+                        <a href="javascript:;" id="editable-dispatch_date" class='x-editable'
+                           data-pk="<?= $this->order['id'] ?>" data-name="dispatch_date"
+                           data-value="<?= $this->order['dispatch_date'] ?>"
+                           data-url='/truck/change_field'
+                           data-original-title='Enter Dispatch Date'>
+                            <?= $this->order['dispatch_date'] ?>
+                        </a>
+                    </div>
+                    <br>
+                    <div>
+                        <span>Delivery Date: </span>
+                        <a href="javascript:;" id="editable-delivery_date" class='x-editable'
+                           data-pk="<?= $this->order['id'] ?>" data-name="delivery_date"
+                           data-value="<?= $this->order['delivery_date'] ?>"
+                           data-url='/truck/change_field'
+                           data-original-title='Enter Delivery Date'>
+                            <?= $this->order['delivery_date'] ?>
+                        </a>
+                    </div>
                 </div>
                 <div class="col-xs-3">
                     <h3>Customs</h3>
@@ -75,16 +97,15 @@
                 <div class="col-xs-4">
                     <h3> Items in this Truck
                     </h3>
-                    <a class="btn btn-md blue margin-15" href="javascript:;"
+                    <a class="btn btn-md blue margin-15" href="#"
                        data-toggle="modal" data-target="#modal_newTruckItem">
                         <i class="fa fa-plus"></i> Add item
                     </a>
                     <a class="btn btn-md blue hidden-print margin-15" onclick="javascript:window.print();">
                         <i class="fa fa-print"></i> Print
                     </a>
-                    <a data-href="/truck/put_to_the_warehouse?truck_id=<?= $this->order['id'] ?>"
-                       data-toggle="confirmation" data-singleton="true" data-popout="true"
-                       class="btn btn-md blue print-btn-truck">Put to the warehouse</a>
+                    <button data-href="/truck/put_to_the_warehouse?truck_id=<?= $this->order['id'] ?>"
+                       class="btn btn-md blue put-to-warehouse">Put to the warehouse</button>
                 </div>
             </form>
         </div>
@@ -129,6 +150,35 @@
             </div>
         </div>
     </div>
+
+
+<div class="modal fade" id="modal_choose_warehouse" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title">Choose Warehouse</h4>
+                </div>
+                <div class="modal-body">
+                    <label for="warehouse_id">Warehouse</label>
+                    <select name="warehouse_id" id="warehouse_id" class="form-control">
+                        <?php foreach ($this->warehouses as $warehouse): ?>
+                            <option value="<?= $warehouse['value'] ?>"><?= $warehouse['text'] ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-actions right">
+                        <button type="button" class="btn default" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn default btn-primary">Add</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
 </div>
 
 <?php require_once 'modals/new_truck_item.php'; ?>
@@ -211,7 +261,33 @@
                     location.reload();
                 }
             });
+
+
+//            $('.put-to-warehouse').confirmation({
+//                singleton: true,
+//                popout: true,
+//                onConfirm: function (e) {
+//                    var btn = $(this);
+//
+//                    $('#modal_choose_warehouse').modal().find('form').attr('action', btn.attr('data-href'));
+//                    return false;
+//
+////                $.ajax({
+////                    url: btn.attr('data-href'),
+////                    success: function() {
+////                        location.href = '';
+////                    }
+////                })
+//                }
+//            });
+
         });
+
+        $('body').on('click', '.put-to-warehouse', function(e) {
+            e.preventDefault();
+            $('#modal_choose_warehouse').modal().find('form').attr('action', $(this).attr('data-href'));
+        });
+
         $table_order_items.find('tbody').on('click', 'tr td', function (e) {
             var target = e.target;
             var link = $(target).find('a').not('.table-confirm-btn, .x-editable, .reserve-product-btn');
@@ -219,20 +295,21 @@
                 window.location.href = link.attr('href');
             }
         });
-            $('.print-btn-truck').confirmation({
-                singleton: true,
-                popout: true,
-                onConfirm: function () {
-                    var btn = $(this);
-                    $.ajax({
-                        url: btn.attr('data-href'),
-                        success: function(data) {
-                            if (data) {
-                                location.href = data;
-                            }
-                        }
-                    })
-                }
-            });
+
+        $('#editable-dispatch_date').editable({
+            type: "date",
+            inputclass: 'form-control input-medium',
+            success: function () {
+                location.reload();
+            }
+        });
+        $('#editable-delivery_date').editable({
+            type: "date",
+            inputclass: 'form-control input-medium',
+            success: function () {
+                location.reload();
+            }
+        });
+
     });
 </script>

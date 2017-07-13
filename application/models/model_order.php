@@ -11,100 +11,11 @@ class ModelOrder extends Model
     {
         $columns = [
             array('dt' => 0, 'db' => "order_items.item_id"),
-            array('dt' => 1, 'db' => "CONCAT('<a href=\"/product?id=',
-                products.product_id,
-                '\">', IFNULL(products.visual_name, 'Enter Visual Name!'),
-                '</a>')"),
-            array('dt' => 2, 'db' => "IF(order_items.status_id > ".HOLD.", 
-                CONCAT(CAST(order_items.amount as decimal(64,3)), ' ', IFNULL(products.units, '')),
-                CONCAT('<a href=\"javascript:;\" class=\"x-editable x-amount\" data-pk=\"',
-                    order_items.item_id,
-                    '\" data-name=\"amount\" data-value=\"',
-                    IFNULL(order_items.amount, ''),
-                    '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Quantity\">',
-                        IFNULL(CONCAT(CAST(order_items.amount as decimal(64,3)), ' ', products.units), ''),
-                    '</a>'))"),
-            array('dt' => 3, 'db' => "IF(order_items.status_id > ".HOLD.", 
-            CONCAT(CAST(order_items.number_of_packs as decimal(64,3)), ' ', IFNULL(products.packing_type, '')),
-            CONCAT('<a href=\"javascript:;\" class=\"x-editable x-number_of_packs\" data-pk=\"',
-                order_items.item_id,
-                '\" data-name=\"number_of_packs\" data-value=\"',
-                IFNULL(order_items.number_of_packs, ''),
-                '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Number of Packs\">',
-                    IFNULL(CONCAT(CAST(order_items.number_of_packs as decimal(64,3)), ' ', products.packing_type), ''),
-                '</a>'))"),
-            array('dt' => 4, 'db' => "CONCAT(IF(products.units = 'm2' AND products.length NOT LIKE '%-%' 
-                                                                        AND products.width NOT LIKE '%-%',
-                                        IF(products.width = NULL, 'Width undefined', 
-                                        IF(products.length = NULL, 'Length undefined', 
-                                            CAST((order_items.amount * 1000 * 1000) / (products.width * products.length) as decimal(64, 2)))
-                                            ), 'n/a'), '')"),
-            array('dt' => 5, 'db' => "IFNULL(CAST(order_items.purchase_price as decimal(64, 2)), '')"),
-            array('dt' => 6, 'db' => "IFNULL(CAST(order_items.purchase_price * order_items.amount as decimal(64, 2)), '')"),
-            array('dt' => 7, 'db' => "IFNULL(CAST(order_items.sell_price as decimal(64, 2)), '')"),
-            array('dt' => 8, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-discount_rate\" data-pk=\"',
-                order_items.item_id,
-                '\" data-name=\"discount_rate\" data-value=\"',
-                IFNULL(order_items.discount_rate, ''),
-                '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Discount Rate, %\">',
-                    IFNULL(CONCAT(order_items.discount_rate, '%'), ''),
-                '</a>')"),
-            array('dt' => 9, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-sell-price\" data-pk=\"',
-                order_items.item_id,
-                '\" data-name=\"reduced-price\" data-value=\"',
-                IFNULL(CAST(order_items.sell_price * (100 - order_items.discount_rate)/100 as decimal(64, 2)), ''),
-                '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Reduced Price\">',
-                    IFNULL(CAST(order_items.sell_price * (100 - order_items.discount_rate)/100 as decimal(64, 2)), ''),
-                '</a>')"),
-            array('dt' => 10, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-sell-price\" data-pk=\"',
-                order_items.item_id,
-                '\" data-name=\"sell-value\" data-value=\"',
-                IFNULL(CAST((order_items.sell_price * 
-                (100 - order_items.discount_rate)) * order_items.amount/100 as decimal(64, 2)), ''),
-                '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Sell Value\">',
-                    IFNULL(CAST(((order_items.sell_price * 
-                (100 - order_items.discount_rate)) * order_items.amount/100) as decimal(64, 2)), ''),
-                '</a>')"),
-            array('dt' => 11, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-commission_rate\" data-pk=\"',
-                order_items.item_id,
-                '\" data-name=\"commission_rate\" data-value=\"',
-                IFNULL(order_items.commission_rate, ''),
-                '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Commission Rate\">',
-                    IFNULL((CONCAT(CAST(order_items.commission_rate as decimal(64, 2)), '%')), ''),
-                '</a>')"),
-            array('dt' => 12, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-commission_agent_bonus\" data-pk=\"',
-                order_items.item_id,
-                '\" data-name=\"commission_agent_bonus\" data-value=\"',
-                IFNULL(order_items.commission_agent_bonus, ''),
-                '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Commission Agent Bonus\">',
-                    IFNULL(CAST(order_items.commission_agent_bonus as decimal(64, 2)), ''),
-                '</a>')"),
-            array('dt' => 13, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-manager_bonus_rate\" data-pk=\"',
-                order_items.item_id,
-                '\" data-name=\"manager_bonus_rate\" data-value=\"',
-                IFNULL(order_items.manager_bonus_rate, ''),
-                '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Manager Bonus Rate, %\">',
-                    IFNULL(CONCAT(CAST(order_items.manager_bonus_rate as decimal(64, 2)), '%'), ''),
-                '</a>')"),
-            array('dt' => 14, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-manager_bonus\" data-pk=\"',
-                order_items.item_id,
-                '\" data-name=\"manager_bonus\" data-value=\"',
-                IFNULL(order_items.manager_bonus, ''),
-                '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Manager Bonus\">',
-                    IFNULL(CAST(order_items.manager_bonus as decimal(64, 2)), ''),
-                '</a>')"),
-            array('dt' => 15, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-item_status\" data-pk=\"',
-                order_items.item_id,
-                '\" data-name=\"status_id\" data-value=\"',
-                IFNULL(order_items.status_id, ''),
-                '\" data-url=\"/order/change_item_field\" data-original-title=\"Choose Item Status\">',
-                    IFNULL(status.name, ''),
-                '</a>')"),
-            array('dt' => 16, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
+            array('dt' => 1, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
                     IF(order_items.status_id = ". DRAFT .",
                     CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to hold the item?\" 
                                href=\"/order/hold?order_item_id=', order_items.item_id, '\" 
-                               class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" data-singleton=\"true\">
+                               class=\"table-confirm-btn\" data-placement=\"right\" data-popout=\"true\" data-singleton=\"true\">
                                 <span class=\'glyphicon glyphicon-star\' title=\'Hold Item\'></span>
                             </a>'), 
                     ''),
@@ -116,7 +27,7 @@ class ModelOrder extends Model
                                 '<a data-toggle=\"confirmation\" data-title=\"Are you sure to delete the item?\" 
                                     href=\"/order/delete_order_item?order_id=', order_items.manager_order_id, 
                                     '&order_item_id=', order_items.item_id, '\" 
-                                    class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" 
+                                    class=\"table-confirm-btn\" data-placement=\"right\" data-popout=\"true\" 
                                     data-singleton=\"true\">
                                         <span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span>
                                 </a>'), 
@@ -124,7 +35,7 @@ class ModelOrder extends Model
                     IF(order_items.status_id = ".ON_STOCK.",
                         CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to create issue for the item?\" 
                                    href=\"/order/issue?order_item_id=', order_items.item_id, '\" 
-                                   class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" 
+                                   class=\"table-confirm-btn\" data-placement=\"right\" data-popout=\"true\" 
                                    data-singleton=\"true\">
                                     <span class=\'fa fa-share\' title=\'Issue\'></span>
                                 </a>'),
@@ -137,12 +48,101 @@ class ModelOrder extends Model
                     IF(order_items.status_id >= ".SENT_TO_LOSIGT." AND " . intval(($this->user->role_id == ROLE_ADMIN)) .",
                         CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to return this item to manager?\" 
                                    href=\"/order/hold?order_item_id=', order_items.item_id, '\" 
-                                   class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" 
+                                   class=\"table-confirm-btn\" data-placement=\"right\" data-popout=\"true\" 
                                    data-singleton=\"true\">
                                     <span class=\'glyphicon glyphicon-pencil\' title=\'Return to Manager\'></span>
                                 </a>'),
                         ''),
                 '</div>')"),
+            array('dt' => 2, 'db' => "CONCAT('<a href=\"/product?id=',
+                products.product_id,
+                '\">', IFNULL(products.visual_name, 'Enter Visual Name!'),
+                '</a>')"),
+            array('dt' => 3, 'db' => "IF(order_items.status_id > ".HOLD.", 
+                CONCAT(CAST(order_items.amount as decimal(64,3)), ' ', IFNULL(products.units, '')),
+                CONCAT('<a href=\"javascript:;\" class=\"x-editable x-amount\" data-pk=\"',
+                    order_items.item_id,
+                    '\" data-name=\"amount\" data-value=\"',
+                    IFNULL(order_items.amount, ''),
+                    '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Quantity\">',
+                        IFNULL(CONCAT(CAST(order_items.amount as decimal(64,3)), ' ', products.units), ''),
+                    '</a>'))"),
+            array('dt' => 4, 'db' => "IF(order_items.status_id > ".HOLD.", 
+            CONCAT(CAST(order_items.number_of_packs as decimal(64,3)), ' ', IFNULL(products.packing_type, '')),
+            CONCAT('<a href=\"javascript:;\" class=\"x-editable x-number_of_packs\" data-pk=\"',
+                order_items.item_id,
+                '\" data-name=\"number_of_packs\" data-value=\"',
+                IFNULL(order_items.number_of_packs, ''),
+                '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Number of Packs\">',
+                    IFNULL(CONCAT(CAST(order_items.number_of_packs as decimal(64,3)), ' ', products.packing_type), ''),
+                '</a>'))"),
+            array('dt' => 5, 'db' => "CONCAT(IF(products.units = 'm2' AND products.length NOT LIKE '%-%' 
+                                                                        AND products.width NOT LIKE '%-%',
+                                        IF(products.width = NULL, 'Width undefined', 
+                                        IF(products.length = NULL, 'Length undefined', 
+                                            CAST((order_items.amount * 1000 * 1000) / (products.width * products.length) as decimal(64, 2)))
+                                            ), 'n/a'), '')"),
+            array('dt' => 6, 'db' => "IFNULL(CAST(order_items.purchase_price as decimal(64, 2)), '')"),
+            array('dt' => 7, 'db' => "IFNULL(CAST(order_items.purchase_price * order_items.amount as decimal(64, 2)), '')"),
+            array('dt' => 8, 'db' => "IFNULL(CAST(order_items.sell_price as decimal(64, 2)), '')"),
+            array('dt' => 9, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-discount_rate\" data-pk=\"',
+                order_items.item_id,
+                '\" data-name=\"discount_rate\" data-value=\"',
+                IFNULL(order_items.discount_rate, ''),
+                '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Discount Rate, %\">',
+                    IFNULL(CONCAT(order_items.discount_rate, '%'), ''),
+                '</a>')"),
+            array('dt' => 10, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-sell-price\" data-pk=\"',
+                order_items.item_id,
+                '\" data-name=\"reduced-price\" data-value=\"',
+                IFNULL(CAST(order_items.sell_price * (100 - order_items.discount_rate)/100 as decimal(64, 2)), ''),
+                '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Reduced Price\">',
+                    IFNULL(CAST(order_items.sell_price * (100 - order_items.discount_rate)/100 as decimal(64, 2)), ''),
+                '</a>')"),
+            array('dt' => 11, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-sell-price\" data-pk=\"',
+                order_items.item_id,
+                '\" data-name=\"sell-value\" data-value=\"',
+                IFNULL(CAST((order_items.sell_price * 
+                (100 - order_items.discount_rate)) * order_items.amount/100 as decimal(64, 2)), ''),
+                '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Sell Value\">',
+                    IFNULL(CAST(((order_items.sell_price * 
+                (100 - order_items.discount_rate)) * order_items.amount/100) as decimal(64, 2)), ''),
+                '</a>')"),
+            array('dt' => 12, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-commission_rate\" data-pk=\"',
+                order_items.item_id,
+                '\" data-name=\"commission_rate\" data-value=\"',
+                IFNULL(order_items.commission_rate, ''),
+                '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Commission Rate\">',
+                    IFNULL((CONCAT(CAST(order_items.commission_rate as decimal(64, 2)), '%')), ''),
+                '</a>')"),
+            array('dt' => 13, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-commission_agent_bonus\" data-pk=\"',
+                order_items.item_id,
+                '\" data-name=\"commission_agent_bonus\" data-value=\"',
+                IFNULL(order_items.commission_agent_bonus, ''),
+                '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Commission Agent Bonus\">',
+                    IFNULL(CAST(order_items.commission_agent_bonus as decimal(64, 2)), ''),
+                '</a>')"),
+            array('dt' => 14, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-manager_bonus_rate\" data-pk=\"',
+                order_items.item_id,
+                '\" data-name=\"manager_bonus_rate\" data-value=\"',
+                IFNULL(order_items.manager_bonus_rate, ''),
+                '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Manager Bonus Rate, %\">',
+                    IFNULL(CONCAT(CAST(order_items.manager_bonus_rate as decimal(64, 2)), '%'), ''),
+                '</a>')"),
+            array('dt' => 15, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-manager_bonus\" data-pk=\"',
+                order_items.item_id,
+                '\" data-name=\"manager_bonus\" data-value=\"',
+                IFNULL(order_items.manager_bonus, ''),
+                '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Manager Bonus\">',
+                    IFNULL(CAST(order_items.manager_bonus as decimal(64, 2)), ''),
+                '</a>')"),
+            array('dt' => 16, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-item_status\" data-pk=\"',
+                order_items.item_id,
+                '\" data-name=\"status_id\" data-value=\"',
+                IFNULL(order_items.status_id, ''),
+                '\" data-url=\"/order/change_item_field\" data-original-title=\"Choose Item Status\">',
+                    IFNULL(status.name, ''),
+                '</a>')"),
         ];
 
 //        $table = $this->full_products_table . ' join order_items on products.product_id = order_items.product_id';
@@ -171,6 +171,7 @@ class ModelOrder extends Model
 
     var $order_columns_names = [
         'Id',
+        'Actions',
         'Product',
         'Quantity',
         '# of Packs',
@@ -186,7 +187,6 @@ class ModelOrder extends Model
         'Manager Bonus Rate (%)',
         'Manager Bonus',
         'Status',
-        'Actions'
     ];
 
 //    function cancelOrder($order_id, $cancel_reason)
