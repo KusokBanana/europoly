@@ -306,4 +306,12 @@ class ModelSuppliers_order extends ModelOrder
         return $docs;
     }
 
+    function getSums($supplier_order_id)
+    {
+        $truckItems = $this->getAssoc("SELECT product_id, number_of_packs, sell_price, amount, purchase_price, amount
+                        FROM order_items WHERE supplier_order_id = $supplier_order_id");
+
+        return parent::getSums($truckItems);
+    }
+
 }

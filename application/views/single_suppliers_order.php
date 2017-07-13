@@ -77,6 +77,25 @@
             </div>
         </div>
         <div class="row">
+            <div class="col-xs-3">
+                <div>
+                    Quantity: <?= round($this->sums['amount'], 3) ?>
+                </div>
+                <br>
+                <div>
+                    # of packs Sum: <?= round($this->sums['number_of_packs'], 3) ?>
+                </div>
+                <br>
+                <div>
+                    Purchase Value Sum: <?= round($this->sums['purchase_value'], 2) ?>
+                </div>
+                <br>
+                <div>
+                    Weight Sum: <?= round($this->sums['weight'], 3) ?>
+                </div>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-xs-12 table-scrollable"">
                 <table class="table table-striped table-hover" id="table_order_items">
                     <thead>

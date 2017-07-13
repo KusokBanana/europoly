@@ -112,7 +112,7 @@
         <div class="row">
             <div class="col-xs-3">
                 <div>
-                    Weight Sum: <?= round($this->sums['weight'], 3) ?>
+                    Quantity: <?= round($this->sums['amount'], 3) ?>
                 </div>
                 <br>
                 <div>
@@ -120,7 +120,11 @@
                 </div>
                 <br>
                 <div>
-                    Total price Sum: <?= round($this->sums['totalPrice'], 2) ?>
+                    Purchase Value Sum: <?= round($this->sums['purchase_value'], 2) ?>
+                </div>
+                <br>
+                <div>
+                    Weight Sum: <?= round($this->sums['weight'], 3) ?>
                 </div>
             </div>
         </div>
@@ -308,8 +312,6 @@
                         modal.find('#splitSubmit').text('Put');
                         modal.find('form').attr('action', '/truck/put_to_the_warehouse?action_id=2');
                         var tbody = modal.find('table tbody').empty();
-
-                        console.log(data);
 
                         modal.find('.select-block').empty().append('<label for="warehouse_id_choose">Warehouse</label>'+
                             '<select name="warehouse_id" id="warehouse_id_choose" class="form-control"></select>');

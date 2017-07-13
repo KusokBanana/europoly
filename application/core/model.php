@@ -824,4 +824,32 @@ abstract class Model extends mysqli
         return ['selects' => [], 'rows' => []];
     }
 
+    public function getSums($items)
+    {
+
+        $weight = 0;
+        $packsNumber = 0;
+        $totalPrice = 0;
+        $purchaseValue = 0;
+        $amount = 0;
+        if (!empty($items)) {
+            foreach ($items as $item) {
+                $product = $this->getFirst("SELECT weight FROM products WHERE product_id = ${item['product_id']}");
+                $weight += $product['weight'] !== null ? $product['weight'] : 0;
+                $packsNumber += $item['number_of_packs'];
+                $amount += $item['amount'];
+                $totalPrice += floatval($item['sell_price']) * floatval($item['amount']);
+                $purchaseValue += floatval($item['purchase_price']) * floatval($item['amount']);
+            }
+        }
+        return [
+            'weight' => $weight,
+            'amount' => $amount,
+            'number_of_packs' => $packsNumber,
+            'totalPrice' => $totalPrice,
+            'purchase_value' => $purchaseValue,
+        ];
+
+    }
+
 }

@@ -513,27 +513,13 @@ class ModelTruck extends ModelOrder
 
         return ['price' => $customPrice, 'list' => $customsList, 'name' => $nameOfCurrentCustom];
     }
+
     function getSums($truck_id)
     {
-        $truckItems = $this->getAssoc("SELECT product_id, number_of_packs, sell_price, amount 
+        $truckItems = $this->getAssoc("SELECT product_id, number_of_packs, sell_price, amount, purchase_price, amount
                         FROM order_items WHERE truck_id = $truck_id");
 
-        $weight = 0;
-        $packsNumber = 0;
-        $totalPrice = 0;
-        if (!empty($truckItems)) {
-            foreach ($truckItems as $truckItem) {
-                $product = $this->getFirst("SELECT weight FROM products WHERE product_id = ${truckItem['product_id']}");
-                $weight += $product['weight'] !== null ? $product['weight'] : 0;
-                $packsNumber += $truckItem['number_of_packs'];
-                $totalPrice += floatval($truckItem['sell_price']) * floatval($truckItem['amount']);
-            }
-        }
-        return [
-            'weight' => $weight,
-            'number_of_packs' => $packsNumber,
-            'totalPrice' => $totalPrice
-        ];
+        return parent::getSums($truckItems);
     }
 
     public function getDocuments($truck_id)

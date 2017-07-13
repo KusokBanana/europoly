@@ -49,6 +49,7 @@ class ControllerSuppliers_order extends Controller
 
         $this->view->full_product_hidden_columns = $this->model->full_product_hidden_columns;
         $this->view->clients = $this->model->getClientsIdName();
+        $this->view->sums = $this->model->getSums($_GET['id']);
         $this->view->status = $this->model->getOrderStatus($_GET['id']);
         $this->view->statusList = $this->model->getStatusList();
         $this->view->supplier = $this->model->getSupplier($this->view->order['supplier_id']);
