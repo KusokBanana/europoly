@@ -11,7 +11,7 @@ class ModelDelivery_notes extends Model
     }
 
 
-    var $tableNames = ['table_delivery_notes', 'table_delivery_note'];
+    var $tableNames = ['table_delivery_notes', 'table_delivery_notes_reduced'];
 
 
     var $delivery_notes_table = 'delivery_note '.
@@ -23,6 +23,8 @@ class ModelDelivery_notes extends Model
                  'LEFT JOIN clients as commission on (orders.commission_agent_id = commission.client_id)'.
                  'LEFT JOIN users as managers on orders.sales_manager_id = managers.user_id '.
                  'LEFT JOIN legal_entities ON (orders.legal_entity_id = legal_entities.legal_entity_id) ';
+
+    var $delivery_notes_table_reduced = 'delivery_note LEFT JOIN orders ON (delivery_note.order_id = orders.order_id)';
 
     var $delivery_notes_columns = array(
         array('dt' => 0, 'db' => 'delivery_note.id'),
@@ -43,6 +45,15 @@ class ModelDelivery_notes extends Model
             managers.first_name, ' ', managers.last_name, '</a>')"),
     );
 
+    var $delivery_notes_columns_reduced = array(
+        array('dt' => 0, 'db' => 'delivery_note.id'),
+        array('dt' => 1, 'db' => "CONCAT('<a href=\"\delivery_notes/view?id=', delivery_note.id, '\">', 
+            delivery_note.id, '</a>')"),
+        array('dt' => 2, 'db' => "delivery_note.date"),
+        array('dt' => 3, 'db' => "CONCAT('<a href=\"/order?id=', delivery_note.order_id, '\">', 
+            IFNULL(orders.visible_order_id, orders.order_id), '</a>')")
+    );
+
     var $delivery_notes_columns_names = array(
         '_id',
         'Delivery Note ID',
@@ -56,7 +67,50 @@ class ModelDelivery_notes extends Model
         'Responsible Manager',
     );
 
+    var $delivery_notes_columns_names_reduced = array(
+        '_id',
+        'Delivery Note ID',
+        'Date',
+        'Order Id',
+    );
+
     var $columns = [
+        array('dt' => 0, 'db' => "order_items.item_id"),
+        array('dt' => 1, 'db' => "CONCAT('<a href=\"/product?id=',
+                products.product_id,
+                '\">', IFNULL(products.visual_name, 'Enter Visual Name!'),
+                '</a>')"),
+        array('dt' => 2, 'db' => "CONCAT(CAST(order_items.amount as decimal(64, 3)), ' ', IFNULL(products.units, ''))"),
+        array('dt' => 3, 'db' => "CONCAT(CAST(order_items.number_of_packs as decimal(64, 3)), ' ', 
+                                        IFNULL(products.packing_type, ''))"),
+        array('dt' => 4, 'db' => "CONCAT(IF(products.units = 'm2' AND products.length NOT LIKE '%-%' 
+                                                                        AND products.width NOT LIKE '%-%',
+                                        IF(products.width = NULL, 'Width undefined', 
+                                        IF(products.length = NULL, 'Length undefined', 
+                                            CAST((order_items.amount * 1000 * 1000) / (products.width * products.length) 
+                                            as decimal(64, 2)))), 'n/a'), '')"),
+        array('dt' => 5, 'db' => "IFNULL(CAST(order_items.purchase_price as decimal(64, 2)), '')"),
+        array('dt' => 6, 'db' => "IFNULL(CAST(order_items.purchase_price * order_items.amount as decimal(64, 2)), '')"),
+        array('dt' => 7, 'db' => "IFNULL(CAST(order_items.sell_price as decimal(64, 2)), '')"),
+        array('dt' => 8, 'db' => "CONCAT(CAST(order_items.discount_rate as decimal(64, 3)), '%')"),
+        array('dt' => 9, 'db' => "CAST(order_items.sell_price * (100 - order_items.discount_rate)/100 as decimal(64, 2))"),
+        array('dt' => 10, 'db' => "CAST(((order_items.sell_price * 
+                (100 - order_items.discount_rate)) * order_items.amount/100) as decimal(64, 2))"),
+        array('dt' => 11, 'db' => "CONCAT(CAST(order_items.commission_rate as decimal(64, 2)), '%')"),
+        array('dt' => 12, 'db' => "CAST(order_items.commission_agent_bonus as decimal(64, 2))"),
+        array('dt' => 13, 'db' => "CAST(order_items.manager_bonus_rate as decimal(64, 2))"),
+        array('dt' => 14, 'db' => "CAST(order_items.manager_bonus as decimal(64, 2))"),
+        array('dt' => 15, 'db' => "status.name"),
+        array('dt' => 16, 'db' => "CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to delete the item?\" 
+                                    href=\"/delivery_notes/delete_item?item_id=', delivery_note_items.id, 
+                                    '&order_item_id=', order_items.item_id, '\" 
+                                    class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" 
+                                    data-singleton=\"true\">
+                                        <span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span>
+                                </a>')"),
+    ];
+
+    var $columns_reduced = [
         array('dt' => 0, 'db' => "order_items.item_id"),
         array('dt' => 1, 'db' => "CONCAT('<a href=\"/product?id=',
                 products.product_id,
@@ -148,7 +202,7 @@ class ModelDelivery_notes extends Model
             'db_table' => $this->delivery_notes_table,
             'page' => 'deliveryNotes',
             'table_name' => $this->tableNames[0],
-            'primary' => 'delivery_note.id',
+            'primary' => 'delivery_note_items.id',
         ];
 
         $this->sspComplex($ssp['db_table'], $ssp['primary'],
@@ -175,7 +229,6 @@ class ModelDelivery_notes extends Model
         'Status',
         'Actions'
     ];
-
 
     function getDt($input, $printOpt)
     {
@@ -205,6 +258,30 @@ class ModelDelivery_notes extends Model
 
         $this->sspComplex($ssp['db_table'], $ssp['primary'],
             $ssp['columns'], $input, null, null);
+    }
+
+    function getDtReduced($input)
+    {
+
+        $where = '';
+        if ($this->user->role_id == ROLE_SALES_MANAGER) {
+
+        }
+
+        $columns = $this->getColumns($this->delivery_notes_columns_reduced, 'deliveryNotes', $this->tableNames[1]);
+
+        $ssp = [
+            'columns' => $columns,
+            'columns_names' => $this->delivery_notes_columns_names_reduced,
+            'db_table' => $this->delivery_notes_table_reduced,
+            'page' => 'deliveryNotes',
+            'table_name' => $this->tableNames[1],
+            'primary' => 'delivery_note.id',
+        ];
+
+        $this->sspComplex($ssp['db_table'], $ssp['primary'],
+            $ssp['columns'], $input, null, $where);
+
     }
 
     function getSelectsModal()

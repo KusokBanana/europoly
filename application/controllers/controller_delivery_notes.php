@@ -21,7 +21,12 @@ class ControllerDelivery_notes extends Controller
         $this->view->tableNames = $this->model->tableNames;
         $this->view->column_names = $this->model->getColumns($this->model->delivery_notes_columns_names,
             $this->page, $this->model->tableNames[0], true);
+        $this->view->column_names_reduced =
+            $this->model->getColumns($this->model->delivery_notes_columns_names_reduced,
+                $this->page, $this->model->tableNames[1], true);
         $this->view->originalColumns = $roles->returnModelNames($this->model->delivery_notes_columns_names, $this->page);
+        $this->view->originalColumns_reduced =
+            $roles->returnModelNames($this->model->delivery_notes_columns_names_reduced, $this->page);
 
         $array = $this->model->getSelects();
         $this->view->selects = $array['selects'];
@@ -43,6 +48,12 @@ class ControllerDelivery_notes extends Controller
 
         $this->model->getDt($_POST, $print);
     }
+
+    function action_dt_reduced()
+    {
+        $this->model->getDtReduced($_POST);
+    }
+
 
     function action_view()
     {
