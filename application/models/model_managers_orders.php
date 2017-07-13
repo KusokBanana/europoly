@@ -47,6 +47,7 @@ class ModelManagers_orders extends Model
         array('dt' => 31, 'db' => "CAST(order_items.commission_agent_bonus as decimal(64, 2))"),
         array('dt' => 32, 'db' => "order_items.production_date"),
         array('dt' => 33, 'db' => "IFNULL(CONCAT(order_items.reserve_since_date, ' - ',order_items.reserve_till_date), '')"),
+        array('dt' => 33, 'db' => "CONCAT(order_items.truck_id, ', ', trucks.dispatch_date, '-', trucks.delivery_date)"),
         array('dt' => 34, 'db' => "orders.comment"),
     ];
 
@@ -85,6 +86,7 @@ class ModelManagers_orders extends Model
          'Commission Agent Bonus',
          'Production Date',
          'Reserve Period',
+         'Truck',
          'Comments',
     ];
 
