@@ -39,23 +39,6 @@
 </div>
 
 <script>
-    $.ajax({
-        url: 'truck/get_active_trucks',
-        success: function (data) {
-            var ids = JSON.parse(data);
-            var suppliersSelect = $('#suppliers_order_id');
-            var options = '<option selected value="0">New Order</option>';
-            ids.forEach(function(item) {
-                if (item) {
-                    options += '<option value="' + item +'">'+item+'</option>'
-                }
-            });
-            suppliersSelect.html(options);
-        }
-    })
-</script>
-
-<script>
     $(document).ready(function() {
         var $table_order_item_product = $('#table_supplier_order_item_product');
         $table_order_item_product.find('tbody').on('click', 'tr', function () {

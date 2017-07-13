@@ -337,4 +337,55 @@ class ModelSuppliers_orders extends ModelManagers_orders
                 SET status_id = $orderStatus WHERE order_id = $orderId");
     }
 
+    public function getItems($ids)
+    {
+        if (!$ids)
+            return false;
+
+        $items = $this->getAssoc("SELECT order_items.amount as amount, order_items.item_id, " .
+            "products.visual_name as name, order_items.truck_id, order_items.status_id as status_id " .
+            "FROM order_items " .
+            "LEFT JOIN products ON (order_items.product_id = products.product_id) " .
+            "WHERE order_items.item_id IN ($ids)");
+
+        return json_encode($items);
+    }
+
+    public function loadIntoTruck($amounts, $truck_id)
+    {
+
+        $toTruckIds = [];
+        require_once 'model_order.php';
+        $orderModel = new ModelOrder();
+        foreach ($amounts as $item_id => $amount) {
+
+            $item = $this->getFirst("SELECT item_id, status_id, warehouse_arrival_date, amount FROM order_items 
+                  WHERE item_id = $item_id");
+            if (floatval($item['amount']) > floatval($amount)) {
+                $item_id = $orderModel->split($item_id, $amount);
+                if (!$item_id)
+                    continue;
+            } elseif (floatval($item['amount']) < floatval($amount)) {
+                continue;
+            }
+
+            $toTruckIds[] = $item_id;
+        }
+
+        if (!empty($toTruckIds)) {
+            require_once 'model_truck.php';
+            $truckModel = new ModelTruck();
+            return $truckModel->addTruckItem($toTruckIds, $truck_id);
+        }
+
+    }
+
+
+    function getActiveTrucks()
+    {
+        $trucks = $this->getAssoc("SELECT id, id as text FROM trucks");
+        array_unshift($trucks, ['id' => 0, 'text' => 'New Truck']);
+        return $trucks;
+    }
+
 }

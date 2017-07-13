@@ -34,6 +34,7 @@ class ControllerSuppliers_orders extends Controller
         $this->view->selects = $selects;
         $this->view->rows = $rows;
         $this->view->suppliers = $this->model->getSuppliers();
+        $this->view->trucks = $this->model->getActiveTrucks();
 
         $this->view->build('templates/template.php', 'suppliers_orders.php');
     }
@@ -49,7 +50,7 @@ class ControllerSuppliers_orders extends Controller
             ];
         }
 
-        $this->model->getDTSuppliersOrders($_GET, $print);
+        $this->model->getDTSuppliersOrders($_POST, $print);
     }
 
     function action_dt_suppliers_orders_reduce()
@@ -95,6 +96,25 @@ class ControllerSuppliers_orders extends Controller
         if (isset($_GET['products']))
             $products = json_decode($_GET['products'], true);
         $this->model->getDTSuppliersOrdersToTruck($this->model->suppliers_orders_column_names, $products);
+    }
+
+    function action_load_into_truck()
+    {
+        $action_id = $_GET['action_id'];
+
+        switch ($action_id) {
+            case 1:
+                $ids = Helper::arrGetVal($_GET, 'ids');
+                echo $this->model->getItems($ids);
+                return true;
+            case 2:
+                $truck_id = Helper::arrGetVal($_POST, 'truck_id');
+                $amounts = Helper::arrGetVal($_POST, 'amounts');
+                $resTruckId = $this->model->loadIntoTruck($amounts, $truck_id);
+                $location = ($resTruckId) ? '/truck?id='.$resTruckId : $_SERVER['HTTP_REFERER'];
+                header("Location: " . $location);
+        }
+
     }
 
 }

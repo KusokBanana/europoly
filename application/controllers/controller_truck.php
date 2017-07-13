@@ -93,13 +93,6 @@ class ControllerTruck extends Controller
         header("Location: " . $_SERVER['HTTP_REFERER']);
     }
 
-    function action_get_active_trucks()
-    {
-        $orders = $this->model->getActiveTrucks();
-        echo json_encode($orders);
-        return;
-    }
-
     function action_dt_order_items()
     {
         $this->model->getDTTrucks($_GET['order_id'], $_GET);

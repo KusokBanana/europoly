@@ -197,19 +197,6 @@ class ModelTruck extends ModelOrder
         return $truck_id;
     }
 
-    function getActiveTrucks()
-    {
-        $trucks = $this->getAssoc("SELECT id FROM trucks"); // add where
-        $truckIds = [];
-        if (!empty($trucks)) {
-            foreach ($trucks as $truck) {
-                $truckIds[] = $truck['id'];
-            }
-        }
-        return $truckIds;
-    }
-
-
     function getDTOrderItems($order_id, $input)
     {
         $table = $this->full_products_table . ' join trucks_items on products.product_id = trucks_items.product_id';

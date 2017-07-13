@@ -311,7 +311,7 @@
 
                         console.log(data);
 
-                        modal.find('table').before('<label for="warehouse_id_choose">Warehouse</label>'+
+                        modal.find('.select-block').empty().append('<label for="warehouse_id_choose">Warehouse</label>'+
                             '<select name="warehouse_id" id="warehouse_id_choose" class="form-control"></select>');
                         $.each(warehouses, function() {
                             var option = '<option value="' + this.value + '">' + this.text + '</option>';

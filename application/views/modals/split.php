@@ -7,6 +7,7 @@
                     <h4 class="modal-title"></h4>
                 </div>
                 <div class="modal-body">
+                    <div class="select-block"></div>
                     <table class="table">
                         <thead>
                         <tr>
