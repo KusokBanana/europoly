@@ -38,4 +38,15 @@ class Cache {
         $this->fileName = __DIR__ . '/../../cache/' . $roleId . '_' . $fileName;
     }
 
+    public function getOrSet($fileName, \Closure $closure)
+    {
+
+        $value = $this->read($fileName);
+        if (!$value) {
+            $value = call_user_func($closure, $this);
+            $this->write($fileName, $value);
+        }
+        return $value;
+    }
+
 }

@@ -5,6 +5,8 @@ class ModelManagers_orders extends Model
 
     var $tableNames = ["table_managers_orders", "table_managers_orders_reduced"];
 
+    public $page = '';
+
     var $managers_orders_columns = [
         array('dt' => 0, 'db' => "order_items.item_id"),
         array('dt' => 1, 'db' => "CONCAT('<a href=\"/order?id=', order_items.manager_order_id, '\">', 
@@ -47,8 +49,8 @@ class ModelManagers_orders extends Model
         array('dt' => 31, 'db' => "CAST(order_items.commission_agent_bonus as decimal(64, 2))"),
         array('dt' => 32, 'db' => "order_items.production_date"),
         array('dt' => 33, 'db' => "IFNULL(CONCAT(order_items.reserve_since_date, ' - ',order_items.reserve_till_date), '')"),
-        array('dt' => 33, 'db' => "CONCAT(order_items.truck_id, ', ', trucks.dispatch_date, '-', trucks.delivery_date)"),
-        array('dt' => 34, 'db' => "orders.comment"),
+        array('dt' => 34, 'db' => "CONCAT(order_items.truck_id, ', ', trucks.dispatch_date, '-', trucks.delivery_date)"),
+        array('dt' => 35, 'db' => "orders.comment"),
     ];
 
     var $managers_orders_column_names = [
@@ -146,62 +148,71 @@ class ModelManagers_orders extends Model
     var $whereCondition = "order_items.manager_order_id IS NOT NULL AND order_items.is_deleted = 0";
 
 
-    function getDTManagersOrders($input, $printOpt)
+    /**
+     * @param string $type
+     * @return array = ['columns', 'columns_names', 'db_table', 'table_name', 'primary', 'page']
+     */
+    function getSSPData($type = 'general')
     {
 
-        if ($this->user->role_id == ROLE_SALES_MANAGER) {
-            $this->whereCondition .= " AND orders.sales_manager_id = " . $this->user->user_id;
-            $this->whereCondition = '(' . $this->whereCondition . ')' . " OR client.sales_manager_id = " .
-                $this->user->user_id . " OR client.operational_manager_id = " . $this->user->user_id;
-            $this->unLinkStrings($this->managers_orders_columns, [24, 25]);
+        $ssp = ['page' => $this->page];
+
+        switch ($type) {
+            case 'general':
+
+                if ($this->user->role_id == ROLE_SALES_MANAGER) {
+                    $this->whereCondition .= " AND orders.sales_manager_id = " . $this->user->user_id;
+                    $this->whereCondition = '(' . $this->whereCondition . ')' . " OR client.sales_manager_id = " .
+                        $this->user->user_id . " OR client.operational_manager_id = " . $this->user->user_id;
+                    $this->unLinkStrings($this->managers_orders_columns, [24, 25]);
+                }
+                $ssp['columns'] = $this->getColumns($this->managers_orders_columns, $this->page,
+                    $this->tableNames[0]);
+                $ssp['columns_names'] = $this->getColumns($this->managers_orders_column_names, $this->page,
+                    $this->tableNames[0], true);
+                $ssp['db_table'] = $this->managers_orders_table;
+                $ssp['table_name'] = $this->tableNames[0];
+                $ssp['primary'] = 'order_items.item_id';
+                break;
+
+            case 'reduced':
+
+                if ($this->user->role_id == ROLE_SALES_MANAGER) {
+                    $this->whereCondition = "orders.sales_manager_id = " . $this->user->user_id;
+                    $this->whereCondition .= " OR client.sales_manager_id = " . $this->user->user_id .
+                        " OR client.operational_manager_id = " . $this->user->user_id;
+                    $this->unLinkStrings($this->managers_orders_reduced_columns, [9, 10]);
+                }
+                $ssp['columns'] = $this->getColumns($this->managers_orders_reduced_columns, $this->page,
+                    $this->tableNames[1]);
+                $ssp['columns_names'] = $this->getColumns($this->managers_orders_reduced_column_names, $this->page,
+                    $this->tableNames[1], true);
+                $ssp['db_table'] = $this->managers_orders_table_reduce;
+                $ssp['table_name'] = $this->tableNames[1];
+                $ssp['primary'] = 'orders.order_id';
+                break;
         }
 
-        $columns = $this->getColumns($this->managers_orders_columns, 'managersOrders', $this->tableNames[0]);
+        $ssp['where'] = $this->whereCondition;
 
-        $ssp = [
-            'columns' => $columns,
-            'columns_names' => $this->managers_orders_column_names,
-            'db_table' => $this->managers_orders_table,
-            'page' => 'managersOrders',
-            'table_name' => $this->tableNames[0],
-            'primary' => 'order_items.item_id',
-        ];
+        return $ssp;
 
-        if ($printOpt) {
-
-            $printOpt['where'] = $this->whereCondition;
-            echo $this->printTable($input, $ssp, $printOpt);
-            return true;
-
-        }
-
-        $this->sspComplex($ssp['db_table'], $ssp['primary'],
-            $ssp['columns'], $input, null, $this->whereCondition);
     }
 
-    function getDTManagersOrdersReduced($input)
+    function getDTManagersOrders($input, $printOpt, $isReduced = false)
     {
-        $where = '';
-        if ($this->user->role_id == ROLE_SALES_MANAGER) {
-            $where = "orders.sales_manager_id = " . $this->user->user_id;
-            $where .= " OR client.sales_manager_id = " . $this->user->user_id .
-                " OR client.operational_manager_id = " . $this->user->user_id;
-            $this->unLinkStrings($this->managers_orders_reduced_columns, [9, 10]);
+
+        $type = $isReduced ? 'reduced' : 'general';
+        $ssp = $this->getSSPData($type);
+
+        if ($printOpt) {
+            $printOpt['where'] = ['where'];
+            echo $this->printTable($input, $ssp, $printOpt);
+            return true;
         }
 
-        $columns = $this->getColumns($this->managers_orders_reduced_columns, 'managersOrders', $this->tableNames[1]);
-
-        $ssp = [
-            'columns' => $columns,
-            'columns_names' => $this->managers_orders_reduced_column_names,
-            'db_table' => $this->managers_orders_table_reduce,
-            'page' => 'managersOrders',
-            'table_name' => $this->tableNames[1],
-            'primary' => 'orders.order_id',
-        ];
-
         $this->sspComplex($ssp['db_table'], $ssp['primary'],
-            $ssp['columns'], $input, null, $where);
+            $ssp['columns'], $input, null, $ssp['where']);
     }
 
     function getDTManagersOrdersToSuppliersOrder($input, $products)
@@ -219,44 +230,20 @@ class ModelManagers_orders extends Model
             $this->managers_orders_columns, $input, null, $where);
     }
 
-    function getSelects($isReduced = false)
+    function getSelects($ssp, $isReduced = false)
     {
+
+        $sspJson = $this->getSspComplexJson($ssp['db_table'], $ssp['primary'],
+            $ssp['columns'], null, null, $ssp['where']);
+        $rowValues = json_decode($sspJson, true)['data'];
+        $columns = $ssp['columns_names'];
+
         if (!$isReduced) {
-            $tableNames = $this->getColumns($this->managers_orders_columns,
-                'managersOrders', $this->tableNames[0], true);
-
-            if ($this->user->role_id == ROLE_SALES_MANAGER) {
-                $where = " orders.sales_manager_id = " . $this->user->user_id;
-                $this->whereCondition = '((' . $where . ')' . " OR client.sales_manager_id = " . $this->user->user_id .
-                    " OR client.operational_manager_id = " . $this->user->user_id . ') AND order_items.is_deleted = 0';
-                $this->unLinkStrings($tableNames, [9, 10]);
-            }
-
-            $ssp = $this->getSspComplexJson($this->managers_orders_table, "order_items.item_id",
-                $tableNames, null, null, $this->whereCondition);
-            $columns = $this->getColumns($this->managers_orders_column_names, 'managersOrders', $this->tableNames[0]);
-            $rowValues = json_decode($ssp, true)['data'];
             $ignoreArray = ['Manager Order ID', 'Quantity', 'Number of Packs', 'Total Weight', 'Purchase Price / Unit',
                 'Total Purchase Price', 'Sell Price / Unit', 'Total Sell Price', 'Downpayment', 'Downpayment rate',
                 'Supplier Order ID', 'Truck ID'];
         } else {
-
-            $tableNames = $this->getColumns($this->managers_orders_reduced_columns,
-                'managersOrders', $this->tableNames[1], true);
-
-            if ($this->user->role_id == ROLE_SALES_MANAGER) {
-                $this->whereCondition = "orders.sales_manager_id = " . $this->user->user_id;
-                $this->whereCondition .= " OR client.sales_manager_id = " . $this->user->user_id .
-                    " OR client.operational_manager_id = " . $this->user->user_id;
-                $this->unLinkStrings($tableNames, [9, 10]);
-            }
-
-            $ssp = $this->getSspComplexJson($this->managers_orders_table_reduce, "orders.order_id",
-                $tableNames, null, null, $this->whereCondition);
-            $columns = $this->getColumns($this->managers_orders_reduced_column_names, 'managersOrders', $this->tableNames[1]);
-            $rowValues = json_decode($ssp, true)['data'];
             $ignoreArray = [];
-
         }
 
         if (!empty($rowValues)) {
@@ -278,8 +265,37 @@ class ModelManagers_orders extends Model
                         $selects[$name][] = $value;
                 }
             }
-            return ['selects' => $selects, 'rows' => $rowValues];
+            return ['selectSearch' => $selects, 'filterSearchValues' => $rowValues];
         }
+        return [];
+    }
+
+    /**
+     * @param string $type
+     * @return array = ['columns', 'columns_names', 'db_table', 'table_name', 'primary', 'page', 'originalColumns',
+     *                      'selectSearch', 'filterSearchValues']
+     */
+    public function getTableData($type = 'general')
+    {
+        $data = $this->getSSPData($type);
+        $roles = new Roles();
+
+        switch ($type) {
+            case 'general':
+                $names = $this->managers_orders_column_names;
+                $cache = new Cache();
+                $selects = $cache->getOrSet('managers_orders_selects', function() use($data) {
+                    return $this->getSelects($data);
+                });
+                break;
+            case 'reduced':
+                $names = $this->managers_orders_reduced_column_names;
+                $selects = $this->getSelects($data, true);
+                break;
+        }
+
+        $data['originalColumns'] = $roles->returnModelNames($names, $this->page);
+        return array_merge($data, $selects);
     }
 
 }

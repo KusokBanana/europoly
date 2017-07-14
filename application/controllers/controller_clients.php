@@ -2,14 +2,15 @@
 
 class ControllerClients extends Controller
 {
+    public $page = 'clients';
+
     public function __construct()
     {
         parent::__construct();
         $this->model = new ModelClients();
+        $this->model->page = $this->page;
         parent::afterConstruct();
     }
-
-    public $page = 'clients';
 
     function action_index($action_param = null, $action_data = null)
     {
@@ -18,25 +19,11 @@ class ControllerClients extends Controller
         $roles = new Roles();
         $this->view->access = $roles->returnAccessAbilities($this->page, 'ch');
 
-        $this->view->column_names = $this->model->getColumns($this->model->client_column_names,
-            $this->page, 'table_clients', true);
-        $this->view->originalColumns = $roles->returnModelNames($this->model->client_column_names, $this->page);
-
-        $array = $this->model->getSelects();
-        $selects = $array['selects'];
-        $rows = $array['rows'];
-
-        $this->view->selects = $selects;
-        $this->view->rows = $rows;
+        $this->view->clientsTable = $this->model->getTableData();
 
         $this->view->managers = $this->model->getSalesManagersIdName();
         $this->view->commission_agents = $this->model->getCommissionAgentsIdName();
         $this->view->build('templates/template.php', 'clients.php');
-    }
-
-    function action_dt_clients()
-    {
-        $this->model->getDTClients($_GET);
     }
 
     function action_dt_all_clients()
@@ -50,7 +37,7 @@ class ControllerClients extends Controller
             ];
         }
 
-        $this->model->getDTAllClients($_GET, $print);
+        $this->model->getDTAllClients($_POST, $print);
     }
 
     function action_get_countries()

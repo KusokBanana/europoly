@@ -72,6 +72,9 @@
                                                     }
                                                     brandStr = brand;
                                                 });
+                                            } else {
+                                                $('#notificationModal').modal().find('.modal-body').text('Choose at least one item!');
+                                                return false;
                                             }
                                             if (brandError)
                                                 error = 'Items must have the same brands';
@@ -81,7 +84,7 @@
                                                 url: "application/views/modals/new_supplier_order.php",
                                                 data: {
                                                     table_data: {
-                                                        column_names: <?php echo json_encode($this->column_names) ?>,
+                                                        column_names: <?php echo json_encode($this->itemsTable['columns_names']) ?>,
                                                         products: ids,
                                                         error: error
                                                     }
@@ -94,19 +97,15 @@
                                         });
                                     </script>
                                     <?php
-                                    $table_data = [
-                                        'buttons' => [],
-                                        'table_id' => $this->tableName,
+                                    $commonData = [
+                                        'click_url' => "javascript:;",
+                                        'method' => "POST",
+                                        'serverSide' => false,
                                         'ajax' => [
                                             'url' => "/sent_to_logist/dt_managers_orders"
-                                        ],
-                                        'column_names' => $this->column_names,
-                                        'hidden_by_default' => "[]",
-                                        'click_url' => "javascript:;",
-                                        'selectSearch' => $this->selects,
-                                        'filterSearchValues' => $this->rows,
-                                        'originalColumns' => $this->originalColumns
+                                        ]
                                     ];
+                                    $table_data = array_merge($this->itemsTable, $commonData);
                                     include 'application/views/templates/table.php'
                                     ?>
                                 </div>

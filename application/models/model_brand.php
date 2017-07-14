@@ -5,67 +5,62 @@ class ModelBrand extends ModelCatalogue
 {
 
     public $tableName = "table_brand_products";
+    public $page = "";
+
+    function getSSPData($type = 'general')
+    {
+        $ssp = ['page' => $this->page];
+        switch ($type) {
+            case 'general':
+                $ssp['columns'] = $this->getColumns($this->full_product_columns, $this->page, $this->tableName);
+                $ssp['columns_names'] = $this->getColumns($this->full_product_column_names, $this->page,
+                    $this->tableName, true);
+                $ssp['db_table'] = $this->full_products_table;
+                $ssp['table_name'] = $this->tableName;
+                $ssp['primary'] = 'products.product_id';
+                $ssp['hidden_by_default'] = $this->full_product_hidden_columns;
+                break;
+        }
+
+        $ssp['where'] = ['products.is_deleted = 0'];
+
+        return $ssp;
+    }
 
     function getDTProductsForBrand($brand_id, $input, $printOpt)
     {
-        $where = ["brands.brand_id = " . $brand_id, 'products.is_deleted = 0'];
 
-        $columns = $this->getColumns($this->full_product_columns, 'brand', $this->tableName);
-
-        $ssp = [
-            'columns' => $columns,
-            'columns_names' => $this->full_product_column_names,
-            'db_table' => $this->full_products_table,
-            'page' => 'brand',
-            'table_name' => $this->tableName,
-            'primary' => 'products.product_id',
-        ];
+        $ssp = $this->getSSPData();
+        $ssp['where'][] = "brands.brand_id = " . $brand_id;
 
         if ($printOpt) {
-
-            $printOpt['where'] = $where;
+            $printOpt['where'] = $ssp['where'];
             echo $this->printTable($input, $ssp, $printOpt);
             return true;
-
         }
 
         $this->sspComplex($ssp['db_table'], $ssp['primary'],
-            $ssp['columns'], $input, null, $where);
+            $ssp['columns'], $input, null, $ssp['where']);
     }
 
-
-    function getSelectsBrand($brand_id)
+    public function getTableData($type = 'general', $opts = [])
     {
-        $where = ["brands.brand_id = " . $brand_id, 'products.is_deleted = 0'];
-        $role = new Roles();
-        $cols = $role->returnModelColumns($this->full_product_columns, 'catalogue');
-        $ssp = $this->getSspComplexJson($this->full_products_table, "product_id", $cols, null, $where);
-        $columns = $role->returnModelNames($this->full_product_column_names, 'catalogue');
-        $rowValues = json_decode($ssp, true)['data'];
-        $ignoreArray = ['_product_id', 'Name', 'Article', 'Thickness', 'Width', 'Length',
-            'Weight', 'Quantity in 1 Pack', 'Purchase price', 'Supplier\'s discount',
-            'Margin', 'Visual Name', 'Sell', 'visual_name'];
+        $data = $this->getSSPData($type);
+        $roles = new Roles();
+        $brand_id = $opts['brand_id'];
+        $data['where'][] = "brands.brand_id = " . $brand_id;
 
-        if (!empty($rowValues)) {
-            $selects = [];
-            foreach ($rowValues as $product) {
-                foreach ($product as $key => $value) {
-                    if (!$value || $value == null)
-                        continue;
-                    $name = $columns[$key];
-                    if (in_array($name, $ignoreArray))
-                        continue;
-
-                    preg_match('/<\w+[^>]+?[^>]+>(.*?)<\/\w+>/i', $value, $match);
-                    if (!empty($match) && isset($match[1])) {
-                        $value = $match[1];
-                    }
-
-                    if ((isset($selects[$name]) && !in_array($value, $selects[$name])) || !isset($selects[$name]))
-                        $selects[$name][] = $value;
-                }
-            }
-            return ['selects' => $selects, 'rows' => $rowValues];
+        switch ($type) {
+            case 'general':
+                $names = $this->full_product_column_names;
+                $cache = new Cache();
+                $selects = $cache->getOrSet('brand_catalogue_selects' . $brand_id, function() use($data) {
+                    return $this->getSelects($data);
+                });
+                break;
         }
+
+        $data['originalColumns'] = $roles->returnModelNames($names, $this->page);
+        return array_merge($data, $selects);
     }
 }

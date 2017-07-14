@@ -2,26 +2,23 @@
 
 class ControllerCatalogue extends Controller
 {
+    public $page = 'catalogue';
+
     public function __construct()
     {
         parent::__construct();
         $this->model = new ModelCatalogue();
+        $this->model->page = $this->page;
         parent::afterConstruct();
     }
-
-    public $page = 'catalogue';
 
     function action_index($action_param = null, $action_data = null)
     {
         $this->view->title = "Catalogue";
 
         $this->getAccess($this->page, 'v');
-        $roles = new Roles();
-        $this->view->tableName = $this->model->tableName;
-        $this->view->column_names = $this->model->getColumns($this->model->full_product_column_names,
-            $this->page, $this->model->tableName, true);
-        $this->view->hidden_columns = $this->model->full_product_hidden_columns;
-        $this->view->originalColumns = $roles->returnModelNames($this->model->full_product_column_names, $this->page);
+
+        $this->view->productsTable = $this->model->getTableData();
 
         $this->view->brands = $this->model->getAll("brands");
         $this->view->wood = $this->model->getAll("wood");
@@ -32,32 +29,13 @@ class ControllerCatalogue extends Controller
         $this->view->tabs = $this->model->getCategoryTabs();
         $this->view->categories = $this->model->getAll('category');
 
+        $roles = new Roles();
         $this->view->access = $roles->getPageAccessAbilities($this->page);
 
         $cache = new Cache();
-        $selectsCache = $cache->read('catalogue_selects');
-        if (!empty($selectsCache)) {
-            $array = $selectsCache;
-            $selects = $array['selects'];
-            $rows = $array['rows'];
-        } else {
-            $array = $this->model->getSelects();
-            $selects = $array['selects'];
-            $rows = $array['rows'];
-            $cache->write('catalogue_selects', $array);
-        }
-        $this->view->selects = $selects;
-        $this->view->rows = $rows;
-
-        // try to read cache
-        $selectsCache = $cache->read('new_product_selects');
-        if (!empty($selectsCache)) {
-            $new_product_selects = $selectsCache;
-        } else {
-            $new_product_selects = $this->model->newProductSelects();
-            $cache->write('new_product_selects', $new_product_selects);
-        }
-        $this->view->new_product_selects = $new_product_selects;
+        $this->view->new_product_selects = $cache->getOrSet('new_product_selects', function() {
+            return $this->model->newProductSelects();
+        });
 
         $this->view->build('templates/template.php', 'catalogue.php');
     }

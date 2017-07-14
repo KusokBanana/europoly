@@ -8,33 +8,43 @@ class ModelCatalogue extends Model
     }
 
     public $tableName = "table_catalogue";
+    public $page = "";
+    public $whereCondition = ['products.is_deleted = 0'];
+
+    function getSSPData($type = 'general')
+    {
+        $ssp = ['page' => $this->page];
+        switch ($type) {
+            case 'general':
+                $ssp['columns'] = $this->getColumns($this->full_product_columns, $this->page, $this->tableName);
+                $ssp['columns_names'] = $this->getColumns($this->full_product_column_names, $this->page,
+                    $this->tableName, true);
+                $ssp['db_table'] = $this->full_products_table;
+                $ssp['table_name'] = $this->tableName;
+                $ssp['primary'] = 'products.product_id';
+                $ssp['hidden_by_default'] = $this->full_product_hidden_columns;
+                break;
+        }
+
+        $ssp['where'] = $this->whereCondition;
+
+        return $ssp;
+    }
 
     function getDTProducts($input, $printOpt, $page = false, $table = false)
     {
-        $where = ['products.is_deleted = 0'];
+        $this->tableName = ($table) ? $table : $this->tableName;
+        $this->page = ($page) ? $page : $this->page;
 
-        $table = ($table) ? $table : $this->tableName;
-        $page = ($page) ? $page : 'catalogue';
-        $columns = $this->getColumns($this->full_product_columns, $page, $table);
-
-        $ssp = [
-            'columns' => $columns,
-            'columns_names' => $this->full_product_column_names,
-            'db_table' => $this->full_products_table,
-            'page' => $page,
-            'table_name' => $table,
-            'primary' => 'products.product_id',
-        ];
+        $ssp = $this->getSSPData();
 
         if ($printOpt) {
-
-            $printOpt['where'] = $where;
-            echo $this->printTable($input, $ssp, $printOpt);
+            $printOpt['where'] = $ssp['where'];
+            echo $this->printTable($input, $ssp, $printOpt); // TODO refactor this - merge printOpt and ssp
             return true;
-
         }
 
-        $this->sspComplex($ssp['db_table'], $ssp['primary'], $ssp['columns'], $input, null, $where);
+        $this->sspComplex($ssp['db_table'], $ssp['primary'], $ssp['columns'], $input, null, $ssp['where']);
     }
 
     public function newProductSelects()
@@ -66,13 +76,13 @@ class ModelCatalogue extends Model
         return $selects;
     }
 
-    function getSelects()
+    function getSelects($ssp)
     {
-        $role = new Roles();
-        $cols = $role->returnModelColumns($this->full_product_columns, 'catalogue');
-        $ssp = $this->getSspComplexJson($this->full_products_table, "product_id", $cols, 'products.is_deleted = 0');
-        $columns = $role->returnModelNames($this->full_product_column_names, 'catalogue');
-        $rowValues = json_decode($ssp, true)['data'];
+        $sspJson = $this->getSspComplexJson($ssp['db_table'], $ssp['primary'],
+            $ssp['columns'], null, null, $ssp['where']);
+        $rowValues = json_decode($sspJson, true)['data'];
+        $columns = $ssp['columns_names'];
+
         $ignoreArray = ['_product_id', 'Name', 'Article', 'Thickness', 'Width', 'Length',
             'Weight', 'Quantity in 1 Pack', 'Purchase price', 'Supplier\'s discount',
             'Margin', 'Sell',/* TODO */ 'image_id_A', 'image_id_B', 'image_id_V', 'amount_of_units_in_pack',
@@ -97,8 +107,29 @@ class ModelCatalogue extends Model
                         $selects[$name][] = $value;
                 }
             }
-            return ['selects' => $selects, 'rows' => $rowValues];
+            return ['selectSearch' => $selects, 'filterSearchValues' => $rowValues];
         }
+        return [];
+    }
+
+    public function getTableData($type = 'general', $opts = [])
+    {
+        $data = $this->getSSPData($type);
+        $roles = new Roles();
+
+        switch ($type) {
+            case 'general':
+                $names = $this->full_product_column_names;
+                $cache = new Cache();
+                $selects = $cache->getOrSet('catalogue_selects', function() use($data) {
+                    $array = $this->getSelects($data);
+                    return $array;
+                });
+                break;
+        }
+
+        $data['originalColumns'] = $roles->returnModelNames($names, $this->page);
+        return array_merge($data, $selects);
     }
 
     public function addProduct($postArray, $rusArray = [])

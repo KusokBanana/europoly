@@ -82,18 +82,16 @@
                                             ];
                                             if (!$this->access)
                                                 $buttons = [];
-                                            $table_data = [
+
+                                            $commonData = [
+                                                'click_url' => "client?id=",
+                                                'method' => "POST",
                                                 'buttons' => $buttons,
-                                                'table_id' => "table_clients",
                                                 'ajax' => [
                                                     'url' => "/clients/dt_all_clients"
-                                                ],
-                                                'column_names' => $this->column_names,
-                                                'click_url' => "client?id=",
-                                                'originalColumns' => $this->originalColumns,
-                                                'selectSearch' => $this->selects,
-                                                'filterSearchValues' => $this->rows,
+                                                ]
                                             ];
+                                            $table_data = array_merge($this->clientsTable, $commonData);
                                             include 'application/views/templates/table.php'
                                             ?>
                                         </div>

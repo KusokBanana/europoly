@@ -1,9 +1,9 @@
 <div class="table-toolbar">
     <?php
-    $buttons = $table_data['buttons'];
-    $table_id = $table_data['table_id'];
+    $buttons = isset($table_data['buttons']) ? $table_data['buttons'] : [];
+    $table_id = isset($table_data['table_id']) ? $table_data['table_id'] : $table_data['table_name'];
     $ajax = $table_data['ajax'];
-    $column_names = $table_data['column_names'];
+    $column_names = isset($table_data['column_names']) ? $table_data['column_names'] : $table_data['columns_names'];
     $hidden_by_default = isset($table_data['hidden_by_default']) ? $table_data['hidden_by_default'] : '';
     $click_url = isset($table_data['click_url']) ? $table_data['click_url'] : '#';
     $originalColumns = isset($table_data['originalColumns']) ? $table_data['originalColumns'] : [];

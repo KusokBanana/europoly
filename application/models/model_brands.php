@@ -3,6 +3,7 @@
 class ModelBrands extends Model
 {
     var $tableName = 'table_brands';
+    var $page = '';
 
     var $columns = array(
         array('dt' => 0, 'db' => 'brands.brand_id'),
@@ -28,24 +29,45 @@ class ModelBrands extends Model
         $this->connect_db();
     }
 
-    function getColumnNames()
+    function getSSPData($type = 'general')
     {
-        if ($this->user->role_id == ROLE_SALES_MANAGER) {
-            unset($this->columnNames[3]);
+        $ssp = ['page' => $this->page];
+        switch ($type) {
+            case 'general':
+                if ($this->user->role_id == ROLE_SALES_MANAGER) {
+                    unset($this->columns[3]);
+                    unset($this->columnNames[3]);
+                }
+                $ssp['columns'] = $this->getColumns($this->columns, $this->page, $this->tableName);
+                $ssp['columns_names'] = $this->getColumns($this->columnNames, $this->page,
+                    $this->tableName, true);
+                $ssp['db_table'] = 'brands left join suppliers on suppliers.supplier_id = brands.supplier_id';
+                $ssp['table_name'] = $this->tableName;
+                $ssp['primary'] = 'brands.brand_id';
+                break;
         }
-        return $this->columnNames;
+
+        $ssp['where'] = "brands.is_deleted = 0";
+        return $ssp;
     }
 
     function getDTBrands($input)
     {
 
-        if ($this->user->role_id == ROLE_SALES_MANAGER) {
-            unset($this->columns[3]);
-        }
+        $ssp = $this->getSSPData();
+        $this->sspComplex($ssp['db_table'], $ssp['primary'],
+            $ssp['columns'], $input, $ssp['where']);
+    }
 
-        $where = "brands.is_deleted = 0";
-        $this->sspComplex('brands left join suppliers on suppliers.supplier_id = brands.supplier_id', "brand_id",
-            $this->columns, $input, $where);
+    public function getTableData($type = 'general')
+    {
+        $data = $this->getSSPData($type);
+        $roles = new Roles();
+        if ($this->user->role_id == ROLE_SALES_MANAGER) {
+            unset($this->columnNames[3]);
+        }
+        $data['originalColumns'] = $roles->returnModelNames($this->columnNames, $this->page);
+        return $data;
     }
 
     function addBrand($name, $supplier_id)

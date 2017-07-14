@@ -29,19 +29,19 @@
                 </div>
                 <div class="portlet-body">
                     <?php
-                    $buttons = '<button class="btn sbold green" data-toggle="modal" data-target="#modal_newBrand"> Add New Brand <i class="fa fa-plus"></i></button>';
+                    $buttons = ['<button class="btn sbold green" data-toggle="modal" data-target="#modal_newBrand"> Add New Brand <i class="fa fa-plus"></i></button>'];
                     if (!$this->access)
-                        $buttons = '';
-                    $table_data = [
-                        'buttons' => [$buttons],
-                        'table_id' => $this->tableName,
+                        $buttons = [];
+
+                    $commonData = [
+                        'click_url' => "/brand?id=",
+                        'buttons' => $buttons,
                         'ajax' => [
                             'url' => "/brands/dt"
-                        ],
-                        'column_names' => $this->column_names,
-                        'click_url' => "/brand?id=",
-                        'originalColumns' => $this->originalColumns,
+                        ]
                     ];
+                    $table_data = array_merge($this->brandsTable, $commonData);
+                    
                     include 'application/views/templates/table.php'
                     ?>
                 </div>

@@ -77,28 +77,23 @@
                         <div class="tab-pane fade active in"
                              id="">
                             <?php
-                            $button = '<button class="btn sbold green" data-toggle="modal" data-target="#modal_newProduct">
+                            $buttons = ['<button class="btn sbold green" data-toggle="modal" data-target="#modal_newProduct">
                                             Add New Product <i class="fa fa-plus"></i>
-                                        </button>';
+                                        </button>'];
                             if (!$this->access['ch'])
-                                $button = '';
-                            $table_data = [
-                                'buttons' => [$button],
-                                'table_id' => $this->tableName,
+                                $buttons = [];
+                            $commonData = [
+                                'click_url' => "/product?id=",
+                                'method' => "POST",
+                                'buttons' => $buttons,
                                 'ajax' => [
                                     'url' => "/brand/dt",
                                     'data' => [
                                         'brand_id' => $this->brand["brand_id"]
                                     ]
-                                ],
-                                'column_names' => $this->column_names,
-                                'hidden_by_default' => $this->hidden_columns,
-                                'click_url' => "/product?id=",
-                                'selectSearch' => $this->selects,
-                                'filterSearchValues' => $this->rows,
-                                'originalColumns' => $this->originalColumns,
-                                'method' => 'POST',
+                                ]
                             ];
+                            $table_data = array_merge($this->brandsTable, $commonData);
                             include 'application/views/templates/table.php'
                             ?>
                         </div>

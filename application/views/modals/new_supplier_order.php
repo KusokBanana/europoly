@@ -33,13 +33,13 @@ else {
                 <?php
                     $table_data = [
                         'buttons' => [],
-                        'table_id' => "new_supplier_order_table",
+                        'table_name' => "new_supplier_order_table",
                         'ajax' => [
                             'url' => "/sent_to_logist/to_supplier?ids=".join(',',$products),
 //                                'url' => "/managers_orders/dt_managers_orders_to_suppliers",
                             'data' => json_encode($products)
                         ],
-                        'column_names' => $columnNames,
+                        'columns_names' => $columnNames,
                         'hidden_by_default' => "[]",
                         'click_url' => "javascript:;"
                     ];

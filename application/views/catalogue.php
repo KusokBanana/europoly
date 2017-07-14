@@ -81,20 +81,16 @@ data-target="#modal_newProduct">Add Similar Product <i class="fa fa-plus"></i></
                             ];
                             if (!$this->access['ch'])
                                 $buttons = [];
-                            $table_data = [
-                                'buttons' => $buttons,
-                                'table_id' => $this->tableName,
-                                'ajax' => [
-                                    'url' => "/catalogue/dt",
-                                ],
-                                'column_names' => $this->column_names,
-                                'hidden_by_default' => $this->hidden_columns,
+
+                            $commonData = [
                                 'click_url' => "/product?id=",
-                                'selectSearch' => $this->selects,
-                                'filterSearchValues' => $this->rows,
-                                'originalColumns' => $this->originalColumns,
                                 'method' => "POST",
+                                'buttons' => $buttons,
+                                'ajax' => [
+                                    'url' => "/catalogue/dt"
+                                ]
                             ];
+                            $table_data = array_merge($this->productsTable, $commonData);
                             include 'application/views/templates/table.php'
                             ?>
                         </div>

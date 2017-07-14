@@ -2,6 +2,10 @@
 
 class ModelClients extends Model
 {
+
+    public $page;
+    public $tableName = 'table_clients';
+
     var $client_columns = [
         array('dt' => 0, 'db' => "clients.client_id"),
         array('dt' => 1, 'db' => "clients.final_name"),
@@ -94,35 +98,46 @@ class ModelClients extends Model
         $this->connect_db();
     }
 
-    function getDTAllClients($input, $printOpt)
+    public $whereCondition = ['clients.is_deleted = 0'];
+
+    function getSSPData($type = 'general')
     {
-        $where = ['clients.is_deleted = 0'];
-        if ($this->user->role_id == ROLE_SALES_MANAGER) {
-            $where[] =
-                "(clients.sales_manager_id = " . $this->user->user_id .
-                " OR clients.operational_manager_id = " . $this->user->user_id . ")";
-            $this->unLinkStrings($this->client_columns, [17]);
+        $ssp = ['page' => $this->page];
+        switch ($type) {
+            case 'general':
+                if ($this->user->role_id == ROLE_SALES_MANAGER) {
+                    $this->whereCondition[] =
+                        "(clients.sales_manager_id = " . $this->user->user_id .
+                        " OR clients.operational_manager_id = " . $this->user->user_id . ")";
+                    $this->unLinkStrings($this->client_columns, [17]);
+                }
+                $ssp['columns'] = $this->getColumns($this->client_columns, $this->page, $this->tableName);
+                $ssp['columns_names'] = $this->getColumns($this->client_column_names, $this->page,
+                    $this->tableName, true);
+                $ssp['db_table'] = $this->client_table;
+                $ssp['table_name'] = $this->tableName;
+                $ssp['primary'] = 'clients.client_id';
+                break;
         }
 
-        $ssp = [
-            'columns' => $this->getColumns($this->client_columns, 'clients', 'table_clients'),
-            'columns_names' => $this->getColumns($this->client_columns, 'clients', 'table_clients', true),
-            'db_table' => $this->client_table,
-            'page' => 'clients',
-            'table_name' => 'table_clients',
-            'primary' => 'clients.client_id',
-        ];
+        $ssp['where'] = $this->whereCondition;
+
+        return $ssp;
+    }
+
+    function getDTAllClients($input, $printOpt)
+    {
+
+        $ssp = $this->getSSPData();
 
         if ($printOpt) {
-
-            $printOpt['where'] = $where;
+            $printOpt['where'] = $ssp['where'];
             echo $this->printTable($input, $ssp, $printOpt);
             return true;
-
         }
 
         $this->sspComplex($ssp['db_table'], $ssp['primary'], $ssp['columns'], $input, null,
-            $where);
+            $ssp['where']);
     }
 
     function addClient($name, $type, $manager_id, $commission_agent_id, $country_id, $region_id, $city)
@@ -137,22 +152,14 @@ class ModelClients extends Model
         return $result;
     }
 
-    public function getSelects()
+    public function getSelects($ssp)
     {
-        $where = "clients.is_deleted = 0";
-        if ($_SESSION['user_role'] == ROLE_SALES_MANAGER) {
-            $userId = $_SESSION['user_id'];
-            $where .= " AND (clients.sales_manager_id = " . $userId . " OR clients.operational_manager_id = " . $userId . ")";
-            $this->unLinkStrings($this->client_columns, [17]);
-        }
-        $role = new Roles();
-        $cols = $role->returnModelColumns($this->client_columns, 'clients');
-        $columns = $role->returnModelNames($this->client_column_names, 'clients');
 
-        $ssp = $this->getSspComplexJson($this->client_table, "clients.client_id", $cols, null, null,
-            $where);
+        $sspJson = $this->getSspComplexJson($ssp['db_table'], $ssp['primary'],
+            $ssp['columns'], null, null, $ssp['where']);
+        $rowValues = json_decode($sspJson, true)['data'];
+        $columns = $ssp['columns_names'];
 
-        $rowValues = json_decode($ssp, true)['data'];
         $ignoreArray = ['_client_id', 'Turnover', 'Profit', 'Discount Rate', 'Change Type'];
 
         if (!empty($rowValues)) {
@@ -173,9 +180,17 @@ class ModelClients extends Model
                         $selects[$name][] = $value;
                 }
             }
-            return ['selects' => $selects, 'rows' => $rowValues];
+            return ['selectSearch' => $selects, 'filterSearchValues' => $rowValues];
         }
     }
 
+    public function getTableData($type = 'general', $opts = [])
+    {
+        $data = $this->getSSPData($type);
+        $roles = new Roles();
+
+        $data['originalColumns'] = $roles->returnModelNames($this->client_column_names, $this->page);
+        return array_merge($data, $this->getSelects($data));
+    }
 
 }

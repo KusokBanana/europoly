@@ -6,6 +6,7 @@ class ControllerBrand extends Controller
     {
         parent::__construct();
         $this->model = new ModelBrand();
+        $this->model->page = $this->page;
         parent::afterConstruct();
     }
 
@@ -21,28 +22,9 @@ class ControllerBrand extends Controller
                 $this->view->title = $this->view->brand["name"];
                 $roles = new Roles();
 
-                $this->view->tableName = $this->model->tableName;
-                $this->view->column_names = $this->model->getColumns($this->model->full_product_column_names,
-                    'catalogue', $this->model->tableName, true);
-                $this->view->hidden_columns = $this->model->full_product_hidden_columns;
-                $this->view->originalColumns = $roles->returnModelNames($this->model->full_product_column_names, $this->page);
-
-                $cache = new Cache();
-                $selectsCache = $cache->read('brand_catalogue_selects' . $id);
-                if (!empty($selectsCache)) {
-                    $array = $selectsCache;
-                    $selects = $array['selects'];
-                    $rows = $array['rows'];
-                } else {
-                    $array = $this->model->getSelectsBrand($id);
-                    $selects = $array['selects'];
-                    $rows = $array['rows'];
-                    $cache->write('brand_catalogue_selects' . $id, $array);
-                }
-                $this->view->selects = $selects;
-                $this->view->rows = $rows;
-
                 $this->view->access = $roles->getPageAccessAbilities($this->page);
+
+                $this->view->brandsTable = $this->model->getTableData('general', ['brand_id' => $id]);
 
                 $this->view->brands = $this->model->getAll("brands");
                 $this->view->colors = $this->model->getAll("colors");
@@ -54,14 +36,10 @@ class ControllerBrand extends Controller
                 $this->view->categories = $this->model->getAll('category');
 
                 // try to read cache
-                $selectsCache = $cache->read('new_product_selects');
-                if (!empty($selectsCache)) {
-                    $new_product_selects = $selectsCache;
-                } else {
-                    $new_product_selects = $this->model->newProductSelects();
-                    $cache->write('new_product_selects', $new_product_selects);
-                }
-                $this->view->new_product_selects = $new_product_selects;
+                $cache = new Cache();
+                $this->view->new_product_selects = $cache->getOrSet('new_product_selects', function() {
+                    return $this->model->newProductSelects();
+                });
 
                 $this->view->build('templates/template.php', 'single_brand.php');
             } else {
