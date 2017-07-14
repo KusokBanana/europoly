@@ -145,6 +145,7 @@ class ModelManagers_orders extends Model
 
     var $whereCondition = "order_items.manager_order_id IS NOT NULL AND order_items.is_deleted = 0";
 
+
     function getDTManagersOrders($input, $printOpt)
     {
 

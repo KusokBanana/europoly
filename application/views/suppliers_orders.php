@@ -82,7 +82,7 @@
                                             var tbody = modal.find('table tbody').empty();
 
                                             modal.find('.select-block').empty().append('<label for="truck_id_choose">Truck</label>'+
-                                                '<select name="truck_id" id="truck_id_choose" ' +
+                                                '<select name="truck_id" id="truck_id_choose" style="width: 100%" ' +
                                                 'class="js-example-data-array-selected"></select>');
                                             $('#truck_id_choose').select2({data: trucks});
 
@@ -169,7 +169,7 @@
 <div class="modal fade" id="modal_loadintoTruck" role="dialog" aria-hidden="true"></div>
 <?php
 include 'application/views/modals/new_empty_supplier_order.php';
-include_once '/application/views/modals/split.php';
+include_once 'application/views/modals/split.php';
 ?>
 <script>
 	$('#modal_loadintoTruck').on('hidden.bs.modal', function() {
