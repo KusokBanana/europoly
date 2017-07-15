@@ -1,0 +1,10 @@
+INSERT INTO evropoly.delivery_note_items (order_item_id, note_id) VALUES (1, 1);
+INSERT INTO evropoly.delivery_note_items (order_item_id, note_id) VALUES (6, 1);
+INSERT INTO evropoly.delivery_note_items (order_item_id, note_id) VALUES (23, 2);
+INSERT INTO evropoly.delivery_note_items (order_item_id, note_id) VALUES (7, 3);
+INSERT INTO evropoly.delivery_note_items (order_item_id, note_id) VALUES (10, 4);
+INSERT INTO evropoly.delivery_note_items (order_item_id, note_id) VALUES (11, 5);
+INSERT INTO evropoly.delivery_note_items (order_item_id, note_id) VALUES (12, 6);
+INSERT INTO evropoly.delivery_note_items (order_item_id, note_id) VALUES (35, 7);
+INSERT INTO evropoly.delivery_note_items (order_item_id, note_id) VALUES (22, 7);
+INSERT INTO evropoly.delivery_note_items (order_item_id, note_id) VALUES (41, 8);

@@ -1,0 +1,18 @@
+INSERT INTO evropoly.chat (user_id, message_text, message_date, to_user_id, is_new) VALUES (1, '1234', '2017-03-06 16:39:37', 17, 0);
+INSERT INTO evropoly.chat (user_id, message_text, message_date, to_user_id, is_new) VALUES (1, '123', '2017-03-06 16:39:40', 17, 0);
+INSERT INTO evropoly.chat (user_id, message_text, message_date, to_user_id, is_new) VALUES (1, '123333', '2017-03-06 16:39:42', 17, 0);
+INSERT INTO evropoly.chat (user_id, message_text, message_date, to_user_id, is_new) VALUES (1, ',lfmgkfml', '2017-03-06 16:39:45', 17, 0);
+INSERT INTO evropoly.chat (user_id, message_text, message_date, to_user_id, is_new) VALUES (17, '123', '2017-03-06 16:46:38', 1, 0);
+INSERT INTO evropoly.chat (user_id, message_text, message_date, to_user_id, is_new) VALUES (17, '123', '2017-03-06 16:46:54', 1, 0);
+INSERT INTO evropoly.chat (user_id, message_text, message_date, to_user_id, is_new) VALUES (17, 'укапдлжкц', '2017-03-06 16:57:05', 1, 0);
+INSERT INTO evropoly.chat (user_id, message_text, message_date, to_user_id, is_new) VALUES (17, 'йцуккйуак', '2017-03-06 16:57:06', 1, 0);
+INSERT INTO evropoly.chat (user_id, message_text, message_date, to_user_id, is_new) VALUES (17, 'уакп', '2017-03-06 16:57:07', 1, 0);
+INSERT INTO evropoly.chat (user_id, message_text, message_date, to_user_id, is_new) VALUES (1, 'Есть контакт?', '2017-03-06 17:41:56', 18, 0);
+INSERT INTO evropoly.chat (user_id, message_text, message_date, to_user_id, is_new) VALUES (18, 'есть!!!!', '2017-03-06 17:43:32', 1, 0);
+INSERT INTO evropoly.chat (user_id, message_text, message_date, to_user_id, is_new) VALUES (18, 'контакт и счастье!!!', '2017-03-06 17:43:40', 1, 0);
+INSERT INTO evropoly.chat (user_id, message_text, message_date, to_user_id, is_new) VALUES (1, 'Ура11', '2017-03-06 17:43:44', 18, 0);
+INSERT INTO evropoly.chat (user_id, message_text, message_date, to_user_id, is_new) VALUES (18, 'пишу тебе, мой друг, послание))', '2017-03-06 17:44:19', 1, 0);
+INSERT INTO evropoly.chat (user_id, message_text, message_date, to_user_id, is_new) VALUES (1, ':-)', '2017-03-06 17:44:41', 18, 0);
+INSERT INTO evropoly.chat (user_id, message_text, message_date, to_user_id, is_new) VALUES (16, 'Q', '2017-03-06 18:04:43', 1, 0);
+INSERT INTO evropoly.chat (user_id, message_text, message_date, to_user_id, is_new) VALUES (16, 'Qq', '2017-03-06 18:04:51', 1, 0);
+INSERT INTO evropoly.chat (user_id, message_text, message_date, to_user_id, is_new) VALUES (1, 'здарова', '2017-03-07 18:29:10', 17, 1);

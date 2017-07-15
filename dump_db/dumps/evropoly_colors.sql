@@ -1,0 +1,9 @@
+INSERT INTO evropoly.colors (name, nls_resource_id) VALUES ('honey hues', 1);
+INSERT INTO evropoly.colors (name, nls_resource_id) VALUES ('beige hues', 2);
+INSERT INTO evropoly.colors (name, nls_resource_id) VALUES ('white hues', 3);
+INSERT INTO evropoly.colors (name, nls_resource_id) VALUES ('grey hues', 4);
+INSERT INTO evropoly.colors (name, nls_resource_id) VALUES ('black hues', 5);
+INSERT INTO evropoly.colors (name, nls_resource_id) VALUES ('chocolate hues', 6);
+INSERT INTO evropoly.colors (name, nls_resource_id) VALUES ('combined hues', 7);
+INSERT INTO evropoly.colors (name, nls_resource_id) VALUES ('colored hues', 8);
+INSERT INTO evropoly.colors (name, nls_resource_id) VALUES ('design hues', 9);

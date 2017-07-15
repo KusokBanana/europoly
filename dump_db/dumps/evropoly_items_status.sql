@@ -1,0 +1,12 @@
+INSERT INTO evropoly.items_status (name) VALUES ('Draft');
+INSERT INTO evropoly.items_status (name) VALUES ('Hold');
+INSERT INTO evropoly.items_status (name) VALUES ('Sent to Logist');
+INSERT INTO evropoly.items_status (name) VALUES ('Draft for Supplier');
+INSERT INTO evropoly.items_status (name) VALUES ('Confirmed by Supplier');
+INSERT INTO evropoly.items_status (name) VALUES ('Produced');
+INSERT INTO evropoly.items_status (name) VALUES ('Expects Payment');
+INSERT INTO evropoly.items_status (name) VALUES ('On the way');
+INSERT INTO evropoly.items_status (name) VALUES ('On Stock');
+INSERT INTO evropoly.items_status (name) VALUES ('Expects Issue');
+INSERT INTO evropoly.items_status (name) VALUES ('Issued');
+INSERT INTO evropoly.items_status (name) VALUES ('Returned');

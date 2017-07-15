@@ -1,0 +1,12 @@
+INSERT INTO evropoly.patterns (name, nls_resource_id) VALUES ('Herrinbone 45⁰', 48);
+INSERT INTO evropoly.patterns (name, nls_resource_id) VALUES ('Panel Versailles', 49);
+INSERT INTO evropoly.patterns (name, nls_resource_id) VALUES ('Curved floors', 50);
+INSERT INTO evropoly.patterns (name, nls_resource_id) VALUES ('Panels', 51);
+INSERT INTO evropoly.patterns (name, nls_resource_id) VALUES ('Panels with inserts', 52);
+INSERT INTO evropoly.patterns (name, nls_resource_id) VALUES ('Plank', 53);
+INSERT INTO evropoly.patterns (name, nls_resource_id) VALUES ('Herrinbone 90⁰', 54);
+INSERT INTO evropoly.patterns (name, nls_resource_id) VALUES ('Rolls', 73);
+INSERT INTO evropoly.patterns (name, nls_resource_id) VALUES ('Tiles', 74);
+INSERT INTO evropoly.patterns (name, nls_resource_id) VALUES ('Planks', 75);
+INSERT INTO evropoly.patterns (name, nls_resource_id) VALUES ('Bolon Studio', 76);
+INSERT INTO evropoly.patterns (name, nls_resource_id) VALUES ('Cross-grain floor', 77);

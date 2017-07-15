@@ -1,0 +1,5 @@
+INSERT INTO evropoly.services_items (contractor_id, name, sum, currency, direction, contractor_type, date) VALUES (10, 'name', 222, 'EUR', 'Expense', 'Other', null);
+INSERT INTO evropoly.services_items (contractor_id, name, sum, currency, direction, contractor_type, date) VALUES (10, 'name''', 11, 'USD', 'Income', 'Other', null);
+INSERT INTO evropoly.services_items (contractor_id, name, sum, currency, direction, contractor_type, date) VALUES (10, 'name&quot;', 333, 'EUR', 'Income', 'Other', null);
+INSERT INTO evropoly.services_items (contractor_id, name, sum, currency, direction, contractor_type, date) VALUES (10, 'name&quot;&quot;', 222, 'USD', 'Income', 'Other', null);
+INSERT INTO evropoly.services_items (contractor_id, name, sum, currency, direction, contractor_type, date) VALUES (10, 'name''''', 2323, 'EUR', 'Expense', 'Other', null);

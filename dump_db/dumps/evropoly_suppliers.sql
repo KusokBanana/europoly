@@ -1,0 +1,15 @@
+INSERT INTO evropoly.suppliers (name, is_deleted) VALUES ('Design Parquet', 0);
+INSERT INTO evropoly.suppliers (name, is_deleted) VALUES ('A Wood GmbH', 0);
+INSERT INTO evropoly.suppliers (name, is_deleted) VALUES ('Bolefloor B.V.', 0);
+INSERT INTO evropoly.suppliers (name, is_deleted) VALUES ('Manfred Deisl GmbH', 0);
+INSERT INTO evropoly.suppliers (name, is_deleted) VALUES ('Fetim Group', 0);
+INSERT INTO evropoly.suppliers (name, is_deleted) VALUES ('Mareiner Holz GmbH', 0);
+INSERT INTO evropoly.suppliers (name, is_deleted) VALUES ('STIA Holzindustrie GmbH', 0);
+INSERT INTO evropoly.suppliers (name, is_deleted) VALUES ('Oldenburger Parkettwerk', 0);
+INSERT INTO evropoly.suppliers (name, is_deleted) VALUES ('Granorte', 0);
+INSERT INTO evropoly.suppliers (name, is_deleted) VALUES ('YVYRA', 0);
+INSERT INTO evropoly.suppliers (name, is_deleted) VALUES ('Bolon AB', 0);
+INSERT INTO evropoly.suppliers (name, is_deleted) VALUES ('Fairholz GmbH', 0);
+INSERT INTO evropoly.suppliers (name, is_deleted) VALUES ('Markus Schober Innenausbau & Bodendielen GmbH', 0);
+INSERT INTO evropoly.suppliers (name, is_deleted) VALUES ('3', 0);
+INSERT INTO evropoly.suppliers (name, is_deleted) VALUES ('fuck supplier', 0);
