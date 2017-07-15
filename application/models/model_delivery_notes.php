@@ -12,7 +12,8 @@ class ModelDelivery_notes extends Model
 
 
     var $tableNames = ['table_delivery_notes', 'table_delivery_notes_reduced'];
-
+    public $whereCondition = [];
+    public $page;
 
     var $delivery_notes_table = 'delivery_note '.
                  'LEFT JOIN delivery_note_items ON (delivery_note.id = delivery_note_items.note_id) '.
@@ -146,6 +147,62 @@ class ModelDelivery_notes extends Model
                                 </a>')"),
     ];
 
+    /**
+     * @param string $type
+     * @return array = ['columns', 'columns_names', 'db_table', 'table_name', 'primary', 'page']
+     */
+    function getSSPData($type = 'general')
+    {
+
+        $ssp = ['page' => $this->page];
+
+        switch ($type) {
+            case 'general':
+
+                $ssp['columns'] = $this->getColumns($this->delivery_notes_columns, $this->page,
+                    $this->tableNames[0]);
+                $ssp['columns_names'] = $this->getColumns($this->delivery_notes_columns_names, $this->page,
+                    $this->tableNames[0], true);
+                $ssp['db_table'] = $this->delivery_notes_table;
+                $ssp['table_name'] = $this->tableNames[0];
+                $ssp['primary'] = 'delivery_note.id';
+                break;
+
+            case 'reduced':
+
+                $ssp['columns'] = $this->getColumns($this->delivery_notes_columns_reduced, $this->page,
+                    $this->tableNames[1]);
+                $ssp['columns_names'] = $this->getColumns($this->delivery_notes_columns_names_reduced, $this->page,
+                    $this->tableNames[1], true);
+                $ssp['db_table'] = $this->delivery_notes_table_reduced;
+                $ssp['table_name'] = $this->tableNames[1];
+                $ssp['primary'] = 'delivery_note.id';
+                break;
+        }
+
+        $ssp['where'] = $this->whereCondition;
+
+        return $ssp;
+
+    }
+
+    function getDt($input, $printOpt, $isReduced = false)
+    {
+        $type = $isReduced ? 'reduced' : 'general';
+        $ssp = $this->getSSPData($type);
+
+        if ($printOpt) {
+            $printOpt['where'] = $ssp['where'];
+            echo $this->printTable($input, $ssp, $printOpt);
+            return true;
+        }
+
+        $this->sspComplex($ssp['db_table'], $ssp['primary'],
+            $ssp['columns'], $input, null, $ssp['where']);
+    }
+
+
+
     function getTable($isWithNote = true)
     {
 
@@ -230,60 +287,6 @@ class ModelDelivery_notes extends Model
         'Actions'
     ];
 
-    function getDt($input, $printOpt)
-    {
-
-        if ($this->user->role_id == ROLE_SALES_MANAGER) {
-
-        }
-
-        $columns = $this->getColumns($this->delivery_notes_columns, 'deliveryNotes', $this->tableNames[0]);
-
-        $ssp = [
-            'columns' => $columns,
-            'columns_names' => $this->delivery_notes_columns_names,
-            'db_table' => $this->delivery_notes_table,
-            'page' => 'deliveryNotes',
-            'table_name' => $this->tableNames[0],
-            'primary' => 'delivery_note.id',
-        ];
-
-        if ($printOpt) {
-
-//            $printOpt['where'] = $this->whereCondition;  2564 1883 1235 876
-            echo $this->printTable($input, $ssp, $printOpt);
-            return true;
-
-        }
-
-        $this->sspComplex($ssp['db_table'], $ssp['primary'],
-            $ssp['columns'], $input, null, null);
-    }
-
-    function getDtReduced($input)
-    {
-
-        $where = '';
-        if ($this->user->role_id == ROLE_SALES_MANAGER) {
-
-        }
-
-        $columns = $this->getColumns($this->delivery_notes_columns_reduced, 'deliveryNotes', $this->tableNames[1]);
-
-        $ssp = [
-            'columns' => $columns,
-            'columns_names' => $this->delivery_notes_columns_names_reduced,
-            'db_table' => $this->delivery_notes_table_reduced,
-            'page' => 'deliveryNotes',
-            'table_name' => $this->tableNames[1],
-            'primary' => 'delivery_note.id',
-        ];
-
-        $this->sspComplex($ssp['db_table'], $ssp['primary'],
-            $ssp['columns'], $input, null, $where);
-
-    }
-
     function getSelectsModal()
     {
 
@@ -325,15 +328,13 @@ class ModelDelivery_notes extends Model
 
     }
 
-    function getSelects()
+    function getSelects($ssp, $isReduced = false)
     {
-        $tableNames = $this->getColumns($this->delivery_notes_columns,
-            'deliveryNotes', $this->tableNames[0], true);
+        $sspJson = $this->getSspComplexJson($ssp['db_table'], $ssp['primary'],
+            $ssp['columns'], null, null, $ssp['where']);
+        $rowValues = json_decode($sspJson, true)['data'];
+        $columns = $ssp['columns_names'];
 
-        $ssp = $this->getSspComplexJson($this->delivery_notes_table, "order_items.item_id",
-            $tableNames, null, null, null);
-        $columns = $this->getColumns($this->delivery_notes_columns_names, 'deliveryNotes', $this->tableNames[0]);
-        $rowValues = json_decode($ssp, true)['data'];
         $ignoreArray = ['Order Id', 'Delivery Note ID'];
 
         if (!empty($rowValues)) {
@@ -355,23 +356,32 @@ class ModelDelivery_notes extends Model
                         $selects[$name][] = $value;
                 }
             }
-            return ['selects' => $selects, 'rows' => $rowValues];
+            return ['selectSearch' => $selects, 'filterSearchValues' => $rowValues];
         }
     }
 
-//    function getOrder($orderItemId, $noteId = false)
-//    {
-//
-//        if (!$orderItemId) {
-//            $note = $this->getDeliveryNote($noteId);
-//            $orderItemId = $note['order_item_id'];
-//        }
-//
-//        $items = $this->getFirst("SELECT manager_order_id FROM order_items WHERE item_id = $orderItemId");
-//        if ($items) {
-//            return $this->getFirst("SELECT * FROM orders WHERE order_id = ${items['manager_order_id']}");
-//        }
-//    }
+    public function getTableData($type = 'general')
+    {
+        $data = $this->getSSPData($type);
+        $roles = new Roles();
+
+        switch ($type) {
+            case 'general':
+                $names = $this->delivery_notes_columns_names;
+                $cache = new Cache();
+                $selects = $cache->getOrSet('delivery_notes_selects', function() use($data) {
+                    return $this->getSelects($data);
+                });
+                break;
+            case 'reduced':
+                $names = $this->delivery_notes_columns_names_reduced;
+                $selects = $this->getSelects($data, true);
+                break;
+        }
+
+        $data['originalColumns'] = $roles->returnModelNames($names, $this->page);
+        return array_merge($data, $selects);
+    }
 
     function getProducts($order_id, $note_id)
     {

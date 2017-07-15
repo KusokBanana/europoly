@@ -2,14 +2,15 @@
 
 class ControllerDelivery_notes extends Controller
 {
+    public $page = 'deliveryNotes';
+
     public function __construct()
     {
         parent::__construct();
         $this->model = new ModelDelivery_notes();
+        $this->model->page = $this->page;
         parent::afterConstruct();
     }
-
-    public $page = 'deliveryNotes';
 
     function action_index($action_param = null, $action_data = null)
     {
@@ -18,19 +19,8 @@ class ControllerDelivery_notes extends Controller
         $roles = new Roles();
         $this->view->access = $roles->getPageAccessAbilities($this->page);
 
-        $this->view->tableNames = $this->model->tableNames;
-        $this->view->column_names = $this->model->getColumns($this->model->delivery_notes_columns_names,
-            $this->page, $this->model->tableNames[0], true);
-        $this->view->column_names_reduced =
-            $this->model->getColumns($this->model->delivery_notes_columns_names_reduced,
-                $this->page, $this->model->tableNames[1], true);
-        $this->view->originalColumns = $roles->returnModelNames($this->model->delivery_notes_columns_names, $this->page);
-        $this->view->originalColumns_reduced =
-            $roles->returnModelNames($this->model->delivery_notes_columns_names_reduced, $this->page);
-
-        $array = $this->model->getSelects();
-        $this->view->selects = $array['selects'];
-        $this->view->rows = $array['rows'];
+        $this->view->itemsTable = $this->model->getTableData();
+        $this->view->ordersTable = $this->model->getTableData('reduced');
 
         $this->view->build('templates/template.php', 'delivery_notes.php');
     }
@@ -51,7 +41,7 @@ class ControllerDelivery_notes extends Controller
 
     function action_dt_reduced()
     {
-        $this->model->getDtReduced($_POST);
+        $this->model->getDt($_POST, false, true);
     }
 
 

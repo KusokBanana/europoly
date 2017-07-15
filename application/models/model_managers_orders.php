@@ -206,7 +206,7 @@ class ModelManagers_orders extends Model
         $ssp = $this->getSSPData($type);
 
         if ($printOpt) {
-            $printOpt['where'] = ['where'];
+            $printOpt['where'] = $ssp['where'];
             echo $this->printTable($input, $ssp, $printOpt);
             return true;
         }

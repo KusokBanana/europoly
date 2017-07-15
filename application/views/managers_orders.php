@@ -74,7 +74,6 @@
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="tab_1_2">
-                                lalaal
                                 <div class="portlet-body">
                                     <?php
                                     $table_data = array_merge($this->itemsTable, [

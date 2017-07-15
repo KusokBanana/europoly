@@ -113,46 +113,41 @@
                     <div class="tabbable-custom nav-justified">
                         <ul class="nav nav-tabs nav-justified">
                             <li class="active">
-                                <a href="#tab_1_2" data-toggle="tab"> Orders view </a>
+                                <a href="#tab_1_1" data-toggle="tab"> Orders view </a>
                             </li>
                             <li>
-                                <a href="#tab_1_1" data-toggle="tab"> Items view </a>
+                                <a href="#tab_1_2" data-toggle="tab"> Items view </a>
                             </li>
                         </ul>
                         <div class="tab-content">
-                            <div class="tab-pane fade" id="tab_1_1">
+                            <div class="tab-pane fade active in" id="tab_1_1">
                                 <div class="portlet-body">
                                     <?php
-                                    $table_data = [
-                                        'buttons' => [],
-                                        'table_id' => $this->tableNames[0],
-                                        'ajax' => [
-                                            'url' => "/suppliers_orders/dt_suppliers_orders"
-                                        ],
-                                        'column_names' => $this->column_names,
+                                    $commonData = [
                                         'click_url' => "javascript:;",
-                                        'method' => 'POST',
-                                        'selectSearch' => $this->selects,
-                                        'filterSearchValues' => $this->rows,
-                                        'originalColumns' => $this->originalColumns
+                                        'method' => "POST",
+                                        'serverSide' => false
                                     ];
+
+                                    $table_data = array_merge($this->ordersTable, [
+                                        'ajax' => [
+                                            'url' => "/suppliers_orders/dt_suppliers_orders_reduce"
+                                        ]
+                                    ], $commonData);
+
                                     include 'application/views/templates/table.php'
                                     ?>
                                 </div>
                             </div>
-                            <div class="tab-pane fade active in" id="tab_1_2">
+                            <div class="tab-pane fade" id="tab_1_2">
                                 <div class="portlet-body">
                                     <?php
-                                    $table_data = [
-                                        'buttons' => [],
-                                        'table_id' => $this->tableNames[1],
+                                    $table_data = array_merge($this->itemsTable, [
                                         'ajax' => [
-                                            'url' => "/suppliers_orders/dt_suppliers_orders_reduce"
-                                        ],
-                                        'column_names' => $this->column_names_reduced,
-                                        'click_url' => "javascript:;",
-                                        'originalColumns' => $this->originalColumnsReduced
-                                    ];
+                                            'url' => "/suppliers_orders/dt_suppliers_orders"
+                                        ]
+                                    ], $commonData);
+
                                     include 'application/views/templates/table.php'
                                     ?>
                                 </div>

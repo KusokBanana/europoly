@@ -49,20 +49,19 @@
                             <div class="tab-pane fade active in" id="tab_1_1">
                                 <div class="portlet-body">
                                     <?php
-                                    $table_data = [
-                                        'buttons' => [],
-                                        'table_id' => $this->tableNames[1],
-                                        'ajax' => [
-                                            'url' => "/delivery_notes/dt_reduced"
-                                        ],
-                                        'column_names' => $this->column_names_reduced,
+
+                                    $commonData = [
                                         'click_url' => "javascript:;",
-//                                        'selectSearch' => $this->selects,
                                         'method' => "POST",
-//                                        'filterSearchValues' => $this->rows,
-                                        'originalColumns' => $this->originalColumns_reduced,
                                         'serverSide' => false
                                     ];
+
+                                    $table_data = array_merge($this->ordersTable, [
+                                        'ajax' => [
+                                            'url' => "/delivery_notes/dt_reduced"
+                                        ]
+                                    ], $commonData);
+
                                     include 'application/views/templates/table.php'
                                     ?>
                                 </div>
@@ -70,21 +69,12 @@
                             <div class="tab-pane fade" id="tab_1_2">
                                 <div class="portlet-body">
                                     <?php
-                                    $buttons = [];
-                                    $table_data = [
-                                        'buttons' => $buttons,
-                                        'table_id' => $this->tableNames[0],
+                                    $table_data = array_merge($this->itemsTable, [
                                         'ajax' => [
                                             'url' => "/delivery_notes/dt"
-                                        ],
-                                        'column_names' => $this->column_names,
-                                        'click_url' => "javascript:;",
-                                        'selectSearch' => $this->selects,
-                                        'method' => "POST",
-                                        'filterSearchValues' => $this->rows,
-                                        'originalColumns' => $this->originalColumns,
-                                        'serverSide' => false
-                                    ];
+                                        ]
+                                    ], $commonData);
+
                                     include 'application/views/templates/table.php'
                                     ?>
                                 </div>

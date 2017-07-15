@@ -9,6 +9,7 @@ class ControllerSuppliers_orders extends Controller
     {
         parent::__construct();
         $this->model = new ModelSuppliers_orders();
+        $this->model->page = $this->page;
         parent::afterConstruct();
     }
 
@@ -19,20 +20,9 @@ class ControllerSuppliers_orders extends Controller
         $roles = new Roles();
         $this->view->access = $roles->returnAccessAbilities($this->page, 'ch');
 
-        $this->view->tableNames = $this->model->tableNames;
-        $this->view->column_names = $this->model->getColumns($this->model->suppliers_orders_column_names,
-            $this->page, $this->model->tableNames[0], true);
-        $this->view->column_names_reduced = $this->model->getColumns($this->model->suppliers_orders_column_names_reduce,
-            $this->page, $this->model->tableNames[1], true);
+        $this->view->itemsTable = $this->model->getTableData();
+        $this->view->ordersTable = $this->model->getTableData('reduced');
 
-        $this->view->originalColumns = $roles->returnModelNames($this->model->suppliers_orders_column_names, $this->page);
-        $this->view->originalColumnsReduced = $roles->returnModelNames($this->model->suppliers_orders_column_names_reduce, $this->page);
-
-        $array = $this->model->getSelects();
-        $selects = $array['selects'];
-        $rows = $array['rows'];
-        $this->view->selects = $selects;
-        $this->view->rows = $rows;
         $this->view->suppliers = $this->model->getSuppliers();
         $this->view->trucks = $this->model->getActiveTrucks();
 
@@ -55,7 +45,7 @@ class ControllerSuppliers_orders extends Controller
 
     function action_dt_suppliers_orders_reduce()
     {
-        $this->model->getDTSuppliersOrdersReduce($_GET);
+        $this->model->getDTSuppliersOrders($_GET, false, true);
     }
 
     function action_add_empty_supplier_order()

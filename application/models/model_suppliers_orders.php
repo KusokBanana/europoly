@@ -5,6 +5,7 @@ class ModelSuppliers_orders extends ModelManagers_orders
 {
 
     var $tableNames = ["table_suppliers_orders", "table_suppliers_orders_reduced"];
+    var $page;
 
     var $suppliers_orders_columns = [
         array('dt' => 0, 'db' => "suppliers_orders_items.item_id"),
@@ -134,81 +135,88 @@ class ModelSuppliers_orders extends ModelManagers_orders
     var $suppliersFilterWhere = ["suppliers_orders_items.supplier_order_id IS NOT NULL",
                                     "suppliers_orders_items.truck_id IS NULL AND suppliers_orders_items.is_deleted = 0"];
 
-    function getDTSuppliersOrders($input, $printOpt)
+
+    function getSSPData($type = 'general')
     {
 
-        if ($this->user->role_id == ROLE_SALES_MANAGER) {
-            $this->suppliersFilterWhere[] = "(orders.sales_manager_id = " . $this->user->user_id . ' OR' .
-                " client.sales_manager_id = " . $this->user->user_id .
-                " OR client.operational_manager_id = " . $this->user->user_id .
-                ' OR suppliers_orders_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
-            $this->unLinkStrings($this->suppliers_orders_columns, [2, 26, 27]);
+        $ssp = ['page' => $this->page];
+
+        switch ($type) {
+            case 'general':
+
+                if ($this->user->role_id == ROLE_SALES_MANAGER) {
+                    $this->suppliersFilterWhere[] = "(orders.sales_manager_id = " . $this->user->user_id . ' OR' .
+                        " client.sales_manager_id = " . $this->user->user_id .
+                        " OR client.operational_manager_id = " . $this->user->user_id .
+                        ' OR suppliers_orders_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
+                    $this->unLinkStrings($this->suppliers_orders_columns, [2, 26, 27]);
+                }
+                $ssp['columns'] = $this->getColumns($this->suppliers_orders_columns, $this->page,
+                    $this->tableNames[0]);
+                $ssp['columns_names'] = $this->getColumns($this->suppliers_orders_column_names, $this->page,
+                    $this->tableNames[0], true);
+                $ssp['db_table'] = $this->suppliers_orders_table;
+                $ssp['table_name'] = $this->tableNames[0];
+                $ssp['primary'] = 'suppliers_orders_items.item_id';
+                break;
+
+            case 'reduced':
+
+                $this->suppliersFilterWhere = '';
+                if ($this->user->role_id == ROLE_SALES_MANAGER) {
+                    $this->suppliersFilterWhere = "orders.sales_manager_id = " . $this->user->user_id . ' OR '.
+                        " client.sales_manager_id = " . $this->user->user_id .
+                        " OR client.operational_manager_id = " . $this->user->user_id .
+                        ' OR order_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL';
+                    $this->unLinkStrings($this->suppliers_orders_columns_reduce, [1]);
+                }
+                $ssp['columns'] = $this->getColumns($this->suppliers_orders_columns_reduce, $this->page,
+                    $this->tableNames[1]);
+                $ssp['columns_names'] = $this->getColumns($this->suppliers_orders_column_names_reduce, $this->page,
+                    $this->tableNames[1], true);
+                $ssp['db_table'] = $this->suppliers_orders_table_reduce;
+                $ssp['table_name'] = $this->tableNames[1];
+                $ssp['primary'] = 'suppliers_orders.order_id';
+                break;
         }
 
-        $columns = $this->getColumns($this->suppliers_orders_columns, 'suppliersOrders', $this->tableNames[0]);
+        $ssp['where'] = $this->suppliersFilterWhere;
+        return $ssp;
 
-        $ssp = [
-            'columns' => $columns,
-            'columns_names' => $this->suppliers_orders_column_names,
-            'db_table' => $this->suppliers_orders_table,
-            'page' => 'suppliersOrders',
-            'table_name' => $this->tableNames[0],
-            'primary' => 'suppliers_orders_items.item_id',
-        ];
+    }
+
+    function getDTSuppliersOrders($input, $printOpt, $isReduced = false)
+    {
+
+        $type = $isReduced ? 'reduced' : 'general';
+        $ssp = $this->getSSPData($type);
 
         if ($printOpt) {
-
-            $printOpt['where'] = $this->suppliersFilterWhere;
+            $printOpt['where'] = $ssp['where'];
             echo $this->printTable($input, $ssp, $printOpt);
             return true;
-
         }
 
         $this->sspComplex($ssp['db_table'], $ssp['primary'],
-            $ssp['columns'], $input, null, $this->suppliersFilterWhere);
+            $ssp['columns'], $input, null, $ssp['where']);
 
     }
 
-    function getDTSuppliersOrdersReduce($input)
-    {
-        $where = '';
-        if ($this->user->role_id == ROLE_SALES_MANAGER) {
-            $where = "orders.sales_manager_id = " . $this->user->user_id . ' OR '.
-                " client.sales_manager_id = " . $this->user->user_id .
-                " OR client.operational_manager_id = " . $this->user->user_id .
-                ' OR order_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL';
-            $this->unLinkStrings($this->suppliers_orders_columns_reduce, [1]);
-        }
-
-        $columns = $this->getColumns($this->suppliers_orders_columns_reduce, 'suppliersOrders', $this->tableNames[1]);
-
-        $this->sspComplex($this->suppliers_orders_table_reduce, "suppliers_orders.order_id", $columns,
-            $input, null, $where);
-    }
-
-
-    function getSelects()
+    function getSelects($ssp, $isReduced = false)
     {
 
-        if ($this->user->permissions == ROLE_SALES_MANAGER) {
-            $this->suppliersFilterWhere[] = "(orders.sales_manager_id = " . $this->user->user_id . ' OR' .
-                " client.sales_manager_id =  ". $this->user->user_id .
-                " OR client.operational_manager_id = " . $this->user->user_id .
-                ' OR suppliers_orders_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
-            $this->unLinkStrings($this->suppliers_orders_columns, [2, 26, 27]);
+        $sspJson = $this->getSspComplexJson($ssp['db_table'], $ssp['primary'],
+            $ssp['columns'], null, null, $ssp['where']);
+        $rowValues = json_decode($sspJson, true)['data'];
+        $columnNames = $ssp['columns_names'];
+
+        if (!$isReduced) {
+            $ignoreArray = ['Supplier Order ID', 'Manager Order ID', 'Quantity', 'Number of Packs', 'Total weight',
+                'Purchase Price / Unit', 'Total Purchase Price', 'Sell Price / Unit', 'Total Sell Price', 'Downpayment',
+                'Downpayment rate'];
+        } else {
+            $ignoreArray = [];
         }
-
-        $columns = $this->getColumns($this->suppliers_orders_columns, 'suppliersOrders', $this->tableNames[0]);
-
-
-        $ssp = $this->getSspComplexJson($this->suppliers_orders_table, "suppliers_orders_items.item_id",
-            $columns, null, null, $this->suppliersFilterWhere);
-
-        $columnNames = $this->getColumns($this->suppliers_orders_column_names, 'suppliersOrders', $this->tableNames[0], true);
-        $rowValues = json_decode($ssp, true)['data'];
-        $ignoreArray = ['Supplier Order ID', 'Manager Order ID', 'Quantity', 'Number of Packs', 'Total weight',
-            'Purchase Price / Unit', 'Total Purchase Price', 'Sell Price / Unit', 'Total Sell Price', 'Downpayment',
-            'Downpayment rate'];
 
         if (!empty($rowValues)) {
             $selects = [];
@@ -233,8 +241,31 @@ class ModelSuppliers_orders extends ModelManagers_orders
                         $selects[$name][] = $value;
                 }
             }
-            return ['selects' => $selects, 'rows' => $rowValues];
+            return ['selectSearch' => $selects, 'filterSearchValues' => $rowValues];
         }
+    }
+
+    public function getTableData($type = 'general')
+    {
+        $data = $this->getSSPData($type);
+        $roles = new Roles();
+
+        switch ($type) {
+            case 'general':
+                $names = $this->suppliers_orders_column_names;
+                $cache = new Cache();
+                $selects = $cache->getOrSet('suppliers_orders_selects', function() use($data) {
+                    return $this->getSelects($data);
+                });
+                break;
+            case 'reduced':
+                $names = $this->suppliers_orders_column_names_reduce;
+                $selects = $this->getSelects($data, true);
+                break;
+        }
+
+        $data['originalColumns'] = $roles->returnModelNames($names, $this->page);
+        return array_merge($data, $selects);
     }
 
     function addNewOrder($supplier_id = false) {
