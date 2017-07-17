@@ -30,6 +30,8 @@ abstract class Model extends mysqli
 //        if ($_SESSION["user_role"] != 'admin') {
 //            die("You have no rights to insert, current role: " . $_SESSION["user_role"]);
 //        }
+        $table_name = explode(' ', explode('INSERT INTO ', $query)[1])[0];
+        $primary_key = static::getPrimaryKeyName($table_name);
         $result = $this->query($query);
         $user_id = $this->user->user_id;
         if (!$result) {
@@ -38,7 +40,9 @@ abstract class Model extends mysqli
             die("Mysqli: error while insert; query: " . $query);
         }
         Logger::createInsert($query, $user_id, $this->insert_id);
-        return $this->insert_id;
+        $insert_id = $this->insert_id;
+        $this->query("UPDATE $table_name SET modified_at=NOW(), modified_user_id=$user_id, created_at=NOW() WHERE $primary_key=$insert_id");
+        return $insert_id;
     }
 
     public function update($query)
@@ -59,7 +63,9 @@ abstract class Model extends mysqli
             Logger::createUpdate($query, $table_name, $user_id);
             die("Mysqli: error while update, current role: " . $_SESSION["user_role"]);
         }
+        $q = "UPDATE $table_name SET created_at=NOW() modified_user_id='$user_id' $where";
         Logger::createUpdate($query, $table_name, $user_id, $record_id);
+        $this->query("UPDATE $table_name SET modified_at= NOW(), modified_user_id=$user_id $where");
         return $this->affected_rows > 0;
     }
 

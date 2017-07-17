@@ -30,7 +30,7 @@ class Logger
         if ($table_name == 'logging')
             return false;
         $success = is_null($insert_id) ? 'FAIL' : 'SUCCESS';
-        $time = date('d.m.Y');
+        $time = date('d.m.Y H:i:s');
         $result = "\n".$time.' '.$success.' table: '.$table_name.' user_id: '.$user_id.' insert_id: '.$insert_id."\n".$query;
 
         $file = static::getFile(dirname(__FILE__) . '/../../logs/insert/');
@@ -41,7 +41,7 @@ class Logger
     public static function createUpdate($query, $table_name, $user_id, $record_id = null)
     {
         $success = is_null($record_id) ? 'FAIL' : 'SUCCESS';
-        $time = date('d.m.Y');
+        $time = date('d.m.Y H:i:s');
         $result = "\n".$time.' '.$success.' table: '.$table_name.' user_id: '.$user_id.' record_id: '.$record_id."\n".$query;
 
         $file = static::getFile(dirname(__FILE__) . '/../../logs/update/');
@@ -52,7 +52,7 @@ class Logger
     public static function createDelete($query, $table_name, $user_id, $record_id = null)
     {
         $success = is_null($record_id) ? 'FAIL' : 'SUCCESS';
-        $time = date('d.m.Y');
+        $time = date('d.m.Y H:i:s');
         $result = "\n".$time.' '.$success.' table: '.$table_name.' user_id: '.$user_id.' record_id: '.$record_id."\n".$query;
 
         $file = static::getFile(dirname(__FILE__) . '/../../logs/delete/');
