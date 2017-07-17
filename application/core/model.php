@@ -1,6 +1,7 @@
 <?php
 include_once("mysql_config.php");
 include_once ('config.php');
+require_once dirname(__FILE__) . '/../classes/Logger.php';
 
 abstract class Model extends mysqli
 {
@@ -25,14 +26,18 @@ abstract class Model extends mysqli
 
     public function insert($query)
     {
+
 //        if ($_SESSION["user_role"] != 'admin') {
 //            die("You have no rights to insert, current role: " . $_SESSION["user_role"]);
 //        }
         $result = $this->query($query);
+        $user_id = $this->user->user_id;
         if (!$result) {
             echo mysqli_error($this);
+            Logger::createInsert($query, $user_id);
             die("Mysqli: error while insert; query: " . $query);
         }
+        Logger::createInsert($query, $user_id, $this->insert_id);
         return $this->insert_id;
     }
 
@@ -41,11 +46,20 @@ abstract class Model extends mysqli
 //        if ($_SESSION["user_role"] != 'admin') {
 //            die("You have no rights to update, current role: " . $_SESSION["user_role"]);
 //        }
+        $where = stristr($query, 'WHERE');
+        $table_name = str_replace([" ","`","\r","\n"], '', explode(' SET', explode('UPDATE ', $query)[1])[0]);
+        $primary_key = static::getPrimaryKeyName($table_name);
+        $ids = $this->getAssoc('SELECT '.$primary_key. ' FROM '. $table_name.' '.$where);
+
+        $record_id = $ids[0][$primary_key];
+        $user_id = $this->user->user_id;
         $result = $this->query($query);
         if (!$result) {
             echo mysqli_error($this);
+            Logger::createUpdate($query, $table_name, $user_id);
             die("Mysqli: error while update, current role: " . $_SESSION["user_role"]);
         }
+        Logger::createUpdate($query, $table_name, $user_id, $record_id);
         return $this->affected_rows > 0;
     }
 
@@ -67,11 +81,19 @@ abstract class Model extends mysqli
 //        if ($_SESSION["user_role"] != 'admin') {
 //            die("You have no rights to delete, current role: " . $_SESSION["user_role"]);
 //        }
+        $where = stristr($query, 'WHERE');
+        $table_name = str_replace([" ","`","\r","\n"], '', explode(' ', explode('DELETE FROM ', $query)[1])[0]);
+        $primary_key = static::getPrimaryKeyName($table_name);
+        $ids = $this->getAssoc('SELECT '.$primary_key. ' FROM '. $table_name.' '.$where);
+        $record_id = $ids[0][$primary_key];
+        $user_id = $this->user->user_id;
         $result = $this->query($query);
         if (!$result) {
             echo mysqli_error($this);
+//            Logger::createDelete($query, $table_name, $user_id);
             die("Mysqli: error while delete");
         }
+//        Logger::createDelete($query, $table_name, $user_id, $record_id);
     }
 
     public function getById($table_name, $column_name, $id)

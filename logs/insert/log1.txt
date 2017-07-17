@@ -1,0 +1,4 @@
+17.07.2017 SUCCESS table: order_items user_id: 27 insert_id: 501
+INSERT INTO order_items (manager_order_id, product_id, purchase_price, amount, number_of_packs, total_price, discount_rate, reduced_price, manager_bonus_rate, manager_bonus, sell_price)
+                VALUES (16, 3735, 92.9, 0, 0, 0, 0, 0, 
+                0, 0, 119.21)

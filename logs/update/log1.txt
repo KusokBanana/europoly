@@ -1,0 +1,28 @@
+17.07.2017 SUCCESS table: orders user_id: 27 record_id: 16
+UPDATE orders 
+                SET order_items_count = 0, total_price = 27306.8
+                WHERE order_id = 16
+17.07.2017 SUCCESS table: orders user_id: 27 record_id: 16
+UPDATE `orders` 
+                SET order_status_id = 1 WHERE order_id = 16
+17.07.2017 SUCCESS table: orders user_id: 27 record_id: 16
+UPDATE `orders` SET `expected_date_of_issue` = '2017-07-30' WHERE order_id = 16
+17.07.2017 SUCCESS table: users user_id: 27 record_id: 9
+UPDATE users SET date_of_birth = '1980-04-11', position = 'Руководитель проектов', work_phone = '+7 495 150-54-28', mobile_number = '+7 929 629-72-97', email = 'butov@evropoly.com', employment_date = '2012-10-10', notes = 'Всем хорошего  дня!', visual_name = 'Бутов Ю.А.', role_id = 2, first_name = 'Yury', last_name = 'Butov1' WHERE user_id = 9
+17.07.2017 SUCCESS table: orders user_id: 27 record_id: 17
+UPDATE `orders` SET `legal_entity_id` = '2' WHERE order_id = 17
+17.07.2017 SUCCESS table: orders user_id: 27 record_id: 17
+UPDATE orders SET visible_order_id = 'ABH17/00258' WHERE order_id = 17
+17.07.2017 SUCCESS table: orders user_id: 27 record_id: 17
+UPDATE `orders` SET `legal_entity_id` = '3' WHERE order_id = 17
+17.07.2017 SUCCESS table: orders user_id: 27 record_id: 17
+UPDATE orders SET visible_order_id = 'RUM17/00002' WHERE order_id = 17
+17.07.2017 SUCCESS table: order_items user_id: 27 record_id: 497
+UPDATE order_items SET is_deleted = 1 WHERE item_id = 497
+17.07.2017 SUCCESS table: orders user_id: 27 record_id: 16
+UPDATE `orders` 
+                SET order_status_id = 1 WHERE order_id = 16
+17.07.2017 SUCCESS table: orders user_id: 27 record_id: 16
+UPDATE orders 
+                SET order_items_count = -1, total_price = 27213.9, manager_bonus = 0, total_commission = 0
+                WHERE order_id = 16
