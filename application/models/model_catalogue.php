@@ -31,7 +31,7 @@ class ModelCatalogue extends Model
         return $ssp;
     }
 
-    function getDTProducts($input, $printOpt, $page = false, $table = false)
+    function getDTProducts($input, $printOpt, $table = false, $page = false)
     {
         $this->tableName = ($table) ? $table : $this->tableName;
         $this->page = ($page) ? $page : $this->page;

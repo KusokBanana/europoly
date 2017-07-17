@@ -141,6 +141,23 @@
     table.dataTable th[data-db-col-name="Product"] {
         /*max-width: 200px;*/
     }
+
+
+    /*td, th {*/
+        /*white-space: nowrap;*/
+        /*overflow: hidden;*/
+        /*width: 30px !important;*/
+        /*max-width: 30px !important;*/
+        /*min-width: 30px !important;*/
+        /*height: 25px;*/
+        /*border: 1px solid black;*/
+    /*}*/
+    /*table{*/
+        /*table-layout:fixed;*/
+        /*!*width: 40px;*!*/
+    /*}*/
+
+
     table .es-input {
         background-color: #fff;
     }
@@ -214,7 +231,7 @@ $hidden_by_default = json_encode($hidden);
             hiddenByDefault.push($mustHidden);
         }
 
-        var widthTds = <?= '[' . implode(',', $notHidden) . ']'; ?>;
+//        var widthTds = <?//= '[' . implode(',', $notHidden) . ']'; ?>//;
         var $filterSearchValues = <?= json_encode($filterSearchValues); ?>;
         var $clickUrl = "<?= $click_url == 'javascript:;' ? false : $click_url; ?>";
         var $sort = <?= json_encode(explode('-', $sort)); ?>;

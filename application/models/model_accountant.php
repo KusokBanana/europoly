@@ -3,6 +3,7 @@
 class ModelAccountant extends Model
 {
     var $tableName = 'table_accountant';
+    public $page;
 
     var $payments_columns = [
         array('dt' => 0, 'db' => "payments.payment_id"),
@@ -88,41 +89,63 @@ class ModelAccountant extends Model
         $this->connect_db();
     }
 
-    function getDTPayments($input, $printOpt, $where = [])
+    /**
+     * @param string $type
+     * @return array = ['columns', 'columns_names', 'db_table', 'table_name', 'primary', 'page']
+     */
+    function getSSPData($type = 'general')
     {
-        $columns = $this->payments_columns;
-        if (isset($input['type']) && $input['type'] == 'monthly') {
-            $where[] = 'payments.is_monthly = 1';
-            $columns = $this->getMonthlyPaymentsCols('columns');
+
+        $ssp = ['page' => $this->page];
+        $where = ['payments.is_deleted = 0'];
+
+        switch ($type) {
+            case 'general':
+                $columns = $this->payments_columns;
+                $names = $this->getColumns($this->payments_column_names, $this->page,
+                    $this->tableName, true);
+                break;
+            case 'monthly':
+                $where[] = 'payments.is_monthly = 1';
+                $columns = $this->getMonthlyPaymentsCols('columns');
+                $names = $this->getMonthlyPaymentsCols('name');
         }
+
+        $ssp['columns'] = $this->getColumns($columns, $this->page,
+            $this->tableName);
+        $ssp['columns_names'] = $names;
+        $ssp['db_table'] = $this->payments_table;
+        $ssp['table_name'] = $this->tableName;
+        $ssp['primary'] = 'payments.payment_id';
+
         if ($this->user->permissions <= SALES_MANAGER_PERM) {
-            $where[] = 'payments.is_deleted = 0';
             $this->unLinkStrings($columns, [5, 6]);
         }
+
+        $ssp['where'] = $where;
+
+        return $ssp;
+
+    }
+
+    function getDTPayments($input, $printOpt)
+    {
+        $type = isset($input['type']) && $input['type'] == 'monthly' ? 'monthly' : 'general';
+        $ssp = $this->getSSPData($type);
+
         if (isset($input['products']) && isset($input['products']['contractor_id'])
             && isset($input['products']['contractor_type'])) {
-            $where[] = 'payments.contractor_id = ' . $input['products']['contractor_id'];
-            $where[] = "payments.category = '" . $input['products']['contractor_type'] . "'";
+            $ssp['where'][] = 'payments.contractor_id = ' . $input['products']['contractor_id'];
+            $ssp['where'][] = "payments.category = '" . $input['products']['contractor_type'] . "'";
         }
 
-        $columns = $this->getColumns($columns, 'accountant', $this->tableName);
-
-        $ssp = [
-            'columns' => $columns,
-            'columns_names' => $this->payments_column_names,
-            'db_table' => $this->payments_table,
-            'page' => 'accountant',
-            'table_name' => $this->tableName,
-            'primary' => 'payments.payment_id',
-        ];
-
         if ($printOpt) {
-            $printOpt['where'] = $where;
+            $printOpt['where'] = $ssp['where'];
             echo $this->printTable($input, $ssp, $printOpt);
             return true;
         }
 
-        $this->sspComplex($ssp['db_table'], $ssp['primary'], $ssp['columns'], $input, null, $where);
+        $this->sspComplex($ssp['db_table'], $ssp['primary'], $ssp['columns'], $input, null, $ssp['where']);
     }
 
     function getDTOrderPayments($order_id, $type, $input)
@@ -167,6 +190,29 @@ class ModelAccountant extends Model
             $input, null, $where);
     }
 
+    public function getTableData($type = 'general')
+    {
+        $data = $this->getSSPData($type);
+        $roles = new Roles();
+
+        switch ($type) {
+            case 'general':
+                $names = $roles->returnModelNames($this->payments_column_names, $this->page);
+                $cache = new Cache();
+                $selects = $cache->getOrSet('payments', function() use ($data) {
+                    return $this->getSelects($data);
+                });
+                break;
+            case 'monthly':
+                $names = $this->getMonthlyPaymentsCols('name', true);
+                $selects = $this->getSelects($data, true);
+                break;
+        }
+
+        $data['originalColumns'] = $names;
+        return array_merge($data, $selects);
+    }
+
     function deletePayment($payment_id)
     {
         $this->update("UPDATE `payments`
@@ -176,28 +222,14 @@ class ModelAccountant extends Model
 
     }
 
-    function getSelects($isMonthly = false, $where = [])
+    function getSelects($ssp, $where = [])
     {
-        $columns = $this->payments_columns;
-        $role = new Roles();
-        $where[] = 'payments.is_deleted = 0';
-        if ($isMonthly) {
-            $where[] = 'payments.is_monthly = 1';
-            $cols = $this->getMonthlyPaymentsCols('columns');
-            $columnNames = $this->getMonthlyPaymentsCols('name');
-        } else {
-            $cols = $role->returnModelColumns($columns, 'accountant');
-            $columnNames = $role->returnModelNames($this->payments_column_names, 'accountant');
-        }
+        $ssp['where'] = array_merge($ssp['where'], $where);
 
-        if ($_SESSION['perm'] <= SALES_MANAGER_PERM) {
-            $this->unLinkStrings($cols, [5, 6]);
-        }
-
-        $ssp = $this->getSspComplexJson($this->payments_table, "payments.payment_id", $cols, null, null,
-            $where);
-
-        $rowValues = json_decode($ssp, true)['data'];
+        $sspJson = $this->getSspComplexJson($ssp['db_table'], $ssp['primary'],
+            $ssp['columns'], null, null, $ssp['where']);
+        $rowValues = json_decode($sspJson, true)['data'];
+        $columnNames = $ssp['columns_names'];
         $ignoreArray = ['_payment_id', 'Payment Id', 'Actions'];
 
         if (!empty($rowValues)) {

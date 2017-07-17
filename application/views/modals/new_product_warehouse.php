@@ -33,17 +33,19 @@
                                 </div>
                                 <div class="tab-pane active" id="newProductWarehouseTab1">
                                     <?php
-                                    $table_data = array_merge([
+                                    $this->modal_catalogue['table_name'] .= 1;
+                                    $commonData = [
                                         'buttons' => [
                                             'Select product in the table above:'
                                         ],
-                                        'ajax' => [
-                                            'url' => "/warehouse/dt_modal_products?table_id=" .
-                                                $this->tableData['warehouse_modal_new_product']['table_id']
-                                        ],
-                                        'click_url' => "#",
                                         'method' => "POST",
-                                    ], $this->tableData['warehouse_modal_new_product']);
+                                        'ajax' => [
+                                            'url' => "/catalogue/dt?table=modal_catalogue" .
+                                                "&page=warehouse"
+                                        ]
+                                    ];
+                                    $table_data = array_merge($this->modal_catalogue, $commonData);
+
                                     include 'application/views/templates/table.php'
                                     ?>
                                 </div>
@@ -120,7 +122,8 @@
         var prevBtn = modal.find('form').find('.button-previous').hide();
         var nextBtn = modal.find('form').find('.button-next');
 
-        var $table_product_warehouse = $('#warehouse_modal_new_product');
+        var tableId = '#<?= $this->modal_catalogue['table_name'] ?>';
+        var $table_product_warehouse = $(tableId);
         modal.on('click', '.form-actions .button-next', function() {
             var active = modal.find('.nav-pills').find('li.active');
             if (active.index() < 2) {
@@ -219,7 +222,7 @@
         });
 
         function getColumnValue(name, id) {
-            var index =$('#warehouse_modal_new_product_columns_choose').find(':contains('+name+')')
+            var index =$(tableId + '_columns_choose').find(':contains('+name+')')
                 .closest('label').find('input').attr('data-column');
             return $table_product_warehouse.DataTable().rows('.selected').data()[id][index];
         }

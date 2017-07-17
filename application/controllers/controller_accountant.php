@@ -9,6 +9,7 @@ class ControllerAccountant extends Controller
     {
         parent::__construct();
         $this->model = new ModelAccountant();
+        $this->model->page = $this->page;
         parent::afterConstruct();
     }
 

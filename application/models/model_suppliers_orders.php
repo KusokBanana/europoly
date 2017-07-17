@@ -178,6 +178,16 @@ class ModelSuppliers_orders extends ModelManagers_orders
                 $ssp['table_name'] = $this->tableNames[1];
                 $ssp['primary'] = 'suppliers_orders.order_id';
                 break;
+
+            case 'modal_suppliers_orders':
+                $ssp['columns'] = $this->getColumns($this->suppliers_orders_columns, $this->page, $type);
+                $ssp['columns_names'] = $this->getColumns($this->suppliers_orders_column_names, $this->page,
+                    $type, true);
+                $ssp['db_table'] = $this->suppliers_orders_table;
+                $ssp['table_name'] = $type;
+                $ssp['primary'] = 'suppliers_orders_items.item_id';
+                break;
+
         }
 
         $ssp['where'] = $this->suppliersFilterWhere;
@@ -340,24 +350,6 @@ class ModelSuppliers_orders extends ModelManagers_orders
         }
         return $orderIds;
     }
-
-    function getDTSuppliersOrdersToTruck($input, $products)
-    {
-        $where = '';
-        $count = count($products);
-
-        foreach ($products as $key => $product) {
-            $where .= "(suppliers_orders_items.item_id=". $product .")";
-            $where .= ($count-$key > 1) ? ' OR ' : '';
-        }
-        $where2 = 'suppliers_orders_items.supplier_order_id IS NOT NULL AND suppliers_orders_items.truck_id IS NULL';
-        $roles = new Roles();
-        $columns = $roles->returnModelColumns($this->suppliers_orders_columns, 'suppliersOrders');
-
-        $this->sspComplex($this->suppliers_orders_table, "suppliers_orders_items.item_id",
-            $columns, $input, $where2, $where);
-    }
-
 
     public function updateItemsStatus($orderId)
     {

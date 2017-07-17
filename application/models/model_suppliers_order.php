@@ -314,4 +314,41 @@ class ModelSuppliers_order extends ModelOrder
         return parent::getSums($truckItems);
     }
 
+    function getSSPData($type = 'general')
+    {
+        $ssp = ['page' => $this->page];
+
+        switch ($type) {
+            case 'modal_catalogue':
+                require_once 'model_catalogue.php';
+                $model = new ModelCatalogue();
+                $model->tableName = $type;
+                $ssp = $model->getSSPData();
+                $ssp['page'] = $this->page;
+                break;
+        }
+
+        return $ssp;
+    }
+
+    public function getTableData($type = 'general', $opts = [])
+    {
+        $data = $this->getSSPData($type);
+        $roles = new Roles();
+
+        switch ($type) {
+            case 'modal_catalogue':
+                $names = $this->full_product_column_names;
+                $cache = new Cache();
+                $selects = $cache->getOrSet($type, function() use($data) {
+                    $model = new ModelCatalogue();
+                    return $model->getSelects($data);
+                });
+                break;
+        }
+
+        $data['originalColumns'] = $roles->returnModelNames($names, $this->page);
+        return array_merge($data, $selects);
+    }
+
 }

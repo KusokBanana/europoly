@@ -7,6 +7,8 @@ class ModelOrder extends Model
         $this->connect_db();
     }
 
+    public $page;
+
     function getDTOrderItems($order_id, $input)
     {
         $columns = [
@@ -910,38 +912,41 @@ class ModelOrder extends Model
         return $docs;
     }
 
-    function getSelects()
+    function getSSPData($type = 'general')
     {
-        $role = new Roles();
-        $cols = $role->returnModelColumns($this->full_product_columns, 'catalogue');
-        $ssp = $this->getSspComplexJson($this->full_products_table, "product_id", $cols, null);
-        $columns = $role->returnModelNames($this->full_product_column_names, 'catalogue');
-        $rowValues = json_decode($ssp, true)['data'];
-        $ignoreArray = ['_product_id', 'Name', 'Article', 'Thickness', 'Width', 'Length',
-            'Weight', 'Quantity in 1 Pack', 'Purchase price', 'Supplier\'s discount',
-            'Margin', 'Sell', 'Visual Name', 'visual_name'];
+        $ssp = ['page' => $this->page];
 
-        if (!empty($rowValues)) {
-            $selects = [];
-            foreach ($rowValues as $product) {
-                foreach ($product as $key => $value) {
-                    if (!$value || $value == null)
-                        continue;
-                    $name = $columns[$key];
-                    if (in_array($name, $ignoreArray))
-                        continue;
-
-                    preg_match('/<\w+[^>]+?[^>]+>(.*?)<\/\w+>/i', $value, $match);
-                    if (!empty($match) && isset($match[1])) {
-                        $value = $match[1];
-                    }
-
-                    if ((isset($selects[$name]) && !in_array($value, $selects[$name])) || !isset($selects[$name]))
-                        $selects[$name][] = $value;
-                }
-            }
-            return ['selects' => $selects, 'rows' => $rowValues];
+        switch ($type) {
+            case 'modal_catalogue':
+                require_once 'model_catalogue.php';
+                $model = new ModelCatalogue();
+                $model->tableName = $type;
+                $ssp = $model->getSSPData();
+                $ssp['page'] = $this->page;
+                break;
         }
+
+        return $ssp;
+    }
+
+    public function getTableData($type = 'general', $opts = [])
+    {
+        $data = $this->getSSPData($type);
+        $roles = new Roles();
+
+        switch ($type) {
+            case 'modal_catalogue':
+                $names = $this->full_product_column_names;
+                $cache = new Cache();
+                $selects = $cache->getOrSet($type, function() use($data) {
+                    $model = new ModelCatalogue();
+                    return $model->getSelects($data);
+                });
+                break;
+        }
+
+        $data['originalColumns'] = $roles->returnModelNames($names, $this->page);
+        return array_merge($data, $selects);
     }
 
     function getDeliveryNotesColumns()

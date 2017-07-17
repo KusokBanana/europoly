@@ -205,6 +205,48 @@ class ModelTruck extends ModelOrder
             $input, null, "trucks_items.truck_id = $order_id");
     }
 
+    function getSSPData($type = 'general')
+    {
+        $ssp = ['page' => $this->page];
+
+        switch ($type) {
+            case 'modal_suppliers_orders':
+                require_once 'model_suppliers_orders.php';
+                $model = new ModelSuppliers_orders();
+                $ssp = $model->getSSPData($type);
+                $ssp['page'] = $this->page;
+                break;
+        }
+
+        return $ssp;
+    }
+
+    public function getTableData($type = 'general', $opts = [])
+    {
+        $data = $this->getSSPData($type);
+        $roles = new Roles();
+
+        switch ($type) {
+            case 'modal_suppliers_orders':
+                $names = $this->suppliers_orders_column_names;
+                $model = new ModelSuppliers_orders();
+                $selects = $model->getSelects($data);
+                break;
+        }
+
+        $data['originalColumns'] = $roles->returnModelNames($names, $this->page);
+        return array_merge($data, $selects);
+    }
+
+    function getDTSuppliersOrdersToTruck($input)
+    {
+        $ssp = $this->getSSPData('modal_suppliers_orders');
+
+        $this->sspComplex($ssp['db_table'], $ssp['primary'],
+            $ssp['columns'], $input, null, $ssp['where']);
+
+    }
+
     function putToTheWarehouse($items, $warehouse_id)
     {
         if (!empty($items)) {

@@ -1,3 +1,0 @@
-INSERT INTO evropoly.legal_entities (name, prefix, visual_name, is_active) VALUES ('Tektona', 'TEK', 'Общество с ограниченной ответственностью "Тектона", ИНН 77117685110, КПП 771701001, 129164, Москва г, Мира пр-кт, дом №122, тел.: +7 (495) 933-09-06', 0);
-INSERT INTO evropoly.legal_entities (name, prefix, visual_name, is_active) VALUES ('Avena', 'ABH', 'Общество с ограниченной ответственностью "Авена", ИНН 7715860159, КПП 771501001, 127273, Москва г, Сигнальный проезд, дом № 35, корпус 21, тел.: +7 (499) 343-20-37', 1);
-INSERT INTO evropoly.legal_entities (name, prefix, visual_name, is_active) VALUES ('ООО "Румекс"', 'RUM', 'ООО "Румекс"', 1);

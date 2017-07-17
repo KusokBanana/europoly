@@ -10,18 +10,32 @@
                     <input type="hidden" id="field_order_id" name="order_id" value="<?= $this->order['id'] ?>">
                     <input type="hidden" id="field_product_ids" name="product_ids">
                     <?php
-                    $table_data = [
+
+                    $commonData = [
+                        'click_url' => "/product?id=",
+                        'method' => "POST",
                         'buttons' => [
                             'Select product in the table above:'
                         ],
-                        'table_id' => "table_supplier_order_item_product",
                         'ajax' => [
-                            'url' => "/suppliers_orders/dt_suppliers_to_truck"
-                        ],
-                        'column_names' => $this->suppliers_orders_column_names,
-                        'hidden_by_default' => "[]",
-                        'click_url' => "#"
+                            'url' => "/truck/dt_suppliers_items"
+                        ]
                     ];
+                    $table_data = array_merge($this->modal_suppliers_items, $commonData);
+
+//
+//                    $table_data = [
+//                        'buttons' => [
+//                            'Select product in the table above:'
+//                        ],
+//                        'table_id' => "table_supplier_order_item_product",
+//                        'ajax' => [
+//                            'url' => "/suppliers_orders/dt_suppliers_to_truck"
+//                        ],
+//                        'column_names' => $this->suppliers_orders_column_names,
+//                        'hidden_by_default' => "[]",
+//                        'click_url' => "#"
+//                    ];
                     include 'application/views/templates/table.php'
                     ?>
                 </div>
@@ -40,10 +54,11 @@
 
 <script>
     $(document).ready(function() {
-        var $table_order_item_product = $('#table_supplier_order_item_product');
+        var tableId = '#<?= $this->modal_suppliers_items['table_name'] ?>';
+        var $table_order_item_product = $(tableId);
         $table_order_item_product.find('tbody').on('click', 'tr', function () {
             if ($table_order_item_product.find(".selected").length > 0) {
-                var pwids = Array.from($("#table_supplier_order_item_product").DataTable().rows('.selected').data().map(function(product) {
+                var pwids = Array.from($(tableId).DataTable().rows('.selected').data().map(function(product) {
                     return parseInt(product[0]);
                 }));
                 $("#field_product_ids").val(JSON.stringify(pwids));

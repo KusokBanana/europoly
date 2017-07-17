@@ -99,6 +99,7 @@ class ModelWarehouse extends ModelManagers_orders
         array('dt' => 41, 'db' => "products_warehouses.production_date"),
         array('dt' => 42, 'db' => "IFNULL(CONCAT(products_warehouses.reserve_since_date, 
             ' - ',products_warehouses.reserve_till_date), '')"),
+        array('dt' => 43, 'db' => "IF(products_warehouses.manager_order_id IS NULL, 'Available', 'Reserved')"),
     );
 
     var $product_warehouses_column_names = [
@@ -145,6 +146,7 @@ class ModelWarehouse extends ModelManagers_orders
         'Commission Agent Bonus',
         'Production Date',
         'Reserve Period',
+        'Type',
     ];
 
     var $where = 'products_warehouses.manager_order_id IS NULL';
@@ -157,29 +159,23 @@ class ModelWarehouse extends ModelManagers_orders
     var $where_reserve = '(products_warehouses.manager_order_id IS NOT NULL AND '.
     'products_warehouses.reserve_since_date IS NOT NULL)';
 
-    function getDTProductsForWarehouses($input, $warehouse_id = 0, $type, $printOpt, $tableName = '')
+    /**
+     * @param string $type
+     * @param array $opts
+     * @return array = ['columns', 'columns_names', 'db_table', 'table_name', 'primary', 'page']
+     */
+    function getSSPData($type = 'general', $opts = [])
     {
-
-//        $input['columns'][2]['search']['value'] = 'Admonter SP1020 Oak robust rustic ng t&g 15x 185x1850 mm';
-
+        $ssp = ['page' => $this->page];
+        $warehouse_id = $opts['warehouse_id'];
         if ($warehouse_id) {
             $where = ["products_warehouses.warehouse_id = $warehouse_id"];
         } else {
             $where = ['products_warehouses.warehouse_id IS NOT NULL'];
         }
+
         $where[] = 'products_warehouses.is_deleted = 0';
         $where[] = "products_warehouses.status_id <> " . ISSUED;
-        switch ($type) {
-            case '':
-                $where[] = $this->where;
-                break;
-            case 'issue':
-                $where[] = $this->where_issue;
-                break;
-            case 'reserve':
-                $where[] = $this->where_reserve;
-                break;
-        }
 
         if ($this->user->role_id == ROLE_SALES_MANAGER) {
             $where[] = "(orders.sales_manager_id = " . $this->user->user_id . ' OR '.
@@ -191,69 +187,55 @@ class ModelWarehouse extends ModelManagers_orders
             $this->unLinkStrings($this->product_warehouses_columns, [27, 30, 33, 34]);
         }
 
-        $columns = $this->getColumns($this->product_warehouses_columns, 'warehouse', $tableName);
+        $ssp['columns'] = $this->getColumns($this->product_warehouses_columns, $this->page,
+            $type);
+        $ssp['columns_names'] = $this->getColumns($this->product_warehouses_column_names, $this->page,
+            $type, true);
+        $ssp['db_table'] = $this->products_warehouses_table;
+        $ssp['table_name'] = $type;
+        $ssp['primary'] = 'products_warehouses.item_id';
 
-        $ssp = [
-            'columns' => $columns,
-            'columns_names' => $this->getColumns($this->product_warehouses_column_names,
-                'warehouse', $tableName, true),
-            'db_table' => $this->products_warehouses_table,
-            'page' => 'warehouse',
-            'table_name' => $tableName,
-            'primary' => 'products_warehouses.item_id',
-        ];
+        switch ($type) {
+            case 'general':
+                $where[] = $this->where . ' OR ' . $this->where_reserve;
+                break;
+            case 'expects_issue':
+                $where[] = $this->where_issue;
+                break;
+            case 'modal_catalogue':
+                require_once 'model_catalogue.php';
+                $model = new ModelCatalogue();
+                $model->tableName = $type;
+                $where = [];
+                $ssp = $model->getSSPData();
+                $ssp['page'] = $this->page;
+                break;
+        }
+
+        $ssp['where'] = $where;
+        return $ssp;
+    }
+
+    function getDTProductsForWarehouses($input, $warehouse_id = 0, $type, $printOpt)
+    {
+        $ssp = $this->getSSPData($type, ['warehouse_id' => $warehouse_id]);
 
         if ($printOpt) {
-
-            $printOpt['where'] = $where;
+            $printOpt['where'] = $ssp['where'];
             echo $this->printTable($input, $ssp, $printOpt);
             return true;
-
         }
 
         $this->sspComplex($ssp['db_table'], $ssp['primary'],
-            $ssp['columns'], $input, null, $where);
+            $ssp['columns'], $input, null, $ssp['where']);
     }
 
-    function getSelects($warehouse_id = 0, $table_id)
+    function getSelects($ssp, $opts = [])
     {
-        if (!$warehouse_id) {
-            $where = ['products_warehouses.warehouse_id IS NOT NULL'];
-        } else {
-            $where = ["products_warehouses.warehouse_id = $warehouse_id"];
-        }
-
-        $where[] = "products_warehouses.status_id <> " . ISSUED;
-        $where[] = 'products_warehouses.is_deleted = 0';
-        switch ($table_id) {
-            case 'table_warehouses_products':
-                $where[] = $this->where;
-                break;
-            case 'table_warehouses_products_issue':
-                $where[] = $this->where_issue;
-                break;
-            case 'table_warehouses_products_reserved':
-                $where[] = $this->where_reserve;
-                break;
-        }
-
-        if ($this->user->role_id == ROLE_SALES_MANAGER) {
-            $where[] = "(orders.sales_manager_id = " . $this->user->user_id . ' OR '.
-                " client.sales_manager_id = " . $this->user->user_id .
-                " OR client.operational_manager_id = " . $this->user->user_id .
-                ' OR products_warehouses.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
-        }
-        if ($_SESSION['perm'] <= SALES_MANAGER_PERM) {
-            $this->unLinkStrings($this->product_warehouses_columns, [27, 30, 33, 34]);
-        }
-        $columns = $this->getColumns($this->product_warehouses_columns, 'warehouse', 'table_warehouse');
-
-        $ssp = $this->getSspComplexJson($this->products_warehouses_table, "products_warehouses.item_id",
-            $columns, null, null, $where);
-
-        $columnNames = $this->getColumns($this->product_warehouses_column_names, 'warehouse', 'table_warehouse', true);
-
-        $rowValues = json_decode($ssp, true)['data'];
+        $sspJson = $this->getSspComplexJson($ssp['db_table'], $ssp['primary'],
+            $ssp['columns'], null, null, $ssp['where']);
+        $columnNames = $ssp['columns_names'];
+        $rowValues = json_decode($sspJson, true)['data'];
         $ignoreArray = ['Id', 'Quantity', 'Purchase Price', 'Buy + Transport + Taxes', 'Sell Price',
             'Dealer Price (-30%)', 'Total Price'];
 
@@ -278,7 +260,35 @@ class ModelWarehouse extends ModelManagers_orders
             }
             return ['selectSearch' => $selects, 'filterSearchValues' => $rowValues];
         }
-        return ['selectSearch' => [], 'filterSearchValues' => []];
+        return [];
+    }
+
+    public function getTableData($type = 'general', $warehouse_id = 0)
+    {
+
+        $data = $this->getSSPData($type, ['warehouse_id' => $warehouse_id]);
+        $roles = new Roles();
+        $names = $this->product_warehouses_column_names;
+
+        switch ($type) {
+//            case 'general':
+//            case 'expects_issue':
+//                break;
+            case 'modal_catalogue':
+                $names = $this->full_product_column_names;
+                $cache = new Cache();
+                $selects = $cache->getOrSet($type, function() use($data) {
+                    $model = new ModelCatalogue();
+                    return $model->getSelects($data);
+                });
+                break;
+            default:
+                $selects = $this->getSelects($data, true);
+        }
+
+        $data['originalColumns'] = $roles->returnModelNames($names, $this->page);
+        return array_merge($data, $selects);
+
     }
 
     function getModalProducts($input, $table_id)

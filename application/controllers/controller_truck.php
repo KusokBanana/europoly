@@ -6,6 +6,7 @@ class ControllerTruck extends Controller
     {
         parent::__construct();
         $this->model = new ModelTruck();
+        $this->model->page = $this->page;
         parent::afterConstruct();
     }
 
@@ -19,11 +20,14 @@ class ControllerTruck extends Controller
         if (!$this->view->order)
             $this->notFound();
 
+
         $roles = new Roles();
-        $this->view->suppliers_orders_column_names =
-            $roles->returnModelNames($this->model->suppliers_orders_column_names, 'suppliersOrders');
+//        $this->view->suppliers_orders_column_names =
+//            $roles->returnModelNames($this->model->suppliers_orders_column_names, 'suppliersOrders');
         $this->view->column_names = $roles->returnModelNames($this->model->truck_column_names, $this->page);
-        $this->view->full_product_hidden_columns = $this->model->full_product_hidden_columns;
+//        $this->view->full_product_hidden_columns = $this->model->full_product_hidden_columns;
+        $this->view->modal_suppliers_items = $this->model->getTableData('modal_suppliers_orders');
+
         $this->view->status = $this->model->getTruckStatus($_GET['id']);
         $this->view->statusList = $this->model->getStatusList();
         $this->view->delivery = $this->model->getDelivery($_GET['id']);
@@ -51,6 +55,11 @@ class ControllerTruck extends Controller
             $location = ($suppliersOrder) ? '/truck?id='.$suppliersOrder : $_SERVER['HTTP_REFERER'];
             header("Location: " . $location);
         }
+    }
+
+    function action_dt_suppliers_items()
+    {
+        $this->model->getDTSuppliersOrdersToTruck($_POST);
     }
 
     function action_put_to_the_warehouse()

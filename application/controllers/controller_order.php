@@ -7,6 +7,7 @@ class ControllerOrder extends Controller
         parent::__construct();
         $this->model = new ModelOrder();
         parent::afterConstruct();
+        $this->model->page = $this->page;
     }
 
     public $page = 'order';
@@ -39,32 +40,15 @@ class ControllerOrder extends Controller
             $this->view->warehouses = $this->model->getWarehousesIdNames();
 
             $roles = new Roles();
-            $this->view->full_product_column_names = $this->model->getColumns($this->model->full_product_column_names,
-                'catalogue', 'table_catalogue', true);
-            $this->view->originalColumns = $roles->returnModelNames($this->model->full_product_column_names, 'catalogue');
-
             $this->view->column_names = $roles->returnModelNames($this->model->order_columns_names, $this->page);
+
             $this->view->access = $roles->getPageAccessAbilities($this->page);
             if ($this->view->access['p']) {
                 $this->view->documents = $this->model->getDocuments($_GET['id']);
             }
 
-            $cache = new Cache();
-            $selectsCache = $cache->read('catalogue_selects');
-            if (!empty($selectsCache)) {
-                $array = $selectsCache;
-                $selects = $array['selects'];
-                $rows = $array['rows'];
-            } else {
-                $array = $this->model->getSelects();
-                $selects = $array['selects'];
-                $rows = $array['rows'];
-                $cache->write('catalogue_selects', $array);
-            }
-            $this->view->selects = $selects;
-            $this->view->rows = $rows;
+            $this->view->modal_catalogue = $this->model->getTableData('modal_catalogue');
 
-            $this->view->full_product_hidden_columns = $this->model->full_product_hidden_columns;
             $this->view->managers = $this->model->getSalesManagersIdName();
             $this->view->legalEntities = $this->model->getLegalEntities();
             $this->view->legalEntityName = $this->model->getLegalEntityName($order['legal_entity_id']);

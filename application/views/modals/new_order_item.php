@@ -10,23 +10,13 @@
                     <input type="hidden" id="field_order_id" name="order_id" value="<?= $this->order['order_id'] ?>">
                     <input type="hidden" id="field_product_ids" name="product_ids">
                     <?php
-                    $table_data = [
-                        'buttons' => [
-                            'Select product in the table above:'
-                        ],
-                        'table_id' => "table_catalogue",
-//                        'table_id' => "table_order_item_product",
+                    $commonData = [
+                        'method' => "POST",
                         'ajax' => [
-                            'url' => "/catalogue/dt?table=table_catalogue&page="
-                        ],
-                        'column_names' => $this->full_product_column_names,
-                        'hidden_by_default' => $this->full_product_hidden_columns,
-                        'selectSearch' => $this->selects,
-                        'filterSearchValues' => $this->rows,
-                        'originalColumns' => $this->originalColumns,
-                        'click_url' => "#",
-                        'method' => 'POST'
+                            'url' => "/catalogue/dt?table=".$this->modal_catalogue['table_name']."&page=order"
+                        ]
                     ];
+                    $table_data = array_merge($this->modal_catalogue, $commonData);
                     include 'application/views/templates/table.php'
                     ?>
                 </div>
@@ -45,10 +35,11 @@
 
 <script>
     $(document).ready(function() {
-        var $table_order_item_product = $('#table_catalogue');
+        var tableId = '#<?= $this->modal_catalogue['table_name'] ?>';
+        var $table_order_item_product = $(tableId);
         $table_order_item_product.find('tbody').on('click', 'tr', function () {
             if ($table_order_item_product.find(".selected").length > 0) {
-                var pwids = Array.from($("#table_catalogue").DataTable().rows('.selected').data().map(function(product) {
+                var pwids = Array.from($(tableId).DataTable().rows('.selected').data().map(function(product) {
                     return parseInt(product[0]);
                 }));
                 $("#field_product_ids").val(JSON.stringify(pwids));

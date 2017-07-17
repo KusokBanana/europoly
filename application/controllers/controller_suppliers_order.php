@@ -7,6 +7,7 @@ class ControllerSuppliers_order extends Controller
         parent::__construct();
         $this->model = new ModelSuppliers_order();
         parent::afterConstruct();
+        $this->model->page = $this->page;
     }
 
     public $page = 'suppliersOrder';
@@ -14,12 +15,10 @@ class ControllerSuppliers_order extends Controller
     function action_index($action_param = null, $action_data = null)
     {
         $this->getAccess($this->page, 'v');
-        $this->view->title = "Suppliers Order";
         $this->view->order = $this->model->getOrder($_GET['id']);
         if (!$this->view->order)
             $this->notFound();
 
-//        $this->view->client = $this->model->getClient($this->view->order['client_id']);
         $this->view->title = "Supplier Order #".$this->view->order['order_id'];
         $roles = new Roles();
         $this->view->access = $roles->getPageAccessAbilities($this->page);
@@ -28,26 +27,8 @@ class ControllerSuppliers_order extends Controller
         }
         $this->view->column_names = $roles->returnModelNames($this->model->suppliers_orders_column_names, $this->page);
 
-        $this->view->full_product_column_names = $this->model->getColumns($this->model->full_product_column_names,
-            'catalogue', 'table_catalogue', true);
-        $this->view->originalColumns = $roles->returnModelNames($this->model->full_product_column_names, 'catalogue');
+        $this->view->modal_catalogue = $this->model->getTableData('modal_catalogue');
 
-        $cache = new Cache();
-        $selectsCache = $cache->read('catalogue_selects');
-        if (!empty($selectsCache)) {
-            $array = $selectsCache;
-            $selects = $array['selects'];
-            $rows = $array['rows'];
-        } else {
-            $array = $this->model->getSelects();
-            $selects = $array['selects'];
-            $rows = $array['rows'];
-            $cache->write('catalogue_selects', $array);
-        }
-        $this->view->selects = $selects;
-        $this->view->rows = $rows;
-
-        $this->view->full_product_hidden_columns = $this->model->full_product_hidden_columns;
         $this->view->clients = $this->model->getClientsIdName();
         $this->view->sums = $this->model->getSums($_GET['id']);
         $this->view->status = $this->model->getOrderStatus($_GET['id']);

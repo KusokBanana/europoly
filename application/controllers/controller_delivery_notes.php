@@ -69,7 +69,6 @@ class ControllerDelivery_notes extends Controller
         $roles = new Roles();
         $this->view->column_names = $roles->returnModelNames($this->model->delivery_note_items_names, $this->page);
         $roles = new Roles();
-
         $this->view->originalColumns_modal = $roles->returnModelNames($this->model->delivery_note_items_names, 'order');
 
         $this->view->title = "Delivery Note №" . $note['id'];

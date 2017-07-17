@@ -43,9 +43,6 @@
                         <li>
                             <a href="#tab_1_2" data-toggle="tab"> Expects Issue </a>
                         </li>
-                        <li>
-                            <a href="#tab_1_3" data-toggle="tab"> Reserved </a>
-                        </li>
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="tab_1_1">
@@ -65,17 +62,23 @@
                                                         data-sel=".tab-pane.active table">
                                                             Discard Goods <i class="fa fa-minus"></i>
                                                    </button>';
+                                $commonData = [
+                                    'click_url' => "javascript:;",
+                                    'method' => "POST",
+                                    'serverSide' => false
+                                ];
                                 $urlId = ($this->id) ? $this->warehouse['warehouse_id'] : 0;
+
                                 $table_data = array_merge([
                                     'buttons' => $buttons,
                                     'ajax' => [
-                                        'url' => "/warehouse/dt?warehouse_id=$urlId&table="
-                                            .$this->tableData['warehouse1']['table_id'],
+                                        'url' => "/warehouse/dt?warehouse_id=$urlId&type="
+                                            .$this->generalTable['table_name'],
                                     ],
                                     'hidden_by_default' => "[]",
                                     'click_url' => "javascript:;",
                                     'method' => 'POST',
-                                ], $this->tableData['warehouse1']);
+                                ], $this->generalTable);
                                 include 'application/views/templates/table.php'
                                 ?>
                             </div>
@@ -84,42 +87,21 @@
                             <div class="portlet-body">
                                 <div class="portlet-body">
                                     <?php
+//                                    if ($this->access['ch'])
+//                                        $buttons[] =
+//                                            '<button data-link="/warehouse/issue_products"
+//                                                        class="btn sbold green issue-products-btn"
+//                                                        data-sel="#table_warehouses_products_issue">Issue</button>';
                                     $buttons = [];
-                                    if ($this->access['ch'])
-                                        $buttons[] =
-                                            '<button data-link="/warehouse/issue_products" 
-                                                        class="btn sbold green issue-products-btn"
-                                                        data-sel="#table_warehouses_products_issue">Issue</button>';
-                                    $table_data = array_merge([
+
+                                    $table_data = array_merge($this->expectsIssueTable, [
                                         'buttons' => $buttons,
                                         'ajax' => [
-                                            'url' => "/warehouse/dt?warehouse_id=$urlId&type=issue&table="
-                                                .$this->tableData['warehouse2']['table_id'],
-                                        ],
-                                        'hidden_by_default' => "[]",
-                                        'click_url' => "javascript:;",
-                                        'method' => 'POST',
-                                    ], $this->tableData['warehouse2']);
-                                    include 'application/views/templates/table.php'
-                                    ?>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane" id="tab_1_3">
-                            <div class="portlet-body">
-                                <div class="portlet-body">
-                                    <?php
-                                    $buttons = [];
-                                    $table_data = array_merge([
-                                        'buttons' => $buttons,
-                                        'ajax' => [
-                                            'url' => "/warehouse/dt?warehouse_id=$urlId&type=reserve&table="
-                                                .$this->tableData['warehouse3']['table_id'],
-                                        ],
-                                        'hidden_by_default' => "[]",
-                                        'click_url' => "javascript:;",
-                                        'method' => 'POST',
-                                    ], $this->tableData['warehouse3']);
+                                            'url' => "/warehouse/dt?warehouse_id=$urlId&type=".
+                                                $this->expectsIssueTable['table_name']
+                                        ]
+                                    ], $commonData);
+
                                     include 'application/views/templates/table.php'
                                     ?>
                                 </div>
@@ -140,7 +122,8 @@ if ($this->access['ch']) {
 ?>
 <script>
     $(document).ready(function () {
-        var $tables_warehouses = $('#table_warehouses_products, #table_warehouses_products_issue, #table_warehouses_products_reserved');
+        var $tables_warehouses = $('#<?= $this->expectsIssueTable['table_name'] ?>, ' +
+            '#<?= $this->generalTable['table_name'] ?>');
         var warehouses = <?= json_encode($this->warehouses); ?>;
         $tables_warehouses.on('draw.dt', function () {
             $('.x-warehouse_id').editable({
@@ -161,8 +144,7 @@ if ($this->access['ch']) {
         });
         // TODO remove it
         <?php if (isset($_GET['documentPath']) && $_GET['documentPath']): ?>
-            var path = '<?= $_GET['documentPath']; ?>';
-            location.href = path;
+            location.href = '<?= $_GET['documentPath']; ?>';
             var re = new RegExp('(\\?|&)documentPath=[^&]+','g');
             var url = location.href.replace(re,'');
             history.pushState({}, '', url);
@@ -197,7 +179,7 @@ if ($this->access['ch']) {
             e.preventDefault();
             var btn = $(this);
 
-            var $table = $('#table_warehouses_products_issue');
+            var $table = $('#<?= $this->generalTable['table_name'] ?>');
             var selected = $table.attr('data-selected');
 
             if (!selected || selected === undefined) {
@@ -256,4 +238,4 @@ if ($this->access['ch']) {
         <!-- /.modal-dialog -->
     </div>
 </div>
-<?php include_once ('modals/assemble_set.php'); ?>
+<?php require_once ('modals/assemble_set.php'); ?>

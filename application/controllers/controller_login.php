@@ -60,6 +60,8 @@ class ControllerLogin extends Controller
                 $tableId = 'sent_to_logist';
             if (in_array($tableId, ["table_end_customers","table_commission_agents","table_dealers"]))
                 $tableId = 'table_clients';
+            if (in_array($tableId, ['modal_catalogue1', 'modal_catalogue11']))
+                $tableId = 'modal_catalogue';
             echo $this->model->saveOrderColumns($columns, $tableId);
         }
     }

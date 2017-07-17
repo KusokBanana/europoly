@@ -66,9 +66,7 @@ class ControllerWarehouse extends Controller
 
             $warehouse_id = intval($_GET['warehouse_id']);
             $type = isset($_GET['type']) ? $_GET['type'] : '';
-//            $table = isset($_GET['table']) ? $_GET['table'] : '';
-            $table = 'table_warehouse';
-            $this->model->getDTProductsForWarehouses($_POST, $warehouse_id, $type, $print, $table);
+            $this->model->getDTProductsForWarehouses($_POST, $warehouse_id, $type, $print);
         } else {
             http_response_code(400);
         }
@@ -182,75 +180,9 @@ class ControllerWarehouse extends Controller
 
     public function setTablesVals($id)
     {
-        $this->view->tableData = [];
-
-        $roles = new Roles();
-
-        $tableData = [
-            'table_id' => 'table_warehouses_products',
-            'column_names' => $this->model->getColumns($this->model->product_warehouses_column_names,
-                $this->page, 'table_warehouse', true),
-            'originalColumns' => $roles->returnModelNames($this->model->product_warehouses_column_names, $this->page)
-        ];
-        $tableData = array_merge($tableData, $this->model->getSelects($id, 'table_warehouses_products'));
-        $this->view->tableData['warehouse1'] = $tableData;
-        $this->view->tableData['warehouse2'] = array_merge($tableData,
-            ['table_id' => 'table_warehouses_products_issue'],
-            $this->model->getSelects($id, 'table_warehouses_products_issue'));
-        $this->view->tableData['warehouse3'] = array_merge($tableData,
-            ['table_id' => 'table_warehouses_products_reserved'],
-            $this->model->getSelects($id, 'table_warehouses_products_reserved'));
-
-//        $this->view->products_hidden_columns = $this->model->full_product_hidden_columns;
-//        $this->view->products_originalColumns = $roles->returnModelNames($this->model->full_product_column_names, $this->page);
-
-        $cache = new Cache();
-        $selectsCache = $cache->read('warehouse_modal_new_product');
-        if (!empty($selectsCache)) {
-            $array = $selectsCache;
-            $selects = $array['selects'];
-            $rows = $array['rows'];
-        } else {
-            $array = $this->model->getModalSelects('warehouse_modal_new_product', 'warehouse');
-            $selects = $array['selects'];
-            $rows = $array['rows'];
-            $cache->write('warehouse_modal_new_product', $array);
-        }
-
-        $tableData = [
-            'table_id' => 'warehouse_modal_new_product',
-            'column_names' => $this->model->getColumns($this->model->full_product_column_names,
-                $this->page, 'warehouse_modal_new_product', true),
-            'originalColumns' => $roles->returnModelNames($this->model->full_product_column_names, $this->page),
-            'hidden_by_default' => $this->model->full_product_hidden_columns,
-            'filterSearchValues' => $rows,
-            'selectSearch' => $selects
-        ];
-
-        $this->view->tableData['warehouse_modal_new_product'] = $tableData;
-
-        $cache = new Cache();
-        $selectsCache = $cache->read('warehouse_modal_assemble');
-        if (!empty($selectsCache)) {
-            $array = $selectsCache;
-            $selects = $array['selects'];
-            $rows = $array['rows'];
-        } else {
-            $array = $this->model->getModalSelects('warehouse_modal_assemble', 'warehouse');
-            $selects = $array['selects'];
-            $rows = $array['rows'];
-            $cache->write('warehouse_modal_assemble', $array);
-        }
-
-        $tableData = array_merge($tableData, [
-            'table_id' => 'warehouse_modal_assemble',
-            'column_names' => $this->model->getColumns($this->model->full_product_column_names,
-                $this->page, 'warehouse_modal_assemble', true),
-            'filterSearchValues' => $rows,
-            'selectSearch' => $selects,
-        ]);
-
-        $this->view->tableData['warehouse_modal_assemble'] = $tableData;
+        $this->view->generalTable = $this->model->getTableData('warehouse_products', $id);
+        $this->view->expectsIssueTable = $this->model->getTableData('expects_issue', $id);
+        $this->view->modal_catalogue = $this->model->getTableData('modal_catalogue', $id);
     }
 
 

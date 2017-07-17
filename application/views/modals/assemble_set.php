@@ -9,8 +9,7 @@
                     <div class="portlet-title">
                         <div class="caption">
                             <i class=" icon-layers font-green"></i>
-                            <span class="caption-subject font-green bold uppercase"> Assemble Set Tool
-                                        </span>
+                            <span class="caption-subject font-green bold uppercase"> Assemble Set Tool</span>
                         </div>
                     </div>
                     <div class="portlet-body form">
@@ -50,18 +49,19 @@
                                             <button class="close" data-dismiss="alert"></button> Your have chosen # products. </div>
                                         <div class="tab-pane active" id="tab1">
                                             <?php
-                                            $table_data = array_merge([
+                                            $this->modal_catalogue['table_name'] .= 1;
+                                            $commonData = [
                                                 'buttons' => [
                                                     'Select product in the table above:'
                                                 ],
-                                                'ajax' => [
-                                                    'url' => "/warehouse/dt_modal_products?table_id=" .
-                                                        $this->tableData['warehouse_modal_assemble']['table_id']
-                                                ],
-                                                'click_url' => "#",
+                                                'method' => "POST",
                                                 'select' => 'single',
-                                                'method' => 'POST',
-                                            ], $this->tableData['warehouse_modal_assemble']);
+                                                'ajax' => [
+                                                    'url' => "/catalogue/dt?table=modal_catalogue".
+                                                        "&page=warehouse"
+                                                ]
+                                            ];
+                                            $table_data = array_merge($this->modal_catalogue, $commonData);
                                             include 'application/views/templates/table.php'
                                             ?>
                                         </div>
@@ -171,8 +171,9 @@
         var prevBtn = modal.find('form').find('.button-previous').hide();
         var nextBtn = modal.find('form').find('.button-next');
 
-        $('#table_warehouses_products').find('tbody').on('click', 'tr td:first-child', function (e) {
-            var selectedRows = $('#table_warehouses_products').find('.selected');
+        var tableAvailableProducts = '<?= '#' . $this->generalTable['table_name'] ?>';
+        $(tableAvailableProducts).find('tbody').on('click', 'tr td:first-child', function (e) {
+            var selectedRows = $(tableAvailableProducts).find('.selected');
             if (selectedRows.length) {
                 $('.assemble-btn').removeClass('disable');
             } else {
@@ -199,8 +200,9 @@
         }).find('.nav-pills .step').on('show.bs.tab', function() {
             var selectorTab = $(this).attr('href');
             var can = 1;
-            var firstTable = $('#table_warehouses_products');
-            var secondTable = $('#warehouse_modal_assemble');
+            var firstTable = $(tableAvailableProducts);
+            var secondTableId = '<?= '#' . $this->modal_catalogue['table_name'] ?>';
+            var secondTable = $(secondTableId);
             var $table_source = $("#table_assemble_set_source");
             var $table_result = $("#table_assemble_set_result");
             var sourceProducts = firstTable.attr('data-selected');
@@ -229,7 +231,7 @@
                 } else {
                     $('.error-choose-products').hide();
                     if ($table_source.attr('data-products') !== undefined &&
-                        $table_source.attr('data-products') != sourceProducts) {
+                        $table_source.attr('data-products') !== sourceProducts) {
                         $table_source.dataTable().fnDestroy();
                     }
                     submitBtn.hide();
@@ -336,7 +338,7 @@
                             }
                         }
                         function getColumnValue(name) {
-                            var index =$('#warehouse_modal_assemble_columns_choose').find(':contains('+name+')')
+                            var index =$(secondTableId+'_columns_choose').find(':contains('+name+')')
                                 .closest('label').find('input').attr('data-column');
                             return secondTable.DataTable().rows('.selected').data()[0][index];
                         }
