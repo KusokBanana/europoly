@@ -166,10 +166,10 @@ class ModelManagers_orders extends Model
                         $this->user->user_id . " OR client.operational_manager_id = " . $this->user->user_id;
                     $this->unLinkStrings($this->managers_orders_columns, [24, 25]);
                 }
-                $ssp['columns'] = $this->getColumns($this->managers_orders_columns, $this->page,
-                    $this->tableNames[0]);
-                $ssp['columns_names'] = $this->getColumns($this->managers_orders_column_names, $this->page,
-                    $this->tableNames[0], true);
+                $ssp = array_merge($ssp, $this->getColumns($this->managers_orders_columns, $this->page,
+                    $this->tableNames[0]));
+                $ssp = array_merge($ssp, $this->getColumns($this->managers_orders_column_names, $this->page,
+                    $this->tableNames[0], true));
                 $ssp['db_table'] = $this->managers_orders_table;
                 $ssp['table_name'] = $this->tableNames[0];
                 $ssp['primary'] = 'order_items.item_id';
@@ -183,10 +183,10 @@ class ModelManagers_orders extends Model
                         " OR client.operational_manager_id = " . $this->user->user_id;
                     $this->unLinkStrings($this->managers_orders_reduced_columns, [9, 10]);
                 }
-                $ssp['columns'] = $this->getColumns($this->managers_orders_reduced_columns, $this->page,
-                    $this->tableNames[1]);
-                $ssp['columns_names'] = $this->getColumns($this->managers_orders_reduced_column_names, $this->page,
-                    $this->tableNames[1], true);
+                $ssp = array_merge($ssp, $this->getColumns($this->managers_orders_reduced_columns, $this->page,
+                    $this->tableNames[1]));
+                $ssp = array_merge($ssp, $this->getColumns($this->managers_orders_reduced_column_names, $this->page,
+                    $this->tableNames[1], true));
                 $ssp['db_table'] = $this->managers_orders_table_reduce;
                 $ssp['table_name'] = $this->tableNames[1];
                 $ssp['primary'] = 'orders.order_id';
@@ -232,11 +232,10 @@ class ModelManagers_orders extends Model
 
     function getSelects($ssp, $isReduced = false)
     {
-
         $sspJson = $this->getSspComplexJson($ssp['db_table'], $ssp['primary'],
-            $ssp['columns'], null, null, $ssp['where']);
+            $ssp['original_columns'], null, null, $ssp['where']);
         $rowValues = json_decode($sspJson, true)['data'];
-        $columns = $ssp['columns_names'];
+        $columnsNames = $ssp['original_columns_names'];
 
         if (!$isReduced) {
             $ignoreArray = ['Manager Order ID', 'Quantity', 'Number of Packs', 'Total Weight', 'Purchase Price / Unit',
@@ -247,24 +246,7 @@ class ModelManagers_orders extends Model
         }
 
         if (!empty($rowValues)) {
-            $selects = [];
-            foreach ($rowValues as $product) {
-                foreach ($product as $key => $value) {
-                    if (!$value || $value == null)
-                        continue;
-                    $name = $columns[$key];
-                    if (in_array($name, $ignoreArray))
-                        continue;
-
-                    preg_match('/<\w+[^>]+?[^>]+>(.*?)<\/\w+>/i', $value, $match);
-                    if (!empty($match) && isset($match[1])) {
-                        $value = $match[1];
-                    }
-
-                    if ((isset($selects[$name]) && !in_array($value, $selects[$name])) || !isset($selects[$name]))
-                        $selects[$name][] = $value;
-                }
-            }
+            $selects = Helper::getSelectsFromValues($rowValues, $columnsNames, $ignoreArray);
             return ['selectSearch' => $selects, 'filterSearchValues' => $rowValues];
         }
         return [];
@@ -278,23 +260,19 @@ class ModelManagers_orders extends Model
     public function getTableData($type = 'general')
     {
         $data = $this->getSSPData($type);
-        $roles = new Roles();
 
         switch ($type) {
             case 'general':
-                $names = $this->managers_orders_column_names;
                 $cache = new Cache();
                 $selects = $cache->getOrSet('managers_orders_selects', function() use($data) {
                     return $this->getSelects($data);
                 });
                 break;
             case 'reduced':
-                $names = $this->managers_orders_reduced_column_names;
                 $selects = $this->getSelects($data, true);
                 break;
         }
 
-        $data['originalColumns'] = $roles->returnModelNames($names, $this->page);
         return array_merge($data, $selects);
     }
 

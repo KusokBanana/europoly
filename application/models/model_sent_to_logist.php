@@ -49,7 +49,6 @@ class ModelSent_to_logist extends ModelManagers_orders
     public function getTableData($type = 'general')
     {
         $data = $this->getSSPData($type);
-        $roles = new Roles();
 
         $where = [$this->whereCondition];
         if ($this->user->role_id == ROLE_SALES_MANAGER) {
@@ -64,11 +63,9 @@ class ModelSent_to_logist extends ModelManagers_orders
 
         switch ($type) {
             case 'general':
-                $names = $this->managers_orders_column_names;
                 $selects = $this->getSelects($data);
         }
 
-        $data['originalColumns'] = $roles->returnModelNames($names, $this->page);
         return array_merge($data, $selects);
     }
 

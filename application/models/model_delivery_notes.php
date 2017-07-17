@@ -159,10 +159,10 @@ class ModelDelivery_notes extends Model
         switch ($type) {
             case 'general':
 
-                $ssp['columns'] = $this->getColumns($this->delivery_notes_columns, $this->page,
-                    $this->tableNames[0]);
-                $ssp['columns_names'] = $this->getColumns($this->delivery_notes_columns_names, $this->page,
-                    $this->tableNames[0], true);
+                $ssp = array_merge($ssp, $this->getColumns($this->delivery_notes_columns, $this->page,
+                    $this->tableNames[0]));
+                $ssp = array_merge($ssp, $this->getColumns($this->delivery_notes_columns_names, $this->page,
+                    $this->tableNames[0], true));
                 $ssp['db_table'] = $this->delivery_notes_table;
                 $ssp['table_name'] = $this->tableNames[0];
                 $ssp['primary'] = 'delivery_note.id';
@@ -170,10 +170,10 @@ class ModelDelivery_notes extends Model
 
             case 'reduced':
 
-                $ssp['columns'] = $this->getColumns($this->delivery_notes_columns_reduced, $this->page,
-                    $this->tableNames[1]);
-                $ssp['columns_names'] = $this->getColumns($this->delivery_notes_columns_names_reduced, $this->page,
-                    $this->tableNames[1], true);
+                $ssp = array_merge($ssp, $this->getColumns($this->delivery_notes_columns_reduced, $this->page,
+                    $this->tableNames[1]));
+                $ssp = array_merge($ssp, $this->getColumns($this->delivery_notes_columns_names_reduced, $this->page,
+                    $this->tableNames[1], true));
                 $ssp['db_table'] = $this->delivery_notes_table_reduced;
                 $ssp['table_name'] = $this->tableNames[1];
                 $ssp['primary'] = 'delivery_note.id';
@@ -331,31 +331,14 @@ class ModelDelivery_notes extends Model
     function getSelects($ssp, $isReduced = false)
     {
         $sspJson = $this->getSspComplexJson($ssp['db_table'], $ssp['primary'],
-            $ssp['columns'], null, null, $ssp['where']);
+            $ssp['original_columns'], null, null, $ssp['where']);
         $rowValues = json_decode($sspJson, true)['data'];
-        $columns = $ssp['columns_names'];
+        $columnsNames = $ssp['original_columns_names'];
 
         $ignoreArray = ['Order Id', 'Delivery Note ID'];
 
         if (!empty($rowValues)) {
-            $selects = [];
-            foreach ($rowValues as $product) {
-                foreach ($product as $key => $value) {
-                    if (!$value || $value == null)
-                        continue;
-                    $name = $columns[$key];
-                    if (in_array($name, $ignoreArray))
-                        continue;
-
-                    preg_match('/<\w+[^>]+?[^>]+>(.*?)<\/\w+>/i', $value, $match);
-                    if (!empty($match) && isset($match[1])) {
-                        $value = $match[1];
-                    }
-
-                    if ((isset($selects[$name]) && !in_array($value, $selects[$name])) || !isset($selects[$name]))
-                        $selects[$name][] = $value;
-                }
-            }
+            $selects = Helper::getSelectsFromValues($rowValues, $columnsNames, $ignoreArray);
             return ['selectSearch' => $selects, 'filterSearchValues' => $rowValues];
         }
     }
@@ -363,23 +346,19 @@ class ModelDelivery_notes extends Model
     public function getTableData($type = 'general')
     {
         $data = $this->getSSPData($type);
-        $roles = new Roles();
 
         switch ($type) {
             case 'general':
-                $names = $this->delivery_notes_columns_names;
                 $cache = new Cache();
                 $selects = $cache->getOrSet('delivery_notes_selects', function() use($data) {
                     return $this->getSelects($data);
                 });
                 break;
             case 'reduced':
-                $names = $this->delivery_notes_columns_names_reduced;
                 $selects = $this->getSelects($data, true);
                 break;
         }
 
-        $data['originalColumns'] = $roles->returnModelNames($names, $this->page);
         return array_merge($data, $selects);
     }
 

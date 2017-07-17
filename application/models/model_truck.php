@@ -224,17 +224,14 @@ class ModelTruck extends ModelOrder
     public function getTableData($type = 'general', $opts = [])
     {
         $data = $this->getSSPData($type);
-        $roles = new Roles();
 
         switch ($type) {
             case 'modal_suppliers_orders':
-                $names = $this->suppliers_orders_column_names;
                 $model = new ModelSuppliers_orders();
                 $selects = $model->getSelects($data);
                 break;
         }
 
-        $data['originalColumns'] = $roles->returnModelNames($names, $this->page);
         return array_merge($data, $selects);
     }
 

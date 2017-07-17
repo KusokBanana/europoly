@@ -102,18 +102,17 @@ class ModelAccountant extends Model
         switch ($type) {
             case 'general':
                 $columns = $this->payments_columns;
-                $names = $this->getColumns($this->payments_column_names, $this->page,
-                    $this->tableName, true);
+                $ssp = array_merge($ssp, $this->getColumns($this->payments_column_names, $this->page,
+                    $this->tableName, true));
                 break;
             case 'monthly':
                 $where[] = 'payments.is_monthly = 1';
                 $columns = $this->getMonthlyPaymentsCols('columns');
-                $names = $this->getMonthlyPaymentsCols('name');
+                $ssp['columns_names'] = $this->getMonthlyPaymentsCols('name');
+                $ssp['original_names'] = $this->getMonthlyPaymentsCols('name', true);
         }
 
-        $ssp['columns'] = $this->getColumns($columns, $this->page,
-            $this->tableName);
-        $ssp['columns_names'] = $names;
+        $ssp = array_merge($ssp, $this->getColumns($columns, $this->page, $this->tableName));
         $ssp['db_table'] = $this->payments_table;
         $ssp['table_name'] = $this->tableName;
         $ssp['primary'] = 'payments.payment_id';
@@ -193,23 +192,19 @@ class ModelAccountant extends Model
     public function getTableData($type = 'general')
     {
         $data = $this->getSSPData($type);
-        $roles = new Roles();
 
         switch ($type) {
             case 'general':
-                $names = $roles->returnModelNames($this->payments_column_names, $this->page);
                 $cache = new Cache();
                 $selects = $cache->getOrSet('payments', function() use ($data) {
                     return $this->getSelects($data);
                 });
                 break;
             case 'monthly':
-                $names = $this->getMonthlyPaymentsCols('name', true);
                 $selects = $this->getSelects($data, true);
                 break;
         }
 
-        $data['originalColumns'] = $names;
         return array_merge($data, $selects);
     }
 
@@ -227,30 +222,14 @@ class ModelAccountant extends Model
         $ssp['where'] = array_merge($ssp['where'], $where);
 
         $sspJson = $this->getSspComplexJson($ssp['db_table'], $ssp['primary'],
-            $ssp['columns'], null, null, $ssp['where']);
+            $ssp['original_columns'], null, null, $ssp['where']);
         $rowValues = json_decode($sspJson, true)['data'];
-        $columnNames = $ssp['columns_names'];
+        $columnsNames = $ssp['original_columns_names'];
         $ignoreArray = ['_payment_id', 'Payment Id', 'Actions'];
 
         if (!empty($rowValues)) {
-            $selects = [];
-            foreach ($rowValues as $product) {
-                foreach ($product as $key => $value) {
-                    if (!$value || $value == null)
-                        continue;
-                    $name = $columnNames[$key];
-                    if (in_array($name, $ignoreArray))
-                        continue;
-
-                    preg_match('/<\w+[^>]+?[^>]+>(.*?)<\/\w+>/i', $value, $match);
-                    if (!empty($match) && isset($match[1])) {
-                        $value = $match[1];
-                    }
-                    if ((isset($selects[$name]) && !in_array($value, $selects[$name])) || !isset($selects[$name]))
-                        $selects[$name][] = $value;
-                }
-            }
-            return ['selects' => $selects, 'rows' => $rowValues];
+            $selects = Helper::getSelectsFromValues($rowValues, $columnsNames, $ignoreArray);
+            return ['selectSearch' => $selects, 'filterSearchValues' => $rowValues];
         }
     }
 

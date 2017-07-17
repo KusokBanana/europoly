@@ -9,21 +9,21 @@
 	// jQuery Editable Select
 	EditableSelect = function (select, options) {
 		var that     = this;
-		
+
 		this.options = options;
 		this.$select = $(select);
 		this.$input  = $('<input type="text" autocomplete="off">');
 		this.$list   = $('<ul class="es-list">');
 		this.utility = new EditableSelectUtility(this);
-		
+
 		if (['focus', 'manual'].indexOf(this.options.trigger) < 0) this.options.trigger = 'focus';
 		if (['default', 'fade', 'slide'].indexOf(this.options.effects) < 0) this.options.effects = 'default';
 		if (isNaN(this.options.duration) && ['fast', 'slow'].indexOf(this.options.duration) < 0) this.options.duration = 'fast';
-		
+
 		// create text input
 		this.$select.replaceWith(this.$input);
 		this.$list.appendTo(this.options.appendTo || this.$input.parent());
-		
+
 		// initalization
 		this.utility.initialize();
 		this.utility.initializeList();
@@ -34,7 +34,7 @@
 	EditableSelect.prototype.filter = function () {
 		var hiddens = 0;
 		var search  = this.$input.val().toLowerCase().trim();
-		
+
 		this.$list.find('li').addClass('es-visible').show();
 		if (this.options.filter) {
 			hiddens = this.$list.find('li').filter(function (i, li) { return $(li).text().toLowerCase().indexOf(search) < 0; }).hide().removeClass('es-visible').length;
@@ -47,11 +47,11 @@
 			left:  this.$input.position().left,
 			width: this.$input.outerWidth()
 		});
-		
+
 		if (!this.$list.is(':visible') && this.$list.find('li.es-visible').length > 0) {
 			var fns = { default: 'show', fade: 'fadeIn', slide: 'slideDown' };
 			var fn  = fns[this.options.effects];
-			
+
 			this.utility.trigger('show');
 			this.$input.addClass('open');
 			this.$list[fn](this.options.duration, $.proxy(this.utility.trigger, this.utility, 'shown'));
@@ -60,7 +60,7 @@
 	EditableSelect.prototype.hide = function () {
 		var fns = { default: 'hide', fade: 'fadeOut', slide: 'slideUp' };
 		var fn  = fns[this.options.effects];
-		
+
 		this.utility.trigger('hide');
 		this.$input.removeClass('open');
 		this.$list[fn](this.options.duration, $.proxy(this.utility.trigger, this.utility, 'hidden'));
@@ -76,7 +76,7 @@
 		var $li     = $('<li>').html(text);
 		var $option = $('<option>').text(text);
 		var last    = this.$list.find('li').length;
-		
+
 		if (isNaN(index)) index = last;
 		else index = Math.min(Math.max(0, index), last);
 		if (index == 0) {
@@ -92,7 +92,7 @@
 	};
 	EditableSelect.prototype.remove = function (index) {
 		var last = this.$list.find('li').length;
-		
+
 		if (isNaN(index)) index = last;
 		else index = Math.min(Math.max(0, index), last - 1);
 		this.$list.find('li').eq(index).remove();
@@ -106,7 +106,7 @@
 		this.$list.remove();
 		this.$select.removeData('editable-select');
 	};
-	
+
 	// Utility
 	EditableSelectUtility = function (es) {
 		this.es = es;
@@ -189,12 +189,12 @@
 			var visibles         = that.es.$list.find('li.es-visible');
 			var oldSelected      = that.es.$list.find('li.selected').removeClass('selected');
 			var oldSelectedIndex = visibles.index(oldSelected);
-			
+
 			if (visibles.length > 0) {
 				var selectedIndex = (visibles.length + index) % visibles.length;
 				var selected      = visibles.eq(selectedIndex);
 				var top           = selected.position().top;
-				
+
 				selected.addClass('selected');
 				if (selectedIndex < oldSelectedIndex && top < 0)
 					that.es.$list.scrollTop(that.es.$list.scrollTop() + top);
@@ -214,7 +214,7 @@
 		this.es.$select.trigger.apply(this.es.$select, args);
 		this.es.$input.trigger.apply(this.es.$input, args);
 	};
-	
+
 	// Plugin
 	Plugin = function (option) {
 		var args = Array.prototype.slice.call(arguments, 1);
@@ -222,12 +222,12 @@
 			var $this   = $(this);
 			var data    = $this.data('editable-select');
 			var options = $.extend({}, EditableSelect.DEFAULTS, $this.data(), typeof option == 'object' && option);
-			
+
 			if (!data) data = new EditableSelect(this, options);
 			if (typeof option == 'string') data[option].apply(data, args);
 		});
 	}
 	$.fn.editableSelect             = Plugin;
 	$.fn.editableSelect.Constructor = EditableSelect;
-	
+
 })(jQuery);

@@ -205,7 +205,7 @@
 <script src="/assets/layouts/global/scripts/quick-sidebar.min.js" type="text/javascript"></script>
 <script src="/assets/global/plugins/jquery-sortable/jquery-ui.js" type="text/javascript"></script>
 <script src="/assets/global/plugins/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
-<script src="/assets/global/plugins/jquery-editable-select-master/dist/jquery-editable-select.min.js"
+<script src="/assets/global/plugins/jquery-editable-select-master/dist/jquery-editable-select.js"
         type="text/javascript"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="/assets/colresizable/colResizable-1.6.js"></script>
@@ -251,7 +251,6 @@
                  })
              }
          }
-
 
         addTopScroll();
 
@@ -318,7 +317,16 @@
                 $.each($('body').find('.tab-pane'), function() {
                     if ($(this).find('table.dataTable').length) {
                         if ($(this).is('.active')) {
-                            addScroll($(this).find('table'));
+                            var table = $(this).find('table');
+//                            if (table.length) {
+//                                $.each(table, function() {
+//                                    if (table.hasClass('dataTable')) {
+//                                        table.DataTable().draw();
+//                                        console.log(table);
+//                                    }
+//                                })
+//                            }
+                            addScroll(table);
                         } else {
                             var tabId = $(this).attr('id');
                             var selector = 'a[href="#'+tabId+'"]';

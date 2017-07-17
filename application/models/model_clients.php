@@ -111,9 +111,9 @@ class ModelClients extends Model
                         " OR clients.operational_manager_id = " . $this->user->user_id . ")";
                     $this->unLinkStrings($this->client_columns, [17]);
                 }
-                $ssp['columns'] = $this->getColumns($this->client_columns, $this->page, $this->tableName);
-                $ssp['columns_names'] = $this->getColumns($this->client_column_names, $this->page,
-                    $this->tableName, true);
+                $ssp = array_merge($ssp, $this->getColumns($this->client_columns, $this->page, $this->tableName));
+                $ssp = array_merge($ssp, $this->getColumns($this->client_column_names, $this->page,
+                    $this->tableName, true));
                 $ssp['db_table'] = $this->client_table;
                 $ssp['table_name'] = $this->tableName;
                 $ssp['primary'] = 'clients.client_id';
@@ -154,32 +154,15 @@ class ModelClients extends Model
 
     public function getSelects($ssp)
     {
-
         $sspJson = $this->getSspComplexJson($ssp['db_table'], $ssp['primary'],
-            $ssp['columns'], null, null, $ssp['where']);
+            $ssp['original_columns'], null, null, $ssp['where']);
         $rowValues = json_decode($sspJson, true)['data'];
-        $columns = $ssp['columns_names'];
+        $columnsNames = $ssp['original_columns_names'];
 
         $ignoreArray = ['_client_id', 'Turnover', 'Profit', 'Discount Rate', 'Change Type'];
 
         if (!empty($rowValues)) {
-            $selects = [];
-            foreach ($rowValues as $product) {
-                foreach ($product as $key => $value) {
-                    if (!$value || $value == null)
-                        continue;
-                    $name = $columns[$key];
-                    if (in_array($name, $ignoreArray))
-                        continue;
-
-                    preg_match('/<\w+[^>]+?[^>]+>(.*?)<\/\w+>/i', $value, $match);
-                    if (!empty($match) && isset($match[1])) {
-                        $value = $match[1];
-                    }
-                    if ((isset($selects[$name]) && !in_array($value, $selects[$name])) || !isset($selects[$name]))
-                        $selects[$name][] = $value;
-                }
-            }
+            $selects = Helper::getSelectsFromValues($rowValues, $columnsNames, $ignoreArray);
             return ['selectSearch' => $selects, 'filterSearchValues' => $rowValues];
         }
     }
@@ -187,9 +170,7 @@ class ModelClients extends Model
     public function getTableData($type = 'general', $opts = [])
     {
         $data = $this->getSSPData($type);
-        $roles = new Roles();
 
-        $data['originalColumns'] = $roles->returnModelNames($this->client_column_names, $this->page);
         return array_merge($data, $this->getSelects($data));
     }
 

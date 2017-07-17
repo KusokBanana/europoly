@@ -334,11 +334,9 @@ class ModelSuppliers_order extends ModelOrder
     public function getTableData($type = 'general', $opts = [])
     {
         $data = $this->getSSPData($type);
-        $roles = new Roles();
 
         switch ($type) {
             case 'modal_catalogue':
-                $names = $this->full_product_column_names;
                 $cache = new Cache();
                 $selects = $cache->getOrSet($type, function() use($data) {
                     $model = new ModelCatalogue();
@@ -347,7 +345,6 @@ class ModelSuppliers_order extends ModelOrder
                 break;
         }
 
-        $data['originalColumns'] = $roles->returnModelNames($names, $this->page);
         return array_merge($data, $selects);
     }
 

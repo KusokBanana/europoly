@@ -151,10 +151,10 @@ class ModelSuppliers_orders extends ModelManagers_orders
                         ' OR suppliers_orders_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
                     $this->unLinkStrings($this->suppliers_orders_columns, [2, 26, 27]);
                 }
-                $ssp['columns'] = $this->getColumns($this->suppliers_orders_columns, $this->page,
-                    $this->tableNames[0]);
-                $ssp['columns_names'] = $this->getColumns($this->suppliers_orders_column_names, $this->page,
-                    $this->tableNames[0], true);
+                $ssp = array_merge($ssp, $this->getColumns($this->suppliers_orders_columns, $this->page,
+                    $this->tableNames[0]));
+                $ssp = array_merge($ssp, $this->getColumns($this->suppliers_orders_column_names, $this->page,
+                    $this->tableNames[0], true));
                 $ssp['db_table'] = $this->suppliers_orders_table;
                 $ssp['table_name'] = $this->tableNames[0];
                 $ssp['primary'] = 'suppliers_orders_items.item_id';
@@ -170,19 +170,19 @@ class ModelSuppliers_orders extends ModelManagers_orders
                         ' OR order_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL';
                     $this->unLinkStrings($this->suppliers_orders_columns_reduce, [1]);
                 }
-                $ssp['columns'] = $this->getColumns($this->suppliers_orders_columns_reduce, $this->page,
-                    $this->tableNames[1]);
-                $ssp['columns_names'] = $this->getColumns($this->suppliers_orders_column_names_reduce, $this->page,
-                    $this->tableNames[1], true);
+                $ssp = array_merge($ssp, $this->getColumns($this->suppliers_orders_columns_reduce, $this->page,
+                    $this->tableNames[1]));
+                $ssp = array_merge($ssp, $this->getColumns($this->suppliers_orders_column_names_reduce, $this->page,
+                    $this->tableNames[1], true));
                 $ssp['db_table'] = $this->suppliers_orders_table_reduce;
                 $ssp['table_name'] = $this->tableNames[1];
                 $ssp['primary'] = 'suppliers_orders.order_id';
                 break;
 
             case 'modal_suppliers_orders':
-                $ssp['columns'] = $this->getColumns($this->suppliers_orders_columns, $this->page, $type);
-                $ssp['columns_names'] = $this->getColumns($this->suppliers_orders_column_names, $this->page,
-                    $type, true);
+                $ssp = array_merge($ssp, $this->getColumns($this->suppliers_orders_columns, $this->page, $type));
+                $ssp = array_merge($ssp, $this->getColumns($this->suppliers_orders_column_names, $this->page,
+                    $type, true));
                 $ssp['db_table'] = $this->suppliers_orders_table;
                 $ssp['table_name'] = $type;
                 $ssp['primary'] = 'suppliers_orders_items.item_id';
@@ -216,9 +216,9 @@ class ModelSuppliers_orders extends ModelManagers_orders
     {
 
         $sspJson = $this->getSspComplexJson($ssp['db_table'], $ssp['primary'],
-            $ssp['columns'], null, null, $ssp['where']);
+            $ssp['original_columns'], null, null, $ssp['where']);
         $rowValues = json_decode($sspJson, true)['data'];
-        $columnNames = $ssp['columns_names'];
+        $columnsNames = $ssp['original_columns_names'];
 
         if (!$isReduced) {
             $ignoreArray = ['Supplier Order ID', 'Manager Order ID', 'Quantity', 'Number of Packs', 'Total weight',
@@ -229,28 +229,7 @@ class ModelSuppliers_orders extends ModelManagers_orders
         }
 
         if (!empty($rowValues)) {
-            $selects = [];
-            foreach ($rowValues as $product) {
-                foreach ($product as $key => $value) {
-                    if (!$value || $value == null)
-                        continue;
-                    $name = $columnNames[$key];
-                    if (in_array($name, $ignoreArray))
-                        continue;
-
-                    if (strpos($value, 'glyphicon') !== false) {
-                        $value = preg_replace('/<a \w+[^>]+?[^>]+>(.*?)<\/a>/i', '', $value);
-                    } else {
-                        preg_match('/<\w+[^>]+?[^>]+>(.*?)<\/\w+>/i', $value, $match);
-                        if (!empty($match) && isset($match[1])) {
-                            $value = $match[1];
-                        }
-                    }
-
-                    if ((isset($selects[$name]) && !in_array($value, $selects[$name])) || !isset($selects[$name]))
-                        $selects[$name][] = $value;
-                }
-            }
+            $selects = Helper::getSelectsFromValues($rowValues, $columnsNames, $ignoreArray, true);
             return ['selectSearch' => $selects, 'filterSearchValues' => $rowValues];
         }
     }
@@ -258,23 +237,19 @@ class ModelSuppliers_orders extends ModelManagers_orders
     public function getTableData($type = 'general')
     {
         $data = $this->getSSPData($type);
-        $roles = new Roles();
 
         switch ($type) {
             case 'general':
-                $names = $this->suppliers_orders_column_names;
                 $cache = new Cache();
                 $selects = $cache->getOrSet('suppliers_orders_selects', function() use($data) {
                     return $this->getSelects($data);
                 });
                 break;
             case 'reduced':
-                $names = $this->suppliers_orders_column_names_reduce;
                 $selects = $this->getSelects($data, true);
                 break;
         }
 
-        $data['originalColumns'] = $roles->returnModelNames($names, $this->page);
         return array_merge($data, $selects);
     }
 
