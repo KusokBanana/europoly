@@ -1,0 +1,81 @@
+17.07.2017 SUCCESS table: orders user_id: 27 record_id: 16
+UPDATE orders 
+                SET order_items_count = 0, total_price = 27306.8
+                WHERE order_id = 16
+17.07.2017 SUCCESS table: orders user_id: 27 record_id: 16
+UPDATE `orders` 
+                SET order_status_id = 1 WHERE order_id = 16
+17.07.2017 SUCCESS table: orders user_id: 27 record_id: 16
+UPDATE `orders` SET `expected_date_of_issue` = '2017-07-30' WHERE order_id = 16
+17.07.2017 SUCCESS table: users user_id: 27 record_id: 9
+UPDATE users SET date_of_birth = '1980-04-11', position = 'Руководитель проектов', work_phone = '+7 495 150-54-28', mobile_number = '+7 929 629-72-97', email = 'butov@evropoly.com', employment_date = '2012-10-10', notes = 'Всем хорошего  дня!', visual_name = 'Бутов Ю.А.', role_id = 2, first_name = 'Yury', last_name = 'Butov1' WHERE user_id = 9
+17.07.2017 SUCCESS table: orders user_id: 27 record_id: 17
+UPDATE `orders` SET `legal_entity_id` = '2' WHERE order_id = 17
+17.07.2017 SUCCESS table: orders user_id: 27 record_id: 17
+UPDATE orders SET visible_order_id = 'ABH17/00258' WHERE order_id = 17
+17.07.2017 SUCCESS table: orders user_id: 27 record_id: 17
+UPDATE `orders` SET `legal_entity_id` = '3' WHERE order_id = 17
+17.07.2017 SUCCESS table: orders user_id: 27 record_id: 17
+UPDATE orders SET visible_order_id = 'RUM17/00002' WHERE order_id = 17
+17.07.2017 SUCCESS table: order_items user_id: 27 record_id: 497
+UPDATE order_items SET is_deleted = 1 WHERE item_id = 497
+17.07.2017 SUCCESS table: orders user_id: 27 record_id: 16
+UPDATE `orders` 
+                SET order_status_id = 1 WHERE order_id = 16
+17.07.2017 SUCCESS table: orders user_id: 27 record_id: 16
+UPDATE orders 
+                SET order_items_count = -1, total_price = 27213.9, manager_bonus = 0, total_commission = 0
+                WHERE order_id = 16
+17.07.2017 15:45:31 SUCCESS table: orders user_id: 27 record_id: 16
+UPDATE `orders` SET `expected_date_of_issue` = '2017-07-27' WHERE order_id = 16
+17.07.2017 15:45:34 SUCCESS table: orders user_id: 27 record_id: 16
+UPDATE `orders` SET `expected_date_of_issue` = '2017-07-27' WHERE order_id = 16
+17.07.2017 15:45:42 SUCCESS table: orders user_id: 27 record_id: 16
+UPDATE `orders` SET `expected_date_of_issue` = '2017-07-27' WHERE order_id = 16
+17.07.2017 15:46:25 SUCCESS table: orders user_id: 27 record_id: 16
+UPDATE `orders` SET `expected_date_of_issue` = '2017-07-28' WHERE order_id = 16
+17.07.2017 15:46:37 SUCCESS table: orders user_id: 27 record_id: 16
+UPDATE `orders` SET `expected_date_of_issue` = '2017-07-29' WHERE order_id = 16
+17.07.2017 15:48:04 SUCCESS table: orders user_id: 27 record_id: 16
+UPDATE `orders` SET `expected_date_of_issue` = '2017-07-28' WHERE order_id = 16
+17.07.2017 15:52:09 SUCCESS table: orders user_id: 27 record_id: 16
+UPDATE `orders` SET `expected_date_of_issue` = '2017-07-27' WHERE order_id = 16
+17.07.2017 15:52:34 SUCCESS table: orders user_id: 27 record_id: 16
+UPDATE `orders` SET `expected_date_of_issue` = '2017-07-20' WHERE order_id = 16
+17.07.2017 15:55:03 SUCCESS table: orders user_id: 27 record_id: 16
+UPDATE `orders` SET `expected_date_of_issue` = '2017-07-22' WHERE order_id = 16
+17.07.2017 15:55:44 SUCCESS table: orders user_id: 27 record_id: 16
+UPDATE `orders` SET `expected_date_of_issue` = '2017-07-21' WHERE order_id = 16
+17.07.2017 15:57:31 SUCCESS table: orders user_id: 27 record_id: 16
+UPDATE `orders` SET `expected_date_of_issue` = '2017-07-22' WHERE order_id = 16
+17.07.2017 15:57:39 SUCCESS table: orders user_id: 27 record_id: 16
+UPDATE `orders` SET `expected_date_of_issue` = '2017-07-28' WHERE order_id = 16
+17.07.2017 15:57:52 SUCCESS table: orders user_id: 27 record_id: 16
+UPDATE `orders` SET `expected_date_of_issue` = '2017-06-02' WHERE order_id = 16
+17.07.2017 15:58:31 SUCCESS table: orders user_id: 27 record_id: 16
+UPDATE `orders` SET `expected_date_of_issue` = '2017-06-16' WHERE order_id = 16
+17.07.2017 16:00:03 SUCCESS table: orders user_id: 27 record_id: 16
+UPDATE `orders` SET `expected_date_of_issue` = '2017-06-23' WHERE order_id = 16
+17.07.2017 16:01:36 SUCCESS table: orders user_id: 27 record_id: 16
+UPDATE `orders` SET `expected_date_of_issue` = '2017-06-30' WHERE order_id = 16
+17.07.2017 16:18:48 SUCCESS table: orders user_id: 27 record_id: 249
+UPDATE `orders` SET `expected_date_of_issue` = '2017-07-27' WHERE order_id = 249
+17.07.2017 16:20:22 SUCCESS table: orders user_id: 27 record_id: 105
+UPDATE orders 
+                SET order_items_count = 2, total_price = 216385.7
+                WHERE order_id = 105
+17.07.2017 16:20:23 SUCCESS table: orders user_id: 27 record_id: 105
+UPDATE orders 
+                SET order_items_count = 2, total_price = 216385.7
+                WHERE order_id = 105
+17.07.2017 16:20:23 SUCCESS table: orders user_id: 27 record_id: 105
+UPDATE orders 
+                SET order_items_count = 2, total_price = 216409.9
+                WHERE order_id = 105
+17.07.2017 16:20:23 SUCCESS table: orders user_id: 27 record_id: 105
+UPDATE orders 
+                SET order_items_count = 2, total_price = 216409.9
+                WHERE order_id = 105
+17.07.2017 16:20:23 SUCCESS table: orders user_id: 27 record_id: 105
+UPDATE `orders` 
+                SET order_status_id = 1 WHERE order_id = 105

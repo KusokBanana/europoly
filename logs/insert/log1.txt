@@ -1,0 +1,65 @@
+17.07.2017 SUCCESS table: order_items user_id: 27 insert_id: 501
+INSERT INTO order_items (manager_order_id, product_id, purchase_price, amount, number_of_packs, total_price, discount_rate, reduced_price, manager_bonus_rate, manager_bonus, sell_price)
+                VALUES (16, 3735, 92.9, 0, 0, 0, 0, 0, 
+                0, 0, 119.21)
+17.07.2017 16:03:17 SUCCESS table: orders user_id: 27 insert_id: 235
+INSERT INTO orders (start_date, expected_date_of_issue, special_expenses, total_price, total_downpayment, downpayment_rate, sales_manager_id, manager_bonus, manager_bonus_rate, commission_agent_id, commission_rate, total_commission, commission_status, client_id, email, city, mobile_number, order_items_count, cancel_reason)
+                VALUES ('2017-07-17 16:03:17', null, 0, 0, 0, 0, 27, 0, 0, null, 0, 0, 'Not Payed', 4, 'tato1958@mail.ru', 'Москва', '', 0, null)
+17.07.2017 16:03:27 SUCCESS table: orders user_id: 27 insert_id: 236
+INSERT INTO orders (start_date, expected_date_of_issue, special_expenses, total_price, total_downpayment, downpayment_rate, sales_manager_id, manager_bonus, manager_bonus_rate, commission_agent_id, commission_rate, total_commission, commission_status, client_id, email, city, mobile_number, order_items_count, cancel_reason)
+                VALUES ('2017-07-17 16:03:27', null, 0, 0, 0, 0, 27, 0, 0, null, 0, 0, 'Not Payed', 5, 'daria.novikova@sundukovy.com', 'Москва', '', 0, null)
+17.07.2017 16:04:49 SUCCESS table: orders user_id: 27 insert_id: 237
+INSERT INTO orders (start_date, expected_date_of_issue, special_expenses, total_price, total_downpayment, downpayment_rate, sales_manager_id, manager_bonus, manager_bonus_rate, commission_agent_id, commission_rate, total_commission, commission_status, client_id, email, city, mobile_number, order_items_count, cancel_reason)
+                VALUES ('2017-07-17 16:04:49', null, 0, 0, 0, 0, 27, 0, 0, null, 0, 0, 'Not Payed', 2, 'mozgunoff@mail.ru', 'Москва', '', 0, null)
+17.07.2017 16:05:02 SUCCESS table: orders user_id: 27 insert_id: 238
+INSERT INTO orders (start_date, expected_date_of_issue, special_expenses, total_price, total_downpayment, downpayment_rate, sales_manager_id, manager_bonus, manager_bonus_rate, commission_agent_id, commission_rate, total_commission, commission_status, client_id, email, city, mobile_number, order_items_count, cancel_reason)
+                VALUES ('2017-07-17 16:05:02', null, 0, 0, 0, 0, 27, 0, 0, null, 0, 0, 'Not Payed', 5, 'daria.novikova@sundukovy.com', 'Москва', '', 0, null)
+17.07.2017 16:06:16 SUCCESS table: orders user_id: 27 insert_id: 239
+INSERT INTO orders (start_date, expected_date_of_issue, special_expenses, total_price, total_downpayment, downpayment_rate, sales_manager_id, manager_bonus, manager_bonus_rate, commission_agent_id, commission_rate, total_commission, commission_status, client_id, email, city, mobile_number, order_items_count, cancel_reason)
+                VALUES ('2017-07-17 16:06:16', null, 0, 0, 0, 0, 27, 0, 0, null, 0, 0, 'Not Payed', 3, 'mail@k-buro.ru', 'Москва', '', 0, null)
+17.07.2017 16:06:57 SUCCESS table: orders user_id: 27 insert_id: 240
+INSERT INTO orders (start_date, expected_date_of_issue, special_expenses, total_price, total_downpayment, downpayment_rate, sales_manager_id, manager_bonus, manager_bonus_rate, commission_agent_id, commission_rate, total_commission, commission_status, client_id, email, city, mobile_number, order_items_count, cancel_reason)
+                VALUES ('2017-07-17 16:06:57', null, 0, 0, 0, 0, 27, 0, 0, null, 0, 0, 'Not Payed', 3, 'mail@k-buro.ru', 'Москва', '', 0, null)
+17.07.2017 16:11:30 SUCCESS table: orders user_id: 27 insert_id: 241
+INSERT INTO orders (start_date, expected_date_of_issue, special_expenses, total_price, total_downpayment, downpayment_rate, sales_manager_id, manager_bonus, manager_bonus_rate, commission_agent_id, commission_rate, total_commission, commission_status, client_id, email, city, mobile_number, order_items_count, cancel_reason)
+                VALUES ('2017-07-17 16:11:30', null, 0, 0, 0, 0, 27, 0, 0, null, 0, 0, 'Not Payed', 6, 'EBulgakov@contractcity.ru', 'Москва', '', 0, null)
+17.07.2017 16:12:06 SUCCESS table: orders user_id: 27 insert_id: 242
+INSERT INTO orders (start_date, expected_date_of_issue, special_expenses, total_price, total_downpayment, downpayment_rate, sales_manager_id, manager_bonus, manager_bonus_rate, commission_agent_id, commission_rate, total_commission, commission_status, client_id, email, city, mobile_number, order_items_count, cancel_reason)
+                VALUES ('2017-07-17 16:12:06', null, 0, 0, 0, 0, 27, 0, 0, null, 0, 0, 'Not Payed', 17, '', 'Москва', '', 0, null)
+17.07.2017 16:13:02 SUCCESS table: orders user_id: 27 insert_id: 243
+INSERT INTO orders (start_date, expected_date_of_issue, special_expenses, total_price, total_downpayment, downpayment_rate, sales_manager_id, manager_bonus, manager_bonus_rate, commission_agent_id, commission_rate, total_commission, commission_status, client_id, email, city, mobile_number, order_items_count, cancel_reason)
+                VALUES ('2017-07-17 16:13:02', null, 0, 0, 0, 0, 27, 0, 0, null, 0, 0, 'Not Payed', 4, 'tato1958@mail.ru', 'Москва', '', 0, null)
+17.07.2017 16:13:16 SUCCESS table: orders user_id: 27 insert_id: 244
+INSERT INTO orders (start_date, expected_date_of_issue, special_expenses, total_price, total_downpayment, downpayment_rate, sales_manager_id, manager_bonus, manager_bonus_rate, commission_agent_id, commission_rate, total_commission, commission_status, client_id, email, city, mobile_number, order_items_count, cancel_reason)
+                VALUES ('2017-07-17 16:13:16', null, 0, 0, 0, 0, 27, 0, 0, null, 0, 0, 'Not Payed', 3, 'mail@k-buro.ru', 'Москва', '', 0, null)
+17.07.2017 16:14:22 SUCCESS table: orders user_id: 27 insert_id: 245
+INSERT INTO orders (start_date, expected_date_of_issue, special_expenses, total_price, total_downpayment, downpayment_rate, sales_manager_id, manager_bonus, manager_bonus_rate, commission_agent_id, commission_rate, total_commission, commission_status, client_id, email, city, mobile_number, order_items_count, cancel_reason)
+                VALUES ('2017-07-17 16:14:21', null, 0, 0, 0, 0, 27, 0, 0, 209, 0, 0, 'Not Payed', 12, 'plotnikov@under-style.ru', 'Москва', '', 0, null)
+17.07.2017 16:14:39 SUCCESS table: orders user_id: 27 insert_id: 246
+INSERT INTO orders (start_date, expected_date_of_issue, special_expenses, total_price, total_downpayment, downpayment_rate, sales_manager_id, manager_bonus, manager_bonus_rate, commission_agent_id, commission_rate, total_commission, commission_status, client_id, email, city, mobile_number, order_items_count, cancel_reason)
+                VALUES ('2017-07-17 16:14:39', null, 0, 0, 0, 0, 27, 0, 0, null, 0, 0, 'Not Payed', 2, 'mozgunoff@mail.ru', 'Москва', '', 0, null)
+17.07.2017 16:14:51 SUCCESS table: orders user_id: 27 insert_id: 247
+INSERT INTO orders (start_date, expected_date_of_issue, special_expenses, total_price, total_downpayment, downpayment_rate, sales_manager_id, manager_bonus, manager_bonus_rate, commission_agent_id, commission_rate, total_commission, commission_status, client_id, email, city, mobile_number, order_items_count, cancel_reason)
+                VALUES ('2017-07-17 16:14:51', null, 0, 0, 0, 0, 27, 0, 0, null, 0, 0, 'Not Payed', 2, 'mozgunoff@mail.ru', 'Москва', '', 0, null)
+17.07.2017 16:16:12 SUCCESS table: orders user_id: 27 insert_id: 248
+INSERT INTO orders (start_date, expected_date_of_issue, special_expenses, total_price, total_downpayment, downpayment_rate, sales_manager_id, manager_bonus, manager_bonus_rate, commission_agent_id, commission_rate, total_commission, commission_status, client_id, email, city, mobile_number, order_items_count, cancel_reason)
+                VALUES ('2017-07-17 16:16:12', null, 0, 0, 0, 0, 27, 0, 0, null, 0, 0, 'Not Payed', 325, '', 'Moscow', '', 0, null)
+17.07.2017 16:18:10 SUCCESS table: orders user_id: 27 insert_id: 249
+INSERT INTO orders (start_date, expected_date_of_issue, special_expenses, total_price, total_downpayment, downpayment_rate, sales_manager_id, manager_bonus, manager_bonus_rate, commission_agent_id, commission_rate, total_commission, commission_status, client_id, email, city, mobile_number, order_items_count, cancel_reason)
+                VALUES ('2017-07-17 16:18:10', null, 0, 0, 0, 0, 27, 0, 0, null, 0, 0, 'Not Payed', 3, 'mail@k-buro.ru', 'Москва', '', 0, null)
+17.07.2017 16:20:22 SUCCESS table: order_items user_id: 27 insert_id: 486
+INSERT INTO order_items (manager_order_id, product_id, purchase_price, amount, number_of_packs, total_price, discount_rate, reduced_price, manager_bonus_rate, manager_bonus, sell_price)
+                VALUES (105, 3733, 68.7, 0, 0, 0, 0, 0, 
+                0, 0, 88.15)
+17.07.2017 16:20:23 SUCCESS table: order_items user_id: 27 insert_id: 487
+INSERT INTO order_items (manager_order_id, product_id, purchase_price, amount, number_of_packs, total_price, discount_rate, reduced_price, manager_bonus_rate, manager_bonus, sell_price)
+                VALUES (105, 3734, 68.7, 0, 0, 0, 0, 0, 
+                0, 0, 88.15)
+17.07.2017 16:20:23 SUCCESS table: order_items user_id: 27 insert_id: 488
+INSERT INTO order_items (manager_order_id, product_id, purchase_price, amount, number_of_packs, total_price, discount_rate, reduced_price, manager_bonus_rate, manager_bonus, sell_price)
+                VALUES (105, 3735, 92.9, 0, 0, 0, 0, 0, 
+                0, 0, 119.21)
+17.07.2017 16:20:23 SUCCESS table: order_items user_id: 27 insert_id: 489
+INSERT INTO order_items (manager_order_id, product_id, purchase_price, amount, number_of_packs, total_price, discount_rate, reduced_price, manager_bonus_rate, manager_bonus, sell_price)
+                VALUES (105, 3736, 92.9, 0, 0, 0, 0, 0, 
+                0, 0, 119.21)

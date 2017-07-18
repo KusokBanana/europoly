@@ -1,6 +1,7 @@
 <?php
 include_once("mysql_config.php");
 include_once ('config.php');
+require_once dirname(__FILE__) . '/../classes/Logger.php';
 
 abstract class Model extends mysqli
 {
@@ -25,15 +26,23 @@ abstract class Model extends mysqli
 
     public function insert($query)
     {
+
 //        if ($_SESSION["user_role"] != 'admin') {
 //            die("You have no rights to insert, current role: " . $_SESSION["user_role"]);
 //        }
+        $table_name = explode(' ', explode('INSERT INTO ', $query)[1])[0];
+        $primary_key = static::getPrimaryKeyName($table_name);
         $result = $this->query($query);
+        $user_id = $this->user->user_id;
         if (!$result) {
             echo mysqli_error($this);
+            Logger::createInsert($query, $user_id);
             die("Mysqli: error while insert; query: " . $query);
         }
-        return $this->insert_id;
+        Logger::createInsert($query, $user_id, $this->insert_id);
+        $insert_id = $this->insert_id;
+        $this->query("UPDATE $table_name SET modified_at=NOW(), modified_user_id=$user_id, created_at=NOW() WHERE $primary_key=$insert_id");
+        return $insert_id;
     }
 
     public function update($query)
@@ -41,11 +50,22 @@ abstract class Model extends mysqli
 //        if ($_SESSION["user_role"] != 'admin') {
 //            die("You have no rights to update, current role: " . $_SESSION["user_role"]);
 //        }
+        $where = stristr($query, 'WHERE');
+        $table_name = str_replace([" ","`","\r","\n"], '', explode(' SET', explode('UPDATE ', $query)[1])[0]);
+        $primary_key = static::getPrimaryKeyName($table_name);
+        $ids = $this->getAssoc('SELECT '.$primary_key. ' FROM '. $table_name.' '.$where);
+
+        $record_id = $ids[0][$primary_key];
+        $user_id = $this->user->user_id;
         $result = $this->query($query);
         if (!$result) {
             echo mysqli_error($this);
+            Logger::createUpdate($query, $table_name, $user_id);
             die("Mysqli: error while update, current role: " . $_SESSION["user_role"]);
         }
+        $q = "UPDATE $table_name SET created_at=NOW() modified_user_id='$user_id' $where";
+        Logger::createUpdate($query, $table_name, $user_id, $record_id);
+        $this->query("UPDATE $table_name SET modified_at= NOW(), modified_user_id=$user_id $where");
         return $this->affected_rows > 0;
     }
 
@@ -67,11 +87,19 @@ abstract class Model extends mysqli
 //        if ($_SESSION["user_role"] != 'admin') {
 //            die("You have no rights to delete, current role: " . $_SESSION["user_role"]);
 //        }
+        $where = stristr($query, 'WHERE');
+        $table_name = str_replace([" ","`","\r","\n"], '', explode(' ', explode('DELETE FROM ', $query)[1])[0]);
+        $primary_key = static::getPrimaryKeyName($table_name);
+        $ids = $this->getAssoc('SELECT '.$primary_key. ' FROM '. $table_name.' '.$where);
+        $record_id = $ids[0][$primary_key];
+        $user_id = $this->user->user_id;
         $result = $this->query($query);
         if (!$result) {
             echo mysqli_error($this);
+//            Logger::createDelete($query, $table_name, $user_id);
             die("Mysqli: error while delete");
         }
+//        Logger::createDelete($query, $table_name, $user_id, $record_id);
     }
 
     public function getById($table_name, $column_name, $id)
