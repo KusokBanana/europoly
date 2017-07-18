@@ -131,22 +131,22 @@
                                     <div class="tab-pane active" id="tab_1">
                                         <div class="portlet-body">
                                             <?php
-                                            $table_data = [
-                                                'buttons' => [],
-                                                'table_id' => $this->tableNames[0],
+                                            $commonData = [
+                                                'click_url' => "javascript:;",
+                                                'method' => "POST",
+                                                'serverSide' => false
+                                            ];
+
+                                            $table_data = array_merge($this->generalTable, [
                                                 'ajax' => [
                                                     'url' => "/accountant/dt_payments",
                                                     'data' => [
                                                         'contractor_id' => $this->contractor["contractor_id"],
                                                         'contractor_type' => $this->contractor["contractor_type"]
                                                     ]
-                                                ],
-                                                'column_names' => $this->column_names,
-                                                'click_url' => "javascript:;",
-                                                'originalColumns' => $this->originalColumns,
-                                                'selectSearch' => $this->selects,
-                                                'filterSearchValues' => $this->rows,
-                                            ];
+                                                ]
+                                            ], $commonData);
+
                                             include 'application/views/templates/table.php'
                                             ?>
                                         </div>
@@ -155,23 +155,21 @@
                                         <div class="portlet-body">
                                             <?php
                                             if ($this->isGoods) {
-                                                $table_data = [
-                                                    'buttons' => [],
-                                                    'table_id' => $this->tableNames[1],
+                                                $commonData = [
+                                                    'click_url' => "javascript:;",
+                                                    'method' => "POST",
+                                                    'serverSide' => false
+                                                ];
+
+                                                $table_data = array_merge($this->tableGoods, [
                                                     'ajax' => [
                                                         'url' => "/contractor/dt_contractor_goods",
                                                         'data' => [
                                                             'contractor_id' => $this->contractor["contractor_id"],
                                                             'contractor_type' => $this->contractor["contractor_type"]
                                                         ]
-                                                    ],
-                                                    'column_names' => $this->goods_column_names,
-                                                    'hidden_by_default' => "[]",
-                                                    'click_url' => "javascript:;",
-                                                    'originalColumns' => $this->goods_original_columns,
-                                                    'selectSearch' => $this->goods_selects,
-                                                    'filterSearchValues' => $this->goods_rows,
-                                                ];
+                                                    ]
+                                                ], $commonData);
                                                 include 'application/views/templates/table.php';
                                             }
 
@@ -186,23 +184,24 @@
                                                     '<a href="#new_other" class="btn btn-primary" '.
                                                     'data-toggle="modal">Add new</a>'
                                                 ];
-                                                $table_data = [
+
+                                                $commonData = [
+                                                    'click_url' => "javascript:;",
+                                                    'method' => "POST",
+                                                    'serverSide' => false
+                                                ];
+
+                                                $table_data = array_merge($this->tableServices, [
                                                     'buttons' => $buttons,
-                                                    'table_id' => $this->tableNames[2],
                                                     'ajax' => [
                                                         'url' => "/contractor/dt_contractor_services",
                                                         'data' => [
                                                             'contractor_id' => $this->contractor["contractor_id"],
                                                             'contractor_type' => $this->contractor["contractor_type"]
                                                         ]
-                                                    ],
-                                                    'column_names' => $this->services_column_names,
-                                                    'hidden_by_default' => "[]",
-                                                    'click_url' => "javascript:;",
-                                                    'originalColumns' => $this->services_original_columns,
-                                                    'selectSearch' => $this->services_selects,
-                                                    'filterSearchValues' => $this->services_rows,
-                                                ];
+                                                    ]
+                                                ], $commonData);
+
                                                 include 'application/views/templates/table.php';
                                             }
                                             ?>

@@ -6,7 +6,6 @@
 .idea/**/tasks.xml
 .idea/dictionaries
 
-.idea/workspace.xml
 .idea/tasks.xml
 
 # Sensitive or high-churn files:
@@ -54,3 +53,10 @@ fabric.properties
 cache/1_catalogue_selects
 cache/1_modal_catalogue
 cache/1_suppliers_orders_selects
+assets/apps/img/
+assets/global/plugins/angularjs/plugins/angular-file-upload/uploads/
+assets/global/plugins/bootstrap-editable_before13.10/bootstrap-editable/bootstrap-editable/img/
+cache/
+images/
+imgs/
+photos/
