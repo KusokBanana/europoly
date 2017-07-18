@@ -89,3 +89,13 @@ UPDATE order_items SET `status_id` = '4' WHERE item_id = 438
 17.07.2017 17:06:20 SUCCESS table: suppliers_orders user_id: 27 record_id: 1
 UPDATE `suppliers_orders` 
                 SET status_id = 4 WHERE order_id = 1
+18.07.2017 09:56:23 SUCCESS table: trucks user_id: 1 record_id: 6
+UPDATE `trucks` SET `dispatch_date` = '2017-06-21' WHERE id = 6
+18.07.2017 09:56:26 SUCCESS table: trucks user_id: 1 record_id: 6
+UPDATE `trucks` SET `dispatch_date` = '2017-06-21' WHERE id = 6
+18.07.2017 09:56:28 SUCCESS table: trucks user_id: 1 record_id: 6
+UPDATE `trucks` SET `dispatch_date` = '2017-06-30' WHERE id = 6
+18.07.2017 09:56:31 SUCCESS table: trucks user_id: 1 record_id: 6
+UPDATE `trucks` SET `dispatch_date` = '2017-06-22' WHERE id = 6
+18.07.2017 10:16:25 SUCCESS table: orders user_id: 1 record_id: 129
+UPDATE `orders` SET `expected_date_of_issue` = '2017-07-20' WHERE order_id = 129

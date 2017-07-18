@@ -35,9 +35,12 @@ class ControllerContractor extends Controller
             $this->setServicesValues($contractorId, $contractorType);
 
             $this->view->tableNames = $this->model->tableNames;
-            $paymentsRows = isset($this->view->rows) ? $this->view->rows : [];
-            $goodsRows = isset($this->view->goods_rows) ? $this->view->goods_rows : [];
-            $servicesRows = isset($this->view->services_rows) ? $this->view->services_rows : [];
+            $paymentsRows = isset($this->view->generalTable['filterSearchValues']) ?
+                $this->view->generalTable['filterSearchValues'] : [];
+            $goodsRows = isset($this->view->tableGoods['filterSearchValues']) ?
+                $this->view->tableGoods['filterSearchValues'] : [];
+            $servicesRows = isset($this->view->tableServices['filterSearchValues']) ?
+                $this->view->tableServices['filterSearchValues'] : [];
 
             $this->view->contractor_type = $contractorType;
 
@@ -67,14 +70,24 @@ class ControllerContractor extends Controller
         if (!$this->view->isGoods)
             return false;
 
-        $this->view->goods_column_names = $this->model->getColumns($this->model->contractor_goods_columns_names,
+//        $this->view->goods_column_names = $this->model->getColumns($this->model->contractor_goods_columns_names,
+//            $this->page, $this->model->tableNames[1], true);
+//        $roles = new Roles();
+//        $this->view->goods_original_columns = $roles->returnModelNames($this->model->contractor_goods_columns_names, $this->page);
+        $columnsNames = $this->model->getColumns($this->model->contractor_goods_columns_names,
             $this->page, $this->model->tableNames[1], true);
-        $roles = new Roles();
-        $this->view->goods_original_columns = $roles->returnModelNames($this->model->contractor_goods_columns_names, $this->page);
+        $columns = $this->model->getColumns($this->model->contractor_goods_columns,
+            $this->page, $this->model->tableNames[1]);
+        $selects = $this->model->getSelects($contractor_id, $contractor_type, 'goods');
+        $this->view->tableGoods = array_merge($columns, $columnsNames, $selects,
+            [
+                'table_name' => $this->model->tableNames[1]
+            ]
+        );
 
-        $array = $this->model->getSelects($contractor_id, $contractor_type, 'goods');
-        $this->view->goods_selects = $array['selects'];
-        $this->view->goods_rows = $array['rows'];
+//        $array = $this->model->getSelects($contractor_id, $contractor_type, 'goods');
+//        $this->view->goods_selects = $array['selects'];
+//        $this->view->goods_rows = $array['rows'];
     }
 
     public function setServicesValues($contractor_id, $contractor_type)
@@ -82,16 +95,27 @@ class ControllerContractor extends Controller
         if (!$this->view->isServices)
             return false;
 
-        $array = $this->model->getSelects($contractor_id, $contractor_type, 'services');
+//        $array = $this->model->getSelects($contractor_id, $contractor_type, 'services');
 
-        $this->view->services_column_names = $this->model->getColumns($this->model->contractor_services_columns_names,
+//        $this->view->services_column_names = $this->model->getColumns($this->model->contractor_services_columns_names,
+//            $this->page, $this->model->tableNames[2], true);
+//        $roles = new Roles();
+//        $this->view->services_original_columns = $roles->returnModelNames($this->model->contractor_services_columns_names,
+//            $this->page);
+
+        $columnsNames = $this->model->getColumns($this->model->contractor_services_columns_names,
+            $this->page, $this->model->tableNames[2]);
+        $columns = $this->model->getColumns($this->model->contractor_services_columns,
             $this->page, $this->model->tableNames[2], true);
-        $roles = new Roles();
-        $this->view->services_original_columns = $roles->returnModelNames($this->model->contractor_services_columns_names,
-            $this->page);
+        $selects = $this->model->getSelects($contractor_id, $contractor_type, 'services');
+        $this->view->tableServices = array_merge($columns, $columnsNames, $selects,
+            [
+                'table_name' => $this->model->tableNames[2]
+            ]
+        );
 
-        $this->view->services_selects = $array['selects'];
-        $this->view->services_rows = $array['rows'];
+//        $this->view->services_selects = $array['selects'];
+//        $this->view->services_rows = $array['rows'];
     }
 
     function action_dt_contractor_goods()
@@ -105,7 +129,7 @@ class ControllerContractor extends Controller
             ];
         }
 
-        $this->model->getContractorGoodsMovement($_GET, $print);
+        $this->model->getContractorGoodsMovement($_POST, $print);
     }
 
     function action_dt_contractor_services()
@@ -119,7 +143,7 @@ class ControllerContractor extends Controller
             ];
         }
 
-        $lolo = $this->model->getContractorServices($_GET, $print);
+        $lolo = $this->model->getContractorServices($_POST, $print);
         echo $lolo;
     }
 

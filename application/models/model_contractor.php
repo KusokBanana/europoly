@@ -207,28 +207,13 @@ class ModelContractor extends ModelContractors
 
         $rowValues = json_decode($ssp, true)['data'];
         $ignoreArray = [];
-        $columnNames = $role->returnModelNames($colNames, 'contractor');
-        $selects = [];
+        $columnsNames = $role->returnModelNames($colNames, 'contractor');
 
         if (!empty($rowValues)) {
-            foreach ($rowValues as $product) {
-                foreach ($product as $key => $value) {
-                    if (!$value || $value == null)
-                        continue;
-                    $name = $columnNames[$key];
-                    if (in_array($name, $ignoreArray))
-                        continue;
-
-                    preg_match('/<\w+[^>]+?[^>]+>(.*?)<\/\w+>/i', $value, $match);
-                    if (!empty($match) && isset($match[1])) {
-                        $value = $match[1];
-                    }
-                    if ((isset($selects[$name]) && !in_array($value, $selects[$name])) || !isset($selects[$name]))
-                        $selects[$name][] = $value;
-                }
-            }
+            $selects = Helper::getSelectsFromValues($rowValues, $columnsNames, $ignoreArray);
+            return ['selectSearch' => $selects, 'filterSearchValues' => $rowValues];
         }
-        return ['selects' => $selects, 'rows' => $rowValues];
+        return [];
     }
 
     public function setSSPServicesValues($contractor_id, $contractor_type)
@@ -318,8 +303,9 @@ class ModelContractor extends ModelContractors
                 break;
         }
 
-        $this->contractor_services_columns = $this->getColumns($this->contractor_services_columns,
+        $colsArray = $this->getColumns($this->contractor_services_columns,
             'contractor', $this->tableNames[2]);
+        $this->contractor_services_columns = $colsArray['columns'];
 
     }
 
@@ -362,8 +348,9 @@ class ModelContractor extends ModelContractors
     {
         require_once dirname(__FILE__) . "/model_accountant.php";
         $modelAccountant = new ModelAccountant();
-        return $modelAccountant->getColumns($modelAccountant->payments_column_names,
-            'contractors', $this->tableNames[0], true);
+        $colsArray = $modelAccountant->getColumns($modelAccountant->payments_column_names,
+        'contractors', $this->tableNames[0], true);
+        return $colsArray['columns_names'];
     }
 
     private function setSSPGoodsValues($contractor_id, $contractor_type)
@@ -411,7 +398,8 @@ class ModelContractor extends ModelContractors
             'db' => "IFNULL(CAST((order_items.sell_price * 
                 (100 - order_items.discount_rate)) * order_items.amount/100 as decimal(64, 2)), '')");
 
-        $this->contractor_goods_columns = $this->getColumns($this->contractor_goods_columns, 'contractor', $this->tableNames[1]);
+        $colsArray = $this->getColumns($this->contractor_goods_columns, 'contractor', $this->tableNames[1]);
+        $this->contractor_goods_columns = $colsArray['columns'];
 
     }
 
