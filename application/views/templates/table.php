@@ -359,7 +359,10 @@ $hidden_by_default = json_encode($hidden);
 //                    block = $('body');
 //                }
                 $('body').prepend('<div id="'+wrapperId+'" class="es-editable-wrapper" ' +
-                    'style="position: absolute; height: 100%; width: 100%; top: 0; display: none;"></div>');
+                    'style="position: absolute; height: 100%; width: 100%; top: 0;"></div>');
+                if ($table.closest('.modal')) {
+                    ulWrapper.hide();
+                }
             }
 
             var selects = $('.column-filter-select.form-control.es-input');

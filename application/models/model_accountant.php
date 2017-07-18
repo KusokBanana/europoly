@@ -101,6 +101,7 @@ class ModelAccountant extends Model
 
         switch ($type) {
             case 'general':
+            case 'contractor':
                 $columns = $this->payments_columns;
                 $ssp = array_merge($ssp, $this->getColumns($this->payments_column_names, $this->page,
                     $this->tableName, true));
@@ -202,6 +203,9 @@ class ModelAccountant extends Model
                 });
                 break;
             case 'monthly':
+                $selects = $this->getSelects($data);
+                break;
+            case 'contractor':
                 $selects = $this->getSelects($data);
                 break;
         }

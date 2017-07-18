@@ -5,6 +5,7 @@ include_once ('model_contractors.php');
 class ModelContractor extends ModelContractors
 {
     var $tableNames = ['table_contractor_payments', 'table_contractor_goods', 'table_contractor_services'];
+    public $page;
 
     public $contractor_goods_where = [];
     public $contractor_goods_table = '';

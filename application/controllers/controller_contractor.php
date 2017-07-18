@@ -8,6 +8,7 @@ class ControllerContractor extends Controller
     {
         parent::__construct();
         $this->model = new ModelContractor();
+        $this->model->page = $this->page;
         parent::afterConstruct();
     }
 
@@ -56,7 +57,8 @@ class ControllerContractor extends Controller
         require_once dirname(__FILE__) . "/../models/model_accountant.php";
         $modelAccountant = new ModelAccountant();
 
-        $this->view->generalTable = $modelAccountant->getTableData('general',
+        $modelAccountant->tableName = $this->model->tableNames[0];
+        $this->view->generalTable = $modelAccountant->getTableData('contractor',
             ["payments.contractor_id = $contractor_id", "payments.category = '$contractor_type'"]);
 
         $roles = new Roles();
@@ -103,9 +105,9 @@ class ControllerContractor extends Controller
 //            $this->page);
 
         $columnsNames = $this->model->getColumns($this->model->contractor_services_columns_names,
-            $this->page, $this->model->tableNames[2]);
-        $columns = $this->model->getColumns($this->model->contractor_services_columns,
             $this->page, $this->model->tableNames[2], true);
+        $columns = $this->model->getColumns($this->model->contractor_services_columns,
+            $this->page, $this->model->tableNames[2]);
         $selects = $this->model->getSelects($contractor_id, $contractor_type, 'services');
         $this->view->tableServices = array_merge($columns, $columnsNames, $selects,
             [
@@ -142,8 +144,7 @@ class ControllerContractor extends Controller
             ];
         }
 
-        $lolo = $this->model->getContractorServices($_POST  , $print);
-        echo $lolo;
+        echo $this->model->getContractorServices($_POST, $print);
     }
 
     function action_new_service()

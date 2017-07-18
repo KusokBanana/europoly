@@ -77,7 +77,7 @@
                                         'ajax' => [
                                             'url' => "/accountant/dt_payments" . str_replace('&', '?', $url)
                                         ],
-                                    ], $this->generalTable);
+                                    ], $this->generalTable, $commonData);
 
                                     include 'application/views/templates/table.php'
                                     ?>

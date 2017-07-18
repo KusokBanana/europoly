@@ -147,7 +147,7 @@
                                                 ]
                                             ], $commonData);
 
-                                            include 'application/views/templates/table.php'
+                                            include 'application/views/templates/table.php';
                                             ?>
                                         </div>
                                     </div>
@@ -155,12 +155,6 @@
                                         <div class="portlet-body">
                                             <?php
                                             if ($this->isGoods) {
-                                                $commonData = [
-                                                    'click_url' => "javascript:;",
-                                                    'method' => "POST",
-                                                    'serverSide' => false
-                                                ];
-
                                                 $table_data = array_merge($this->tableGoods, [
                                                     'ajax' => [
                                                         'url' => "/contractor/dt_contractor_goods",
@@ -183,12 +177,6 @@
                                                 $buttons = [
                                                     '<a href="#new_other" class="btn btn-primary" '.
                                                     'data-toggle="modal">Add new</a>'
-                                                ];
-
-                                                $commonData = [
-                                                    'click_url' => "javascript:;",
-                                                    'method' => "POST",
-                                                    'serverSide' => false
                                                 ];
 
                                                 $table_data = array_merge($this->tableServices, [

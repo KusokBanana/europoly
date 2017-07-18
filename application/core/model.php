@@ -404,6 +404,9 @@ abstract class Model extends mysqli
         $payment = $this->getFirst("SELECT order_id, category FROM payments 
               WHERE payment_id = $payment_id AND is_deleted = 0");
         $orderId = $payment['order_id'];
+        if (!$orderId)
+            return false;
+
         $category = $payment['category'];
         $allPaymentsForOrder = $this->getAssoc("SELECT * FROM payments 
           WHERE (order_id = $orderId AND category = '$category' AND is_deleted = 0)");
