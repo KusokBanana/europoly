@@ -221,7 +221,6 @@ if (!empty($hidden)) {
 $notHidden = array_keys($column_names);
 unset($notHidden[0]);
 
-
 $hidden_by_default = json_encode($hidden);
 
 ?>
@@ -331,7 +330,6 @@ $hidden_by_default = json_encode($hidden);
             }
 
 //            $table.find('.order-item-product').closest('td').width('200px');
-console.log('draw.dt')
         });
 
         $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
@@ -344,6 +342,10 @@ console.log('draw.dt')
             if ($table.closest($(this))) {
                 table.draw();
             }
+        }).on('hidden.bs.modal', function(e) {
+            if ($table.find($(this))) {
+                $('#' + tableId + '_selects_wrapper').hide();
+            }
         });
 
         table.on('draw', function() {
@@ -351,8 +353,13 @@ console.log('draw.dt')
             var wrapperId = tableId + '_selects_wrapper';
             var ulWrapper = $('#' + wrapperId);
             if (!ulWrapper.length) {
+//                if ($table.closest('.modal').length) {
+//                    var block = $table.closest('.modal');
+//                } else {
+//                    block = $('body');
+//                }
                 $('body').prepend('<div id="'+wrapperId+'" class="es-editable-wrapper" ' +
-                    'style="position: absolute; height: 100%; width: 100%; top: 0;"></div>');
+                    'style="position: absolute; height: 100%; width: 100%; top: 0; display: none;"></div>');
             }
 
             var selects = $('.column-filter-select.form-control.es-input');
@@ -675,8 +682,16 @@ console.log('draw.dt')
                     var filterId = $(this).attr('data-filter');
                     var offset = $(this).offset();
                     var top = offset.top + parseFloat($(this).css('height'));
+                    if ($(this).closest('.modal').length) {
+                        var wrapper = $('#' + tableId + '_selects_wrapper');
+                        wrapper.show();
+                    }
                     $('#' + filterId).css('top', top).css('left', offset.left);
                 });
+//                select.on('hidden.editable-select', function(e) {
+//                    var wrapper = $('#' + tableId + '_selects_wrapper');
+//                    wrapper.hide();
+//                });
 //                nextSelect.editableSelect('show');
                 select.focus();
                 select.on('select.editable-select', onSelectEditable);

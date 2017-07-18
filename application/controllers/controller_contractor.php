@@ -34,7 +34,6 @@ class ControllerContractor extends Controller
             $this->setGoodsValues($contractorId, $contractorType);
             $this->setServicesValues($contractorId, $contractorType);
 
-            $this->view->tableNames = $this->model->tableNames;
             $paymentsRows = isset($this->view->generalTable['filterSearchValues']) ?
                 $this->view->generalTable['filterSearchValues'] : [];
             $goodsRows = isset($this->view->tableGoods['filterSearchValues']) ?
@@ -143,7 +142,7 @@ class ControllerContractor extends Controller
             ];
         }
 
-        $lolo = $this->model->getContractorServices($_POST, $print);
+        $lolo = $this->model->getContractorServices($_POST  , $print);
         echo $lolo;
     }
 
