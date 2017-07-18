@@ -270,6 +270,7 @@
                     return false;
 
                 var tableScrollable = table.closest('.table-scrollable');
+                console.log(3);
                 if (tableScrollable.length) {
                     var tableWrapper = tableScrollable;
                 }
@@ -313,7 +314,7 @@
             }
 
             var tab = table.closest('.tab-pane');
-            if ($('body').find('.tab-pane').length) {
+            if ($('body').find('.tab-pane').not('.page-quick-sidebar-alerts').not('.page-quick-sidebar-chat').length) {
                 $.each($('body').find('.tab-pane'), function() {
                     if ($(this).find('table.dataTable').length) {
                         if ($(this).is('.active')) {

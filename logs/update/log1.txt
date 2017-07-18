@@ -79,3 +79,13 @@ UPDATE orders
 17.07.2017 16:20:23 SUCCESS table: orders user_id: 27 record_id: 105
 UPDATE `orders` 
                 SET order_status_id = 1 WHERE order_id = 105
+17.07.2017 17:06:12 SUCCESS table: order_items user_id: 27 record_id: 438
+UPDATE order_items SET `status_id` = '5' WHERE item_id = 438
+17.07.2017 17:06:12 SUCCESS table: suppliers_orders user_id: 27 record_id: 1
+UPDATE `suppliers_orders` 
+                SET status_id = 5 WHERE order_id = 1
+17.07.2017 17:06:20 SUCCESS table: order_items user_id: 27 record_id: 438
+UPDATE order_items SET `status_id` = '4' WHERE item_id = 438
+17.07.2017 17:06:20 SUCCESS table: suppliers_orders user_id: 27 record_id: 1
+UPDATE `suppliers_orders` 
+                SET status_id = 4 WHERE order_id = 1
