@@ -274,14 +274,6 @@
                 if (tableScrollable.length) {
                     var tableWrapper = tableScrollable;
                 }
-                else {
-                    var tableResponsive = table.closest('.table-responsive');
-
-                    if (tableResponsive.length) {
-
-                        tableWrapper = tableResponsive;
-                    }
-                }
 
                 if (tableWrapper === undefined || !tableWrapper.length)
                     return false;

@@ -91,7 +91,7 @@
                 echo '<th></th>';
             } else {
                 $inputId = $table_id . '_filter' . $column_id;
-                $input = '<input type="text" class="form-control column-filter-input" style="width: 100%" ' .
+                $input = '<input type="text" class="form-control column-filter-input" style="width: 85%" ' .
                             '" onclick="$(this).focus(); event.stopPropagation()" />';
                 if (in_array($column_name, ['Visual Name', 'Product', 'Client'])) {
                     $bigColumnIds[] = $column_id;
@@ -184,17 +184,18 @@
     .es-editable-wrapper > ul.es-list {
         z-index: 9999999;
     }
+
     .dataTables_scrollHead {
         /*overflow: visible !important;*/
         overflow-x: hidden !important;
     }
     <?php
-     foreach ($bigColumnIds as $bigColumnId) {
-         echo '#'.$table_id.'_wrapper table th:nth-child('.($bigColumnId + 1).'), 
-         #'.$table_id.'_wrapper table td:nth-child('.($bigColumnId + 1).') { ' .
-                'min-width: 250px !important;' .
-              '}';
-     }
+//     foreach ($bigColumnIds as $bigColumnId) {
+//         echo '#'.$table_id.'_wrapper table th:nth-child('.($bigColumnId + 1).'),
+//         #'.$table_id.'_wrapper table td:nth-child('.($bigColumnId + 1).') { ' .
+//                'min-width: 250px !important;' .
+//              '}';
+//     }
      ?>
 </style>
 <?php
@@ -328,13 +329,30 @@ $hidden_by_default = json_encode($hidden);
                     fake.width(tableWrapper.find('table').width());
                 })
             }
-
-//            $table.find('.order-item-product').closest('td').width('200px');
         });
 
         $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
             if ($table.closest($(e.currentTarget).attr('href'))) {
+                if (!$table.closest('.tab-pane.active').length)
+                    return false;
                 table.draw();
+
+                var width = $table.closest('.table-scrollable').width();
+                headerTable.closest('.dataTables_scrollHead').width(width);
+                $table.closest('.dataTables_scrollBody').width(width);
+                $table.css('table-layout', 'fixed');
+
+                var tds = $table.find('tr:first-child').find('td');
+                console.log(tds);
+
+                $.each(tds, function() {
+                    var index = $(this).index();
+                    $(this).css('width', headerTable.find('th').eq(index).css('width'));
+//                    headerTable.find('th').eq(index).width($(this).width());
+                    console.log(headerTable.find('th').eq(index), $(this), headerTable.find('th').eq(index).css('width'));
+                })
+
+
             }
         });
 
@@ -367,8 +385,20 @@ $hidden_by_default = json_encode($hidden);
 
             var selects = $('.column-filter-select.form-control.es-input');
 
+            $table.css('table-layout', '');
+            var trs = $table.find('tr');
+            $.each(trs, function() {
+                var tds = $(this).find('td');
+                $.each(tds, function() {
+                    var index = $(this).index();
+                    $(this).css('width', headerTable.find('th').eq(index).css('width'));
+//                    headerTable.find('th').eq(index).width($(this).width());
+                    console.log(headerTable.find('th').eq(index), $(this), headerTable.find('th').eq(index).css('width'));
+                })
+            })
+
             resize($table.closest('.table-scrollable'));
-            console.log('draw')
+            console.log('draw');
 
             if (!$table.hasClass('redrawn')) {
                 $table.addClass('redrawn');
@@ -429,6 +459,7 @@ $hidden_by_default = json_encode($hidden);
             var order = table.order();
             saveColumnSort(order[0]);
             console.log('order')
+
         });
 
 //        headerTable.find('th').unbind('click.DT');

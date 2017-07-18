@@ -63,3 +63,11 @@ INSERT INTO order_items (manager_order_id, product_id, purchase_price, amount, n
 INSERT INTO order_items (manager_order_id, product_id, purchase_price, amount, number_of_packs, total_price, discount_rate, reduced_price, manager_bonus_rate, manager_bonus, sell_price)
                 VALUES (105, 3736, 92.9, 0, 0, 0, 0, 0, 
                 0, 0, 119.21)
+18.07.2017 13:25:03 SUCCESS table: services_items user_id: 1 insert_id: 0
+INSERT INTO services_items (`name`,`sum`,`currency`,`direction`,`contractor_id`,`contractor_type`) VALUES ('new','123','USD','Income','7','Client')
+18.07.2017 13:58:35 SUCCESS table: payments user_id: 1 insert_id: 0
+INSERT INTO payments (date, legal_entity_id, category, contractor_id, transfer_type_id, sum_in_eur, currency_rate, sum, currency, direction, purpose_of_payment, responsible_person_id, status, expense_article_id) VALUES ('2017-07-18', '3', 'Client', '7', '1', '122', '1', '122', 'EUR', 'Income', '', '1', 'Executed', '47')
+18.07.2017 14:01:24 FAIL table: payments user_id: 1 insert_id: 
+INSERT INTO payments (date, legal_entity_id, category, contractor_id, transfer_type_id, sum_in_eur, currency_rate, sum, currency, direction, purpose_of_payment, responsible_person_id, status, expense_article_id) VALUES ('2017-07-18', '3', 'Client', '7', '1', '122', '1', '122', 'EUR', 'Income', '', '1', 'Executed', '47')
+18.07.2017 14:16:47 SUCCESS table: payments user_id: 1 insert_id: 80
+INSERT INTO payments (date, legal_entity_id, category, contractor_id, transfer_type_id, sum_in_eur, currency_rate, sum, currency, direction, purpose_of_payment, responsible_person_id, status, expense_article_id) VALUES ('2017-07-18', '3', 'Client', '7', '1', '122', '1', '122', 'EUR', 'Income', '', '1', 'Executed', '47')
