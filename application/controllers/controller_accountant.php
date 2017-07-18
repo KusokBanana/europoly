@@ -47,18 +47,12 @@ class ControllerAccountant extends Controller
         $this->getAccess($this->page, 'v');
 
         $this->view->title = 'Payments';
-        $this->view->tableName = $this->model->tableName;
-        $this->view->column_names = $this->model->getColumns($this->model->payments_column_names,
-            $this->page, $this->model->tableName, true);
         $roles = new Roles();
-        $this->view->originalColumns = $roles->returnModelNames($this->model->payments_column_names, $this->page);
+
+        $this->view->generalTable = $this->model->getTableData();
 
         $this->view->access = $roles->getPageAccessAbilities($this->page);
-
         $this->view->balance = $this->model->getBalanceData();
-        $array = $this->model->getSelects();
-        $this->view->selects = $array['selects'];
-        $this->view->rows = $array['rows'];
 
         $this->view->build('templates/template.php', 'accountant.php');
     }
@@ -70,19 +64,11 @@ class ControllerAccountant extends Controller
         $this->view->title = 'Monthly Payments';
         $this->view->monthly_payment = true;
 
-        $this->view->tableName = $this->model->tableName;
-        $this->view->column_names = $this->model->getMonthlyPaymentsCols('name');
+        $this->view->generalTable = $this->model->getTableData('monthly');
+
         $roles = new Roles();
-        $this->view->originalColumns = $this->model->getMonthlyPaymentsCols('name', true);
-
         $this->view->access = $roles->getPageAccessAbilities($this->page);
-
-        $array = $this->model->getSelects(true);
-        $selects = $array['selects'];
-        $rows = $array['rows'];
-
-        $this->view->selects = $selects;
-        $this->view->rows = $rows;
+        $this->view->balance = $this->model->getBalanceData();
 
         $this->view->build('templates/template.php', 'accountant.php');
     }
@@ -98,7 +84,7 @@ class ControllerAccountant extends Controller
             ];
         }
 
-        $this->model->getDTPayments($_GET, $print);
+        $this->model->getDTPayments($_POST, $print);
     }
 
     function action_dt_order_payments()
@@ -156,13 +142,6 @@ class ControllerAccountant extends Controller
         $balances = $this->model->getBalanceData($begin, $end);
 
         include '/application/views/templates/_balance.php';
-
-    }
-
-    function action_financial_reports()
-    {
-
-
 
     }
 

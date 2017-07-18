@@ -8,6 +8,7 @@ class ControllerContractors extends Controller
     {
         parent::__construct();
         $this->model = new ModelContractors();
+        $this->model->page = $this->page;
         parent::afterConstruct();
     }
 
@@ -17,18 +18,7 @@ class ControllerContractors extends Controller
         $this->view->title = "Contractors";
         $this->view->column_names = $this->model->column_names;
 
-        $this->view->tableName = 'table_clients';
-        $this->view->clients_column_names = $this->model->getColumns($this->model->client_column_names,
-            $this->page, 'table_clients', true);
-        $roles = new Roles();
-        $this->view->originalColumns = $roles->returnModelNames($this->model->client_column_names, $this->page);
-
-        $array = $this->model->getSelects();
-        $selects = $array['selects'];
-        $rows = $array['rows'];
-
-        $this->view->selects = $selects;
-        $this->view->rows = $rows;
+        $this->view->clientsTable = $this->model->getTableData('clients');
 
         $this->view->managers = $this->model->getSalesManagersIdName();
         $this->view->commission_agents = $this->model->getCommissionAgentsIdName();
@@ -46,7 +36,7 @@ class ControllerContractors extends Controller
             ];
         }
 
-        $this->model->getDTClients($_GET, $print);
+        $this->model->getDTClients($_POST, $print);
     }
 
     function action_dt_suppliers()

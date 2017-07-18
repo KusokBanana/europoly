@@ -109,7 +109,7 @@ class ModelAccountant extends Model
                 $where[] = 'payments.is_monthly = 1';
                 $columns = $this->getMonthlyPaymentsCols('columns');
                 $ssp['columns_names'] = $this->getMonthlyPaymentsCols('name');
-                $ssp['original_names'] = $this->getMonthlyPaymentsCols('name', true);
+                $ssp['original_columns_names'] = $this->getMonthlyPaymentsCols('name', true);
         }
 
         $ssp = array_merge($ssp, $this->getColumns($columns, $this->page, $this->tableName));
@@ -117,7 +117,7 @@ class ModelAccountant extends Model
         $ssp['table_name'] = $this->tableName;
         $ssp['primary'] = 'payments.payment_id';
 
-        if ($this->user->permissions <= SALES_MANAGER_PERM) {
+        if ($_SESSION['user']->role_id <= ROLE_SALES_MANAGER) {
             $this->unLinkStrings($columns, [5, 6]);
         }
 
@@ -189,9 +189,10 @@ class ModelAccountant extends Model
             $input, null, $where);
     }
 
-    public function getTableData($type = 'general')
+    public function getTableData($type = 'general', $opts = [])
     {
         $data = $this->getSSPData($type);
+        $data['where'] = array_merge($data['where'], $opts);
 
         switch ($type) {
             case 'general':
@@ -201,7 +202,7 @@ class ModelAccountant extends Model
                 });
                 break;
             case 'monthly':
-                $selects = $this->getSelects($data, true);
+                $selects = $this->getSelects($data);
                 break;
         }
 
@@ -231,6 +232,7 @@ class ModelAccountant extends Model
             $selects = Helper::getSelectsFromValues($rowValues, $columnsNames, $ignoreArray);
             return ['selectSearch' => $selects, 'filterSearchValues' => $rowValues];
         }
+        return [];
     }
 
     public function getMonthlyPaymentsCols($type, $isOriginal = false)

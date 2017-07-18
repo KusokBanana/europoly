@@ -66,18 +66,19 @@
                                         'data-target="#modal_balances" type="button">'.
                                         'Balances</button>';
 
-                                    $table_data = [
+                                    $commonData = [
+                                        'click_url' => "javascript:;",
+                                        'method' => "POST",
+                                        'serverSide' => false
+                                    ];
+
+                                    $table_data = array_merge([
                                         'buttons' => $buttons,
-                                        'table_id' => $this->tableName,
                                         'ajax' => [
                                             'url' => "/accountant/dt_payments" . str_replace('&', '?', $url)
                                         ],
-                                        'column_names' => $this->column_names,
-                                        'click_url' => "javascript:;",
-                                        'originalColumns' => $this->originalColumns,
-                                        'selectSearch' => $this->selects,
-                                        'filterSearchValues' => $this->rows,
-                                    ];
+                                    ], $this->generalTable);
+
                                     include 'application/views/templates/table.php'
                                     ?>
                                 </div>
@@ -169,7 +170,8 @@
 
         $('body').on('click', '.new-similar-payment-btn', function(e) {
             e.preventDefault();
-            var table = $('table').DataTable();
+            var tableId = '<?= '#' . $this->generalTable['table_name'] ?>';
+            var table = $(tableId).DataTable();
             var errorMessage = '',
                 selected = table.rows('.selected').data(),
                 selectedCount = selected.length;

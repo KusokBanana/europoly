@@ -4,6 +4,9 @@ include_once ('model_clients.php');
 
 class ModelContractors extends ModelClients
 {
+
+    public $page;
+
     var $client_column_names = [
         '_client_id',
         'Name',
@@ -41,15 +44,20 @@ class ModelContractors extends ModelClients
         'Delete',
     ];
 
-    public function getDTClients($input, $printOpt)
+    function getSSPData($type = 'general')
     {
 
-        $columns = $this->client_columns;
-        $columns[1]['db'] = "CONCAT('<a href=\"/contractor?id=', clients.client_id, 
+        $ssp = ['page' => $this->page];
+        $tableName = 'table_'.$type;
+
+        switch ($type) {
+            case 'clients':
+                $columns = $this->client_columns;
+                $columns[1]['db'] = "CONCAT('<a href=\"/contractor?id=', clients.client_id, 
             '&type=', '".PAYMENT_CATEGORY_CLIENT."', '\">', clients.final_name, '</a>')";
-        $count = count($columns);
-        array_push($columns,
-            array('dt' => $count, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
+                $count = count($columns);
+                array_push($columns,
+                    array('dt' => $count, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
                         CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to delete the client?\" 
                                    href=\"/contractors/delete?id=', clients.client_id, '&type=clients', '\" 
                                    class=\"table-confirm-btn\" data-placement=\"left\" data-popout=\"true\" 
@@ -57,33 +65,50 @@ class ModelContractors extends ModelClients
                                         <span class=\'glyphicon glyphicon-trash\' title=\'Delete\'></span>
                                    </a>'),
                 '</div>')")
-        );
-        $this->unLinkStrings($columns, [17]);
+                );
+                $this->unLinkStrings($columns, [17]);
 
-        $columns = $this->getColumns($columns, 'contractors', 'table_clients');
+                $ssp['where'] = ['clients.is_deleted = 0'];
+                $ssp = array_merge($ssp, $this->getColumns($columns, $this->page,
+                    $tableName));
+                $ssp = array_merge($ssp, $this->getColumns($this->client_column_names, $this->page,
+                    $tableName, true));
+                $ssp['db_table'] = $this->client_table;
+                $ssp['table_name'] = $tableName;
+                $ssp['primary'] = 'clients.client_id';
+                break;
+        }
 
-        $where = ['clients.is_deleted = 0'];
+        $ssp['where'] = $this->whereCondition;
 
-        $ssp = [
-            'columns' => $columns,
-            'columns_names' => $this->client_column_names,
-            'db_table' => $this->client_table,
-            'page' => 'contractors',
-            'table_name' => 'table_clients',
-            'primary' => 'clients.client_id',
-        ];
+        return $ssp;
+
+    }
+
+    public function getDTClients($input, $printOpt)
+    {
+        $ssp = $this->getSSPData('clients');
 
         if ($printOpt) {
 
-            $printOpt['where'] = $where;
+            $printOpt['where'] = $ssp['where'];
             echo $this->printTable($input, $ssp, $printOpt);
             return true;
 
         }
 
-        $this->sspComplex($this->client_table, $ssp['primary'], $ssp['columns'], $input, null,
-            $where);
+        $this->sspComplex($ssp['db_table'], $ssp['primary'], $ssp['columns'], $input, null,
+            $ssp['where']);
 
+    }
+
+    public function getTableData($type = 'general', $opts = [])
+    {
+        $data = $this->getSSPData($type);
+
+        $selects = $this->getSelects($data);
+
+        return array_merge($data, $selects);
     }
 
     var $suppliers_columns = [
