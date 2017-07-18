@@ -187,10 +187,10 @@ class ModelWarehouse extends ModelManagers_orders
             $this->unLinkStrings($this->product_warehouses_columns, [27, 30, 33, 34]);
         }
 
-        $ssp['columns'] = $this->getColumns($this->product_warehouses_columns, $this->page,
-            $type);
-        $ssp['columns_names'] = $this->getColumns($this->product_warehouses_column_names, $this->page,
-            $type, true);
+        $ssp = array_merge($ssp, $this->getColumns($this->product_warehouses_columns, $this->page,
+            $type));
+        $ssp = array_merge($ssp, $this->getColumns($this->product_warehouses_column_names, $this->page,
+            $type, true));
         $ssp['db_table'] = $this->products_warehouses_table;
         $ssp['table_name'] = $type;
         $ssp['primary'] = 'products_warehouses.item_id';
@@ -233,31 +233,14 @@ class ModelWarehouse extends ModelManagers_orders
     function getSelects($ssp, $opts = [])
     {
         $sspJson = $this->getSspComplexJson($ssp['db_table'], $ssp['primary'],
-            $ssp['columns'], null, null, $ssp['where']);
-        $columnNames = $ssp['columns_names'];
+            $ssp['original_columns'], null, null, $ssp['where']);
         $rowValues = json_decode($sspJson, true)['data'];
+        $columnsNames = $ssp['original_columns_names'];
         $ignoreArray = ['Id', 'Quantity', 'Purchase Price', 'Buy + Transport + Taxes', 'Sell Price',
             'Dealer Price (-30%)', 'Total Price'];
 
         if (!empty($rowValues)) {
-            $selects = [];
-            foreach ($rowValues as $product) {
-                foreach ($product as $key => $value) {
-                    if (!$value || $value == null)
-                        continue;
-                    $name = $columnNames[$key];
-                    if (in_array($name, $ignoreArray))
-                        continue;
-
-                    preg_match('/<\w+[^>]+?[^>]+>(.*?)<\/\w+>/i', $value, $match);
-                    if (!empty($match) && isset($match[1])) {
-                        $value = $match[1];
-                    }
-
-                    if ((isset($selects[$name]) && !in_array($value, $selects[$name])) || !isset($selects[$name]))
-                        $selects[$name][] = $value;
-                }
-            }
+            $selects = Helper::getSelectsFromValues($rowValues, $columnsNames, $ignoreArray);
             return ['selectSearch' => $selects, 'filterSearchValues' => $rowValues];
         }
         return [];
@@ -268,14 +251,12 @@ class ModelWarehouse extends ModelManagers_orders
 
         $data = $this->getSSPData($type, ['warehouse_id' => $warehouse_id]);
         $roles = new Roles();
-        $names = $this->product_warehouses_column_names;
 
         switch ($type) {
 //            case 'general':
 //            case 'expects_issue':
 //                break;
             case 'modal_catalogue':
-                $names = $this->full_product_column_names;
                 $cache = new Cache();
                 $selects = $cache->getOrSet($type, function() use($data) {
                     $model = new ModelCatalogue();
@@ -286,7 +267,6 @@ class ModelWarehouse extends ModelManagers_orders
                 $selects = $this->getSelects($data, true);
         }
 
-        $data['originalColumns'] = $roles->returnModelNames($names, $this->page);
         return array_merge($data, $selects);
 
     }

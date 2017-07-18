@@ -16,9 +16,9 @@ class ModelCatalogue extends Model
         $ssp = ['page' => $this->page];
         switch ($type) {
             case 'general':
-                $ssp['columns'] = $this->getColumns($this->full_product_columns, $this->page, $this->tableName);
-                $ssp['columns_names'] = $this->getColumns($this->full_product_column_names, $this->page,
-                    $this->tableName, true);
+                $ssp = array_merge($ssp, $this->getColumns($this->full_product_columns, $this->page, $this->tableName));
+                $ssp = array_merge($ssp, $this->getColumns($this->full_product_column_names, $this->page,
+                    $this->tableName, true));
                 $ssp['db_table'] = $this->full_products_table;
                 $ssp['table_name'] = $this->tableName;
                 $ssp['primary'] = 'products.product_id';
@@ -79,9 +79,9 @@ class ModelCatalogue extends Model
     function getSelects($ssp)
     {
         $sspJson = $this->getSspComplexJson($ssp['db_table'], $ssp['primary'],
-            $ssp['columns'], null, null, $ssp['where']);
+            $ssp['original_columns'], null, null, $ssp['where']);
         $rowValues = json_decode($sspJson, true)['data'];
-        $columns = $ssp['columns_names'];
+        $columnsNames = $ssp['original_columns_names'];
 
         $ignoreArray = ['_product_id', 'Name', 'Article', 'Thickness', 'Width', 'Length',
             'Weight', 'Quantity in 1 Pack', 'Purchase price', 'Supplier\'s discount',
@@ -89,24 +89,7 @@ class ModelCatalogue extends Model
             'Visual Name', 'visual_name', 'amount_of_packs_in_pack'];
 
         if (!empty($rowValues)) {
-            $selects = [];
-            foreach ($rowValues as $product) {
-                foreach ($product as $key => $value) {
-                    if (!$value || $value == null)
-                        continue;
-                    $name = $columns[$key];
-                    if (in_array($name, $ignoreArray))
-                        continue;
-
-                    preg_match('/<\w+[^>]+?[^>]+>(.*?)<\/\w+>/i', $value, $match);
-                    if (!empty($match) && isset($match[1])) {
-                        $value = $match[1];
-                    }
-
-                    if ((isset($selects[$name]) && !in_array($value, $selects[$name])) || !isset($selects[$name]))
-                        $selects[$name][] = $value;
-                }
-            }
+            $selects = Helper::getSelectsFromValues($rowValues, $columnsNames, $ignoreArray);
             return ['selectSearch' => $selects, 'filterSearchValues' => $rowValues];
         }
         return [];
@@ -115,11 +98,9 @@ class ModelCatalogue extends Model
     public function getTableData($type = 'general', $opts = [])
     {
         $data = $this->getSSPData($type);
-        $roles = new Roles();
 
         switch ($type) {
             case 'general':
-                $names = $this->full_product_column_names;
                 $cache = new Cache();
                 $selects = $cache->getOrSet('catalogue_selects', function() use($data) {
                     $array = $this->getSelects($data);
@@ -128,7 +109,6 @@ class ModelCatalogue extends Model
                 break;
         }
 
-        $data['originalColumns'] = $roles->returnModelNames($names, $this->page);
         return array_merge($data, $selects);
     }
 

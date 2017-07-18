@@ -12,9 +12,9 @@ class ModelBrand extends ModelCatalogue
         $ssp = ['page' => $this->page];
         switch ($type) {
             case 'general':
-                $ssp['columns'] = $this->getColumns($this->full_product_columns, $this->page, $this->tableName);
-                $ssp['columns_names'] = $this->getColumns($this->full_product_column_names, $this->page,
-                    $this->tableName, true);
+                $ssp = array_merge($ssp, $this->getColumns($this->full_product_columns, $this->page, $this->tableName));
+                $ssp = array_merge($ssp, $this->getColumns($this->full_product_column_names, $this->page,
+                    $this->tableName, true));
                 $ssp['db_table'] = $this->full_products_table;
                 $ssp['table_name'] = $this->tableName;
                 $ssp['primary'] = 'products.product_id';
@@ -46,13 +46,11 @@ class ModelBrand extends ModelCatalogue
     public function getTableData($type = 'general', $opts = [])
     {
         $data = $this->getSSPData($type);
-        $roles = new Roles();
         $brand_id = $opts['brand_id'];
         $data['where'][] = "brands.brand_id = " . $brand_id;
 
         switch ($type) {
             case 'general':
-                $names = $this->full_product_column_names;
                 $cache = new Cache();
                 $selects = $cache->getOrSet('brand_catalogue_selects' . $brand_id, function() use($data) {
                     return $this->getSelects($data);
@@ -60,7 +58,6 @@ class ModelBrand extends ModelCatalogue
                 break;
         }
 
-        $data['originalColumns'] = $roles->returnModelNames($names, $this->page);
         return array_merge($data, $selects);
     }
 }

@@ -15,7 +15,7 @@ class ControllerContractor extends Controller
     {
 
         $this->getAccess($this->page, 'v');
-        $this->view->payments_column_names = $this->model->getPaymentsColumnNames();
+//        $this->view->payments_column_names = $this->model->getPaymentsColumnNames();
 
         $contractorId = isset($_GET['id']) ? $_GET['id'] : 0;
         $contractorType = isset($_GET['type']) ? $_GET['type'] : 0;
@@ -54,17 +54,12 @@ class ControllerContractor extends Controller
         require_once dirname(__FILE__) . "/../models/model_accountant.php";
         $modelAccountant = new ModelAccountant();
 
-        $this->view->column_names = $modelAccountant->getColumns($modelAccountant->payments_column_names,
-            $this->page, $this->model->tableNames[0], true);
-        $roles = new Roles();
-        $this->view->originalColumns = $roles->returnModelNames($modelAccountant->payments_column_names, $this->page);
+        $this->view->generalTable = $modelAccountant->getTableData('general',
+            ["payments.contractor_id = $contractor_id", "payments.category = '$contractor_type'"]);
 
+        $roles = new Roles();
         $this->view->access = $roles->getPageAccessAbilities($this->page);
 
-        $array = $modelAccountant->getSelects(false,
-            ["payments.contractor_id = $contractor_id", "payments.category = '$contractor_type'"]);
-        $this->view->selects = $array['selects'];
-        $this->view->rows = $array['rows'];
     }
 
     public function setGoodsValues($contractor_id, $contractor_type)

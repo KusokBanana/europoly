@@ -72,23 +72,26 @@
                                     <div class="tab-pane active" id="tab_1">
                                         <div class="portlet-body">
                                             <?php
-                                            $table_data = [
-                                                'buttons' => [
-                                                    '<a class="btn sbold green" 
+
+                                            $commonData = [
+                                                'click_url' => "client?id=",
+                                                'method' => "POST",
+                                            ];
+                                            $table_data = array_merge($this->clientsTable, $commonData,
+                                                [
+                                                    'click_url' => "contractor?type=Client&id=",
+                                                    'buttons' => [
+                                                        '<a class="btn sbold green" 
                                                         href="client?id=new">
                                                             Add Client <i class="fa fa-plus"></i>
                                                     </a>'
-                                                ],
-                                                'table_id' => "table_clients",
-                                                'ajax' => [
-                                                    'url' => "/contractors/dt_clients"
-                                                ],
-                                                'column_names' => $this->clients_column_names,
-                                                'click_url' => "contractor?type=Client&id=",
-                                                'originalColumns' => $this->originalColumns,
-                                                'selectSearch' => $this->selects,
-                                                'filterSearchValues' => $this->rows,
-                                            ];
+                                                    ],
+                                                    'ajax' => [
+                                                        'url' => "/contractors/dt_clients"
+                                                    ]
+                                                ]
+                                            );
+
                                             include 'application/views/templates/table.php'
                                             ?>
                                         </div>

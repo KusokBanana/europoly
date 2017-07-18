@@ -38,9 +38,9 @@ class ModelBrands extends Model
                     unset($this->columns[3]);
                     unset($this->columnNames[3]);
                 }
-                $ssp['columns'] = $this->getColumns($this->columns, $this->page, $this->tableName);
-                $ssp['columns_names'] = $this->getColumns($this->columnNames, $this->page,
-                    $this->tableName, true);
+                $ssp = array_merge($ssp, $this->getColumns($this->columns, $this->page, $this->tableName));
+                $ssp = array_merge($ssp, $this->getColumns($this->columnNames, $this->page,
+                    $this->tableName, true));
                 $ssp['db_table'] = 'brands left join suppliers on suppliers.supplier_id = brands.supplier_id';
                 $ssp['table_name'] = $this->tableName;
                 $ssp['primary'] = 'brands.brand_id';
@@ -62,11 +62,9 @@ class ModelBrands extends Model
     public function getTableData($type = 'general')
     {
         $data = $this->getSSPData($type);
-        $roles = new Roles();
         if ($this->user->role_id == ROLE_SALES_MANAGER) {
             unset($this->columnNames[3]);
         }
-        $data['originalColumns'] = $roles->returnModelNames($this->columnNames, $this->page);
         return $data;
     }
 

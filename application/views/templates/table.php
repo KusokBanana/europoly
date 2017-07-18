@@ -6,7 +6,7 @@
     $column_names = isset($table_data['column_names']) ? $table_data['column_names'] : $table_data['columns_names'];
     $hidden_by_default = isset($table_data['hidden_by_default']) ? $table_data['hidden_by_default'] : '';
     $click_url = isset($table_data['click_url']) ? $table_data['click_url'] : '#';
-    $originalColumns = isset($table_data['originalColumns']) ? $table_data['originalColumns'] : [];
+    $originalColumns = isset($table_data['original_columns_names']) ? $table_data['original_columns_names'] : [];
     $mustHidden = 0;
     $method = isset($table_data['method']) ? $table_data['method'] : 'GET';
     $selectSearch = isset($table_data['selectSearch']) ?
@@ -90,15 +90,18 @@
             if ($column_id == 0) {
                 echo '<th></th>';
             } else {
-                $input = '<input type="text" class="form-control column-filter-input" style="width: 100%" 
-                            onclick="$(this).focus(); event.stopPropagation()" />';
+                $inputId = $table_id . '_filter' . $column_id;
+                $input = '<input type="text" class="form-control column-filter-input" style="width: 100%" ' .
+                            '" onclick="$(this).focus(); event.stopPropagation()" />';
                 if (in_array($column_name, ['Visual Name', 'Product', 'Client'])) {
                     $bigColumnIds[] = $column_id;
                 }
                 if ($selectSearch && isset($selectSearch[$column_name]) && !empty($selectSearch[$column_name])) {
-                    $input .= '<select class="column-filter-select hidden form-control" 
-                                        onclick="$(this).focus(); event.stopPropagation()">';
+                    $input .= '<select class="column-filter-select hidden form-control" '.
+                        'data-append-to="#'.$table_id.'_selects_wrapper" data-filter="'.$inputId.'" '.
+                        'onclick="$(this).focus(); event.stopPropagation()">';
                     foreach ($selectSearch[$column_name] as $value) {
+                        $value = htmlspecialchars($value);
                         $input .= '<option value="'.$value.'" onclick="event.stopPropagation()">'.$value.'</option>';
                     }
                     $input .= '</select>';
@@ -133,6 +136,9 @@
     }
     table .es-list {
         width: auto !important;
+    }
+    table.dataTable {
+        margin-left: 0;
     }
     table.dataTable td:not(.select-checkbox), table.dataTable tr:not(.select-checkbox) {
         /*max-width: auto;*/
@@ -175,6 +181,9 @@
         padding-left: 10px !important;
         padding-right: 10px !important;
     }
+    .es-editable-wrapper > ul.es-list {
+        z-index: 9999999;
+    }
     .dataTables_scrollHead {
         /*overflow: visible !important;*/
         overflow-x: hidden !important;
@@ -183,7 +192,7 @@
      foreach ($bigColumnIds as $bigColumnId) {
          echo '#'.$table_id.'_wrapper table th:nth-child('.($bigColumnId + 1).'), 
          #'.$table_id.'_wrapper table td:nth-child('.($bigColumnId + 1).') { ' .
-                'min-width: 250px !important; ' .
+                'min-width: 250px !important;' .
               '}';
      }
      ?>
@@ -283,11 +292,13 @@ $hidden_by_default = json_encode($hidden);
             order: [
                 $sort
             ],
-//            autoWidth: false,
+            autoWidth: false,
             orderCellsTop: true,
             select: $select,
             colReorder: false,
             deferRender: true,
+//            fnDrawCallback: function() { console.log('drawn', $table)},
+//            drawCallback: function() { console.log('drawCallback', $table)},
             displayLength: recordsCount
         });
 
@@ -306,7 +317,6 @@ $hidden_by_default = json_encode($hidden);
                 });
             }
             $('.dataTables_scrollHead').css('overflow', '').css('position', '');
-            reOrderColumns();
 
             // resize top scroll after load data
             var topScroll = $('.top-scroll');
@@ -320,74 +330,51 @@ $hidden_by_default = json_encode($hidden);
                 })
             }
 
-            $table.find('.order-item-product').closest('td').width('200px')
-
+//            $table.find('.order-item-product').closest('td').width('200px');
+console.log('draw.dt')
         });
+
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+            if ($table.closest($(e.currentTarget).attr('href'))) {
+                table.draw();
+            }
+        });
+
+        $('.modal').on('show.bs.modal', function(e) {
+            if ($table.closest($(this))) {
+                table.draw();
+            }
+        });
+
         table.on('draw', function() {
-            $table.find('thead').find('input, select, ul').remove();
-            reHeightHeader();
-            function reHeightHeader()
-            {
-                var headerTable = $('#' + tableId + '_wrapper .dataTables_scrollHead');
-                if (headerTable.hasClass('set')) {
-                    return false;
-                }
-                console.log(parseInt(headerTable.css('height')), 'height');
-                if (parseInt(headerTable.css('height'))) {
-                    headerTable.addClass('set');
-                } else {
-                    return false;
-                }
-
-                var headerBottomPoint = headerTable.offset().top + parseInt(headerTable.css('height'));
-                var tableTopPoint = $table.offset().top;
-                var qwe = tableTopPoint - headerBottomPoint;
-                console.log(tableTopPoint, qwe, headerTable, $table);
-
-                headerTable.css('height', (parseInt(headerTable.css('height')) + qwe + 200) + 'px');
-                $table.closest('.dataTables_scrollBody')
-                    .css('border-top', '2px solid #e7ecf1')
-                    .css('top', '-' + (qwe + 200) + 'px');
+            var tableWrapper = $table.closest('.dataTables_scroll');
+            var wrapperId = tableId + '_selects_wrapper';
+            var ulWrapper = $('#' + wrapperId);
+            if (!ulWrapper.length) {
+                $('body').prepend('<div id="'+wrapperId+'" class="es-editable-wrapper" ' +
+                    'style="position: absolute; height: 100%; width: 100%; top: 0;"></div>');
             }
 
-            $(document).on('shown.bs.tab', function(event){
-
-                var tab = $($(event.target).attr('href'));
-                var div = tab.find('.table-scrollable');
-
-                setTimeout(function() {
-                    reHeightHeader();
-                    resize(div);
-                }, 2000);
-            });
-
-//            $.each(headerTable.find('th'), function() {
-//                var alsoIndex = $(this).index();
-//                var height = parseInt($(this).css('height'));
-//                $(this).resizable({
-//                    resize: function(event, ui) {
-//                        var originalSize = ui.originalSize.width;
-//                        var size = ui.size.width;
-//                        var diff = originalSize - size;
-//                        var header = headerTable.find('table');
-//                        var currentWidth = parseInt(header.css('width'));
-////                        var currentWidth = parseInt(ui.element.css('width'));
-//                        $table.css('width', (currentWidth - diff) + 'px');
-//                        header.css('width', (currentWidth - diff) + 'px');
-////                        ui.element.css('width', (currentWidth - diff) + 'px');
-//                        console.log(diff);
-//                        console.log(ui, event)
-//                    },
-//                    alsoResize: '#' + tableId + ' tr > td:nth-child('+(alsoIndex+1)+')',
-//                    grid: 10,
-//                    minHeight: height,
-//                    maxHeight: height,
-////                    helper: "ui-resizable-helper"
-//                });
-//            })
+            var selects = $('.column-filter-select.form-control.es-input');
 
             resize($table.closest('.table-scrollable'));
+            console.log('draw')
+
+            if (!$table.hasClass('redrawn')) {
+                $table.addClass('redrawn');
+                reOrderColumns();
+                table.draw();
+            }
+
         });
+
+        table.on( 'search.dt', function () {
+            console.log('search dt')
+        });
+        table.on( 'search', function () {
+            console.log('search')
+        });
+
         var headerTable = $('#' + tableId + '_wrapper .dataTables_scrollHead');
 
         function resize(div) {
@@ -407,8 +394,6 @@ $hidden_by_default = json_encode($hidden);
                 var $header = headerTable.find('table');
                 var $headerColumn = $header.find('tr > th:nth-child('+(currentLineIndex+1)+')');
                 var $columnTds = $('#' + $table.attr('id') + ' tr > td:nth-child('+(currentLineIndex+1)+')');
-
-                console.log($columnTds, $header, $table);
 
                 var headerColumnWidth = $headerColumn.css('width');
                 var headerWidth = $header.css('width');
@@ -433,6 +418,7 @@ $hidden_by_default = json_encode($hidden);
         $table.on('order.dt', function (e) {
             var order = table.order();
             saveColumnSort(order[0]);
+            console.log('order')
         });
 
 //        headerTable.find('th').unbind('click.DT');
@@ -553,7 +539,7 @@ $hidden_by_default = json_encode($hidden);
             }
 
             resize();
-
+            table.draw();
             saveHiddenColumnsInCookie();
         });
 
@@ -651,7 +637,7 @@ $hidden_by_default = json_encode($hidden);
                     if (filterName === 'category_id' && filterValue === '0')
                         return;
                     var filterId = hiddenTabFilters[filterName];
-                    var realIndex = getRealIndex(filterId);
+                    var realIndex = getRealIndex(filterId); // TODO here can be problems - replace realIndex by index
                     filter[realIndex] = filterValue;
                 }
             }
@@ -683,8 +669,15 @@ $hidden_by_default = json_encode($hidden);
             if (nextSelect.length && !isAlreadyBuild) {
                 var parent = $(this).parent();
                 $(this).remove();
-                nextSelect.removeClass('hidden').editableSelect('show');
+                nextSelect.removeClass('hidden').editableSelect();
                 var select = parent.find('.es-input');
+                select.on('show.editable-select', function(e) {
+                    var filterId = $(this).attr('data-filter');
+                    var offset = $(this).offset();
+                    var top = offset.top + parseFloat($(this).css('height'));
+                    $('#' + filterId).css('top', top).css('left', offset.left);
+                });
+//                nextSelect.editableSelect('show');
                 select.focus();
                 select.on('select.editable-select', onSelectEditable);
             } else if (isAlreadyBuild) {
@@ -698,8 +691,8 @@ $hidden_by_default = json_encode($hidden);
             $.each(editableSelects, function() {
                 if ($(this).val()) {
                     var index = $(this).closest('th').attr('data-header-id');
-                    var realIndex = getRealIndex(index);
-                    filter[realIndex] = $(this).val();
+//                    var realIndex = getRealIndex(index);
+                    filter[index] = $(this).val();
                 }
             });
             addTabsFilters(filter);
@@ -711,54 +704,39 @@ $hidden_by_default = json_encode($hidden);
             if (!select.hasClass('column-filter-select'))
                 return false;
             var values = [];
-            var ul = select.next('ul');
+            var ul = $('#' + select.attr('data-filter'));
             var lis = ul.find('li');
             var currentIndex = select.closest('th').attr('data-header-id');
             var filter = getTableFilters();
-            console.log(currentIndex);
-            console.log(filter);
             $('.dataTables_scrollHead').css('position', 'relative').css('border', '0px').css('width', '100%');
 
+            console.log($filterSearchValues);
+            console.log(filter);
             if ($filterSearchValues && filter.length) {
                 $.each($filterSearchValues, function() {
                     var row = this;
                     for (var key in filter) {
-                        var rowValue = row[key];
+                        var realKey = getRealIndex(key); // replaced by realKey from just key
+                        var rowValue = row[realKey];
                         var filterValue = filter[key];
+                        console.log(rowValue, filterValue, key);
                         if (rowValue && rowValue !== undefined) {
-//                            if (value.indexOf('glyphicon') !== -1) {
-//                                value = value.replace(/<a \w+[^>]+?[^>]+>(.*?)<\/a>/i, '');
-//                            } else {
-                                var result = rowValue.match(/<\w+[^>]+?[^>]+>(.*?)<\/\w+>/i);
-                                if (result !== null && result.length && result[1] !== undefined) {
-                                    rowValue = result[1];
-//                                }
-                            }
                             if (rowValue.toUpperCase().indexOf(filterValue.toUpperCase()) === -1 &&
                                 rowValue !== filterValue) {
-//                            if (filter[key] != value) {
                                 return;
-                            } else {
                             }
                         } else {
                             return;
                         }
                     }
+
                     var realIndex = getRealIndex(currentIndex);
 
-                    if (row[realIndex]) {
-                        var currentValue = row[realIndex];
+                    var currentValue = row[realIndex];
+                    if (currentValue) {
+                        console.log(currentValue, 'next')
                         if (currentValue !== null) {
-//                            if (currentValue.indexOf('glyphicon') !== -1) {
-//                                console.log(currentValue, 1);
-//                                currentValue = currentValue.replace(/<a \w+[^>]+?[^>]+>(.*?)<\/a>/i, '');
-//                                console.log(currentValue, 2);
-//                            } else {
-                                result = currentValue.match(/<\w+[^>]+?[^>]+>(.*?)<\/\w+>/i);
-                                if (result !== null && result.length && result[1] !== undefined) {
-                                    currentValue = result[1];
-                                }
-//                            }
+
                         }
                         if (values.indexOf(currentValue) === -1) {
                             values.push(currentValue);
@@ -790,100 +768,6 @@ $hidden_by_default = json_encode($hidden);
             e.stopPropagation();
             filterSelectsValues($(this))
         });
-
-        // fixed header of table
-        function fixedHeader() {
-
-//            scrollHandler();
-//            $(window).on('scroll', scrollHandler);
-
-//            function scrollHandler() {
-//                var top = $table[0].getBoundingClientRect().top;
-//                var tableMainDiv = $table.closest('.portlet-body');
-//                var tableId = $table.attr('id');
-//                var fixedTable = tableMainDiv.find('.fixed-table');
-//                var tableDad = $table.closest('#'+tableId+'_wrapper');
-//                var tableWrapper = $table.closest('.table-scrollable');
-//                var fixedTopScroll = $('.fixed-top-scroll');
-//
-//                // not appear on click tabs
-//                if (tableDad.closest('.tab-pane').length && !tableDad.closest('.tab-pane').hasClass('active'))
-//                    return;
-//
-//                if (top <= 3) {
-//                    if (!fixedTable.length) {
-//                        fixedTable = $table.clone();
-//                        fixedTable.find('tbody').remove();
-//                        tableDad.css('position', 'relative').css('overflow', 'hidden');
-//                        fixedTable.css('position', 'absolute').css('top', '20px')
-//                            .css('background-color', '#ebeaff').addClass('fixed-table');
-//                        tableDad.children(':first-child').before(fixedTable);
-//
-//                        var topScroll = tableMainDiv.find('.top-scroll');
-//                        if (topScroll.length) {
-//                            var cloneTopScroll = topScroll.clone();
-//                            fixedTable.before(cloneTopScroll);
-//                            cloneTopScroll.css('position', 'absolute').css('top', '20px').addClass('fixed-top-scroll');
-//                            fixedTable.css('top', '40px');
-//                            cloneTopScroll.on('scroll', function(e){
-//                                tableWrapper.scrollLeft($(this).scrollLeft());
-//                            });
-//                            tableWrapper.on('scroll', function(e){
-//                                cloneTopScroll.scrollLeft($(this).scrollLeft());
-//                            });
-//                            cloneTopScroll.scrollLeft(tableWrapper.scrollLeft());
-//                        }
-//
-//                        fixedTable.addClass('fixed-table-head');
-//                        if (tableWrapper.length) {
-//                            fixedTable.css('left', -tableWrapper.scrollLeft() + 'px');
-//                        }
-//
-//                        var tds = $table.find('thead th');
-//                        $.each(tds, function() {
-//                            var index = $(this).index(),
-//                                width = $(this).css('width');
-//
-//                            fixedTable.find('th').eq(index).css('min-width', width);
-//                            fixedTable.find('input').attr('disabled', '')
-//                        });
-////                        addFilterSelects();
-////                        tableSearch(fixedTable.dataTable()); TODO сделать поиск по столбцам у фиксированного хедера
-//
-//                    } else {
-//                        var topMax = tableDad.find('.table-scrollable').offset().top,
-//                            bottomMax = topMax + +tableDad.find('.table-scrollable').css('height').slice(0,-2),
-//                            currentWindowOffset = $(window).scrollTop(),
-//                            fixedTableHeight = +fixedTable.css('height').slice(0,-2);
-//
-//                        if (currentWindowOffset <= bottomMax) {
-//
-//                            var needOffset = (currentWindowOffset + 60 + fixedTableHeight <= bottomMax) ?
-//                                currentWindowOffset + 60 : bottomMax - fixedTableHeight + 30;
-//
-//                            if (fixedTopScroll.length) {
-//                                fixedTopScroll.css('top', (needOffset - topMax + 7) + 'px');
-//                                needOffset += 20;
-//                            }
-//                            fixedTable.css('top', (needOffset - topMax) + 'px');
-//                        }
-//
-//                    }
-//                } else {
-//                    if (fixedTable.length) {
-//                        fixedTable.remove();
-//                        if (fixedTopScroll.length) {
-//                            fixedTopScroll.remove();
-//                        }
-//                    }
-//                }
-//            }
-
-        }
-        // not appear in modal windows
-        if (!$table.closest('.modal-content').length) {
-            fixedHeader();
-        }
 
         // reorder columns in table
         function reOrderColumns() {
@@ -1024,7 +908,7 @@ $hidden_by_default = json_encode($hidden);
         })
 
         function getRealIndex(index) {
-            return $('#'+$table.attr('id')+'_columns_choose.order-columns-block')
+            return $('#'+tableId+'_columns_choose.order-columns-block')
                 .find('label input[data-column="'+index+'"]').attr('data-original-column-id');
         }
 

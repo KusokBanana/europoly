@@ -24,10 +24,16 @@
         this.$select.replaceWith(this.$input);
         this.$list.appendTo(this.options.appendTo || this.$input.parent());
 
+
         // initalization
         this.utility.initialize();
         this.utility.initializeList();
         this.utility.initializeInput();
+
+        if (this.$input.attr('data-filter') !== undefined) {
+            this.$list.attr('id', this.$input.attr('data-filter'));
+        }
+
         this.utility.trigger('created');
     }
     EditableSelect.DEFAULTS = { filter: true, effects: 'default', duration: 'fast', trigger: 'focus' };
@@ -48,10 +54,11 @@
     };
     EditableSelect.prototype.show = function () {
         this.$list.css({
-            top:   this.$input.position().top + this.$input.outerHeight() - 1,
-            left:  this.$input.position().left,
+            // top:   this.$input.position().top + this.$input.outerHeight() - 1,
+            // left:  this.$input.position().left,
             width: this.$input.outerWidth()
         });
+        // console.log(this.$input.position().top)
 
         if (!this.$list.is(':visible') && this.$list.find('li.es-visible').length > 0) {
             var fns = { 'default': 'show', fade: 'fadeIn', slide: 'slideDown' };

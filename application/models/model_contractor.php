@@ -105,7 +105,6 @@ class ModelContractor extends ModelContractors
             'primary' => $this->contractor_goods_primary,
         ];
 
-
         if ($printOpt) {
             $printOpt['where'] = $this->contractor_goods_where;
             echo $this->printTable($input, $ssp, $printOpt);

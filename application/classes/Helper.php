@@ -56,6 +56,36 @@ class Helper
 
     }
 
+    public static function getSelectsFromValues(&$values, $colNames, $ignoreArray = [], $isExtended = false)
+    {
+        $selects = [];
+        foreach ($values as $k => $product) {
+            foreach ($product as $key => $value) {
+                if (!$value || $value == null)
+                    continue;
+                $name = $colNames[$key];
+                if (in_array($name, $ignoreArray))
+                    continue;
+
+                if ($isExtended && strpos($value, 'glyphicon') !== false) {
+                    $value = preg_replace('/<a \w+[^>]+?[^>]+>(.*?)<\/a>/i', '', $value);
+                } else {
+                    preg_match('/<\w+[^>]+?[^>]+>(.*?)<\/\w+>/i', $value, $match);
+                    if (!empty($match) && isset($match[1])) {
+                        $value = $match[1];
+                    }
+                }
+
+                $value = str_replace('&amp;', '&', $value);
+                $values[$k][$key] = $value;
+
+                if ((isset($selects[$name]) && !in_array($value, $selects[$name])) || !isset($selects[$name]))
+                    $selects[$name][] = $value;
+            }
+        }
+        return $selects;
+    }
+
     public static function getOrderItemLabel($name) {
         switch ($name) {
             case 'product_id':

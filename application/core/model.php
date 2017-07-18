@@ -432,12 +432,18 @@ abstract class Model extends mysqli
     public function getColumns($columns, $page, $tableId, $isNames = false)
     {
         $roles = new Roles();
+        $key = 'columns';
         if ($isNames) {
+            $key = $key . '_names';
             $columns = $roles->returnModelNames($columns, $page);
         } else {
             $columns = $roles->returnModelColumns($columns, $page);
         }
-        return $this->reOrderColumns($columns, $tableId);
+        return
+            [
+                $key => $this->reOrderColumns($columns, $tableId),
+                "original_$key" => $columns
+            ];
     }
 
     private function reOrderColumns($columns, $tableId)
