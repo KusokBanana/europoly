@@ -185,6 +185,10 @@
         z-index: 9999999;
     }
 
+    .dataTables_scrollHead table th {
+        overflow: hidden;
+    }
+
     .dataTables_scrollHead {
         /*overflow: visible !important;*/
         overflow-x: hidden !important;
@@ -282,12 +286,7 @@ $hidden_by_default = json_encode($hidden);
                     targets: hiddenByDefault,
                     visible: false,
                     searchable: true
-                }/*,
-                {
-                    targets: widthTds
-//                    width: '200px',
-                }*/
-//                { width: '100%' }
+                }
             ],
             order: [
                 $sort
@@ -310,6 +309,74 @@ $hidden_by_default = json_encode($hidden);
         var tableId = $table.attr('id');
 
         $table.on('draw.dt', function () {
+
+        });
+
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+            console.log(e, $(e.currentTarget));
+            var relatedBtn = $(e.relatedTarget);
+            var currentBtn = $(e.currentTarget);
+            if ($(currentBtn.attr('href')).find($table).length) {
+                if (!$table.closest('.tab-pane.active').length)
+                    return false;
+
+                $table.addClass('visible_now');
+                table.draw();
+            } else if ($(relatedBtn.attr('href')).find($table).length) {
+                if (!$table.closest('.tab-pane.active').length)
+                    return false;
+
+                $table.removeClass('visible_now');
+            }
+        });
+
+        $('.modal').on('show.bs.modal', function(e) {
+            if ($table.closest($(this))) {
+
+                var tabInModal = $(this).find('.tab-pane.active');
+                if (tabInModal.length) {
+                    if (tabInModal.find($table).length) {
+                        $table.addClass('visible_now');
+                        table.draw();
+                    }
+                } else {
+                    $table.addClass('visible_now');
+                    table.draw();
+                }
+
+            }
+        }).on('hidden.bs.modal', function(e) {
+            if ($table.find($(this))) {
+
+                var tabInModal = $(this).find('.tab-pane.active');
+                if (tabInModal.length) {
+                    if (tabInModal.find($table).length) {
+                        $table.removeClass('visible_now');
+                    }
+                } else {
+                    $table.removeClass('visible_now');
+                }
+
+                $('#' + tableId + '_selects_wrapper').hide();
+            }
+        });
+
+        var headerTable = $('#' + tableId + '_wrapper .dataTables_scrollHead');
+
+        table.on('draw', function() {
+            var tableWrapper = $table.closest('.dataTables_scroll');
+            var wrapperId = tableId + '_selects_wrapper';
+            var ulWrapper = $('#' + wrapperId);
+            if (!ulWrapper.length) {
+                var displayNone = '';
+                if ($table.closest('.modal').length) {
+                    displayNone = 'display: none;';
+                }
+                $('body').prepend('<div id="'+wrapperId+'" class="es-editable-wrapper" ' +
+                    'style="position: absolute; height: 100%; width: 100%; top: 0; ' + displayNone + '"></div>');
+
+            }
+
             var tableConfirmBtn = $('.table-confirm-btn');
             if (tableConfirmBtn.length) {
                 tableConfirmBtn.confirmation({
@@ -329,80 +396,34 @@ $hidden_by_default = json_encode($hidden);
                     fake.width(tableWrapper.find('table').width());
                 })
             }
-        });
 
-        $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
-            if ($table.closest($(e.currentTarget).attr('href'))) {
-                if (!$table.closest('.tab-pane.active').length)
-                    return false;
-                table.draw();
+            var width = $table.closest('.table-scrollable').width();
+            headerTable.closest('.dataTables_scrollHead').width(width);
+            $table.closest('.dataTables_scrollBody').width(width);
 
-                var width = $table.closest('.table-scrollable').width();
-                headerTable.closest('.dataTables_scrollHead').width(width);
-                $table.closest('.dataTables_scrollBody').width(width);
-                $table.css('table-layout', 'fixed');
-
-                var tds = $table.find('tr:first-child').find('td');
-                console.log(tds);
-
-                $.each(tds, function() {
-                    var index = $(this).index();
-                    $(this).css('width', headerTable.find('th').eq(index).css('width'));
-//                    headerTable.find('th').eq(index).width($(this).width());
-                    console.log(headerTable.find('th').eq(index), $(this), headerTable.find('th').eq(index).css('width'));
-                })
-
-
-            }
-        });
-
-        $('.modal').on('show.bs.modal', function(e) {
-            if ($table.closest($(this))) {
-                table.draw();
-            }
-        }).on('hidden.bs.modal', function(e) {
-            if ($table.find($(this))) {
-                $('#' + tableId + '_selects_wrapper').hide();
-            }
-        });
-
-        table.on('draw', function() {
-            var tableWrapper = $table.closest('.dataTables_scroll');
-            var wrapperId = tableId + '_selects_wrapper';
-            var ulWrapper = $('#' + wrapperId);
-            if (!ulWrapper.length) {
-//                if ($table.closest('.modal').length) {
-//                    var block = $table.closest('.modal');
-//                } else {
-//                    block = $('body');
-//                }
-                $('body').prepend('<div id="'+wrapperId+'" class="es-editable-wrapper" ' +
-                    'style="position: absolute; height: 100%; width: 100%; top: 0;"></div>');
-                if ($table.closest('.modal')) {
-                    ulWrapper.hide();
-                }
-            }
-
-            var selects = $('.column-filter-select.form-control.es-input');
-
-            $table.css('table-layout', '');
-            var trs = $table.find('tr');
-            $.each(trs, function() {
-                var tds = $(this).find('td');
-                $.each(tds, function() {
-                    var index = $(this).index();
-                    $(this).css('width', headerTable.find('th').eq(index).css('width'));
-//                    headerTable.find('th').eq(index).width($(this).width());
-                    console.log(headerTable.find('th').eq(index), $(this), headerTable.find('th').eq(index).css('width'));
-                })
-            })
-
-            resize($table.closest('.table-scrollable'));
-            console.log('draw');
+            resize();
 
             if (!$table.hasClass('redrawn')) {
+
+                var isTabSuccess = !$table.closest('.tab-pane').length || $table.closest('.tab-pane.active').length;
+                var isModalSuccess = ($table.closest('.modal.in').length && isTabSuccess) ||
+                    !$table.closest('.modal').length;
+
+                if (isTabSuccess && isModalSuccess) {
+                    $table.addClass('visible_now');
+                }
+
+                if (!$table.hasClass('visible_now')) {
+                    return false;
+                }
+
                 $table.addClass('redrawn');
                 reOrderColumns();
+                headerTable.find('.JCLRgrip').eq(0).simulate("drag", {
+                    moves: 5,
+                    dx: 20,
+                    dy: 20
+                });
                 table.draw();
             }
 
@@ -415,25 +436,17 @@ $hidden_by_default = json_encode($hidden);
             console.log('search')
         });
 
-        var headerTable = $('#' + tableId + '_wrapper .dataTables_scrollHead');
-
         function resize(div) {
 
-//            if (div && div !== undefined && div.length) {
-//                var $table = div.find('.dataTables_scrollBody');
-//                var headerTable = div.find('.dataTables_scrollHead');
-//            }
-
-            if ($table.closest('.tab-pane').length) {
-                if (!$table.closest('.tab-pane').hasClass('active'))
-                    return false;
+            if (!$table.closest('.tab-pane.active').length && !$table.closest('.modal.in').length) {
+                return false;
             }
 
             var onSampleResized = function(e){
                 var currentLineIndex = $(e.target).parent().index();
                 var $header = headerTable.find('table');
                 var $headerColumn = $header.find('tr > th:nth-child('+(currentLineIndex+1)+')');
-                var $columnTds = $('#' + $table.attr('id') + ' tr > td:nth-child('+(currentLineIndex+1)+')');
+                var $columnTds = $('#' + $table.attr('id') + ' tr > td:nth-child('+(currentLineIndex + 1)+')');
 
                 var headerColumnWidth = $headerColumn.css('width');
                 var headerWidth = $header.css('width');
@@ -441,10 +454,11 @@ $hidden_by_default = json_encode($hidden);
 
                 $table.css('width', headerWidth);
                 $table.css('min-width', headerMinWidth);
-                $columnTds.css('width', (parseFloat(headerColumnWidth)) + 'px');
+                $columnTds.css('width', headerColumnWidth);
                 table.draw();
             };
 
+            headerTable.find('table').colResizable({disable: true});
             headerTable.find('table').colResizable({
                 resizeMode: 'overflow',
                 liveDrag: true,
@@ -453,6 +467,8 @@ $hidden_by_default = json_encode($hidden);
                 onResize: onSampleResized,
                 partialRefresh: true
             });
+
+
         }
 
         $table.on('order.dt', function (e) {
@@ -462,20 +478,6 @@ $hidden_by_default = json_encode($hidden);
 
         });
 
-//        headerTable.find('th').unbind('click.DT');
-//        headerTable.on('click', 'th', function(event) {
-//            console.log(event);
-////            event.stopImmediatePropagation();
-//
-//            var data = table
-//                .column(2)
-//                .data()
-//                .sort();
-//
-//            if (!$(event.target).hasClass('sorthandle')) {
-//                event.stopImmediatePropagation()
-//            }
-//        });
 
         // Link on entire cell, not on Anchor element
         $table.find('tbody').on('click', 'tr td:not(:first-child)', function (e) {
@@ -759,8 +761,6 @@ $hidden_by_default = json_encode($hidden);
             var filter = getTableFilters();
             $('.dataTables_scrollHead').css('position', 'relative').css('border', '0px').css('width', '100%');
 
-            console.log($filterSearchValues);
-            console.log(filter);
             if ($filterSearchValues && filter.length) {
                 $.each($filterSearchValues, function() {
                     var row = this;
@@ -768,7 +768,6 @@ $hidden_by_default = json_encode($hidden);
                         var realKey = getRealIndex(key); // replaced by realKey from just key
                         var rowValue = row[realKey];
                         var filterValue = filter[key];
-                        console.log(rowValue, filterValue, key);
                         if (rowValue && rowValue !== undefined) {
                             if (rowValue.toUpperCase().indexOf(filterValue.toUpperCase()) === -1 &&
                                 rowValue !== filterValue) {
@@ -783,7 +782,6 @@ $hidden_by_default = json_encode($hidden);
 
                     var currentValue = row[realIndex];
                     if (currentValue) {
-                        console.log(currentValue, 'next')
                         if (currentValue !== null) {
 
                         }

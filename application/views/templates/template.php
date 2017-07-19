@@ -209,6 +209,7 @@
         type="text/javascript"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="/assets/colresizable/colResizable-1.6.js"></script>
+<script src="/assets/jquery-simulate-master/jquery.simulate.js"></script>
 
 <!-- END THEME LAYOUT SCRIPTS -->
 <script>

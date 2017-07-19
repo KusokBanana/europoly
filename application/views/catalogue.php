@@ -29,8 +29,10 @@
                 <div class="portlet-body">
                     <ul class="nav nav-tabs filter-tabs">
                         <?php if (!empty($this->tabs)):
+                            $href = false;
                             foreach ($this->tabs as $key => $tab):
                                 $tab_id = 'tab_' . $key ;
+                                if (!$href) $href = $tab_id;
                                 if (isset($tab['items']) && !empty($tab['items'])): ?>
                                     <li class="dropdown">
                                         <a href="javascript:" class="dropdown-toggle" data-toggle="dropdown">
@@ -48,6 +50,7 @@
                                                        data-filter-name="category_id"
                                                        data-filter-value="<?= $id ?>"
                                                        tabindex="-1"
+                                                       href="#<?= $tab_id ?>"
                                                        data-toggle="tab">
                                                         <?= $name ?>
                                                     </a>
@@ -62,6 +65,7 @@
                                     <li <?= $id === 0 ? 'class="active"' : '' ?>>
                                         <a class="tab-filter"
                                            data-filter-name="category_id"
+                                           href="#<?= $tab_id ?>"
                                            data-filter-value="<?= $id ?>"
                                            <?= $id === 0 ? 'aria-expanded="true"' : '' ?>
                                            data-toggle="tab"> <?= $tab['name'] ?> </a>
@@ -71,7 +75,7 @@
                         <?php endif; ?>
                     </ul>
                     <div class="tab-content" style="padding: 10px;">
-                        <div class="tab-pane fade active in">
+                        <div class="tab-pane fade active in" id="<?= $href ?>">
                             <?php
                             $buttons = [
                                 '<button class="btn sbold green" data-toggle="modal" 

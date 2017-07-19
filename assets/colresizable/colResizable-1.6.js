@@ -238,7 +238,7 @@
 	 */
 	var onGripDrag = function(e){	
 		if(!drag) return; 
-        var t = drag.t;		//table object reference 
+        var t = drag.t;		//table object reference
         var oe = e.originalEvent.touches;
         var ox = oe ? oe[0].pageX : e.pageX;    //original position (touch or mouse)
         var x =  ox - drag.ox + drag.l;	        //next position according to horizontal mouse position increment
@@ -313,7 +313,7 @@
      * @param {event} e - grip's mousedown event
 	 */
 	var onGripMouseDown = function(e){
-		var o = $(this).data(SIGNATURE);			//retrieve grip's data
+        var o = $(this).data(SIGNATURE);			//retrieve grip's data
 		var t = tables[o.t],  g = t.g[o.i];			//shortcuts for the table and grip objects
         var oe = e.originalEvent.touches;           //touch or mouse event?
         g.ox = oe? oe[0].pageX: e.pageX;            //the initial position is kept
