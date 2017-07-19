@@ -662,8 +662,7 @@ class ModelOrder extends Model
                 }
 
                 if (!$noteId) {
-                    $this->insert("INSERT INTO delivery_note (date, order_id) VALUES (NOW(), $order_id)");
-                    $noteId = $this->insert_id;
+                    $noteId = $this->insert("INSERT INTO delivery_note (date, order_id) VALUES (NOW(), $order_id)");
                 }
 
                 $this->updateItemField($order_item_id, 'status_id', EXPECTS_ISSUE);
@@ -694,8 +693,7 @@ class ModelOrder extends Model
         $amount_1 = $amount;
         $amount_2 = floatval($item['amount']) - floatval($amount_1);
 
-        $this->insert("INSERT INTO order_items (`$names`) VALUES ('$values')");
-        $newId = $this->insert_id;
+        $newId = $this->insert("INSERT INTO order_items (`$names`) VALUES ('$values')");
         $this->updateItemField($item_id, 'amount', $amount_2);
         $this->updateItemField($newId, 'amount', $amount_1);
         return $newId;

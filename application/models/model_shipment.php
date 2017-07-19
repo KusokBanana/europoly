@@ -155,7 +155,7 @@ class ModelShipment extends ModelManagers_orders
                 break;
 
             case 'reduced':
-                $this->filterWhere = '';
+                $this->filterWhere = null;
                 if ($this->user->role_id == ROLE_SALES_MANAGER) {
                     $this->filterWhere .= "(orders.sales_manager_id = " . $this->user->user_id . ' OR '.
                         " client.sales_manager_id = " . $this->user->user_id .

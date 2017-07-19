@@ -33,14 +33,15 @@ abstract class Model extends mysqli
         $table_name = explode(' ', explode('INSERT INTO ', $query)[1])[0];
         $primary_key = static::getPrimaryKeyName($table_name);
         $result = $this->query($query);
-        $user_id = $this->user->user_id;
+        $insert_id = $this->insert_id;
+        $user_id = $_SESSION["user"]->user_id;
+//        $user_id = $this->user->user_id;
         if (!$result) {
             echo mysqli_error($this);
             Logger::createInsert($query, $user_id);
             die("Mysqli: error while insert; query: " . $query);
         }
-        Logger::createInsert($query, $user_id, $this->insert_id);
-        $insert_id = $this->insert_id;
+        Logger::createInsert($query, $user_id, $insert_id);
         $this->query("UPDATE $table_name SET modified_at=NOW(), modified_user_id=$user_id, created_at=NOW() WHERE $primary_key=$insert_id");
         return $insert_id;
     }
@@ -56,7 +57,7 @@ abstract class Model extends mysqli
         $ids = $this->getAssoc('SELECT '.$primary_key. ' FROM '. $table_name.' '.$where);
 
         $record_id = $ids[0][$primary_key];
-        $user_id = $this->user->user_id;
+        $user_id = $_SESSION["user"]->user_id;
         $result = $this->query($query);
         if (!$result) {
             echo mysqli_error($this);
@@ -92,7 +93,7 @@ abstract class Model extends mysqli
         $primary_key = static::getPrimaryKeyName($table_name);
         $ids = $this->getAssoc('SELECT '.$primary_key. ' FROM '. $table_name.' '.$where);
         $record_id = $ids[0][$primary_key];
-        $user_id = $this->user->user_id;
+        $user_id = $_SESSION["user"]->user_id;
         $result = $this->query($query);
         if (!$result) {
             echo mysqli_error($this);

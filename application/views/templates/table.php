@@ -148,6 +148,11 @@
         /*max-width: 200px;*/
     }
 
+    .dropdown-menu.hold-on-click.dropdown-checkboxes.order-columns-block {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
 
     /*td, th {*/
         /*white-space: nowrap;*/
@@ -194,12 +199,12 @@
         overflow-x: hidden !important;
     }
     <?php
-//     foreach ($bigColumnIds as $bigColumnId) {
-//         echo '#'.$table_id.'_wrapper table th:nth-child('.($bigColumnId + 1).'),
-//         #'.$table_id.'_wrapper table td:nth-child('.($bigColumnId + 1).') { ' .
-//                'min-width: 250px !important;' .
-//              '}';
-//     }
+     foreach ($bigColumnIds as $bigColumnId) {
+         echo '#'.$table_id.'_wrapper table th:nth-child('.($bigColumnId + 1).'),
+         #'.$table_id.'_wrapper table td:nth-child('.($bigColumnId + 1).') { ' .
+                'min-width: 250px !important;' .
+              '}';
+     }
      ?>
 </style>
 <?php
@@ -330,7 +335,9 @@ $hidden_by_default = json_encode($hidden);
             }
         });
 
-        $('.modal').on('show.bs.modal', function(e) {
+        $('.modal').on('shown.bs.modal', function(e) {
+            topScrollResize()
+        }).on('show.bs.modal', function(e) {
             if ($table.closest($(this))) {
 
                 var tabInModal = $(this).find('.tab-pane.active');
@@ -385,29 +392,21 @@ $hidden_by_default = json_encode($hidden);
             }
             $('.dataTables_scrollHead').css('overflow', '').css('position', '');
 
-            // resize top scroll after load data
-            var topScroll = $('.top-scroll');
-            if (topScroll.length) {
-                $.each(topScroll, function() {
-                    var scroll = $(this);
-                    var fake = scroll.find('.fake');
-                    var tableWrapper = scroll.next('div');
-                    scroll.width(tableWrapper.width());
-                    fake.width(tableWrapper.find('table').width());
-                })
+            var isTabSuccess = !$table.closest('.tab-pane').length || $table.closest('.tab-pane.active').length;
+            var isModalSuccess = ($table.closest('.modal.in').length && isTabSuccess) ||
+                !$table.closest('.modal').length;
+
+            console.log('visible', $table.hasClass('visible_now'));
+            if (isTabSuccess && isModalSuccess) {
+                topScrollResize();
+                resize();
             }
-
-            var width = $table.closest('.table-scrollable').width();
-            headerTable.closest('.dataTables_scrollHead').width(width);
-            $table.closest('.dataTables_scrollBody').width(width);
-
-            resize();
 
             if (!$table.hasClass('redrawn')) {
 
-                var isTabSuccess = !$table.closest('.tab-pane').length || $table.closest('.tab-pane.active').length;
-                var isModalSuccess = ($table.closest('.modal.in').length && isTabSuccess) ||
-                    !$table.closest('.modal').length;
+                var width = $table.closest('.table-scrollable').css('width');
+                headerTable.closest('.dataTables_scrollHead').css('width', width);
+                $table.closest('.dataTables_scrollBody').css('width', width);
 
                 if (isTabSuccess && isModalSuccess) {
                     $table.addClass('visible_now');
@@ -428,6 +427,17 @@ $hidden_by_default = json_encode($hidden);
             }
 
         });
+
+        var topScrollResize = function() {
+            var topScroll = $table.closest('.dataTables_wrapper').find('.top-scroll');
+            if (topScroll.length) {
+                var fake = topScroll.find('.fake');
+                var tableWrapper = topScroll.next('div');
+                console.log(tableWrapper.css('width'), tableWrapper.find('table').css('width'), $table);
+                topScroll.css('width', tableWrapper.width());
+                fake.css('width', tableWrapper.find('table').width());
+            }
+        };
 
         table.on( 'search.dt', function () {
             console.log('search dt')

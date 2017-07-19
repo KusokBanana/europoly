@@ -179,8 +179,7 @@ class ModelTruck extends ModelOrder
     {
         // Если машина новая
         if (!$truck_id) {
-            $this->insert("INSERT INTO trucks (supplier_departure_date) VALUES (NOW())");
-            $truck_id = $this->insert_id;
+            $truck_id = $this->insert("INSERT INTO trucks (supplier_departure_date) VALUES (NOW())");
         }
         if ($truck_id) {
             $order_items_count = 0;

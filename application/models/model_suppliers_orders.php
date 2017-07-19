@@ -266,8 +266,7 @@ class ModelSuppliers_orders extends ModelManagers_orders
     {
         // Если заказ новый
         if (!$suppliers_order) {
-            $this->insert("INSERT INTO suppliers_orders (supplier_date_of_order) VALUES (NOW())");
-            $suppliers_order = $this->insert_id;
+            $suppliers_order = $this->insert("INSERT INTO suppliers_orders (supplier_date_of_order) VALUES (NOW())");
         }
         if ($suppliers_order) {
             $order_items_count = 0;
