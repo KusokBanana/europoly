@@ -92,7 +92,8 @@ data-target="#modal_newProduct">Add Similar Product <i class="fa fa-plus"></i></
                                 'buttons' => $buttons,
                                 'ajax' => [
                                     'url' => "/catalogue/dt"
-                                ]
+                                ],
+                                'serverSide' => false
                             ];
                             $table_data = array_merge($this->productsTable, $commonData);
                             include 'application/views/templates/table.php'

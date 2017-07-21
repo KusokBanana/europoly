@@ -69,16 +69,14 @@
                                 ];
                                 $urlId = ($this->id) ? $this->warehouse['warehouse_id'] : 0;
 
-                                $table_data = array_merge([
+                                $table_data = array_merge($this->generalTable, [
                                     'buttons' => $buttons,
                                     'ajax' => [
-                                        'url' => "/warehouse/dt?warehouse_id=$urlId&type="
-                                            .$this->generalTable['table_name'],
-                                    ],
-                                    'hidden_by_default' => "[]",
-                                    'click_url' => "javascript:;",
-                                    'method' => 'POST',
-                                ], $this->generalTable);
+                                        'url' => "/warehouse/dt?warehouse_id=$urlId&type=".
+                                            $this->generalTable['table_name']
+                                    ]
+                                ], $commonData);
+
                                 include 'application/views/templates/table.php'
                                 ?>
                             </div>

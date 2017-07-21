@@ -19,7 +19,8 @@
     $select = (isset($table_data['select']) && $table_data['select']) ? json_encode($table_data['select'])
         : json_encode(['style' => 'os', 'selector' => 'td:first-child']);
     $globalTable = isset($table_data['global']) && $table_data['global'] ? $table_data['global'] : false;
-    $serverSide = isset($table_data['serverSide']) ? $table_data['serverSide'] : true;
+    $serverSide = false;
+//    $serverSide = isset($table_data['serverSide']) ? $table_data['serverSide'] : true;
 
     $recordsCount = 100;
     if (isset($this) && $this->user->records_show) {
@@ -80,7 +81,7 @@
         </div>
     </div>
 </div>
-<table id="<?= $table_id ?>" class="table table-striped table-bordered table-hover table-checkable order-column"
+<table id="<?= $table_id ?>" class="table table-striped table-bordered table-hover table-checkable order-column not-single"
                             data-last-sort="<?= $sort ?>">
     <thead>
     <tr>
@@ -122,92 +123,17 @@
 </table>
 
 <style>
-    .top-scroll {
-        height: 20px;
-        overflow-x: scroll;
-    }
-    .top-scroll > .fake {
-        height: 1px;
-    }
-    .hide-text {
-        text-indent: 100%;
-        white-space: nowrap;
-        overflow: hidden;
-    }
-    table .es-list {
-        width: auto !important;
-    }
-    table.dataTable {
-        margin-left: 0;
-    }
-    table.dataTable td:not(.select-checkbox), table.dataTable tr:not(.select-checkbox) {
-        /*max-width: auto;*/
-        /*min-width: 130px;*/
-    }
-    table.dataTable th[data-db-col-name="Product"] {
-        /*max-width: 200px;*/
-    }
-
-    .dropdown-menu.hold-on-click.dropdown-checkboxes.order-columns-block {
-        max-height: 300px;
-        overflow-y: auto;
-    }
-
-
-    /*td, th {*/
-        /*white-space: nowrap;*/
-        /*overflow: hidden;*/
-        /*width: 30px !important;*/
-        /*max-width: 30px !important;*/
-        /*min-width: 30px !important;*/
-        /*height: 25px;*/
-        /*border: 1px solid black;*/
-    /*}*/
-    /*table{*/
-        /*table-layout:fixed;*/
-        /*!*width: 40px;*!*/
-    /*}*/
-
-
-    table .es-input {
-        background-color: #fff;
-    }
-    table tbody tr {
-        max-height: 25px !important;
-    }
-    th > p {
-        white-space: nowrap;
-        overflow: hidden;
-        margin-bottom: 0;
-        padding: 5px;
-        text-overflow: ellipsis;
-    }
-    table.dataTable thead>tr>th {
-        padding-left: 10px !important;
-        padding-right: 10px !important;
-    }
-    .es-editable-wrapper > ul.es-list {
-        z-index: 9999999;
-    }
-
-    .dataTables_scrollHead table th {
-        overflow: hidden;
-    }
-
-    .dataTables_scrollHead {
-        /*overflow: visible !important;*/
-        overflow-x: hidden !important;
-    }
     <?php
-     foreach ($bigColumnIds as $bigColumnId) {
-         echo '#'.$table_id.'_wrapper table th:nth-child('.($bigColumnId + 1).'),
-         #'.$table_id.'_wrapper table td:nth-child('.($bigColumnId + 1).') { ' .
-                'min-width: 250px !important;' .
-              '}';
-     }
+//     foreach ($bigColumnIds as $bigColumnId) {
+//         echo '#'.$table_id.'_wrapper table th:nth-child('.($bigColumnId + 1).'),
+//         #'.$table_id.'_wrapper table td:nth-child('.($bigColumnId + 1).') { ' .
+//                'min-width: 250px !important;' .
+//              '}';
+//     }
      ?>
 </style>
 <?php
+
 $hidden = [];
 if ($hidden_by_default) {
     $hidden_by_default = json_decode($hidden_by_default, true);
@@ -249,13 +175,14 @@ $hidden_by_default = json_encode($hidden);
             hiddenByDefault.push($mustHidden);
         }
 
-//        var widthTds = <?//= '[' . implode(',', $notHidden) . ']'; ?>//;
+        var widthTds = <?= '[' . implode(',', $notHidden) . ']'; ?>;
         var $filterSearchValues = <?= json_encode($filterSearchValues); ?>;
         var $clickUrl = "<?= $click_url == 'javascript:;' ? false : $click_url; ?>";
         var $sort = <?= json_encode(explode('-', $sort)); ?>;
         var $select = <?= $select; ?>;
         var recordsCount = "<?= $recordsCount; ?>";
         var serverSide = <?= $serverSide ? 'true' : 'false'; ?>;
+        var columnsWidth = [];
         <?php
         if (isset($ajax['data']) && $ajax['data'] != "") {
             echo "var ajax = { url: '" . $ajax['url'] . "', 
@@ -290,7 +217,24 @@ $hidden_by_default = json_encode($hidden);
                 {
                     targets: hiddenByDefault,
                     visible: false,
-                    searchable: true
+                    searchable: true,
+                    render: function (data, type, full, meta) {
+                        var columnId = meta.col;
+                        var width = (columnsWidth[columnId] !== undefined) ?
+                            ('width: ' + columnsWidth[columnId]) : '';
+                        return '<div class="td-wrapper" style="'+width+'" data-header-id="'+columnId+'">' + data + '</div>';
+                    }
+                },
+                {
+                    targets: widthTds,
+                    visible: true,
+                    searchable: true,
+                    render: function (data, type, full, meta) {
+                        var columnId = meta.col;
+                        var width = (columnsWidth[columnId] !== undefined) ?
+                            ('width: ' + columnsWidth[columnId]) : '';
+                        return '<div class="td-wrapper" style="'+width+'" data-header-id="'+columnId+'">' + data + '</div>';
+                    }
                 }
             ],
             order: [
@@ -318,7 +262,6 @@ $hidden_by_default = json_encode($hidden);
         });
 
         $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
-            console.log(e, $(e.currentTarget));
             var relatedBtn = $(e.relatedTarget);
             var currentBtn = $(e.currentTarget);
             if ($(currentBtn.attr('href')).find($table).length) {
@@ -335,9 +278,9 @@ $hidden_by_default = json_encode($hidden);
             }
         });
 
-        $('.modal').on('shown.bs.modal', function(e) {
+        $('.modal')/*.on('shown.bs.modal', function(e) {
             topScrollResize()
-        }).on('show.bs.modal', function(e) {
+        })*/.on('shown.bs.modal', function(e) {
             if ($table.closest($(this))) {
 
                 var tabInModal = $(this).find('.tab-pane.active');
@@ -393,10 +336,14 @@ $hidden_by_default = json_encode($hidden);
             $('.dataTables_scrollHead').css('overflow', '').css('position', '');
 
             var isTabSuccess = !$table.closest('.tab-pane').length || $table.closest('.tab-pane.active').length;
-            var isModalSuccess = ($table.closest('.modal.in').length && isTabSuccess) ||
+            console.log($table.closest('.modal'), $table)
+            var isModalSuccess = ($table.closest('.modal').length && $table.hasClass('visible_now') && isTabSuccess) ||
                 !$table.closest('.modal').length;
 
-            console.log('visible', $table.hasClass('visible_now'));
+//            var isModalSuccess = ($table.closest('.modal.in').length && isTabSuccess) ||
+//                !$table.closest('.modal').length;
+
+            console.log('visible', $table.hasClass('visible_now'), isTabSuccess && isModalSuccess, $table);
             if (isTabSuccess && isModalSuccess) {
                 topScrollResize();
                 resize();
@@ -404,13 +351,13 @@ $hidden_by_default = json_encode($hidden);
 
             if (!$table.hasClass('redrawn')) {
 
-                var width = $table.closest('.table-scrollable').css('width');
-                headerTable.closest('.dataTables_scrollHead').css('width', width);
-                $table.closest('.dataTables_scrollBody').css('width', width);
-
                 if (isTabSuccess && isModalSuccess) {
                     $table.addClass('visible_now');
                 }
+
+                var width = $table.closest('.table-scrollable').css('width');
+                headerTable.closest('.dataTables_scrollHead').css('width', width);
+                $table.closest('.dataTables_scrollBody').css('width', width);
 
                 if (!$table.hasClass('visible_now')) {
                     return false;
@@ -419,13 +366,41 @@ $hidden_by_default = json_encode($hidden);
                 $table.addClass('redrawn');
                 reOrderColumns();
                 headerTable.find('.JCLRgrip').eq(0).simulate("drag", {
-                    moves: 5,
-                    dx: 20,
-                    dy: 20
+                    moves: 1,
+                    dx: 10,
+                    dy: 10
                 });
-                table.draw();
+
+                $.each($table.find('tbody tr').eq(0).find('td'), function () {
+                    var wrapper = $(this).find('.td-wrapper');
+                    var index = wrapper.attr('data-header-id');
+                    if (index && index !== undefined) {
+                        index = +index;
+                        columnsWidth[index] = wrapper.css('width');
+                    }
+                });
+                console.log('save after draw', columnsWidth);
+//                table.draw();
             }
 
+            console.log('just show', columnsWidth);
+
+/*
+* 1) Псоле сортировки одного большого столбца всё херится и идет по пизде
+* 2) В модальном окне не обновляется при открытии
+* */
+        });
+
+        $('#' + tableId + '_wrapper').on('click', 'th', function () {
+            $.each($table.find('tbody tr').eq(0).find('td'), function () {
+                var wrapper = $(this).find('.td-wrapper');
+                var index = wrapper.attr('data-header-id');
+                if (index && index !== undefined) {
+                    index = +index;
+                    columnsWidth[index] = wrapper.css('width');
+                }
+            });
+            console.log('save after click on sort', columnsWidth)
         });
 
         var topScrollResize = function() {
@@ -433,7 +408,6 @@ $hidden_by_default = json_encode($hidden);
             if (topScroll.length) {
                 var fake = topScroll.find('.fake');
                 var tableWrapper = topScroll.next('div');
-                console.log(tableWrapper.css('width'), tableWrapper.find('table').css('width'), $table);
                 topScroll.css('width', tableWrapper.width());
                 fake.css('width', tableWrapper.find('table').width());
             }
@@ -455,8 +429,9 @@ $hidden_by_default = json_encode($hidden);
             var onSampleResized = function(e){
                 var currentLineIndex = $(e.target).parent().index();
                 var $header = headerTable.find('table');
-                var $headerColumn = $header.find('tr > th:nth-child('+(currentLineIndex+1)+')');
+                var $headerColumn = $header.find('tr > th').eq(currentLineIndex);
                 var $columnTds = $('#' + $table.attr('id') + ' tr > td:nth-child('+(currentLineIndex + 1)+')');
+                var $columnThs = $('#' + $table.attr('id') + ' thead tr > th:nth-child('+(currentLineIndex + 1)+')');
 
                 var headerColumnWidth = $headerColumn.css('width');
                 var headerWidth = $header.css('width');
@@ -465,6 +440,12 @@ $hidden_by_default = json_encode($hidden);
                 $table.css('width', headerWidth);
                 $table.css('min-width', headerMinWidth);
                 $columnTds.css('width', headerColumnWidth);
+                $columnThs.css('width', headerColumnWidth);
+                $columnTds.find('.td-wrapper').css('width', headerColumnWidth);
+//                $columnTds.css('max-width', headerColumnWidth);
+//                $columnThs.css('max-width', headerColumnWidth);
+                columnsWidth[+$headerColumn.attr('data-header-id')] = headerColumnWidth;
+
                 table.draw();
             };
 
@@ -484,7 +465,22 @@ $hidden_by_default = json_encode($hidden);
         $table.on('order.dt', function (e) {
             var order = table.order();
             saveColumnSort(order[0]);
-            console.log('order')
+            console.log('order dt');
+
+            for (var i=0; i<columnsWidth.length; i++) {
+                if (columnsWidth[i] !== undefined) {
+                    var wrappers = $table.find('.td-wrapper[data-header-id="'+i+'"]');
+                    if (wrappers.length) {
+                        wrappers.css('width', columnsWidth[i]);
+                        wrappers.parent().css('width', columnsWidth[i]);
+                        $table.find('th[data-header-id="'+i+'"]').css('width', columnsWidth[i]);
+                    }
+                    var header = headerTable.find('th[data-header-id="'+i+'"]');
+                    if (header.length) {
+                        header.css('width', columnsWidth[i]);
+                    }
+                }
+            }
 
         });
 

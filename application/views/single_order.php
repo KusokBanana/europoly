@@ -270,9 +270,9 @@
                                        data-toggle="confirmation"
                                        data-title="Are you sure to send to logist this items?"  id="sendToLogist">
                                         <span class="glyphicon glyphicon-pencil"></span> Send to Logist </a>
-                                    <a href="javascript:;" class="btn btn-default btn-sm"
+                                    <button class="btn btn-default btn-sm"
                                        data-toggle="modal" data-target="#modal_newOrderItem">
-                                        <i class="fa fa-plus"></i> Add new </a>
+                                        <i class="fa fa-plus"></i> Add new </button>
                                 </div>
                             </div>
                             <div class="portlet-body">

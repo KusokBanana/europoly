@@ -22,7 +22,7 @@ class ModelCatalogue extends Model
                 $ssp['db_table'] = $this->full_products_table;
                 $ssp['table_name'] = $this->tableName;
                 $ssp['primary'] = 'products.product_id';
-                $ssp['hidden_by_default'] = $this->full_product_hidden_columns;
+//                $ssp['hidden_by_default'] = $this->full_product_hidden_columns;
                 break;
         }
 

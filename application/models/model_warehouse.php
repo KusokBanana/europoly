@@ -5,6 +5,7 @@ include_once 'model_managers_orders.php';
 class ModelWarehouse extends ModelManagers_orders
 {
     var $tableName = 'table_accountant';
+    public $page;
 
     var $products_warehouses_table = "order_items as products_warehouses
             left join products on products_warehouses.product_id = products.product_id
@@ -196,7 +197,7 @@ class ModelWarehouse extends ModelManagers_orders
         $ssp['primary'] = 'products_warehouses.item_id';
 
         switch ($type) {
-            case 'general':
+            case 'warehouse_products':
                 $where[] = $this->where . ' OR ' . $this->where_reserve;
                 break;
             case 'expects_issue':

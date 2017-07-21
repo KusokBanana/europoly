@@ -68,6 +68,93 @@
         .page-quick-sidebar-toggler {
             z-index: 100001;
         }
+
+        .top-scroll {
+            height: 20px;
+            overflow-x: scroll;
+        }
+        .top-scroll > .fake {
+            height: 1px;
+        }
+        .hide-text {
+            text-indent: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        table .es-list {
+            width: auto !important;
+        }
+        table.dataTable {
+            margin-left: 0;
+        }
+        table.dataTable td:not(.select-checkbox), table.dataTable tr:not(.select-checkbox) {
+            /*max-width: auto;*/
+            /*min-width: 130px;*/
+        }
+        table.dataTable th[data-db-col-name="Product"] {
+            /*max-width: 200px;*/
+        }
+
+        .dropdown-menu.hold-on-click.dropdown-checkboxes.order-columns-block {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+
+        /*td, th {*/
+        /*white-space: nowrap;*/
+        /*overflow: hidden;*/
+        /*!*width: 80px !important;*!*/
+        /*!*max-width: 80px !important;*!*/
+        /*!*min-width: 80px !important;*!*/
+        /*height: 25px;*/
+        /*border: 1px solid black;*/
+        /*}*/
+        /*table{*/
+        /*!*table-layout:fixed;*!*/
+        /*!*width: 40px;*!*/
+        /*}*/
+
+
+        table .es-input {
+            background-color: #fff;
+        }
+        table tbody tr {
+            /*max-height: 25px !important;*/
+        }
+        table.dataTable.not-single tbody td > div {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            /*max-width: 600px;*/
+        }
+        th > p {
+            white-space: nowrap;
+            overflow: hidden;
+            margin-bottom: 0;
+            padding: 5px;
+            text-overflow: ellipsis;
+        }
+        table.dataTable thead>tr>th {
+            padding-left: 10px !important;
+            padding-right: 10px !important;
+        }
+        table.dataTable thead>tr>th > p {
+            margin-top: 0;
+        }
+        .es-editable-wrapper > ul.es-list {
+            z-index: 9999999;
+        }
+
+        .dataTables_scrollHead table th {
+            overflow: hidden;
+        }
+
+        .dataTables_scrollHead {
+            /*overflow: visible !important;*/
+            overflow-x: hidden !important;
+        }
+
     </style>
 </head>
 <!-- END HEAD -->
@@ -271,7 +358,6 @@
                     return false;
 
                 var tableScrollable = table.closest('.table-scrollable');
-                console.log(3);
                 if (tableScrollable.length) {
                     var tableWrapper = tableScrollable;
                 }
@@ -286,6 +372,7 @@
                 var fake = topScroll.find('.fake');
 
                 var tableScrollBody = tableWrapper.find('.dataTables_scrollBody');
+                console.log(tableScrollBody)
 
                 topScroll.width(tableScrollBody.width());
                 fake.width(table.width());

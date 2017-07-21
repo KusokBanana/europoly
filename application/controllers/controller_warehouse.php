@@ -9,6 +9,7 @@ class ControllerWarehouse extends Controller
     {
         parent::__construct();
         $this->model = new ModelWarehouse();
+        $this->model->page = $this->page;
         parent::afterConstruct();
     }
 
