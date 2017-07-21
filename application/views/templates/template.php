@@ -122,7 +122,7 @@
         table tbody tr {
             /*max-height: 25px !important;*/
         }
-        table.dataTable.not-single tbody td > div {
+        table.dataTable.not-single div.td-wrapper {
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;

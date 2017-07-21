@@ -108,8 +108,12 @@
                     $input .= '</select>';
                 }
                 echo '<th data-header-id="'.$column_id.'" data-db-col-name="'.$column_name.'">' .
-                        '<p>' . $column_name . '</p>' . $input .
-                    '</th>';
+                    '<div class="td-wrapper" data-header-id="' . $column_id . '">' .
+                    /*'<i class="icon-equalizer filter-popover" style="margin-right: 8px; color: rgb(153, 153, 153);" '.
+                    'onclick="event.stopPropagation()" data-toggle="popover" data-original-title="" title=""></i>'.*/
+                         $column_name  .
+                    '<div class="filter-hidden-content">'. $input . '</div>'.
+                    '</div></th>';
             }
         }
         ?>
@@ -335,6 +339,17 @@ $hidden_by_default = json_encode($hidden);
             }
             $('.dataTables_scrollHead').css('overflow', '').css('position', '');
 
+            /*$.each($('.filter-popover'), function() {
+                $(this).popover({
+                    html: true,
+                    placement: 'top',
+                    container: 'body',
+                    content: function () {
+                        return $(this).closest('th').find('.filter-hidden-content').html();
+                    }
+                })
+            });*/
+
             var isTabSuccess = !$table.closest('.tab-pane').length || $table.closest('.tab-pane.active').length;
             console.log($table.closest('.modal'), $table)
             var isModalSuccess = ($table.closest('.modal').length && $table.hasClass('visible_now') && isTabSuccess) ||
@@ -429,16 +444,21 @@ $hidden_by_default = json_encode($hidden);
             var onSampleResized = function(e){
                 var currentLineIndex = $(e.target).parent().index();
                 var $header = headerTable.find('table');
-                var $headerColumn = $header.find('tr > th').eq(currentLineIndex);
                 var $columnTds = $('#' + $table.attr('id') + ' tr > td:nth-child('+(currentLineIndex + 1)+')');
                 var $columnThs = $('#' + $table.attr('id') + ' thead tr > th:nth-child('+(currentLineIndex + 1)+')');
 
-                var headerColumnWidth = $headerColumn.css('width');
                 var headerWidth = $header.css('width');
                 var headerMinWidth = $header.css('min-width');
 
                 $table.css('width', headerWidth);
                 $table.css('min-width', headerMinWidth);
+
+                var $headerColumn = $header.find('tr > th').eq(currentLineIndex);
+                var headerColumnWidth = $headerColumn.css('width');
+
+                console.log(headerColumnWidth, $headerColumn);
+
+//                $headerColumn.find('.td-wrapper').css('width', headerColumnWidth);
                 $columnTds.css('width', headerColumnWidth);
                 $columnThs.css('width', headerColumnWidth);
                 $columnTds.find('.td-wrapper').css('width', headerColumnWidth);
@@ -455,8 +475,7 @@ $hidden_by_default = json_encode($hidden);
                 liveDrag: true,
                 gripInnerHtml: "<div class='grip'></div>",
                 draggingClass: "dragging",
-                onResize: onSampleResized,
-                partialRefresh: true
+                onResize: onSampleResized
             });
 
 
