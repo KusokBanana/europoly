@@ -110,6 +110,7 @@ class ModelCatalogue extends Model
         }
 
         return array_merge($data, $selects);
+
     }
 
     public function addProduct($postArray, $rusArray = [])

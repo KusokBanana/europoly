@@ -1,42 +1,42 @@
 <div class="table-toolbar">
-    <?php
-    $buttons = isset($table_data['buttons']) ? $table_data['buttons'] : [];
-    $table_id = isset($table_data['table_id']) ? $table_data['table_id'] : $table_data['table_name'];
-    $ajax = $table_data['ajax'];
-    $column_names = isset($table_data['column_names']) ? $table_data['column_names'] : $table_data['columns_names'];
-    $hidden_by_default = isset($table_data['hidden_by_default']) ? $table_data['hidden_by_default'] : '';
-    $click_url = isset($table_data['click_url']) ? $table_data['click_url'] : '#';
-    $originalColumns = isset($table_data['original_columns_names']) ? $table_data['original_columns_names'] : [];
-    $mustHidden = 0;
-    $method = isset($table_data['method']) ? $table_data['method'] : 'GET';
-    $selectSearch = isset($table_data['selectSearch']) ?
-        (!empty($table_data['selectSearch']) ? $table_data['selectSearch'] : []) : false;
-    $filterSearchValues = isset($table_data['filterSearchValues']) ?
-        (!empty($table_data['filterSearchValues']) ? $table_data['filterSearchValues'] : []) : false;
+	<?php
+	$buttons = isset($table_data['buttons']) ? $table_data['buttons'] : [];
+	$table_id = isset($table_data['table_id']) ? $table_data['table_id'] : $table_data['table_name'];
+	$ajax = $table_data['ajax'];
+	$column_names = isset($table_data['column_names']) ? $table_data['column_names'] : $table_data['columns_names'];
+	$hidden_by_default = isset($table_data['hidden_by_default']) ? $table_data['hidden_by_default'] : '';
+	$click_url = isset($table_data['click_url']) ? $table_data['click_url'] : '#';
+	$originalColumns = isset($table_data['original_columns_names']) ? $table_data['original_columns_names'] : [];
+	$mustHidden = 0;
+	$method = isset($table_data['method']) ? $table_data['method'] : 'GET';
+	$selectSearch = isset($table_data['selectSearch']) ?
+		(!empty($table_data['selectSearch']) ? $table_data['selectSearch'] : []) : false;
+	$filterSearchValues = isset($table_data['filterSearchValues']) ?
+		(!empty($table_data['filterSearchValues']) ? $table_data['filterSearchValues'] : []) : false;
 
-    $sort = (isset($_SESSION['sort_columns']) && isset($_SESSION['sort_columns'][$table_id])) ? $_SESSION['sort_columns'][$table_id] :
-        '1-asc';
-    $select = (isset($table_data['select']) && $table_data['select']) ? json_encode($table_data['select'])
-        : json_encode(['style' => 'os', 'selector' => 'td:first-child']);
-    $globalTable = isset($table_data['global']) && $table_data['global'] ? $table_data['global'] : false;
-    $serverSide = false;
-//    $serverSide = isset($table_data['serverSide']) ? $table_data['serverSide'] : true;
+	$sort = (isset($_SESSION['sort_columns']) && isset($_SESSION['sort_columns'][$table_id])) ? $_SESSION['sort_columns'][$table_id] :
+		'1-asc';
+	$select = (isset($table_data['select']) && $table_data['select']) ? json_encode($table_data['select'])
+		: json_encode(['style' => 'os', 'selector' => 'td:first-child']);
+	$globalTable = isset($table_data['global']) && $table_data['global'] ? $table_data['global'] : false;
+	$serverSide = false;
+	//    $serverSide = isset($table_data['serverSide']) ? $table_data['serverSide'] : true;
 
-    $recordsCount = 100;
-    if (isset($this) && $this->user->records_show) {
-        $recordsCount = json_decode($this->user->records_show, true);
-        $recordsCount = isset($recordsCount[$table_id]) ? $recordsCount[$table_id] : 100;
-    } else {
-        $recordsCount = 50;
-    }
+	$recordsCount = 100;
+	if (isset($this) && $this->user->records_show) {
+		$recordsCount = json_decode($this->user->records_show, true);
+		$recordsCount = isset($recordsCount[$table_id]) ? $recordsCount[$table_id] : 100;
+	} else {
+		$recordsCount = 50;
+	}
 
-    ?>
+	?>
     <div id="<?= $table_id ?>_left_buttons" class="btn-group">
-        <?php
-        foreach ($buttons as $button) {
-            echo $button;
-        }
-        ?>
+		<?php
+		foreach ($buttons as $button) {
+			echo $button;
+		}
+		?>
     </div>
     <div id="<?= $table_id ?>_right_buttons" class="btn-group pull-right">
         <button class="btn blue dropdown-toggle" data-toggle="dropdown">Export <i class="fa fa-angle-down"></i></button>
@@ -53,70 +53,70 @@
         <button type="button" class="btn blue dropdown-toggle" data-toggle="dropdown">Columns <i class="fa fa-angle-down"></i></button>
         <div id="<?= $table_id ?>_columns_choose" class="dropdown-menu hold-on-click dropdown-checkboxes order-columns-block"
              style="left: 0" role="menu">
-            <?php
-            echo '<button class="btn btn-warning order-columns-button-change">Change Order</button>';
-            echo '<button class="btn btn-warning order-columns-button-save" disabled>Save</button>';
-            echo '<label style="display: none;"><input type="checkbox" data-column="0">Id</label>';
-            $hiddenTabFilters = [];
-            foreach ($column_names as $column_id => $column_name) {
-                $originalColumnId = array_search($column_name, $originalColumns);
-                $sortCol = explode('-', $sort);
-                if ($sortCol[0] == $originalColumnId) {
-                    $sort = $column_id . '-' . $sortCol[1];
-                }
-                $class = 'class="columns-reorder"';
+			<?php
+			echo '<button class="btn btn-warning order-columns-button-change">Change Order</button>';
+			echo '<button class="btn btn-warning order-columns-button-save" disabled>Save</button>';
+			echo '<label style="display: none;"><input type="checkbox" data-column="0">Id</label>';
+			$hiddenTabFilters = [];
+			foreach ($column_names as $column_id => $column_name) {
+				$originalColumnId = array_search($column_name, $originalColumns);
+				$sortCol = explode('-', $sort);
+				if ($sortCol[0] == $originalColumnId) {
+					$sort = $column_id . '-' . $sortCol[1];
+				}
+				$class = 'class="columns-reorder"';
 
-                if ($column_name[0] == '_') {
-                    $column_name = substr($column_name, 1);
-                    $hiddenTabFilters[$column_name] = $column_id;
-                    $mustHidden = $originalColumnId;
-                    $class = 'class="hidden"';
+				if ($column_name[0] == '_') {
+					$column_name = substr($column_name, 1);
+					$hiddenTabFilters[$column_name] = $column_id;
+					$mustHidden = $originalColumnId;
+					$class = 'class="hidden"';
 //                    continue;
-                }
+				}
 //                if ($column_name[0] == '_') continue;
-                echo '<label '.$class.'><input type="checkbox" data-original-column-id="'.$originalColumnId.'" 
+				echo '<label '.$class.'><input type="checkbox" data-original-column-id="'.$originalColumnId.'" 
                                     data-column="' . $column_id . '" checked>' . $column_name . '</label>';
-            }
-            ?>
+			}
+			?>
         </div>
     </div>
 </div>
 <table id="<?= $table_id ?>" class="table table-striped table-bordered table-hover table-checkable order-column not-single"
-                            data-last-sort="<?= $sort ?>">
+       data-last-sort="<?= $sort ?>">
     <thead>
     <tr>
-        <?php
-        $bigColumnIds = [];
-        foreach ($column_names as $column_id => $column_name) {
-            if ($column_id == 0) {
-                echo '<th></th>';
-            } else {
-                $inputId = $table_id . '_filter' . $column_id;
-                $input = '<input type="text" class="form-control column-filter-input" style="width: 85%" ' .
-                            '" onclick="$(this).focus(); event.stopPropagation()" />';
-                if (in_array($column_name, ['Visual Name', 'Product', 'Client'])) {
-                    $bigColumnIds[] = $column_id;
-                }
-                if ($selectSearch && isset($selectSearch[$column_name]) && !empty($selectSearch[$column_name])) {
-                    $input .= '<select class="column-filter-select hidden form-control" '.
-                        'data-append-to="#'.$table_id.'_selects_wrapper" data-filter="'.$inputId.'" '.
-                        'onclick="$(this).focus(); event.stopPropagation()">';
-                    foreach ($selectSearch[$column_name] as $value) {
-                        $value = htmlspecialchars($value);
-                        $input .= '<option value="'.$value.'" onclick="event.stopPropagation()">'.$value.'</option>';
-                    }
-                    $input .= '</select>';
-                }
-                echo '<th data-header-id="'.$column_id.'" data-db-col-name="'.$column_name.'">' .
-                    '<div class="td-wrapper" data-header-id="' . $column_id . '">' .
-                    /*'<i class="icon-equalizer filter-popover" style="margin-right: 8px; color: rgb(153, 153, 153);" '.
-                    'onclick="event.stopPropagation()" data-toggle="popover" data-original-title="" title=""></i>'.*/
-                         $column_name  .
-                    '<div class="filter-hidden-content">'. $input . '</div>'.
-                    '</div></th>';
-            }
-        }
-        ?>
+		<?php
+		$bigColumnIds = [];
+		foreach ($column_names as $column_id => $column_name) {
+			if ($column_id == 0) {
+				echo '<th style="max-width: 20px;"></th>';
+			} else {
+				$inputId = $table_id . '_filter' . $column_id;
+				$input = '<input type="text" class="form-control column-filter-input" style="width: 85%" ' .
+				         '" onclick="$(this).focus(); event.stopPropagation()" />';
+				if (in_array($column_name, ['Visual Name', 'Product', 'Client'])) {
+					$bigColumnIds[] = $column_id;
+				}
+				if ($selectSearch && isset($selectSearch[$column_name]) && !empty($selectSearch[$column_name])) {
+					$input .= '<select class="column-filter-select hidden form-control" '.
+					          'data-append-to="#'.$table_id.'_selects_wrapper" data-filter="'.$inputId.'" '.
+					          'onclick="$(this).focus(); event.stopPropagation()">';
+					foreach ($selectSearch[$column_name] as $value) {
+						$value = htmlspecialchars($value);
+						$input .= '<option value="'.$value.'" onclick="event.stopPropagation()">'.$value.'</option>';
+					}
+					$input .= '</select>';
+				}
+				echo '<th data-header-id="'.$column_id.'" data-db-col-name="'.$column_name.'" style="width: 75px;">' .
+				     '<div class="td-wrapper" style="width: 75px;" data-header-id="' . $column_id . '">' .
+				     /*'<i class="icon-equalizer filter-popover" style="margin-right: 8px; color: rgb(153, 153, 153);" '.
+					 'onclick="event.stopPropagation()" data-toggle="popover" data-original-title="" title=""></i>'.*/
+				     $column_name  .
+				     '<div class="filter-hidden-content">'. $input . '</div>'.
+				     '</div></th>';
+			}
+		}
+		?>
     </tr>
     </thead>
     <tbody>
@@ -140,22 +140,22 @@
 
 $hidden = [];
 if ($hidden_by_default) {
-    $hidden_by_default = json_decode($hidden_by_default, true);
-    $hidden = array_merge($hidden, $hidden_by_default);
+	$hidden_by_default = json_decode($hidden_by_default, true);
+	$hidden = array_merge($hidden, $hidden_by_default);
 }
 if ($mustHidden) {
-    if (is_array($mustHidden)) {
-        $hidden = array_merge($hidden, $mustHidden);
-    } else {
-        $hidden[] = $mustHidden;
-    }
-    $hidden = array_unique($hidden);
+	if (is_array($mustHidden)) {
+		$hidden = array_merge($hidden, $mustHidden);
+	} else {
+		$hidden[] = $mustHidden;
+	}
+	$hidden = array_unique($hidden);
 }
 if (!empty($hidden)) {
-    foreach ($hidden as $key => $value) {
-        if (!isset($column_names[$value]))
-            unset($hidden[$key]);
-    }
+	foreach ($hidden as $key => $value) {
+		if (!isset($column_names[$value]))
+			unset($hidden[$key]);
+	}
 }
 
 $notHidden = array_keys($column_names);
@@ -166,9 +166,9 @@ $hidden_by_default = json_encode($hidden);
 ?>
 <script>
     // TODO remove it and change into warehouse
-    <?php if ($globalTable): ?>
-        var <?= $globalTable ?>;
-    <?php endif; ?>
+	<?php if ($globalTable): ?>
+    var <?= $globalTable ?>;
+	<?php endif; ?>
 
     $(document).ready(function () {
         var $table = $('#<?= $table_id ?>');
@@ -187,16 +187,16 @@ $hidden_by_default = json_encode($hidden);
         var recordsCount = "<?= $recordsCount; ?>";
         var serverSide = <?= $serverSide ? 'true' : 'false'; ?>;
         var columnsWidth = [];
-        <?php
-        if (isset($ajax['data']) && $ajax['data'] != "") {
-            echo "var ajax = { url: '" . $ajax['url'] . "', 
+		<?php
+		if (isset($ajax['data']) && $ajax['data'] != "") {
+			echo "var ajax = { url: '" . $ajax['url'] . "', 
                                 data: { products:" . json_encode($ajax['data']) . "}, 
                                 type: '$method'
                               };";
-        } else {
-            echo "var ajax = '" . $ajax['url'] . "';";
-        }
-        ?>
+		} else {
+			echo "var ajax = '" . $ajax['url'] . "';";
+		}
+		?>
         // DataTable
         var table = $table.DataTable({
             processing: true,
@@ -213,6 +213,7 @@ $hidden_by_default = json_encode($hidden);
                     targets: 0,
                     searchable: false,
                     orderable: false,
+                    width: '25px',
                     className: 'dt-body-center select-checkbox',
                     render: function (data, type, full, meta) {
                         return '';
@@ -224,8 +225,13 @@ $hidden_by_default = json_encode($hidden);
                     searchable: true,
                     render: function (data, type, full, meta) {
                         var columnId = meta.col;
-                        var width = (columnsWidth[columnId] !== undefined) ?
-                            ('width: ' + columnsWidth[columnId]) : '';
+//                        var width = (columnsWidth[columnId] !== undefined) ?
+//                            ('width: ' + columnsWidth[columnId]) : false;
+//                        if (!width) {
+//                            width = '50px';
+//                            columnsWidth[columnId] = width = 'width: ' + width;
+//                        }
+                        var width = 'width: 75px';
                         return '<div class="td-wrapper" style="'+width+'" data-header-id="'+columnId+'">' + data + '</div>';
                     }
                 },
@@ -235,8 +241,13 @@ $hidden_by_default = json_encode($hidden);
                     searchable: true,
                     render: function (data, type, full, meta) {
                         var columnId = meta.col;
-                        var width = (columnsWidth[columnId] !== undefined) ?
-                            ('width: ' + columnsWidth[columnId]) : '';
+//                        var width = (columnsWidth[columnId] !== undefined) ?
+//                            ('width: ' + columnsWidth[columnId]) : false;
+//                        if (!width) {
+//                            width = '50px';
+//                            columnsWidth[columnId] = width = 'width: ' + width;
+//                        }
+                        var width = 'width: 75px';
                         return '<div class="td-wrapper" style="'+width+'" data-header-id="'+columnId+'">' + data + '</div>';
                     }
                 }
@@ -255,9 +266,9 @@ $hidden_by_default = json_encode($hidden);
         });
 
         // TODO remove it and change into warehouse
-        <?php if ($globalTable): ?>
-        <?= $globalTable ?> = table;
-        <?php endif; ?>
+		<?php if ($globalTable): ?>
+		<?= $globalTable ?> = table;
+		<?php endif; ?>
 
         var tableId = $table.attr('id');
 
@@ -266,37 +277,41 @@ $hidden_by_default = json_encode($hidden);
         });
 
         $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
-            var relatedBtn = $(e.relatedTarget);
-            var currentBtn = $(e.currentTarget);
-            if ($(currentBtn.attr('href')).find($table).length) {
-                if (!$table.closest('.tab-pane.active').length)
-                    return false;
+//            var relatedBtn = $(e.relatedTarget);
+//            var currentBtn = $(e.currentTarget);
+//            if ($(currentBtn.attr('href')).find($table).length) {
+//                if (!$table.closest('.tab-pane.active').length)
+//                    return false;
+//
+//                $table.addClass('visible_now');
+//                table.draw();
+//            } else if ($(relatedBtn.attr('href')).find($table).length) {
+//                if (!$table.closest('.tab-pane.active').length)
+//                    return false;
+//
+//                $table.removeClass('visible_now');
+//            }
+            table.draw();
 
-                $table.addClass('visible_now');
-                table.draw();
-            } else if ($(relatedBtn.attr('href')).find($table).length) {
-                if (!$table.closest('.tab-pane.active').length)
-                    return false;
-
-                $table.removeClass('visible_now');
-            }
         });
 
         $('.modal')/*.on('shown.bs.modal', function(e) {
             topScrollResize()
         })*/.on('shown.bs.modal', function(e) {
             if ($table.closest($(this))) {
+                table.draw();
+//                table.columns.adjust();
 
-                var tabInModal = $(this).find('.tab-pane.active');
-                if (tabInModal.length) {
-                    if (tabInModal.find($table).length) {
-                        $table.addClass('visible_now');
-                        table.draw();
-                    }
-                } else {
-                    $table.addClass('visible_now');
-                    table.draw();
-                }
+//                var tabInModal = $(this).find('.tab-pane.active');
+//                if (tabInModal.length) {
+//                    if (tabInModal.find($table).length) {
+//                        $table.addClass('visible_now');
+//                        table.draw();
+//                    }
+//                } else {
+//                    $table.addClass('visible_now');
+//                    table.draw();
+//                }
 
             }
         }).on('hidden.bs.modal', function(e) {
@@ -339,6 +354,11 @@ $hidden_by_default = json_encode($hidden);
             }
             $('.dataTables_scrollHead').css('overflow', '').css('position', '');
 
+//            $table.parent().on('scroll', function() {
+//                table.columns.adjust();
+//                console.log('scroll')
+//            });
+
             /*$.each($('.filter-popover'), function() {
                 $(this).popover({
                     html: true,
@@ -350,73 +370,85 @@ $hidden_by_default = json_encode($hidden);
                 })
             });*/
 
-            var isTabSuccess = !$table.closest('.tab-pane').length || $table.closest('.tab-pane.active').length;
-            console.log($table.closest('.modal'), $table)
-            var isModalSuccess = ($table.closest('.modal').length && $table.hasClass('visible_now') && isTabSuccess) ||
-                !$table.closest('.modal').length;
+//            var isTabSuccess = !$table.closest('.tab-pane').length || $table.closest('.tab-pane.active').length;
+//            console.log($table.closest('.modal'), $table)
+//            var isModalSuccess = ($table.closest('.modal').length && $table.hasClass('visible_now') && isTabSuccess) ||
+//                !$table.closest('.modal').length;
 
 //            var isModalSuccess = ($table.closest('.modal.in').length && isTabSuccess) ||
 //                !$table.closest('.modal').length;
 
-            console.log('visible', $table.hasClass('visible_now'), isTabSuccess && isModalSuccess, $table);
-            if (isTabSuccess && isModalSuccess) {
+//            console.log('visible', $table.hasClass('visible_now'), isTabSuccess && isModalSuccess, $table);
+//            if (isTabSuccess && isModalSuccess) {
+            reOrderColumns();
+            topScrollResize();
+            table.columns.adjust();
+
+            var topScrollSize = $table.closest('.dataTables_wrapper').find('.top-scroll').width();
+            var fakeSize = $table.closest('.dataTables_wrapper').find('.top-scroll .fake').width();
+            if (parseInt(topScrollSize) - parseInt(fakeSize) < 60 && parseInt(topScrollSize) - parseInt(fakeSize) > 0) {
+                $table.closest('.dataTables_wrapper').find('.dataTables_scrollHeadInner').find('.td-wrapper').css('width', '100%')
+                    $.each($table.find('.td-wrapper'), function () {
+                        $(this).css('width', (parseInt($(this).parent('td').css('width')) - 10 + 'px'));
+                    });
                 topScrollResize();
-                resize();
             }
+//            resize();
+//            }
 
-            if (!$table.hasClass('redrawn')) {
-
-                if (isTabSuccess && isModalSuccess) {
-                    $table.addClass('visible_now');
-                }
-
-                var width = $table.closest('.table-scrollable').css('width');
-                headerTable.closest('.dataTables_scrollHead').css('width', width);
-                $table.closest('.dataTables_scrollBody').css('width', width);
-
-                if (!$table.hasClass('visible_now')) {
-                    return false;
-                }
-
-                $table.addClass('redrawn');
-                reOrderColumns();
-                headerTable.find('.JCLRgrip').eq(0).simulate("drag", {
-                    moves: 1,
-                    dx: 10,
-                    dy: 10
-                });
-
-                $.each($table.find('tbody tr').eq(0).find('td'), function () {
-                    var wrapper = $(this).find('.td-wrapper');
-                    var index = wrapper.attr('data-header-id');
-                    if (index && index !== undefined) {
-                        index = +index;
-                        columnsWidth[index] = wrapper.css('width');
-                    }
-                });
-                console.log('save after draw', columnsWidth);
+//            if (!$table.hasClass('redrawn')) {
+//
+//                if (isTabSuccess && isModalSuccess) {
+//                    $table.addClass('visible_now');
+//                }
+//
+//                var width = $table.closest('.table-scrollable').css('width');
+//                headerTable.closest('.dataTables_scrollHead').css('width', width);
+//                $table.closest('.dataTables_scrollBody').css('width', width);
+//
+//                if (!$table.hasClass('visible_now')) {
+//                    return false;
+//                }
+//
+//                $table.addClass('redrawn');
+//                headerTable.find('.JCLRgrip').eq(0).simulate("drag", {
+//                    moves: 1,
+//                    dx: 10,
+//                    dy: 10
+//                });
+//
+//                $.each($table.find('tbody tr').eq(0).find('td'), function () {
+//                    var wrapper = $(this).find('.td-wrapper');
+//                    var index = wrapper.attr('data-header-id');
+//                    if (index && index !== undefined) {
+//                        index = +index;
+//                        columnsWidth[index] = wrapper.css('width');
+//                    }
+//                });
+//                console.log('save after draw', columnsWidth);
 //                table.draw();
-            }
+//                topScrollResize();
+//            }
 
-            console.log('just show', columnsWidth);
+//            console.log('just show', columnsWidth);
 
-/*
-* 1) Псоле сортировки одного большого столбца всё херится и идет по пизде
-* 2) В модальном окне не обновляется при открытии
-* */
+            $table.find('tr, td').on('hover', function() {
+                $(this).popover('show')
+            })
+
         });
 
-        $('#' + tableId + '_wrapper').on('click', 'th', function () {
-            $.each($table.find('tbody tr').eq(0).find('td'), function () {
-                var wrapper = $(this).find('.td-wrapper');
-                var index = wrapper.attr('data-header-id');
-                if (index && index !== undefined) {
-                    index = +index;
-                    columnsWidth[index] = wrapper.css('width');
-                }
-            });
-            console.log('save after click on sort', columnsWidth)
-        });
+//        $('#' + tableId + '_wrapper').on('click', 'th', function () {
+//            $.each($table.find('tbody tr').eq(0).find('td'), function () {
+//                var wrapper = $(this).find('.td-wrapper');
+//                var index = wrapper.attr('data-header-id');
+//                if (index && index !== undefined) {
+//                    index = +index;
+//                    columnsWidth[index] = wrapper.css('width');
+//                }
+//            });
+//            console.log('save after click on sort', columnsWidth)
+//        });
 
         var topScrollResize = function() {
             var topScroll = $table.closest('.dataTables_wrapper').find('.top-scroll');
@@ -436,6 +468,44 @@ $hidden_by_default = json_encode($hidden);
         });
 
         function resize(div) {
+
+//            if (!$table.closest('.tab-pane.active').length && !$table.closest('.modal.in').length) {
+//                return false;
+//            }
+
+            var onSampleResized = function(e){
+//                var currentLineIndex = $(e.target).parent().index();
+//                var $header = headerTable.find('table');
+//                var $headerColumn = $header.find('tr > th:nth-child('+(currentLineIndex+1)+')');
+//                var $columnTds = $('#' + $table.attr('id') + ' tr > td:nth-child('+(currentLineIndex + 1)+')');
+//
+//                var headerColumnWidth = $headerColumn.css('width');
+//                var headerWidth = $header.css('width');
+//                var headerMinWidth = $header.css('min-width');
+//
+//                $table.css('width', headerWidth);
+//                $table.css('min-width', headerMinWidth);
+//                $columnTds.css('width', headerColumnWidth);
+//                table.draw();
+            };
+
+//            $table.colResizable({disable: true});
+            $table.colResizable({
+                resizeMode: 'overflow',
+                liveDrag: true,
+                gripInnerHtml: "<div class='grip'></div>",
+                draggingClass: "dragging",
+                postbackSafe: true,
+                headerOnly: true
+//                onResize: onSampleResized,
+//                partialRefresh: true
+            });
+
+
+        }
+
+
+        function resize1(div) {
 
             if (!$table.closest('.tab-pane.active').length && !$table.closest('.modal.in').length) {
                 return false;
@@ -458,27 +528,31 @@ $hidden_by_default = json_encode($hidden);
 
                 console.log(headerColumnWidth, $headerColumn);
 
-//                $headerColumn.find('.td-wrapper').css('width', headerColumnWidth);
+                $headerColumn.css('width', headerColumnWidth).find('.td-wrapper').css('width', headerColumnWidth);
+                $columnTds.find('.td-wrapper').css('width', headerColumnWidth);
                 $columnTds.css('width', headerColumnWidth);
                 $columnThs.css('width', headerColumnWidth);
-                $columnTds.find('.td-wrapper').css('width', headerColumnWidth);
-//                $columnTds.css('max-width', headerColumnWidth);
-//                $columnThs.css('max-width', headerColumnWidth);
                 columnsWidth[+$headerColumn.attr('data-header-id')] = headerColumnWidth;
 
+//                topScrollResize();
                 table.draw();
             };
 
-            headerTable.find('table').colResizable({disable: true});
-            headerTable.find('table').colResizable({
-                resizeMode: 'overflow',
-                liveDrag: true,
-                gripInnerHtml: "<div class='grip'></div>",
-                draggingClass: "dragging",
-                onResize: onSampleResized
-            });
-
-
+//            headerTable.find('table').colResizable({disable: true});
+//            headerTable.find('table').colResizable({
+//                resizeMode: 'overflow',
+//                liveDrag: true,
+//                gripInnerHtml: "<div class='grip'></div>",
+//                draggingClass: "dragging",
+//                onResize: onSampleResized/*,
+//                onDrag: function(e) {
+//                    var index = $(e.target).closest('.JCLRgrip').index();
+//                    var th = $(e.currentTarget).find('th').eq(index).children();
+//                    if (parseInt(th.css('width')))
+//                        th.css('width', '');
+//                }*/
+//            });
+//            table.columns.adjust();
         }
 
         $table.on('order.dt', function (e) {
@@ -486,23 +560,22 @@ $hidden_by_default = json_encode($hidden);
             saveColumnSort(order[0]);
             console.log('order dt');
 
-            for (var i=0; i<columnsWidth.length; i++) {
-                if (columnsWidth[i] !== undefined) {
-                    var wrappers = $table.find('.td-wrapper[data-header-id="'+i+'"]');
-                    if (wrappers.length) {
-                        wrappers.css('width', columnsWidth[i]);
-                        wrappers.parent().css('width', columnsWidth[i]);
-                        $table.find('th[data-header-id="'+i+'"]').css('width', columnsWidth[i]);
-                    }
-                    var header = headerTable.find('th[data-header-id="'+i+'"]');
-                    if (header.length) {
-                        header.css('width', columnsWidth[i]);
-                    }
-                }
-            }
+//            for (var i=0; i<columnsWidth.length; i++) {
+//                if (columnsWidth[i] !== undefined) {
+//                    var wrappers = $table.find('.td-wrapper[data-header-id="'+i+'"]');
+//                    if (wrappers.length) {
+//                        wrappers.css('width', columnsWidth[i]);
+//                        wrappers.parent().css('width', columnsWidth[i]);
+//                        $table.find('th[data-header-id="'+i+'"]').css('width', columnsWidth[i]);
+//                    }
+//                    var header = headerTable.find('th[data-header-id="'+i+'"]');
+//                    if (header.length) {
+//                        header.css('width', columnsWidth[i]);
+//                    }
+//                }
+//            }
 
         });
-
 
         // Link on entire cell, not on Anchor element
         $table.find('tbody').on('click', 'tr td:not(:first-child)', function (e) {
@@ -606,7 +679,7 @@ $hidden_by_default = json_encode($hidden);
                 fake.width(tableWrapper.find('table').width());
             }
 
-            resize();
+//            resize1();
             table.draw();
             saveHiddenColumnsInCookie();
         });
@@ -636,10 +709,10 @@ $hidden_by_default = json_encode($hidden);
         // Get hidden columns for current table from cookies
         function getHiddenColumns(tableId) {
             var cols = {
-                'tableId': tableId,
-                'action': 'get'
-            },
-            returnValue = false;
+                    'tableId': tableId,
+                    'action': 'get'
+                },
+                returnValue = false;
             cols = JSON.stringify(cols);
             var ajax = $.ajax({
                 url: '/clients/hidden_columns',
@@ -721,6 +794,8 @@ $hidden_by_default = json_encode($hidden);
             e.stopPropagation();
             if (li === undefined)
                 return false;
+
+            li.closest('ul').css('width', 'auto');
             var value = $(this).val();
             var index = $(this).closest('th').attr('data-column-index');
             if (table.column(index).search() !== value) {
