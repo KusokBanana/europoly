@@ -311,12 +311,12 @@ class ModelPayment extends Model
                 if (isset($paymentArray['category']) && $paymentArray['category'] == 'Client') {
                     $order = $this->getFirst("SELECT visible_order_id, start_date, total_downpayment 
                                                 FROM orders WHERE order_id = $orderId");
-                    if ($order && $order['visible_order_id'] && isset($order['total_downpayment']) &&
+                    if ($order && $order['visible_order_id'] && isset($order['downpayment_rate']) &&
                         isset($order['start_date'])) {
                         $date = date('d-m-Y', strtotime($order['start_date']));
                         $visible = $order['visible_order_id'];
-                        $downpayment_rate = round($order['total_downpayment']);
-                        $purpose = "Order $visible on $date client downpayment $downpayment_rate%";
+                        $downpayment_rate = round($order['downpayment_rate']);
+                        $purpose = "Order $visible on $date client downpayment";
                     }
                 }
             }

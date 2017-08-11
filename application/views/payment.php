@@ -190,54 +190,33 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                         switch (id) {
                                             case 'sum':
                                                 if (currencyRateValue != 0) {
-//                                                if (currencyRateValue != 0 && $(this).val() != 0) {
                                                     value = (sumValue / currencyRateValue).format(2);
-//                                                    value = (sumValue / currencyRateValue).format(2);
                                                     sumInEurInput.val(value);
-                                                } /*else if (sumInEurValue != 0) {
-                                                    value = (sumValue) ? (sumInEurValue / sumValue).format(4) : 0;
-//                                                    value = (sumValue / sumInEurValue).format(4);
-                                                    currencyRateInput.val(value);
-                                                    value = (courseValue) ? ((currencyRateValue / courseValue - 1) * 100).format(2) : 0;
-                                                    exchangeCommissionInput.val(value);
-                                                }*/
+                                                }
                                                 sumInput.val(sumValue.format(2));
                                                 break;
                                             case 'currency_rate':
                                                 if (sumInEurValue !== 0) {
                                                     value = (sumInEurValue * currencyRateValue).format(2); // TODO change here from "/"
-//                                                    value = (currencyRateValue * sumInEurValue).format(2);
                                                     sumInput.val(value);
                                                 } else if (sumValue !== 0) {
                                                     value = (currencyRateValue) ? (sumValue / currencyRateValue).format(2) : 0;
-//                                                    value = (currencyRateValue) ? (sumValue / currencyRateValue).format(2) : 0;
                                                     sumInEurInput.val(value);
                                                 }
-//                                                value = (courseValue) ? ((1 / (courseValue - 1) * currencyRateValue ) * 100).format(2) : 0;
                                                 value = (courseValue) ? ((currencyRateValue / courseValue - 1) * 100).format(2) : 0;
                                                 exchangeCommissionInput.val(value);
                                                 currencyRateInput.val(currencyRateValue.format(4));
                                                 break;
                                             case 'sum_in_eur':
-                                                //if (sumValue != 0) {
-//                                                //    value = (sumInEurValue) ? (sumInEurValue / sumValue).format(4) : 0;
-                                                    //value = (sumInEurValue) ? (sumValue / sumInEurValue).format(4) : 0;
-                                                    //currencyRateInput.val(value);
-//                                                    //value = (courseValue) ? ((1 / (courseValue - 1) * currencyRateValue) * 100).format(2) : 0;
-                                                   // value = (courseValue) ? ((currencyRateValue / courseValue - 1) * 100).format(2) : 0;
-                                                   // exchangeCommissionInput.val(value);
-                                                /*} else*/ if (currencyRateValue != 0) {
+                                                if (currencyRateValue != 0) {
                                                     value = (sumInEurValue * currencyRateValue).format(2);
-//                                                    value = (sumInEurValue * currencyRateValue).format(2);
                                                     sumInput.val(value);
                                                 }
                                                 sumInEurInput.val(sumInEurValue.format(2));
                                                 break;
                                             case 'course':
                                             case 'exchange_commission':
-                                                /*official_currency * (1+exchange_comission/100) = final currency rate*/
                                                 value = (courseValue * (1 + exchangeCommissionValue / 100)).format(4);
-//                                                value = (courseValue * (1 + exchangeCommissionValue / 100)).format(4);
                                                 currencyRateInput.val(value);
                                                 currencyRateInput.trigger('change');
                                                 courseInput.val(courseValue.format(4));
@@ -274,7 +253,7 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                                 select: select
                                             },
                                             success: function(data) {
-                                                if (select == 'category') {
+                                                if (select === 'category') {
                                                     var value = contractorValue,
                                                         selectElement = contractorSelect;
                                                     orderSelect.empty();
@@ -290,29 +269,23 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                                     $.each(data, function() {
                                                         newOptions +=
                                                             '<option value="'+ this['id'] +'"' +
-                                                            (this['id'] == value ? ' selected ' : '') + '>' +
+                                                            (this['id'] === value ? ' selected ' : '') + '>' +
                                                              this['name'] +
                                                             '</option>'
                                                     });
 
                                                     if (selectElement.hasClass('select2-hidden-accessible')) {
                                                         selectElement.select2('val', '');
-                                                    } /*else {
-                                                        selectElement.editableSelect('remove');
-                                                    }*/
+                                                    }
                                                     selectElement.empty().append(newOptions);
-                                                    /*if (select == 'category')
-                                                        selectElement.editableSelect();
-                                                    else*/
+
                                                     if (selectElement.is(':visible'))
                                                         selectElement.select2();
 
                                                 } else {
                                                     if (selectElement.hasClass('select2-hidden-accessible')) {
                                                         selectElement.select2('val', '');
-                                                    } /*else {
-                                                        selectElement.editableSelect('remove');
-                                                    }*/
+                                                    }
                                                     selectElement.empty();
                                                 }
 
@@ -329,7 +302,6 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                                             break;
                                                         default:
                                                             contractorSelect.attr('required', 'required');
-//                                                            orderSelect.attr('required', 'required');
                                                             break;
                                                     }
                                                 }
@@ -679,7 +651,7 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
 
                                     }
                                     $('form').keydown(function(event){
-                                        if(event.keyCode == 13) {
+                                        if(event.keyCode === 13) {
                                             $(event.target).trigger('change');
                                             event.preventDefault();
                                             return false;

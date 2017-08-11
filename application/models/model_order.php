@@ -911,9 +911,9 @@ class ModelOrder extends Model
             $docFile = dirname(__FILE__) . "/../../docs/templates/$fileName.docx";
 
             $values['order_id'] = $orderId;
-            $values['date'] = date('Y-m-d', strtotime($order['start_date']));
+            $values['date'] = Helper::rusDate(strtotime($order['start_date']), 'd %MONTH% Y');
+            $values['current_date'] = Helper::rusDate(time(), 'd %MONTH% Y');
 
-            $values['current_date'] = date('d-m-Y');
             $client = $this->getFirst("SELECT * FROM clients WHERE client_id = ${order['client_id']}");
             if ($client) {
                 $add[] = $client['legal_name'];
