@@ -103,7 +103,7 @@ class ModelPayment extends Model
 
     public function getContractorName($category, $contractorId)
     {
-        if (!$category || $contractorId)
+        if (!$category || !$contractorId)
             return '';
 
         $contractorsList = $this->getSelectByCategory($category);
@@ -194,7 +194,9 @@ class ModelPayment extends Model
             foreach ($form as $field => $value) {
                 $value = $value != "" ? $this->escape_string($value) : '';
                 if (in_array($field, ['sum', 'sum_in_eur', 'currency_rate'])) {
-                    $value = +str_replace(',', '.', $value);
+	                $value = str_replace(',', '.', $value);
+	                $value = str_replace(' ', '', $value);
+	                $value = doubleval($value);
                 }
                 $fieldsArray[] = "$field";
                 $valuesArray[] = "'$value'";
@@ -313,7 +315,7 @@ class ModelPayment extends Model
                         isset($order['start_date'])) {
                         $date = date('d-m-Y', strtotime($order['start_date']));
                         $visible = $order['visible_order_id'];
-                        $downpayment_rate = round($order['total_downpayment']);
+                        $downpayment_rate = round($order['total_downpayment'], 2);
                         $purpose = "Order $visible on $date client downpayment $downpayment_rate%";
                     }
                 }

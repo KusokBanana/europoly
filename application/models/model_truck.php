@@ -480,9 +480,9 @@ class ModelTruck extends ModelOrder
 
     public function updateItemsStatus($truckId)
     {
-        $status = $this->getFirst("SELECT status_id FROM order_items WHERE  
-                                    status_id = (SELECT MIN(status_id) FROM order_items WHERE truck_id = $truckId)");
-        $truckStatus = $status ? $status['status_id'] : ON_THE_WAY;
+        $status = $this->getFirst("SELECT MIN(status_id) status_id FROM order_items  
+                                    WHERE truck_id = $truckId AND is_deleted = 0 AND status_id IS NOT NULL)");
+        $truckStatus = $status && !is_null($status['status_id']) ? $status['status_id'] : ON_THE_WAY;
         $this->update("UPDATE trucks 
                 SET status_id = $truckStatus WHERE id = $truckId");
     }

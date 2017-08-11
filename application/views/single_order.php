@@ -506,7 +506,17 @@ require_once 'modals/shipment_to_customer_modal_amount.php';
                 $('#notificationModal').modal().find('.modal-body')
                     .text('Please fill in Client\'s expected date of issue before sending request to logist');
             });
-            $('.x-amount, .x-number_of_packs, .x-manager_bonus_rate, .x-manager_bonus').editable({
+            $('.x-amount, .x-number_of_packs').editable({
+                type: "number",
+                min: 0,
+                step: 0.001,
+                inputclass: 'form-control input-medium',
+                success: function () {
+                    location.reload();
+                }
+            });
+
+            $('.x-manager_bonus_rate, .x-manager_bonus').editable({
                 type: "number",
                 min: 0,
                 step: 0.01,

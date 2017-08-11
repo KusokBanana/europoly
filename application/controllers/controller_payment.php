@@ -33,9 +33,17 @@ class ControllerPayment extends Controller
                 $this->view->contractor = $this->model->getContractorName($this->view->payment['category'],
                     $this->view->payment['contractor_id']);
 
-                $this->view->title = ($this->view->payment['is_monthly'] ? 'Monthly ' : '') . 'Payment #' .
+
+	            $this->view->title = ($this->view->payment['is_monthly'] ? 'Monthly ' : '') . 'Payment #' .
                     $this->view->payment['payment_id'] .
                     ($this->view->payment['direction'] == 'Income' ? ' to ' : ' from ') . $this->view->contractor;
+
+	            if ($this->view->payment['order_id']) {
+		            $order = $this->model->getOrder($this->view->payment['order_id']);
+		            $this->view->title .= ' on order ' . ($order['visible_order_id'] ? $order['visible_order_id'] :
+			            $order['order_id']);
+	            }
+
 
             }
 
@@ -93,7 +101,8 @@ class ControllerPayment extends Controller
         $paymentId = $this->model->savePayment($form, $payment_id);
 //        if ($paymentId && $payment_id == 'new') {
         if ($paymentId) {
-            header("Location: " . '/accountant' . ($type == 'monthly' ? "/$type" : ''));
+//            header("Location: " . '/accountant' . ($type == 'monthly' ? "/$type" : ''));
+	        header("Location: " . '/payment?id=' . $paymentId);
         }
         else {
             header("Location: " . $_SERVER['HTTP_REFERER']);

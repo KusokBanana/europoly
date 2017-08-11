@@ -93,6 +93,12 @@ class ModelSuppliers_order extends ModelOrder
 
     function getDTOrderItems($order_id, $input)
     {
+
+    	$orders = $this->getAssoc("SELECT * FROM suppliers_orders");
+        foreach ($orders as $order) {
+        	$this->updateItemsStatus($order['order_id']);
+        }
+
         $table = 'order_items as suppliers_orders_items
                 left join products on suppliers_orders_items.product_id = products.product_id ' .
                 $this->full_products_table_addition . ' 
@@ -154,7 +160,7 @@ class ModelSuppliers_order extends ModelOrder
         $this->update("UPDATE order_items SET status_id = ".DRAFT.", supplier_order_id = NULL
                        WHERE item_id = $order_item_id");
 
-        $this->updateItemsStatus($order_id);
+        $this->updateItemsStatus($order_id, $order_item_id);
 
         $this->update("UPDATE suppliers_orders 
                 SET order_items_count = order_items_count - 1 
@@ -203,17 +209,33 @@ class ModelSuppliers_order extends ModelOrder
 //        Изменим статус самого объекта
         if ($field == 'status_id') {
             $orderId = $old_order_item['supplier_order_id'];
-            $this->updateItemsStatus($orderId);
+            $this->updateItemsStatus($orderId, $order_item_id);
         }
 
         return true;
     }
 
-    public function updateItemsStatus($orderId)
+    public function updateItemsStatus($orderId, $item_id = false)
     {
-        $status = $this->getFirst("SELECT status_id FROM order_items WHERE  
-                                    status_id = (SELECT MIN(status_id) FROM order_items WHERE supplier_order_id = $orderId)");
-        $orderStatus = $status ? $status['status_id'] : DRAFT_FOR_SUPPLIER;
+        $status = $this->getFirst("SELECT MIN(status_id) as status_id FROM order_items 
+									WHERE supplier_order_id = $orderId AND is_deleted = 0 AND status_id IS NOT NULL)");
+        $orderStatus = $status && !is_null($status['status_id']) ? $status['status_id'] : DRAFT_FOR_SUPPLIER;
+
+        if ($item_id) {
+        	$item = $this->getFirst("SELECT manager_order_id FROM order_items WHERE item_id = $item_id");
+        	if (intval($item['manager_order_id'])) {
+		        parent::updateItemsStatus($item['manager_order_id']);
+	        }
+        } else {
+        	$items = $this->getAssoc("SELECT manager_order_id FROM order_items WHERE supplier_order_id = $orderId AND 
+										manager_order_id IS NOT NULL");
+        	if (!empty($items)) {
+        		foreach ($items as $item) {
+			        parent::updateItemsStatus($item['manager_order_id']);
+		        }
+	        }
+        }
+
         $this->update("UPDATE `suppliers_orders` 
                 SET status_id = $orderStatus WHERE order_id = $orderId");
     }

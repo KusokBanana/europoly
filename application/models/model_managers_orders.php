@@ -19,6 +19,10 @@ class ModelManagers_orders extends Model
                                  'class=\"order-item-product\">', IFNULL(products.visual_name, 'Enter Visual Name!'), '</a>')"),
         array('dt' => 4, 'db' => "CONCAT('<span class=\"brand-cell', '\">', brands.name, '</span>')"),
         array('dt' => 5, 'db' => "orders.start_date"),
+//        array('dt' => 6, 'db' => "(SELECT MIN(o.status_id) FROM order_items o
+//        JOIN items_status as o_s on MIN(o.status_id) = o_s.status_id
+//         WHERE o.manager_order_id = order_items.manager_order_id AND
+//            o.is_deleted = 0 AND o.status_id IS NOT NULL) status"),
         array('dt' => 6, 'db' => "status.name"),
         array('dt' => 7, 'db' => "CAST(order_items.amount as decimal(64,3))"),
         array('dt' => 8, 'db' => "products.units"),
@@ -74,22 +78,22 @@ class ModelManagers_orders extends Model
         'Client\'s expected date of issue',
         'Supplier Order ID',
         'Date of Order (Supplier)',
-         'Supplier Release Date',
-         'Truck ID',
-         'Supplier Departure Date',
-         'Warehouse Arrival Date',
-         'Client',
-         'Commission Agent',
-         'Discount Rate',
-         'Reduced Price',
-         'Manager Bonus Rate',
-         'Manager Bonus',
-         'Commission Rate',
-         'Commission Agent Bonus',
-         'Production Date',
-         'Reserve Period',
-         'Truck',
-         'Comments',
+        'Supplier Release Date',
+        'Truck ID',
+        'Supplier Departure Date',
+        'Warehouse Arrival Date',
+        'Client',
+        'Commission Agent',
+        'Discount Rate',
+        'Reduced Price',
+        'Manager Bonus Rate',
+        'Manager Bonus',
+        'Commission Rate',
+        'Commission Agent Bonus',
+        'Production Date',
+        'Reserve Period',
+        'Truck',
+        'Comments',
     ];
 
     var $managers_orders_reduced_columns = [
@@ -131,7 +135,7 @@ class ModelManagers_orders extends Model
             left join orders on orders.order_id = order_items.manager_order_id
             left join suppliers_orders on order_items.supplier_order_id = suppliers_orders.order_id
             left join trucks on order_items.truck_id = trucks.id
-            left join items_status as status on order_items.status_id = status.status_id
+            join items_status as status on order_items.status_id = status.status_id
             left join users as managers on orders.sales_manager_id = managers.user_id
             left join products on order_items.product_id = products.product_id
             left join clients as client ON (orders.client_id = client.client_id)
@@ -156,6 +160,11 @@ class ModelManagers_orders extends Model
     {
 
         $ssp = ['page' => $this->page];
+
+//        $orders = $this->getAssoc("SELECT order_id FROM orders WHERE 1");
+//        foreach ($orders as $order) {
+//        	$this->updateItemsStatus($order['order_id']);
+//        }
 
         switch ($type) {
             case 'general':

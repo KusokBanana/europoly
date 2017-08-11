@@ -409,19 +409,8 @@ abstract class Model extends mysqli
             return false;
 
         $category = $payment['category'];
-        $allPaymentsForOrder = $this->getAssoc("SELECT * FROM payments 
-          WHERE (order_id = $orderId AND category = '$category' AND is_deleted = 0)");
-        $totalSum = 0;
         $order = $this->getFirst("SELECT total_price FROM orders WHERE order_id = $orderId");
-        if (!empty($allPaymentsForOrder))
-            foreach ($allPaymentsForOrder as $onePaymentForOrder) {
-//                $totalSum += $this->turnToEuro($onePaymentForOrder['currency'], $onePaymentForOrder['sum']);
-                if ($onePaymentForOrder['status'] == 'Executed' && $onePaymentForOrder['category'] == 'Client') {
-                    $sumInEur = $onePaymentForOrder['sum_in_eur'];
-                    $sumInEur = ($onePaymentForOrder['direction'] == 'Income') ? $sumInEur : -$sumInEur;
-                    $totalSum += $sumInEur;
-                }
-            }
+	    $totalSum = $this->getOrderDownPayment($category, $orderId);
         $rate = $totalSum / $order['total_price'] * 100;
         if ($category == 'Client' || $category == CLIENT_TYPE_COMISSION_AGENT) {
             $this->update("UPDATE orders SET total_downpayment = $totalSum, downpayment_rate = $rate 
@@ -431,6 +420,26 @@ abstract class Model extends mysqli
                             WHERE order_id = $orderId");
             // TODO add here downpayment_rate too
         }
+    }
+
+    public function getOrderDownPayment($category, $order_id)
+    {
+
+	    $allPaymentsForOrder = $this->getAssoc("SELECT * FROM payments 
+          WHERE (order_id = $order_id AND category = '$category' AND is_deleted = 0)");
+	    $totalSum = 0;
+	    if (!empty($allPaymentsForOrder)) {
+		    foreach ( $allPaymentsForOrder as $onePaymentForOrder ) {
+//                $totalSum += $this->turnToEuro($onePaymentForOrder['currency'], $onePaymentForOrder['sum']);
+			    if ( $onePaymentForOrder['status'] == 'Executed' && $onePaymentForOrder['category'] == 'Client' ) {
+				    $sumInEur = $onePaymentForOrder['sum_in_eur'];
+				    $sumInEur = ( $onePaymentForOrder['direction'] == 'Income' ) ? $sumInEur : - $sumInEur;
+				    $totalSum += $sumInEur;
+			    }
+		    }
+	    }
+
+	    return $totalSum;
     }
 
     public function getColumns($columns, $page, $tableId, $isNames = false)
@@ -633,6 +642,9 @@ abstract class Model extends mysqli
         ];
         $products = [];
 
+        require_once dirname(__FILE__) . '/../models/model_order.php';
+        $orderModel = new ModelOrder();
+
         foreach ($items as $id => $orderItem) {
             $id++;
             $productId = $orderItem['product_id'];
@@ -642,8 +654,8 @@ abstract class Model extends mysqli
             $warehouse = $this->getFirst("SELECT * FROM warehouses WHERE warehouse_id = $warehouseId");
 
             $units = ($unitsRus && $unitsRus['units']) ? $unitsRus['units'] : $product['units'];
-            $reducedPrice = $orderItem['sell_price'] * (100 - $orderItem['discount_rate'])/100;
-            $sum = floatval($reducedPrice * $orderItem['amount']);
+            $reducedPrice = $orderModel->getItemPriceData($orderItem['item_id'], 'reduced_price', $orderItem, true);
+	        $sum = $orderModel->getItemPriceData($orderItem['item_id'], 'sell_value', $orderItem, true);
             $amount_in_pack = is_null($product['amount_in_pack']) ? 0 : floatval($product['amount_in_pack']);
             $weight = (is_null($product['weight']) || !$amount_in_pack || is_null($orderItem['number_of_packs'])) ? 0 :
                 $product['weight'] * $amount_in_pack * $orderItem['number_of_packs'];
@@ -654,8 +666,8 @@ abstract class Model extends mysqli
             $products['units'][] = $units;
             $products['price'][] = round(floatval($reducedPrice), 2);
             $products['opt_price'][] = round(floatval($reducedPrice) * 0.7, 2);
-            $products['sum'][] = round($sum, 2);
-            $products['opt_sum'][] = round($sum * 0.7, 2);
+            $products['sum'][] = $sum;
+            $products['opt_sum'][] = round(floatval($reducedPrice) * 0.7, 2);
             $products['pack_type'][] = $product['packing_type'];
             $products['weight'][] = $weight;
 //            $products['weight'][] = $product['weight'];
@@ -817,10 +829,10 @@ abstract class Model extends mysqli
 
     public function updateItemsStatus($orderId)
     {
-        $status = $this->getFirst("SELECT status_id FROM order_items WHERE manager_order_id = $orderId AND 
-                                    status_id = (SELECT MIN(status_id) FROM order_items) AND is_deleted = 0");
-        $orderStatus = $status ? $status['status_id'] : DRAFT;
-        $this->update("UPDATE `orders` 
+        $status = $this->getFirst("SELECT MIN(status_id) as status_id FROM order_items WHERE manager_order_id = $orderId AND 
+                                    is_deleted = 0 AND status_id IS NOT NULL");
+        $orderStatus = $status && !is_null($status['status_id']) ? $status['status_id'] : DRAFT;
+        $this->update("UPDATE orders 
                 SET order_status_id = $orderStatus WHERE order_id = $orderId");
         $this->clearCache(['managers_orders_selects', 'sent_to_logist']);
     }
