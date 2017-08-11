@@ -277,6 +277,7 @@ class ModelSuppliers_orders extends ModelManagers_orders
                               status_id = ".DRAFT_FOR_SUPPLIER." WHERE item_id = $order_item_id");
                 $productId = $this->getFirst("SELECT product_id FROM order_items WHERE item_id = $order_item_id");
                 $productId = $productId ? $productId['product_id'] : 0;
+	            $this->updateItemsStatus($order_item_id);
             }
             $supplier = $this->getFirst("SELECT supplier_id FROM suppliers_orders WHERE order_id = $suppliers_order");
             $supplier_id = ($supplier && $supplier['supplier_id'] !== null) ? $supplier['supplier_id'] : null;
@@ -294,7 +295,6 @@ class ModelSuppliers_orders extends ModelManagers_orders
             $this->update("UPDATE suppliers_orders SET supplier_id = $supplier_id,
                               order_items_count = $order_items_count WHERE order_id = $suppliers_order");
 
-            $this->updateItemsStatus($suppliers_order);
             $this->clearCache(['managers_orders_selects', 'sent_to_logist']);
         }
         return $suppliers_order;
@@ -323,15 +323,6 @@ class ModelSuppliers_orders extends ModelManagers_orders
             }
         }
         return $orderIds;
-    }
-
-    public function updateItemsStatus($orderId)
-    {
-        $status = $this->getFirst("SELECT status_id FROM order_items WHERE supplier_order_id = $orderId AND 
-                                    status_id = (SELECT MIN(status_id) FROM order_items)");
-        $orderStatus = $status ? $status['status_id'] : DRAFT_FOR_SUPPLIER;
-        $this->update("UPDATE suppliers_orders 
-                SET status_id = $orderStatus WHERE order_id = $orderId");
     }
 
     public function getItems($ids)

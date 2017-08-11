@@ -94,11 +94,6 @@ class ModelSuppliers_order extends ModelOrder
     function getDTOrderItems($order_id, $input)
     {
 
-    	$orders = $this->getAssoc("SELECT * FROM suppliers_orders");
-        foreach ($orders as $order) {
-        	$this->updateItemsStatus($order['order_id']);
-        }
-
         $table = 'order_items as suppliers_orders_items
                 left join products on suppliers_orders_items.product_id = products.product_id ' .
                 $this->full_products_table_addition . ' 
@@ -143,15 +138,15 @@ class ModelSuppliers_order extends ModelOrder
         foreach ($product_ids as $product_id) {
             $product = $this->getFirst("SELECT purchase_price FROM products WHERE product_id = $product_id");
             $purchase_price = ($product && $product['purchase_price']) ? $product['purchase_price'] : 0;
-            $this->insert("INSERT INTO order_items (supplier_order_id, product_id, amount, 
+            $id = $this->insert("INSERT INTO order_items (supplier_order_id, product_id, amount, 
               number_of_packs, status_id, purchase_price)
             VALUES ($order_id, $product_id, 0, 0, ".DRAFT_FOR_SUPPLIER.", $purchase_price)");
             $count++;
+	        $this->updateItemsStatus($id);
         }
         $this->update("UPDATE suppliers_orders 
                       SET order_items_count = order_items_count + $count
                       WHERE order_id = $order_id");
-        $this->updateItemsStatus($order_id);
     }
 
     function deleteOrderItem($order_id, $order_item_id)
@@ -160,7 +155,7 @@ class ModelSuppliers_order extends ModelOrder
         $this->update("UPDATE order_items SET status_id = ".DRAFT.", supplier_order_id = NULL
                        WHERE item_id = $order_item_id");
 
-        $this->updateItemsStatus($order_id, $order_item_id);
+        $this->updateItemsStatus($order_item_id);
 
         $this->update("UPDATE suppliers_orders 
                 SET order_items_count = order_items_count - 1 
@@ -169,9 +164,9 @@ class ModelSuppliers_order extends ModelOrder
 
     public function updateField($order_id, $field, $new_value)
     {
-        $old_order = $this->getFirst("SELECT * FROM suppliers_orders WHERE order_id = $order_id");
+//        $old_order = $this->getFirst("SELECT * FROM suppliers_orders WHERE order_id = $order_id");
         $result = $this->update("UPDATE `suppliers_orders` SET `$field` = '$new_value' WHERE order_id = $order_id");
-        $new_order = $this->getFirst("SELECT * FROM suppliers_orders WHERE order_id = $order_id");
+//        $new_order = $this->getFirst("SELECT * FROM suppliers_orders WHERE order_id = $order_id");
 //
 //        $this->update("UPDATE suppliers_orders
 //                SET total_price = $total_price
@@ -208,36 +203,10 @@ class ModelSuppliers_order extends ModelOrder
 
 //        Изменим статус самого объекта
         if ($field == 'status_id') {
-            $orderId = $old_order_item['supplier_order_id'];
-            $this->updateItemsStatus($orderId, $order_item_id);
+            $this->updateItemsStatus($order_item_id, $old_order_item);
         }
 
         return true;
-    }
-
-    public function updateItemsStatus($orderId, $item_id = false)
-    {
-        $status = $this->getFirst("SELECT MIN(status_id) as status_id FROM order_items 
-									WHERE supplier_order_id = $orderId AND is_deleted = 0 AND status_id IS NOT NULL)");
-        $orderStatus = $status && !is_null($status['status_id']) ? $status['status_id'] : DRAFT_FOR_SUPPLIER;
-
-        if ($item_id) {
-        	$item = $this->getFirst("SELECT manager_order_id FROM order_items WHERE item_id = $item_id");
-        	if (intval($item['manager_order_id'])) {
-		        parent::updateItemsStatus($item['manager_order_id']);
-	        }
-        } else {
-        	$items = $this->getAssoc("SELECT manager_order_id FROM order_items WHERE supplier_order_id = $orderId AND 
-										manager_order_id IS NOT NULL");
-        	if (!empty($items)) {
-        		foreach ($items as $item) {
-			        parent::updateItemsStatus($item['manager_order_id']);
-		        }
-	        }
-        }
-
-        $this->update("UPDATE `suppliers_orders` 
-                SET status_id = $orderStatus WHERE order_id = $orderId");
     }
 
     public function updateOrderProductionDate($orderId)
@@ -278,8 +247,10 @@ class ModelSuppliers_order extends ModelOrder
         $result = $this->update("UPDATE order_items SET manager_order_id = NULL, reserve_since_date = NULL, reserve_till_date = NULL
           WHERE item_id = $order_item_id");
         if ($result) {
-            return $this->update("UPDATE order_items SET status_id = ".DRAFT." WHERE (manager_order_id = ${item['manager_order_id']} AND
+            $result = $this->update("UPDATE order_items SET status_id = ".DRAFT." WHERE (manager_order_id = ${item['manager_order_id']} AND
           product_id = ${item['product_id']} AND status_id > ".DRAFT.")");
+            $this->updateItemsStatus($order_item_id, $item['item_id']);
+            return $result;
         }
     }
 

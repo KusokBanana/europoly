@@ -208,13 +208,13 @@ class ModelOrder extends Model
             $product = $this->getFirst("SELECT * FROM products WHERE product_id = $product_id");
 
             $productPrice = $product['purchase_price'] != null ? $product['purchase_price'] : 0;
-            $this->insert("INSERT INTO order_items (manager_order_id, product_id, purchase_price, amount, number_of_packs, discount_rate, reduced_price, manager_bonus_rate, manager_bonus, sell_price)
+            $id = $this->insert("INSERT INTO order_items (manager_order_id, product_id, purchase_price, amount, number_of_packs, discount_rate, reduced_price, manager_bonus_rate, manager_bonus, sell_price)
                 VALUES ($order_id, $product_id, $productPrice, 0, 0, $discount_rate, 0, 
                 $manager_bonus_rate, 0, ${product['sell_price']})");
             $this->update("UPDATE orders SET order_items_count = order_items_count + 1 WHERE order_id = $order_id");
+	        $this->updateItemsStatus($id);
         }
         $this->updateOrderPrice($order_id);
-        $this->updateItemsStatus($order_id);
     }
 
     public function getItemPriceData($item_id, $type, $item = false, $updateItem = false, $isRounded = false)
@@ -231,7 +231,7 @@ class ModelOrder extends Model
 			    $result = 100 - round($item['reduced_price'], 2) / round($item['sell_price'], 2) * 100;
 			    break;
 		    case 'reduced_price':
-			    $result = $item['sell_price'] * (100 - round($item['discount_rate'], 2));
+			    $result = $item['sell_price'] * (100 - round($item['discount_rate'], 2)) / 100;
 			    break;
 			case 'sell_value':
 				$amount = $item['amount'] ? $item['amount'] : 1;
@@ -269,7 +269,7 @@ class ModelOrder extends Model
 //        $order_item = $this->getFirst("SELECT * FROM order_items WHERE item_id = $order_item_id");
         $this->update("UPDATE order_items SET is_deleted = 1 WHERE item_id = $order_item_id");
 
-        $this->updateItemsStatus($order_id);
+        $this->updateItemsStatus($order_item_id);
 
 //	    $sellValue = $this->getItemPriceData($order_item_id, 'sell_value', $order_item, false, true);
 //	    $totalPrice = $order['total_price'] - $sellValue;
@@ -344,7 +344,7 @@ class ModelOrder extends Model
 	                $discountRate = $this->getItemPriceData($order_item_id, 'discount_rate', $old_order_item,
 		                ['reduced_price' => $reduced_price]);
 	                $sellValue = $this->getItemPriceData($order_item_id, 'sell_value', $old_order_item,
-		                ['discount_rate' => $discountRate]);
+		                ['reduced_price' => $reduced_price]);
                     break;
                 case 'sell_value':
 	                $sellValue = $new_value;
@@ -376,24 +376,22 @@ class ModelOrder extends Model
         if ($field == 'commission_agent_bonus' || $field == 'commission_rate') {
             switch ($field) {
                 case 'commission_agent_bonus':
-	                $sellValue = $this->getItemPriceData($order_item_id, 'sell_value', $old_order_item);
 	                $commission_rate = $this->getItemPriceData($order_item_id, 'commission_rate', $old_order_item,
-		                ['sell_value' => $sellValue, 'commission_agent_bonus' => $new_value]);
+		                ['commission_agent_bonus' => $new_value]);
 	                $manager_bonus = $this->getItemPriceData($order_item_id, 'manager_bonus', $old_order_item,
-		                ['sell_value' => $sellValue, 'commission_agent_bonus' => $new_value]);
+		                ['commission_agent_bonus' => $new_value]);
 
                     $this->update("UPDATE `order_items` SET commission_rate = $commission_rate, commission_agent_bonus = $new_value,
-                          manager_bonus = $manager_bonus, sell_value = $sellValue WHERE item_id = $order_item_id");
+                          manager_bonus = $manager_bonus WHERE item_id = $order_item_id");
                     $this->updateOrderPrice($orderId);
                     return true;
                 case 'commission_rate':
-	                $sellValue = $this->getItemPriceData($order_item_id, 'sell_value', $old_order_item);
 	                $commission_agent_bonus = $this->getItemPriceData($order_item_id, 'commission_agent_bonus', $old_order_item,
-		                ['commission_rate' => $new_value, 'sell_value' => $sellValue]);
+		                ['commission_rate' => $new_value]);
 	                $manager_bonus = $this->getItemPriceData($order_item_id, 'manager_bonus', $old_order_item,
-		                ['sell_value' => $sellValue, 'commission_agent_bonus' => $new_value]);
+		                ['commission_agent_bonus' => $commission_agent_bonus]);
                     $this->update("UPDATE `order_items` SET commission_agent_bonus = $commission_agent_bonus,
-                      commission_rate = $new_value, manager_bonus = $manager_bonus, sell_value = $sellValue WHERE item_id = $order_item_id");
+                      commission_rate = $new_value, manager_bonus = $manager_bonus WHERE item_id = $order_item_id");
                     $this->updateOrderPrice($orderId);
                     return true;
             }
@@ -474,7 +472,7 @@ class ModelOrder extends Model
         $this->updateOrderPrice($orderId);
 
         if ($field == 'status_id' && $orderId) {
-            $this->updateItemsStatus($orderId);
+            $this->updateItemsStatus($order_item_id, $new_order_item);
         }
         $this->clearCache(['managers_orders_selects', 'sent_to_logist']);
         return true;

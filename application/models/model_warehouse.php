@@ -589,8 +589,8 @@ class ModelWarehouse extends ModelManagers_orders
 
         $result = $this->update("UPDATE `order_items` SET `$field` = '$new_value' WHERE item_id = $warehouse_item_id");
 
-        if ($field == 'status_id' && $orderId = $old_order_item['manager_order_id']) {
-            $this->updateItemsStatus($orderId);
+        if ($field == 'status_id') {
+        	$this->updateItemsStatus($warehouse_item_id, $old_order_item);
         }
 
         if ($field == 'warehouse_id' && $result)
@@ -600,7 +600,7 @@ class ModelWarehouse extends ModelManagers_orders
         return $result;
     }
 
-    public function getDocuments($warehouse_id)
+	public function getDocuments($warehouse_id)
     {
         $docs = [
             [
@@ -618,8 +618,10 @@ class ModelWarehouse extends ModelManagers_orders
             $successItems = [];
             foreach ($items as $item) {
                 $result = $this->update("UPDATE order_items SET status_id = " . ISSUED . " WHERE item_id = $item");
-                if ($result)
-                    $successItems[] = $item;
+                if ($result) {
+	                $this->updateItemsStatus($item);
+	                $successItems[] = $item;
+                }
             }
             $this->addLog(LOG_ISSUE_FROM_WAREHOUSE, ['items' => $successItems]);
             return true;
@@ -647,7 +649,8 @@ class ModelWarehouse extends ModelManagers_orders
                     $values = implode(',', $values);
                     $result = $this->insert("INSERT INTO discarded_goods ($names) VALUES ($values)");
                     if ($result) {
-                        $this->delete("DELETE FROM order_items WHERE item_id = $itemId");
+	                    $this->updateItemsStatus($itemId);
+	                    $this->delete("DELETE FROM order_items WHERE item_id = $itemId");
                     } // TODO maybe add here update of orders for count and other
                 }
                 $this->addLog(LOG_DISCARD_FROM_WAREHOUSE, ['items' => explode(',', $items)]);
@@ -732,7 +735,8 @@ class ModelWarehouse extends ModelManagers_orders
                     $values = join(', ', $valuesArray);
                     $fieldsString = join(', ', $fieldsArray);
                     $id = $this->insert("INSERT INTO order_items ($fieldsString) VALUES ($values)");
-                    if ($id) {
+	                $this->updateItemsStatus($itemId);
+	                if ($id) {
                         $newAmount = $realAmount - $enteredAmount;
                         $this->update("UPDATE order_items SET amount = $newAmount WHERE item_id = $itemId");
                         $issuedProducts[] = $id;
@@ -753,13 +757,16 @@ class ModelWarehouse extends ModelManagers_orders
               `purchase_price`, sell_price) 
                 VALUES ($pk, $amount, $warehouseId, ".ON_STOCK.", $productPrice, ${product['sell_price']})");
 
-            if ($assembleItem)
-                $this->addLog(LOG_ASSEMBLING_PRODUCT_WAREHOUSE, [
-                        'items' => $issuedProducts,
-                        'items_detail' => $assembledSourcesDetail,
-                        'product' => $pk,
-                        'product_amount' => $amount
-                    ]);
+            if ($assembleItem) {
+	            $this->updateItemsStatus($assembleItem);
+	            $this->addLog(LOG_ASSEMBLING_PRODUCT_WAREHOUSE, [
+		            'items' => $issuedProducts,
+		            'items_detail' => $assembledSourcesDetail,
+		            'product' => $pk,
+		            'product_amount' => $amount
+	            ]);
+            }
+
 
         }
     }

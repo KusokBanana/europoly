@@ -186,12 +186,12 @@ class ModelTruck extends ModelOrder
             foreach ($products as $order_item_id) {
                 $this->update("UPDATE order_items SET status_id = ".ON_THE_WAY.", truck_id = $truck_id WHERE item_id = $order_item_id");
                 $order_items_count++;
+	            $this->updateItemsStatus($order_item_id);
             }
             // Обновим количество товаров
             $this->update("UPDATE trucks 
                               SET truck_items_count = truck_items_count + $order_items_count 
                               WHERE id = $truck_id");
-            $this->updateItemsStatus($truck_id);
         }
         return $truck_id;
     }
@@ -350,7 +350,7 @@ class ModelTruck extends ModelOrder
         $this->update("UPDATE order_items SET warehouse_id = $warehouse_id, total_price = $totalPrice,
  	      buy_and_taxes = $buyAndExpenses, warehouse_arrival_date = NOW(), status_id = ".ON_STOCK." WHERE item_id = $itemId");
 
-        $this->updateItemsStatus($truckItem['truck_id']);
+        $this->updateItemsStatus($itemId, $truckItem['truck_id']);
 
         if (!$isLogged)
             $this->addLog(LOG_DELIVERY_TO_WAREHOUSE, ['items' => [$itemId]]);
@@ -374,11 +374,11 @@ class ModelTruck extends ModelOrder
         foreach ($product_ids as $product_id) {
             $this->update("UPDATE order_items SET status_id = ".ON_THE_WAY.", truck_id = $truck_id WHERE item_id = $product_id");
             $count++;
+	        $this->updateItemsStatus($product_id);
         }
         $this->update("UPDATE trucks
                 SET truck_items_count = truck_items_count + $count
                 WHERE id = $truck_id");
-        $this->updateItemsStatus($truck_id);
 
     }
 
@@ -392,7 +392,7 @@ class ModelTruck extends ModelOrder
                 SET truck_items_count = truck_items_count - 1
                 WHERE id = $order_id");
 
-        $this->updateItemsStatus($order_id);
+        $this->updateItemsStatus($order_item_id);
 
     }
 
@@ -471,20 +471,10 @@ class ModelTruck extends ModelOrder
 
         if ($field == 'status_id') {
 //        Изменим статус самого объекта
-            $this->updateItemsStatus($old_order_item['truck_id']);
+            $this->updateItemsStatus($order_item_id, $old_order_item);
         }
 
         return $result;
-    }
-
-
-    public function updateItemsStatus($truckId)
-    {
-        $status = $this->getFirst("SELECT MIN(status_id) status_id FROM order_items  
-                                    WHERE truck_id = $truckId AND is_deleted = 0 AND status_id IS NOT NULL)");
-        $truckStatus = $status && !is_null($status['status_id']) ? $status['status_id'] : ON_THE_WAY;
-        $this->update("UPDATE trucks 
-                SET status_id = $truckStatus WHERE id = $truckId");
     }
 
     public function getStatusList()

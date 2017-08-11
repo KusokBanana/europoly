@@ -827,14 +827,88 @@ abstract class Model extends mysqli
         return NULL;
     }
 
-    public function updateItemsStatus($orderId)
+    public function updateItemsStatus($item_id, $item = false)
     {
-        $status = $this->getFirst("SELECT MIN(status_id) as status_id FROM order_items WHERE manager_order_id = $orderId AND 
+	    if (!$item) {
+		    $item = $this->getFirst("SELECT * FROM order_items WHERE item_id = $item_id");
+		    if (!$item)
+		    	return false;
+	    }
+	    if (intval($item['truck_id'])) {
+		    $this->updateTruckStatus($item['truck_id'], $item_id);
+	    } elseif (intval($item['supplier_order_id'])) {
+		    $this->updateSOStatus($item['supplier_order_id'], $item['item_id']);
+	    } elseif (intval($item['manager_order_id'])) {
+		    $this->updateMOStatus($item['manager_order_id']);
+	    }
+
+	    return true;
+    }
+
+    public function updateMOStatus($orderId)
+    {
+	    $status = $this->getFirst("SELECT MIN(status_id) as status_id FROM order_items WHERE manager_order_id = $orderId AND 
                                     is_deleted = 0 AND status_id IS NOT NULL");
-        $orderStatus = $status && !is_null($status['status_id']) ? $status['status_id'] : DRAFT;
-        $this->update("UPDATE orders 
+	    $orderStatus = $status && !is_null($status['status_id']) ? $status['status_id'] : DRAFT;
+	    $this->update("UPDATE orders 
                 SET order_status_id = $orderStatus WHERE order_id = $orderId");
-        $this->clearCache(['managers_orders_selects', 'sent_to_logist']);
+	    $this->clearCache(['managers_orders_selects', 'sent_to_logist']);
+    }
+
+    public function updateSOStatus($orderId, $item_id = false)
+    {
+
+	    $status = $this->getFirst("SELECT MIN(status_id) as status_id FROM order_items 
+									WHERE supplier_order_id = $orderId AND is_deleted = 0 AND status_id IS NOT NULL");
+	    $orderStatus = $status && !is_null($status['status_id']) ? $status['status_id'] : DRAFT_FOR_SUPPLIER;
+
+	    if ($item_id) {
+		    $item = $this->getFirst("SELECT manager_order_id FROM order_items WHERE item_id = $item_id");
+		    if (intval($item['manager_order_id'])) {
+			    $this->updateMOStatus($item['manager_order_id']);
+		    }
+	    } else {
+		    $items = $this->getAssoc("SELECT manager_order_id FROM order_items WHERE supplier_order_id = $orderId AND 
+										manager_order_id IS NOT NULL");
+		    if (!empty($items)) {
+			    foreach ($items as $item) {
+				    if (intval($item['manager_order_id'])) {
+					    $this->updateMOStatus($item['manager_order_id']);
+				    }
+			    }
+		    }
+	    }
+
+	    $this->update("UPDATE `suppliers_orders` 
+                SET status_id = $orderStatus WHERE order_id = $orderId");
+
+    }
+
+    public function updateTruckStatus($truckId, $item_id = false)
+    {
+	    $status = $this->getFirst("SELECT MIN(status_id) as status_id FROM order_items 
+									WHERE truck_id = $truckId AND is_deleted = 0 AND status_id IS NOT NULL");
+	    $truckStatus = $status && !is_null($status['status_id']) ? $status['status_id'] : ON_THE_WAY;
+
+	    if ($item_id) {
+		    $item = $this->getFirst("SELECT supplier_order_id FROM order_items WHERE item_id = $item_id");
+		    if (intval($item['supplier_order_id'])) {
+			    $this->updateSOStatus($item['supplier_order_id']);
+		    }
+	    } else {
+		    $items = $this->getAssoc("SELECT supplier_order_id FROM order_items WHERE truck_id = $truckId AND 
+										supplier_order_id IS NOT NULL");
+		    if (!empty($items)) {
+			    foreach ($items as $item) {
+				    if (intval($item['supplier_order_id'])) {
+					    $this->updateSOStatus($item['supplier_order_id']);
+				    }
+			    }
+		    }
+	    }
+
+	    $this->update("UPDATE trucks 
+                SET status_id = $truckStatus WHERE id = $truckId");
     }
 
     function getModalSelects($table_id, $page)

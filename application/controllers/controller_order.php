@@ -33,8 +33,6 @@ class ControllerOrder extends Controller
             ) || $_SESSION["perm"] >= OPERATING_MANAGER_PERM
         ) {
 
-        	$this->model->updateItemsStatus($order['order_id']);
-
             $this->view->order_status = $this->model->getItemStatusName($order['order_status_id']);
             $this->view->sales_manager = $this->model->getUser($order["sales_manager_id"]);
             $this->view->commission_agent = $this->model->getClient($order["commission_agent_id"]);

@@ -20,7 +20,7 @@ class ModelManagers_orders extends Model
         array('dt' => 4, 'db' => "CONCAT('<span class=\"brand-cell', '\">', brands.name, '</span>')"),
         array('dt' => 5, 'db' => "orders.start_date"),
 //        array('dt' => 6, 'db' => "(SELECT MIN(o.status_id) FROM order_items o
-//        JOIN items_status as o_s on MIN(o.status_id) = o_s.status_id
+//        LEFT JOIN items_status as o_s on MIN(o.status_id) = o_s.status_id
 //         WHERE o.manager_order_id = order_items.manager_order_id AND
 //            o.is_deleted = 0 AND o.status_id IS NOT NULL) status"),
         array('dt' => 6, 'db' => "status.name"),
@@ -161,9 +161,9 @@ class ModelManagers_orders extends Model
 
         $ssp = ['page' => $this->page];
 
-//        $orders = $this->getAssoc("SELECT order_id FROM orders WHERE 1");
+//        $orders = $this->getAssoc("SELECT * FROM order_items WHERE is_deleted = 0");
 //        foreach ($orders as $order) {
-//        	$this->updateItemsStatus($order['order_id']);
+//        	$this->updateItemsStatus($order['item_id'], $order);
 //        }
 
         switch ($type) {
