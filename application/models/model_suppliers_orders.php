@@ -253,7 +253,7 @@ class ModelSuppliers_orders extends ModelManagers_orders
         return array_merge($data, $selects);
     }
 
-    function addNewOrder($supplier_id = false) {
+    function addNewOrder($supplier_id) {
         $id = $this->insert("INSERT INTO suppliers_orders (supplier_date_of_order) VALUES (NOW())");
         if ($id && $supplier_id) {
             $this->update("UPDATE suppliers_orders SET supplier_id = $supplier_id");

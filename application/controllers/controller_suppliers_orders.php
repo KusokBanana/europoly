@@ -51,7 +51,7 @@ class ControllerSuppliers_orders extends Controller
     function action_add_empty_supplier_order()
     {
         $this->getAccess($this->page, 'ch');
-        $supplierId = isset($_POST['supplier']);
+        $supplierId = isset($_POST['supplier']) ? $_POST['supplier'] : false;
 
         $newId = $this->model->addNewOrder($supplierId);
         $location = ($newId) ? '/suppliers_order?id='.$newId : $_SERVER['HTTP_REFERER'];

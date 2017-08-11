@@ -315,7 +315,7 @@ class ModelPayment extends Model
                         isset($order['start_date'])) {
                         $date = date('d-m-Y', strtotime($order['start_date']));
                         $visible = $order['visible_order_id'];
-                        $downpayment_rate = round($order['total_downpayment'], 2);
+                        $downpayment_rate = round($order['total_downpayment']);
                         $purpose = "Order $visible on $date client downpayment $downpayment_rate%";
                     }
                 }

@@ -235,7 +235,7 @@ class ModelOrder extends Model
 			    break;
 			case 'sell_value':
 				$amount = $item['amount'] ? $item['amount'] : 1;
-				$result = round($item['reduced_price'], 2) * $amount;
+				$result = round($item['reduced_price'], 2) * round($amount, 3);
 				break;
 		    case 'commission_rate':
 			    $result = round($item['commission_agent_bonus'], 2) / round($item['sell_value'], 2) * 100;
@@ -348,7 +348,7 @@ class ModelOrder extends Model
                     break;
                 case 'sell_value':
 	                $sellValue = $new_value;
-	                $amount = $old_order_item['amount'] ? $old_order_item['amount'] : 1;
+	                $amount = $old_order_item['amount'] ? round($old_order_item['amount'], 3) : 1;
 	                $reduced_price = $sellValue / $amount;
 	                $discountRate = $this->getItemPriceData($order_item_id, 'discount_rate', $old_order_item,
 		                ['reduced_price' => $reduced_price]);
@@ -430,7 +430,7 @@ class ModelOrder extends Model
                     $number_of_packs = ($product['amount_in_pack']) ? $amount / floatval($product['amount_in_pack']) :
                         0;
             }
-
+			$amount = round($amount, 3);
 	        $reduced_price = $this->getItemPriceData($order_item_id, 'reduced_price', $old_order_item);
 	        $sellValue = $this->getItemPriceData($order_item_id, 'sell_value', $old_order_item,
 		        ['reduced_price' => $reduced_price, 'amount' => $amount]);

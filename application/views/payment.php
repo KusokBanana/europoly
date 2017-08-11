@@ -382,7 +382,13 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                             <div class="form-group">
                                 <label class="col-md-3 control-label" for="contractor">
                                     <button class="btn btn-info add-new-contractor-toggle" type="button">New</button>
-                                    Contractor
+                                    Contractor <?php if (isset($this->payment['contractor_id'])) {
+		                                $linkUrl = ($this->payment['category'] === PAYMENT_CATEGORY_COMMISSION_AGENT) ?
+			                                'client?' : "contractor?type=" . $this->payment['category'] . '&';
+		                                echo '<a href="' . $linkUrl . 'id=' .
+		                                        $this->payment['contractor_id'] . '">
+                                                <i class="glyphicon glyphicon-link"></i></a>';
+	                                } ?>
                                 </label>
                                 <div class="col-md-9">
                                     <select name="contractor_id" id="contractor" class="form-control" required>
@@ -396,7 +402,11 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-md-3 control-label" for="order_id">Order</label>
+                                <label class="col-md-3 control-label" for="order_id">
+                                    Order <?= isset($this->payment['order_id']) ?
+                                        "<a href=\"/order?id=" . $this->payment['order_id'] . " \">
+                                                <i class=\"glyphicon glyphicon-link\"></i></a>" : ''; ?>
+                                </label>
                                 <div class="col-md-9">
                                     <select name="order_id" id="order_id" class="form-control">
                                         <option value="0">Please, choose contractor</option>
@@ -509,6 +519,16 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                               name="purpose_of_payment"
                                               id="purpose_of_payment"
                                               rows="3"><?= $this->purpose ?></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label" for="payment_entity">
+                                    Payment entity
+                                </label>
+                                <div class="col-md-9">
+                                    <input type="text" name="payment_entity" class="form-control" id="payment_entity"
+                                           value="<?= isset($this->payment['payment_entity']) ?
+	                                           htmlspecialchars($this->payment['payment_entity']) : ''?>">
                                 </div>
                             </div>
                             <div class="form-group">

@@ -556,11 +556,12 @@ class ModelAccountant extends Model
                                 case Helper::arrGetVal($sender, 'inn'):
                                     $data['direction'] = PAYMENT_DIRECTION_EXPENSE;
                                     $contractor = $receiver;
-                                    break;
+	                                break;
                             }
 
                             if (!empty($contractor)) {
-                                $existingContractor = $this->getFirst("SELECT * FROM other WHERE inn = ${contractor['inn']}");
+	                            $data['payment_entity'] = $contractor['name'];
+	                            $existingContractor = $this->getFirst("SELECT * FROM other WHERE inn = ${contractor['inn']}");
                                 if ($existingContractor) {
                                     $data['contractor_id'] = $existingContractor['other_id'];
                                 } else {

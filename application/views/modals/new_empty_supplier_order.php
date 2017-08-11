@@ -12,10 +12,10 @@
                     <div class="form-group">
                         <label for="modal_new_order_sales_manager_2">Supplier</label>
                         <select id="modal_new_order_sales_manager_2" name="supplier" class="form-control">
-                            <option disabled selected value></option>
+                            <option disabled selected></option>
                             <?php
-                            foreach ($this->suppliers as $manager) {
-                                echo "<option value='{$manager["client_id"]}'>{$manager["name"]}</option>";
+                            foreach ($this->suppliers as $supplier) {
+                                echo "<option value='{$supplier["supplier_id"]}'>{$supplier["name"]}</option>";
                             }
                             ?>
                         </select>
