@@ -26,6 +26,9 @@ class Logger
 
     public static function createInsert($query, $user_id, $insert_id = null)
     {
+	    if (!LOG_ENABLE)
+		    return false;
+
         $table_name = explode(' ', explode('INSERT INTO ', $query)[1])[0];
         if ($table_name == 'logging')
             return false;
@@ -40,6 +43,9 @@ class Logger
 
     public static function createUpdate($query, $table_name, $user_id, $record_id = null)
     {
+    	if (!LOG_ENABLE)
+    		return false;
+
         $success = is_null($record_id) ? 'FAIL' : 'SUCCESS';
         $time = date('d.m.Y H:i:s');
         $result = "\n".$time.' '.$success.' table: '.$table_name.' user_id: '.$user_id.' record_id: '.$record_id."\n".$query;
@@ -51,6 +57,9 @@ class Logger
 
     public static function createDelete($query, $table_name, $user_id, $record_id = null)
     {
+	    if (!LOG_ENABLE)
+		    return false;
+
         $success = is_null($record_id) ? 'FAIL' : 'SUCCESS';
         $time = date('d.m.Y H:i:s');
         $result = "\n".$time.' '.$success.' table: '.$table_name.' user_id: '.$user_id.' record_id: '.$record_id."\n".$query;

@@ -269,8 +269,62 @@ class ModelAccountant extends Model
         if ($clear) {
             $this->clearTable('products');
             $this->clearIncrement('products');
-            $this->clearIncrement('nls_products');
+	        $this->clearTable('nls_products');
+	        $this->clearIncrement('nls_products');
+	        $this->clearTable('photos');
+	        $this->clearIncrement('photos');
         }
+
+//        $hardwords = $this->getAssoc("SELECT product_id, sheet FROM products WHERE sheet LIKE 'Admonter Hardwood'");
+//        $count = count($hardwords);
+//        echo $count;
+//        echo '<pre>';
+//        print_r($array);
+//        echo '</pre>';
+//        $lastId = $hardwords[$count - 1]['product_id'];
+//        $firstId = $hardwords[0]['product_id'];
+//        $totalCount = count($array);
+//        $deleteIds = [];
+//        foreach ($hardwords as $oneItem) {
+//        	$deleteIds[] = $oneItem['product_id'];
+//        }
+//        $deleteIds = join(',', $deleteIds);
+//	    $this->delete("DELETE FROM products WHERE product_id IN ($deleteIds)");
+//	    $this->delete("DELETE FROM nls_products WHERE product_id IN ($deleteIds)");
+////        if (!$res) {
+////        	throw new Exception("Can't delete");
+////        }
+//
+//        $productsAfter = $this->getAssoc("SELECT * FROM products WHERE product_id > $lastId ORDER BY product_id DESC");
+//        foreach ($productsAfter as $product) {
+//        	$upRes = $this->update("UPDATE products SET product_id = product_id + $totalCount
+//				WHERE product_id = ${product['product_id']}");
+//
+//	        $oldId = $product['product_id'];
+//	        $id = $oldId + $totalCount;
+//
+//        	if (!$upRes)
+//        		throw new Exception("Error while updating product id on " . $oldId . ' - ' . $product['visual_name']);
+//
+//        	$this->update("UPDATE nls_products SET product_id = $id, nls_product_id = $id
+//				WHERE product_id = ${product['product_id']}");
+//
+//        	$ordProduct = $this->getAssoc("SELECT * FROM order_items WHERE product_id = $oldId");
+//        	foreach ($ordProduct as $oneOrdProduct) {
+//        		$item_id = $oneOrdProduct['item_id'];
+//        		$this->update("UPDATE order_items SET product_id = $id WHERE item_id = $item_id");
+//	        }
+//
+//        	$ordProduct = $this->getAssoc("SELECT * FROM discarded_goods WHERE product_id = $oldId");
+//        	foreach ($ordProduct as $oneOrdProduct) {
+//        		$item_id = $oneOrdProduct['item_id'];
+//        		$this->update("UPDATE discarded_goods SET product_id = $id WHERE item_id = $item_id");
+//	        }
+//
+//	        echo '<pre>';
+//	        print_r($product);
+//	        echo '</pre>';
+//        }
 
         $brands = $this->getAssoc("SELECT * FROM brands WHERE is_deleted = 0");
 
@@ -282,8 +336,12 @@ class ModelAccountant extends Model
             return null;
         }
 
-        foreach ($array as $item) {
+        foreach ($array as $idI => $item) {
 
+//        	if ($idI < 3000) {
+//        		echo $idI . ' ';
+//        		continue;
+//	        }
 
             $brand = $item['brand']['val'];
             if ($brand !== null) {
@@ -294,21 +352,30 @@ class ModelAccountant extends Model
             }
             unset($item['brand']);
 
-
             $names = '';
             $rusNames = '';
             $values = '';
             $rusValues = '';
-            $empty = count($item) - 1;
 
-            foreach ($item as $name => $valsArray) {
+	        $images = [
+	        	$item['image_id_A']['val'],
+		        $item['image_id_B']['val'],
+		        $item['image_id_V']['val']
+	        ];
+	        unset($item['image_id_A']);
+	        unset($item['image_id_B']);
+	        unset($item['image_id_V']);
+
+	        $empty = count($item) - 1;
+
+	        foreach ($item as $name => $valsArray) {
                 $value = trim($valsArray['val']);
                 $type = $valsArray['type'];
                 if (!$value || $value == null) {
                     $empty--;
                     continue;
                 }
-                $value = mysql_real_escape_string($value);
+                $value = Helper::safeVar($value);
 
                 if (strpos($name, '_rus') !== false) {
                     $name = str_replace('_rus', '', $name);
@@ -336,10 +403,18 @@ class ModelAccountant extends Model
 
             $productId = $this->insert("INSERT INTO products ($names status)
                           VALUES ($values 0)");
+            if ($productId) {
+	            foreach ($images as $image) {
+					if ($image && $image !== null) {
+						$image = Helper::safeVar($image);
+						$this->insert("INSERT INTO photos (product_id, name) VALUES ($productId, '$image')");
+					}
+	            }
+            }
 
             if ($productId && $rusNames && $rusValues) {
-                $this->insert("INSERT INTO nls_products ($rusNames product_id, language_id)
-                          VALUES ($rusValues $productId, 2)");
+                $this->insert("INSERT INTO nls_products ($rusNames language_id)
+                          VALUES ($rusValues 2)");
             }
 
         }

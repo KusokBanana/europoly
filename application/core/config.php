@@ -60,3 +60,4 @@ define('LOG_ASSEMBLING_PRODUCT_WAREHOUSE', 'Product was assembled in warehouse')
 define('LOG_CHANGE_WAREHOUSE', 'Product changed warehouse');
 
 define("AVENA_INN", '7715860159');
+define("LOG_ENABLE", false);

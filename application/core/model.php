@@ -64,10 +64,11 @@ abstract class Model extends mysqli
             Logger::createUpdate($query, $table_name, $user_id);
             die("Mysqli: error while update, current role: " . $_SESSION["user_role"]);
         }
+        $updateResult = $this->affected_rows > 0;
         $q = "UPDATE $table_name SET created_at=NOW() modified_user_id='$user_id' $where";
         Logger::createUpdate($query, $table_name, $user_id, $record_id);
         $this->query("UPDATE $table_name SET modified_at= NOW(), modified_user_id=$user_id $where");
-        return $this->affected_rows > 0;
+        return $updateResult;
     }
 
     public function getMax($query)
@@ -128,8 +129,8 @@ abstract class Model extends mysqli
         $list = [];
         if ($result = $this->query($query)) {
             while ($row = $result->fetch_assoc()) {
-                if (isset($row['is_deleted']) && $row['is_deleted'])
-                    continue;
+//                if (isset($row['is_deleted']) && $row['is_deleted'])
+//                    continue;
                 array_push($list, $row);
             }
         }

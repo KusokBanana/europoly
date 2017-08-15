@@ -21,18 +21,25 @@ class ControllerAccountant extends Controller
         define('EOL',(PHP_SAPI == 'cli') ? PHP_EOL : '<br />');
         date_default_timezone_set('Europe/London');
 //        set_time_limit(-1);
+//	    ini_set('memory_limit', '-1');
+//	    ini_set('max_execution_time', '9000');
+//        $parser = [];
+//        require dirname(__FILE__) . "/../../assets/phpExcel/Examples/parser.php";
 
-        $parser = [];
-        require dirname(__FILE__) . "/../../assets/phpExcel/Examples/parser.php";
+//        $file = dirname(__FILE__) . "/../../dump_db/dumps/catalogue/total_dump_14_08.txt";
 
-        $file = dirname(__FILE__) . "/parse2.txt";
-
-        $fd = fopen($file, 'w') or die("не удалось создать файл");
-        $str = json_encode($parser);
-        fwrite($fd, $str);
-        fclose($fd);
-        echo '<br><br>Job Is Done';
-        die();
+//        $fd = fopen($file, 'r') or die("не удалось прочитать файл");
+//        $fd = fopen($file, 'w') or die("не удалось создать файл");
+//	    echo count($parser);
+//	    print_r($parser);
+//	    $str = json_encode($parser);
+//	    $parser = fread($fd, filesize($file));
+//        fwrite($fd, $str);
+//        fclose($fd);
+//	    die();
+//	    $parser = json_decode($parser, true);
+//        echo '<br><br>Job Is Done';
+//        die();
 //        require dirname(__FILE__) . "/../../assets/phpExcel/Examples/expenses_parser.php";
 
 //        $this->model->initCatalogueParser($parser, false);

@@ -16,6 +16,14 @@ class ControllerCatalogue extends Controller
     {
         $this->view->title = "Catalogue";
 
+//        $ord = $this->model->getAssoc("SELECT * FROM order_items o LEFT JOIN products p ON (p.product_id = o.product_id)
+//			WHERE p.sheet LIKE 'Admonter Hardwood'");
+//        echo '<pre>';
+//        print_r($ord);
+//        echo '</pre>';
+//        die();
+
+
         $this->getAccess($this->page, 'v');
 
         $this->view->productsTable = $this->model->getTableData();
