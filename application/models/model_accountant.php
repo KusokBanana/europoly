@@ -97,7 +97,6 @@ class ModelAccountant extends Model
 	 */
     function getSSPData($type = 'general', $opts = [])
     {
-
         $ssp = ['page' => $this->page];
         $where = ['payments.is_deleted = 0'];
 
@@ -108,11 +107,11 @@ class ModelAccountant extends Model
 		        if ($_SESSION['perm'] <= SALES_MANAGER_PERM) {
 			        $this->unLinkStrings($columns, [1, 5]);
 		        }
-		        $ssp = array_merge($ssp, $this->getColumns($columns, $this->page, $this->tableName));
-		        $ssp = array_merge($ssp, $this->getColumns($this->ordersColumnsNames, $this->page, $this->tableName, true));
+		        $ssp = array_merge($ssp, $this->getColumns($columns, $this->page, $type));
+		        $ssp = array_merge($ssp, $this->getColumns($this->ordersColumnsNames, $this->page, $type, true));
 		        $ssp['db_table'] = $this->payments_table;
                 $ssp['primary'] = 'payments.payment_id';
-                $ssp['table_name'] = $this->tableName;
+                $ssp['table_name'] = $type;
                 $ssp['where'] = "payments.order_id = ".$opts['order_id']." AND category = '".$opts['type'].
                                 "' AND payments.is_deleted = 0";
 				return $ssp;

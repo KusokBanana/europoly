@@ -25,7 +25,8 @@ class ControllerSuppliers_order extends Controller
         if ($this->view->access['p']) {
             $this->view->documents = $this->model->getDocuments($_GET['id']);
         }
-        $this->view->column_names = $roles->returnModelNames($this->model->suppliers_orders_column_names, $this->page);
+        $this->view->itemsTable = $this->model->getTableData('general', ['order_id' => $_GET['id']]);
+	    $this->view->paymentsTable = $this->model->getTableData('orders_payments', ['order_id' => $_GET['id']]);
 
         $this->view->modal_catalogue = $this->model->getTableData('modal_catalogue');
 
@@ -39,7 +40,7 @@ class ControllerSuppliers_order extends Controller
 
     function action_dt_order_items()
     {
-        $this->model->getDTOrderItems($_GET['order_id'], $_GET);
+        $this->model->getDTOrderItems($_POST['products']['order_id'], $_POST);
     }
 
     function action_change_status()

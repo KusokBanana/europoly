@@ -332,7 +332,7 @@
                                         'url' => '/accountant/dt_order_payments',
                                         'data' => [
 	                                        'order_id' => $this->order["order_id"],
-	                                        'type' => 'Client',
+	                                        'type' => PAYMENT_CATEGORY_CLIENT,
                                         ]
                                     ]
 	                            ];

@@ -93,24 +93,10 @@ class ModelSuppliers_order extends ModelOrder
 
     function getDTOrderItems($order_id, $input)
     {
+    	$ssp = $this->getSSPData('general', ['order_id' => $order_id]);
 
-        $table = 'order_items as suppliers_orders_items
-                left join products on suppliers_orders_items.product_id = products.product_id ' .
-                $this->full_products_table_addition . ' 
-                left join suppliers_orders on suppliers_orders_items.supplier_order_id = suppliers_orders.order_id
-                left join suppliers as order_supplier on suppliers_orders.supplier_id = order_supplier.supplier_id
-                left join orders on suppliers_orders_items.manager_order_id = orders.order_id
-                left join items_status as status on suppliers_orders_items.status_id = status.status_id
-                left join clients on orders.client_id = clients.client_id
-                left join users as managers on orders.sales_manager_id = managers.user_id';
-
-        $roles = new Roles();
-        $columns = $roles->returnModelColumns($this->suppliers_orders_columns, 'suppliersOrder');
-        if ($_SESSION['perm'] <= ADMIN_PERM) {
-            $this->unLinkStrings($columns, [5]);
-        }
-        $this->sspComplex($table, "suppliers_orders_items.item_id", $columns,
-            $input, null, "suppliers_orders_items.supplier_order_id = $order_id");
+        $this->sspComplex($ssp['db_table'], $ssp['primary'], $ssp['columns'],
+            $input, null, $ssp['where']);
     }
 
     public function getOrder($order_id)
@@ -307,11 +293,46 @@ class ModelSuppliers_order extends ModelOrder
         return parent::getSums($truckItems);
     }
 
-    function getSSPData($type = 'general')
+    function getSSPData($type = 'general', $opts = [])
     {
         $ssp = ['page' => $this->page];
 
         switch ($type) {
+            case 'general':
+	            $table = 'order_items as suppliers_orders_items
+                left join products on suppliers_orders_items.product_id = products.product_id ' .
+	                     $this->full_products_table_addition . ' 
+                left join suppliers_orders on suppliers_orders_items.supplier_order_id = suppliers_orders.order_id
+                left join suppliers as order_supplier on suppliers_orders.supplier_id = order_supplier.supplier_id
+                left join orders on suppliers_orders_items.manager_order_id = orders.order_id
+                left join items_status as status on suppliers_orders_items.status_id = status.status_id
+                left join clients on orders.client_id = clients.client_id
+                left join users as managers on orders.sales_manager_id = managers.user_id';
+
+	            $columns = $this->suppliers_orders_columns;
+	            if ($_SESSION['perm'] <= ADMIN_PERM) {
+		            $this->unLinkStrings($columns, [5]);
+	            }
+
+	            $tableName = 'table_suppliers_order_items';
+	            $order_id = $opts['order_id'];
+	            $ssp = array_merge($ssp, $this->getColumns($columns, $this->page, $tableName));
+	            $ssp = array_merge($ssp, $this->getColumns($this->suppliers_orders_column_names, $this->page,
+		            $tableName, true));
+	            $ssp['db_table'] = $table;
+	            $ssp['table_name'] = $tableName;
+	            $ssp['primary'] = 'suppliers_orders_items.item_id';
+	            $ssp['where'] = "suppliers_orders_items.supplier_order_id = $order_id";
+
+            	break;
+	        case 'orders_payments':
+		        require_once 'model_accountant.php';
+		        $model = new ModelAccountant();
+		        $model->page = $this->page;
+		        $model->tableName = $type;
+		        $opts['type'] = PAYMENT_CATEGORY_SUPPLIER;
+		        $ssp = $model->getSSPData($type, $opts);
+		        break;
             case 'modal_catalogue':
                 require_once 'model_catalogue.php';
                 $model = new ModelCatalogue();
@@ -326,10 +347,14 @@ class ModelSuppliers_order extends ModelOrder
 
     public function getTableData($type = 'general', $opts = [])
     {
-        $data = $this->getSSPData($type);
+        $data = $this->getSSPData($type, $opts);
 
         switch ($type) {
-            case 'modal_catalogue':
+	        case 'orders_payments':
+	        case 'general':
+	            $selects = $this->getSelects($data);
+				break;
+	        case 'modal_catalogue':
                 $cache = new Cache();
                 $selects = $cache->getOrSet($type, function() use($data) {
                     $model = new ModelCatalogue();

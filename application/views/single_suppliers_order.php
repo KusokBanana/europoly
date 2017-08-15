@@ -96,29 +96,21 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-xs-12 table-scrollable"">
-                <table class="table table-striped table-hover" id="table_order_items">
-                    <thead>
-                        <tr>
-                            <?php
-                            $column_name_ids = [];
-                            if (!empty($this->column_names)) {
-                                foreach ($this->column_names as $key => $column_name) {
-                                    echo '<th>' . $column_name . '</th>';
-                                    if ($key)
-                                        $column_name_ids[] = $key;
-                                }
-                            }
-                            ?>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="12" class="dataTables_empty">Loading data from server...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+	        <?php
+	        $commonData = [
+		        'click_url' => "javascript:;",
+		        'method' => "POST",
+		        'serverSide' => false,
+		        'ajax' => [
+			        'url' => '/suppliers_order/dt_order_items',
+			        'data' => [
+				        'order_id' => $this->order["order_id"]
+			        ]
+		        ]
+	        ];
+            $table_data = array_merge($this->itemsTable, $commonData);
+            include 'application/views/templates/table.php'
+            ?>
         </div>
         <br>
         <div class="row">
@@ -141,37 +133,22 @@
                         </div>
                     </div>
                     <div class="portlet-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover table-bordered table-striped" id="table-payments">
-                                <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>Payment ID</th>
-                                    <th>Date</th>
-                                    <th>Legal entity</th>
-                                    <th>Category</th>
-                                    <th>Contractor</th>
-                                    <th>Order</th>
-                                    <th>Transfer Type</th>
-                                    <th>Sum</th>
-                                    <th>Currency</th>
-                                    <th>Direction</th>
-                                    <th>Currency Rate</th>
-                                    <th>Sum in EURO</th>
-                                    <th>Purpose of Payment</th>
-                                    <th>Article of Expense</th>
-                                    <th>Category of Expense</th>
-                                    <th>Responsible Person</th>
-                                    <th>Status</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td colspan="12" class="dataTables_empty">Loading data from server...</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
+	                    <?php
+	                    $commonData = [
+		                    'click_url' => "javascript:;",
+		                    'method' => "POST",
+		                    'serverSide' => false,
+		                    'ajax' => [
+			                    'url' => '/accountant/dt_order_payments',
+			                    'data' => [
+				                    'order_id' => $this->order["order_id"],
+				                    'type' => PAYMENT_CATEGORY_SUPPLIER,
+			                    ]
+		                    ]
+	                    ];
+	                    $table_data = array_merge($this->paymentsTable, $commonData);
+	                    include 'application/views/templates/table.php'
+	                    ?>
                     </div>
                 </div>
             </div>
@@ -185,39 +162,9 @@
         var clients = <?= $this->toJsList($this->clients, "client_id") ?>;
         var item_statuses = <?= json_encode($this->statusList); ?>;
         var suppliers = <?= json_encode($this->supplier['list']); ?>;
-        var $column_name_ids = <?= json_encode($column_name_ids); ?>;
-        var $table_order_items = $("#table_order_items");
-        var serialNumber = 0;
-        $table_order_items.DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url: '/suppliers_order/dt_order_items',
-                data: {
-                    'order_id': <?= $this->order["order_id"] ?>
-                }
-            },
-            dom: '<t>ip',
-            order: [[0, 'asc']],
-            bAutoWidth: false,
-            scrollY: "600px",
-            scrollX: true,
-            scrollCollapse: true,
-            deferRender: true,
-            columnDefs: [
-                {
-                    targets: $column_name_ids,
-                    searchable: false,
-                    orderable: false
-                },
-                {
-                    targets: 0,
-                    visible: true,
-                    orderable: true,
-                    searchable: false
-                }
-            ]
-        });
+        var table_order_items = "<?= $this->itemsTable['table_name'] ?>";
+        var $table_order_items = $("#" + table_order_items);
+
         $table_order_items.on('draw.dt', function () {
             $('.table-confirm-btn').confirmation({
                 rootSelector: '.table-confirm-btn'
@@ -371,28 +318,8 @@
             }
         });
 
-        var $table_payments = $("#table-payments");
-        $table_payments.DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url: '/accountant/dt_order_payments',
-                data: {
-                    'order_id': <?= $this->order["order_id"] ?>,
-                    'type': 'Supplier'
-                }
-            },
-            dom: '<t>ip',
-            columnDefs: [{
-                targets: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
-                searchable: false,
-                orderable: false
-            }, {
-                targets: [0],
-                visible: false,
-                searchable: false
-            }]
-        });
+        var table_payments = "<?= $this->paymentsTable['table_name'] ?>";
+        var $table_payments = $("#" + table_payments);
 
         $table_payments.on('draw', function() {
             var contractors = $('table').find('.change-me-contractor');
