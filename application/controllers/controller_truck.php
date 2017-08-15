@@ -28,6 +28,8 @@ class ControllerTruck extends Controller
 //        $this->view->full_product_hidden_columns = $this->model->full_product_hidden_columns;
         $this->view->modal_suppliers_items = $this->model->getTableData('modal_suppliers_orders');
 
+        $this->view->itemsTable = $this->model->getTableData('general', ['truck_id' => $_GET['id']]);
+
         $this->view->status = $this->model->getTruckStatus($_GET['id']);
         $this->view->statusList = $this->model->getStatusList();
         $this->view->delivery = $this->model->getDelivery($_GET['id']);
@@ -104,7 +106,7 @@ class ControllerTruck extends Controller
 
     function action_dt_order_items()
     {
-        $this->model->getDTTrucks($_GET['order_id'], $_GET);
+        $this->model->getDTTrucks($_POST['products']['truck_id'], $_POST);
     }
 
     function action_change_status()

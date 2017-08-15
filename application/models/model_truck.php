@@ -150,20 +150,10 @@ class ModelTruck extends ModelOrder
 
     function getDTTrucks($truck_id, $input)
     {
-        $trucks_table = 'order_items as trucks_items
-            left join products on trucks_items.product_id = products.product_id ' . $this->full_products_table_addition .' 
-            left join trucks on trucks.id = trucks_items.truck_id
-            left join suppliers_orders on suppliers_orders.order_id = trucks_items.supplier_order_id
-            left join orders on trucks_items.manager_order_id = orders.order_id
-            left join clients on orders.client_id = clients.client_id
-            left join items_status as status on trucks_items.status_id = status.status_id
-            left join users as managers on orders.sales_manager_id = managers.user_id';
+	    $ssp = $this->getSSPData('general', ['truck_id' => $truck_id]);
 
-        $roles = new Roles();
-        $columns = $roles->returnModelColumns($this->truck_columns, 'truck');
+	    $this->sspComplex($ssp['db_table'], $ssp['primary'], $ssp['columns'], $input, null, $ssp['where']);
 
-        $this->sspComplex($trucks_table, "trucks_items.item_id", $columns,
-            $input, null, "trucks_items.truck_id = $truck_id");
     }
 
     public function getTruckStatus($truck_id)
@@ -204,11 +194,31 @@ class ModelTruck extends ModelOrder
             $input, null, "trucks_items.truck_id = $order_id");
     }
 
-    function getSSPData($type = 'general')
+    function getSSPData($type = 'general', $opts = [])
     {
         $ssp = ['page' => $this->page];
 
         switch ($type) {
+            case 'general':
+	            $trucks_table = 'order_items as trucks_items
+		            left join products on trucks_items.product_id = products.product_id ' . $this->full_products_table_addition .' 
+		            left join trucks on trucks.id = trucks_items.truck_id
+		            left join suppliers_orders on suppliers_orders.order_id = trucks_items.supplier_order_id
+		            left join orders on trucks_items.manager_order_id = orders.order_id
+		            left join clients on orders.client_id = clients.client_id
+		            left join items_status as status on trucks_items.status_id = status.status_id
+		            left join users as managers on orders.sales_manager_id = managers.user_id';
+
+	            $tableName = 'table_truck_items';
+	            $ssp = array_merge($ssp, $this->getColumns($this->truck_columns, $this->page,
+		            $tableName));
+	            $ssp = array_merge($ssp, $this->getColumns($this->truck_column_names, $this->page,
+		            $tableName, true));
+	            $ssp['db_table'] = $trucks_table;
+	            $ssp['table_name'] = $tableName;
+	            $ssp['primary'] = 'trucks_items.item_id';
+	            $ssp['where'] = "trucks_items.truck_id = " . $opts['truck_id'];
+            	break;
             case 'modal_suppliers_orders':
                 require_once 'model_suppliers_orders.php';
                 $model = new ModelSuppliers_orders();
@@ -222,9 +232,13 @@ class ModelTruck extends ModelOrder
 
     public function getTableData($type = 'general', $opts = [])
     {
-        $data = $this->getSSPData($type);
+        $data = $this->getSSPData($type, $opts);
 
         switch ($type) {
+            case 'general':
+            	$selects = $this->getSelects($data);
+            	break;
+
             case 'modal_suppliers_orders':
                 $model = new ModelSuppliers_orders();
                 $selects = $model->getSelects($data);

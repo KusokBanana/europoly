@@ -129,29 +129,21 @@
             </div>
         </div>
         <div class="row" >
-            <div class="col-xs-12 table-scrollable"">
-                <table class="table table-striped table-hover" id="table_truck_items">
-                    <thead>
-                    <tr>
-                        <?php
-                        $column_name_ids = [];
-                        if (!empty($this->column_names)) {
-                            foreach ($this->column_names as $key => $column_name) {
-                                echo '<th>' . $column_name . '</th>';
-                                if ($key)
-                                    $column_name_ids[] = $key;
-                            }
-                        }
-                        ?>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td colspan="12" class="dataTables_empty">Loading data from server...</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+	        <?php
+	        $commonData = [
+		        'click_url' => "javascript:;",
+		        'method' => "POST",
+		        'serverSide' => false,
+		        'ajax' => [
+			        'url' => '/truck/dt_order_items',
+			        'data' => [
+				        'truck_id' => $this->order["id"],
+			        ]
+		        ]
+	        ];
+	        $table_data = array_merge($this->itemsTable, $commonData);
+	        include 'application/views/templates/table.php'
+	        ?>
         </div>
     </div>
 
@@ -193,29 +185,10 @@
         var item_statuses = <?= json_encode($this->statusList); ?>;
         var transports = <?= json_encode($this->delivery['list']) ?>;
         var customs = <?= json_encode($this->customs['list']) ?>;
-        var $column_name_ids = <?= json_encode($column_name_ids); ?>;
         var warehouses = <?= json_encode($this->warehouses); ?>;
-        var $table_order_items = $("#table_truck_items");
-        $table_order_items.DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url: '/truck/dt_order_items',
-                data: {
-                    'order_id': <?= $this->order["id"] ?>
-                }
-            },
-            dom: '<t>ip',
-            columnDefs: [{
-                targets: $column_name_ids,
-                searchable: false,
-                orderable: false
-            }, {
-                targets: [0],
-                visible: false,
-                searchable: false
-            }]
-        });
+        var table_order_items = "<?= $this->itemsTable['table_name'] ?>";
+        var $table_order_items = $("#" + table_order_items);
+
         $table_order_items.on('draw.dt', function () {
             $('.table-confirm-btn').confirmation({
                 rootSelector: '.table-confirm-btn'
