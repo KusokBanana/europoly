@@ -232,6 +232,7 @@ class ModelSuppliers_orders extends ModelManagers_orders
             $selects = Helper::getSelectsFromValues($rowValues, $columnsNames, $ignoreArray, true);
             return ['selectSearch' => $selects, 'filterSearchValues' => $rowValues];
         }
+        return [];
     }
 
     public function getTableData($type = 'general')

@@ -341,6 +341,7 @@ class ModelDelivery_notes extends Model
             $selects = Helper::getSelectsFromValues($rowValues, $columnsNames, $ignoreArray);
             return ['selectSearch' => $selects, 'filterSearchValues' => $rowValues];
         }
+        return [];
     }
 
     public function getTableData($type = 'general')
