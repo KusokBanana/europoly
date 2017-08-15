@@ -40,9 +40,11 @@ class ControllerOrder extends Controller
             $this->view->warehouses = $this->model->getWarehousesIdNames();
 
             $roles = new Roles();
-            $this->view->column_names = $roles->returnModelNames($this->model->order_columns_names, $this->page);
+	        $this->view->itemsTable = $this->model->getTableData('general', ['order_id' => $order['order_id']]);
+	        $this->view->paymentsTable = $this->model->getTableData('orders_payments', ['order_id' => $order['order_id']]);
+	        $this->view->deliveryNotesTable = $this->model->getTableData('delivery_notes', ['order_id' => $order['order_id']]);
 
-            $this->view->access = $roles->getPageAccessAbilities($this->page);
+	        $this->view->access = $roles->getPageAccessAbilities($this->page);
             if ($this->view->access['p']) {
                 $this->view->documents = $this->model->getDocuments($_GET['id']);
             }
@@ -52,8 +54,6 @@ class ControllerOrder extends Controller
             $this->view->managers = $this->model->getSalesManagersIdName();
             $this->view->legalEntities = $this->model->getLegalEntities();
             $this->view->legalEntityName = $this->model->getLegalEntityName($order['legal_entity_id']);
-
-            $this->view->delivery_notes_columns = $this->model->getDeliveryNotesColumns();
 
             $clientsFor = $this->user->role_id == ROLE_ADMIN ? false : $order["sales_manager_id"];
             $this->view->clients = $this->model->getClientsOfSalesManager($clientsFor);

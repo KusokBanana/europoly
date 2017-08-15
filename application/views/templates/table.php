@@ -387,7 +387,7 @@ $hidden_by_default = json_encode($hidden);
             var topScrollSize = $table.closest('.dataTables_wrapper').find('.top-scroll').width();
             var fakeSize = $table.closest('.dataTables_wrapper').find('.top-scroll .fake').width();
             if (parseInt(topScrollSize) - parseInt(fakeSize) < 60 && parseInt(topScrollSize) - parseInt(fakeSize) > 0) {
-                $table.closest('.dataTables_wrapper').find('.dataTables_scrollHeadInner').find('.td-wrapper').css('width', '100%')
+                $table.closest('.dataTables_wrapper').find('.dataTables_scrollHeadInner').find('.td-wrapper').css('width', '100%');
                     $.each($table.find('.td-wrapper'), function () {
                         $(this).css('width', (parseInt($(this).parent('td').css('width')) - 10 + 'px'));
                     });
@@ -593,18 +593,18 @@ $hidden_by_default = json_encode($hidden);
                 }
             }
         });
-        // X-editable don't run away from visible area
-        $('table').on('click', '.x-editable.editable-click', function() {
-            var popover = $(this).next('.popover.editable-container.editable-popup');
-            var maxLeft = popover.closest('table').offset().left,
-                currentLeft = popover.offset().left,
-                difference = maxLeft - currentLeft;
-
-            if (difference > 0) {
-                var left = +popover.css('left').slice(0,-2);
-                popover.css('left', (left + difference) + 'px');
-            }
-        });
+        // X-editable doesn't run away from visible area
+//        $('table').on('click', '.x-editable.editable-click', function() {
+//            var popover = $(this).next('.popover.editable-container.editable-popup');
+//            var maxLeft = popover.closest('table').offset().left,
+//                currentLeft = popover.offset().left,
+//                difference = maxLeft - currentLeft;
+//
+//            if (difference > 0) {
+//                var left = +popover.css('left').slice(0,-2);
+//                popover.css('left', (left + difference) + 'px');
+//            }
+//        });
 
         // Write selected rows into table data
         $table.find('tbody').on('click', 'tr td:first-child', function (e) {

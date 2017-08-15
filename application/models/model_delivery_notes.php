@@ -147,16 +147,30 @@ class ModelDelivery_notes extends Model
                                 </a>')"),
     ];
 
-    /**
-     * @param string $type
-     * @return array = ['columns', 'columns_names', 'db_table', 'table_name', 'primary', 'page']
-     */
-    function getSSPData($type = 'general')
+	/**
+	 * @param string $type
+	 * @param array $opts
+	 *
+	 * @return array = ['columns', 'columns_names', 'db_table', 'table_name', 'primary', 'page']
+	 */
+    function getSSPData($type = 'general', $opts = [])
     {
 
         $ssp = ['page' => $this->page];
 
         switch ($type) {
+            case 'order':
+	            $where = ['order_items.is_deleted = 0', 'orders.order_id = ' . $opts['order_id']];
+
+	            $ssp = array_merge($ssp, $this->getColumns($this->delivery_notes_columns, $this->page,
+		            $this->tableNames[0]));
+	            $ssp = array_merge($ssp, $this->getColumns($this->delivery_notes_columns_names, $this->page,
+		            $this->tableNames[0], true));
+	            $ssp['db_table'] = $this->delivery_notes_table;
+	            $ssp['where'] = $where;
+	            $ssp['table_name'] = $this->tableNames[0];
+	            $ssp['primary'] = 'delivery_note_items.id';
+	            break;
             case 'general':
 
                 $ssp = array_merge($ssp, $this->getColumns($this->delivery_notes_columns, $this->page,
@@ -250,20 +264,11 @@ class ModelDelivery_notes extends Model
 
     function getDTForOrder($order_id, $input)
     {
-        $where = ['order_items.is_deleted = 0', 'orders.order_id = ' . $order_id];
 
-        $columns = $this->delivery_notes_columns;
-        $ssp = [
-            'columns' => $columns,
-            'columns_names' => $this->delivery_notes_columns_names,
-            'db_table' => $this->delivery_notes_table,
-            'page' => 'deliveryNotes',
-            'table_name' => $this->tableNames[0],
-            'primary' => 'delivery_note_items.id',
-        ];
+    	$ssp = $this->getSSPData('order', ['order_id' => $order_id]);
 
         $this->sspComplex($ssp['db_table'], $ssp['primary'],
-            $ssp['columns'], $input, null, $where);
+            $ssp['columns'], $input, null, $ssp['where']);
 
     }
 

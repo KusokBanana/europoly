@@ -22,7 +22,7 @@ class ControllerAccountant extends Controller
         date_default_timezone_set('Europe/London');
 //        set_time_limit(-1);
 //	    ini_set('memory_limit', '-1');
-//	    ini_set('max_execution_time', '9000');
+	    ini_set('max_execution_time', '9000');
 //        $parser = [];
 //        require dirname(__FILE__) . "/../../assets/phpExcel/Examples/parser.php";
 
@@ -96,7 +96,9 @@ class ControllerAccountant extends Controller
 
     function action_dt_order_payments()
     {
-        $this->model->getDTOrderPayments($_GET['order_id'], $_GET['type'], $_GET);
+    	$orderId = $_POST['products']['order_id'];
+    	$type = $_POST['products']['type'];
+        $this->model->getDTOrderPayments($orderId, $type, $_POST);
     }
 
     function action_delete()

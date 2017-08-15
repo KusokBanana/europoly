@@ -134,8 +134,8 @@ class ControllerDelivery_notes extends Controller
 
     function action_dt_for_order()
     {
-        $order_id = isset($_GET['order_id']) ? $_GET['order_id'] : false;
-        $this->model->getDTForOrder($order_id, $_GET);
+        $order_id = isset($_POST['products']['order_id']) ? $_POST['products']['order_id'] : false;
+        $this->model->getDTForOrder($order_id, $_POST);
     }
 
 

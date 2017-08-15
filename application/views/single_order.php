@@ -276,31 +276,17 @@
                                 </div>
                             </div>
                             <div class="portlet-body">
-                                <div class="table-responsive">
-                                    <table id="table_order_items" class="table table-hover table-bordered table-striped">
-                                        <thead>
-                                        <tr>
-                                            <?php
-                                            $column_name_ids = [];
-                                            if (!empty($this->column_names)) {
-                                                foreach ($this->column_names as $key => $column_name) {
-                                                    if (!$key)
-                                                        $column_name = '';
-                                                    echo '<th>' . $column_name . '</th>';
-                                                    if ($key)
-                                                        $column_name_ids[] = $key;
-                                                }
-                                            }
-                                            ?>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td colspan="12" class="dataTables_empty">Loading data from server...</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+	                            <?php
+	                            $commonData = [
+		                            'click_url' => "javascript:;",
+		                            'method' => "POST",
+		                            'serverSide' => false,
+                                    'ajax' => ['url' => '/order/dt_order_items?order_id=' . $this->order['order_id']]
+	                            ];
+
+	                            $table_data = array_merge($this->itemsTable, $commonData);
+	                            include 'application/views/templates/table.php'
+	                            ?>
                             </div>
                         </div>
                     </div>
@@ -337,37 +323,22 @@
                                 </div>
                             </div>
                             <div class="portlet-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-bordered table-striped" id="table-payments">
-                                        <thead>
-                                        <tr>
-                                            <th></th>
-                                            <th>Payment ID</th>
-                                            <th>Date</th>
-                                            <th>Legal entity</th>
-                                            <th>Category</th>
-                                            <th>Contractor</th>
-                                            <th>Order</th>
-                                            <th>Transfer Type</th>
-                                            <th>Sum</th>
-                                            <th>Currency</th>
-                                            <th>Direction</th>
-                                            <th>Currency Rate</th>
-                                            <th>Sum in EURO</th>
-                                            <th>Purpose of Payment</th>
-                                            <th>Article of Expense</th>
-                                            <th>Category of Expense</th>
-                                            <th>Responsible Person</th>
-                                            <th>Status</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td colspan="12" class="dataTables_empty">Loading data from server...</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+	                            <?php
+	                            $commonData = [
+		                            'click_url' => "javascript:;",
+		                            'method' => "POST",
+		                            'serverSide' => false,
+		                            'ajax' => [
+                                        'url' => '/accountant/dt_order_payments',
+                                        'data' => [
+	                                        'order_id' => $this->order["order_id"],
+	                                        'type' => 'Client',
+                                        ]
+                                    ]
+	                            ];
+	                            $table_data = array_merge($this->paymentsTable, $commonData);
+	                            include 'application/views/templates/table.php'
+	                            ?>
                             </div>
                         </div>
                     </div>
@@ -380,31 +351,21 @@
                                     <i class="fa fa-cogs"></i> Delivery Notes </div>
                             </div>
                             <div class="portlet-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-bordered table-striped" id="table-delivery_notes">
-                                        <thead>
-                                        <tr>
-                                            <?php
-                                            $delivery_notes_column_name_ids = [];
-                                            if (!empty($this->delivery_notes_columns)) {
-                                                foreach ($this->delivery_notes_columns as $key => $column_name) {
-                                                    if (!$key)
-                                                        $column_name = '';
-                                                    echo '<th>' . $column_name . '</th>';
-                                                    if ($key)
-                                                        $delivery_notes_column_name_ids[] = $key;
-                                                }
-                                            }
-                                            ?>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td colspan="12" class="dataTables_empty">Loading data from server...</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+	                            <?php
+	                            $commonData = [
+		                            'click_url' => "javascript:;",
+		                            'method' => "POST",
+		                            'serverSide' => false,
+		                            'ajax' => [
+			                            'url' => '/delivery_notes/dt_for_order',
+			                            'data' => [
+				                            'order_id' => $this->order["order_id"],
+			                            ]
+		                            ]
+	                            ];
+	                            $table_data = array_merge($this->deliveryNotesTable, $commonData);
+	                            include 'application/views/templates/table.php'
+	                            ?>
                             </div>
                         </div>
                     </div>
@@ -463,42 +424,13 @@ require_once 'modals/shipment_to_customer_modal_amount.php';
         var commission_agents = <?= $this->toJsList($this->commission_agents, "client_id") ?>;
         var clients = <?= json_encode($this->clients) ?>;
         var item_statuses = <?= json_encode($this->statusList); ?>;
-        var $column_name_ids = <?= json_encode($column_name_ids); ?>;
         var legalEntities = <?= json_encode($this->legalEntities); ?>;
         <?php if ($this->order['downpayment_rate'] == 100): ?>
         item_statuses[6] = undefined;
         <?php endif; ?>
-        var $table_order_items = $("#table_order_items");
-        var table_order_items = $table_order_items.DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url: '/order/dt_order_items',
-                data: {
-                    'order_id': <?= $this->order["order_id"] ?>
-                }
-            },
-            dom: '<t>ip',
-            columnDefs: [
-                {
-                    targets: [0],
-                    searchable: false,
-                    className: 'dt-body-center select-checkbox',
-                    render: function (data, type, full, meta) {
-                        return '';
-                    }
-                },
-                {
-                    targets: $column_name_ids,
-                    searchable: false,
-                    orderable: false
-                }
-            ],
-            select: {
-                style: 'os',
-                selector: 'td:first-child'
-            }
-        });
+        var ordersTableName = "<?= $this->itemsTable['table_name'] ?>";
+        var $table_order_items = $("#" + ordersTableName);
+
         $table_order_items.on('draw.dt', function () {
             $('.table-confirm-btn').confirmation({
                 rootSelector: '.table-confirm-btn'
@@ -511,6 +443,7 @@ require_once 'modals/shipment_to_customer_modal_amount.php';
             });
             $('.x-amount, .x-number_of_packs').editable({
                 type: "number",
+                mode: 'inline',
                 min: 0,
                 step: 0.001,
                 inputclass: 'form-control input-medium',
@@ -522,8 +455,9 @@ require_once 'modals/shipment_to_customer_modal_amount.php';
             $('.x-manager_bonus_rate, .x-manager_bonus').editable({
                 type: "number",
                 min: 0,
+                mode: 'inline',
                 step: 0.01,
-                inputclass: 'form-control input-medium',
+                inputclass: 'form-control input-small',
                 success: function () {
                     location.reload();
                 }
@@ -531,6 +465,7 @@ require_once 'modals/shipment_to_customer_modal_amount.php';
 
             $('.x-sell-price, .x-commission_agent_bonus').editable({
                 type: "number",
+                mode: 'inline',
                 min: 0,
                 step: 0.01,
                 inputclass: 'form-control input-medium',
@@ -562,6 +497,7 @@ require_once 'modals/shipment_to_customer_modal_amount.php';
 
             $('.x-commission_rate').editable({
                 type: "number",
+                mode: 'inline',
                 min: 0,
                 <?php if ($_SESSION["perm"] < ADMIN_PERM): ?>
                 max: <?= MANAGER_MAX_COMMISSION_RATE_INPUT ?>,
@@ -574,6 +510,7 @@ require_once 'modals/shipment_to_customer_modal_amount.php';
             });
             $('.x-discount_rate').editable({
                 type: "number",
+                mode: 'inline',
                 min: 0,
                 <?php if ($_SESSION["perm"] < ADMIN_PERM): ?>
                 max: <?= MANAGER_MAX_DISCOUNT_RATE_INPUT ?>,
@@ -585,6 +522,7 @@ require_once 'modals/shipment_to_customer_modal_amount.php';
                 }
             });
             $('.x-item_status').editable({
+                mode: 'inline',
                 type: "select",
                 inputclass: 'form-control input-medium',
                 source: item_statuses,
@@ -593,14 +531,12 @@ require_once 'modals/shipment_to_customer_modal_amount.php';
                 }
             });
 
+            $('.x-editable.editable').on('shown', function(e, editable) {
+                $(editable.container.$tip).closest('.td-wrapper').css('width', '100%');
+            });
+
             $table_order_items.find('tbody').on('click', 'tr td:first-child', function (e) {
-                var selectedRows = table_order_items.rows('.selected').data(),
-                    ids = [];
-                $.each(selectedRows, function() {
-                    ids.push(this[0]);
-                });
-                ids = ids.join();
-                $table_order_items.attr('data-selected', ids);
+                var ids = $table_order_items.attr('data-selected');
                 var docsBtns = $('div[data-id="docs"]').find('.list-items').find('.print-btn');
                 const delimiter = '&items=';
                 $.each(docsBtns, function() {
@@ -747,28 +683,8 @@ require_once 'modals/shipment_to_customer_modal_amount.php';
             });
         <?php endif; ?>
 
-        var $table_payments = $("#table-payments");
-        var tablePay = $table_payments.DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url: '/accountant/dt_order_payments',
-                data: {
-                    'order_id': <?= $this->order["order_id"] ?>,
-                    'type': 'Client'
-                }
-            },
-            dom: '<t>ip',
-            columnDefs: [{
-                targets: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
-                searchable: false,
-                orderable: false
-            }, {
-                targets: [0],
-                visible: false,
-                searchable: false
-            }]
-        });
+//        var table_payments = "<?//= $this->paymentsTable['table_name']; ?>//";
+//        var $table_payments = $("#" + table_payments);
 
         function getSelected() {
             var selected = $table_order_items.attr('data-selected');
@@ -936,29 +852,6 @@ require_once 'modals/shipment_to_customer_modal_amount.php';
                     })
                 });
             }
-        });
-
-        var $delivery_notes_column_name_ids = <?= json_encode($delivery_notes_column_name_ids); ?>;
-        var $tableDeliveryNotes = $("#table-delivery_notes");
-        $tableDeliveryNotes.DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url: '/delivery_notes/dt_for_order',
-                data: {
-                    'order_id': <?= $this->order["order_id"] ?>
-                }
-            },
-            dom: '<t>ip',
-            columnDefs: [{
-                targets: $delivery_notes_column_name_ids,
-                searchable: false,
-                orderable: false
-            }, {
-                targets: [0],
-                visible: false,
-                searchable: false
-            }]
         });
 
     });

@@ -89,11 +89,13 @@ class ModelAccountant extends Model
         $this->connect_db();
     }
 
-    /**
-     * @param string $type
-     * @return array = ['columns', 'columns_names', 'db_table', 'table_name', 'primary', 'page']
-     */
-    function getSSPData($type = 'general')
+	/**
+	 * @param string $type
+	 * @param array $opts
+	 *
+	 * @return array = ['columns', 'columns_names', 'db_table', 'table_name', 'primary', 'page']
+	 */
+    function getSSPData($type = 'general', $opts = [])
     {
 
         $ssp = ['page' => $this->page];
@@ -101,6 +103,19 @@ class ModelAccountant extends Model
 
         switch ($type) {
             case 'general':
+	        case 'orders_payments':
+	        	$columns = $this->ordersColumns;
+		        if ($_SESSION['perm'] <= SALES_MANAGER_PERM) {
+			        $this->unLinkStrings($columns, [1, 5]);
+		        }
+		        $ssp = array_merge($ssp, $this->getColumns($columns, $this->page, $this->tableName));
+		        $ssp = array_merge($ssp, $this->getColumns($this->ordersColumnsNames, $this->page, $this->tableName, true));
+		        $ssp['db_table'] = $this->payments_table;
+                $ssp['primary'] = 'payments.payment_id';
+                $ssp['table_name'] = $this->tableName;
+                $ssp['where'] = "payments.order_id = ".$opts['order_id']." AND category = '".$opts['type'].
+                                "' AND payments.is_deleted = 0";
+				return $ssp;
             case 'contractor':
                 $columns = $this->payments_columns;
                 $ssp = array_merge($ssp, $this->getColumns($this->payments_column_names, $this->page,
@@ -148,15 +163,13 @@ class ModelAccountant extends Model
         $this->sspComplex($ssp['db_table'], $ssp['primary'], $ssp['columns'], $input, null, $ssp['where']);
     }
 
-    function getDTOrderPayments($order_id, $type, $input)
-    {
-        $columns = [
-            array('dt' => 0, 'db' => "payments.payment_id"),
-            array('dt' => 1, 'db' => "CONCAT('<a href=\"/payment?id=', payments.payment_id, '\">', payments.payment_id, '</a>')"),
-            array('dt' => 2, 'db' => "payments.date"),
-            array('dt' => 3, 'db' => "entities.name"),
-            array('dt' => 4, 'db' => "payments.category"),
-            array('dt' => 5, 'db' => "CONCAT( 
+    var $ordersColumns = [
+	    array('dt' => 0, 'db' => "payments.payment_id"),
+	    array('dt' => 1, 'db' => "CONCAT('<a href=\"/payment?id=', payments.payment_id, '\">', payments.payment_id, '</a>')"),
+	    array('dt' => 2, 'db' => "payments.date"),
+	    array('dt' => 3, 'db' => "entities.name"),
+	    array('dt' => 4, 'db' => "payments.category"),
+	    array('dt' => 5, 'db' => "CONCAT( 
             IF(payments.category = 'Client' OR payments.category = 'Comission Agent', 
                 CONCAT('<a href=\"/client?id=', payments.contractor_id, '\">', clients.final_name, '</a>'), ''),
             IF(payments.category = 'Supplier', 
@@ -165,29 +178,49 @@ class ModelAccountant extends Model
                 CONCAT('<a href=\"/custom?id=', payments.contractor_id, '\">', customs.name, '</a>'), ''),
             IF(payments.category = 'Delivery', 
                 CONCAT('<a href=\"/transportation?id=', payments.contractor_id, '\">', transport.name, '</a>'), ''))"),
-            array('dt' => 6, 'db' => "orders.visible_order_id"),
-            array('dt' => 7, 'db' => "transfers.name"),
-            array('dt' => 8, 'db' => "CAST(payments.sum as decimal(64, 2))"),
-            array('dt' => 9, 'db' => "payments.currency"),
-            array('dt' => 10, 'db' => "payments.direction"),
-            array('dt' => 11, 'db' => "payments.currency_rate"),
-            array('dt' => 12, 'db' => "CAST(payments.sum_in_eur as decimal(64, 2))"),
-            array('dt' => 13, 'db' => "payments.purpose_of_payment"),
-            array('dt' => 14, 'db' => "article_of_expense.name"),
-            array('dt' => 15, 'db' => "category_of_expense.name"),
-            array('dt' => 16, 'db' => "CONCAT(users.first_name, ' ', users.last_name)"),
-            array('dt' => 17, 'db' => "CONCAT('<span class=\"label label-', IF(payments.status = 'Executed', 
+	    array('dt' => 6, 'db' => "orders.visible_order_id"),
+	    array('dt' => 7, 'db' => "transfers.name"),
+	    array('dt' => 8, 'db' => "CAST(payments.sum as decimal(64, 2))"),
+	    array('dt' => 9, 'db' => "payments.currency"),
+	    array('dt' => 10, 'db' => "payments.direction"),
+	    array('dt' => 11, 'db' => "payments.currency_rate"),
+	    array('dt' => 12, 'db' => "CAST(payments.sum_in_eur as decimal(64, 2))"),
+	    array('dt' => 13, 'db' => "payments.purpose_of_payment"),
+	    array('dt' => 14, 'db' => "article_of_expense.name"),
+	    array('dt' => 15, 'db' => "category_of_expense.name"),
+	    array('dt' => 16, 'db' => "CONCAT(users.first_name, ' ', users.last_name)"),
+	    array('dt' => 17, 'db' => "CONCAT('<span class=\"label label-', IF(payments.status = 'Executed', 
             'success', 'default'), '\">', payments.status, '</span>')"),
-        ];
+    ];
 
-        if ($_SESSION['perm'] <= SALES_MANAGER_PERM) {
-            $this->unLinkStrings($columns, [1, 5]);
-        }
+	var $ordersColumnsNames = [
+		'_payment_id',
+		'Payment ID',
+		'Date',
+		'Legal entity',
+		'Category',
+		'Contractor',
+		'Order',
+		'Transfer Type',
+		'Sum',
+		'Currency',
+		'Direction',
+		'Currency Rate',
+		'Sum in EURO',
+		'Purpose of Payment',
+		'Article of Expense',
+		'Category of Expense',
+		'Responsible Person',
+		'Status',
+	];
 
-        $where = "payments.order_id = $order_id AND category = '$type' AND payments.is_deleted = 0";
+    function getDTOrderPayments($order_id, $type, $input)
+    {
 
-        return $this->sspComplex($this->payments_table, "payments.payment_id", $columns,
-            $input, null, $where);
+    	$ssp = $this->getSSPData('orders_payments', ['order_id' => $order_id, 'type' => $type]);
+
+        return $this->sspComplex($ssp['db_table'], $ssp['primary'], $ssp['columns'],
+            $input, null, $ssp['where']);
     }
 
     public function getTableData($type = 'general', $opts = [])

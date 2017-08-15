@@ -9,11 +9,16 @@ class ModelOrder extends Model
 
     public $page;
 
-    function getDTOrderItems($order_id, $input)
-    {
-        $columns = [
-            array('dt' => 0, 'db' => "order_items.item_id"),
-            array('dt' => 1, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
+	function getSSPData($type = 'general', $opts = [])
+	{
+		$ssp = ['page' => $this->page];
+
+		switch ($type) {
+			case 'general':
+
+				$columns = [
+					array('dt' => 0, 'db' => "order_items.item_id"),
+					array('dt' => 1, 'db' => "CONCAT('<div style=\'width: 100%; text-align: center;\'>',
                     IF(order_items.status_id = ". DRAFT .",
                     CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to hold the item?\" 
                                href=\"/order/hold?order_item_id=', order_items.item_id, '\" 
@@ -56,11 +61,11 @@ class ModelOrder extends Model
                                 </a>'),
                         ''),
                 '</div>')"),
-            array('dt' => 2, 'db' => "CONCAT('<a href=\"/product?id=',
+					array('dt' => 2, 'db' => "CONCAT('<a href=\"/product?id=',
                 products.product_id,
                 '\">', IFNULL(products.visual_name, 'Enter Visual Name!'),
                 '</a>')"),
-            array('dt' => 3, 'db' => "IF(order_items.status_id > ".HOLD.", 
+					array('dt' => 3, 'db' => "IF(order_items.status_id > ".HOLD.", 
                 CONCAT(CAST(order_items.amount as decimal(64,3)), ' ', IFNULL(products.units, '')),
                 CONCAT('<a href=\"javascript:;\" class=\"x-editable x-amount\" data-pk=\"',
                     order_items.item_id,
@@ -69,7 +74,7 @@ class ModelOrder extends Model
                     '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Quantity\">',
                         IFNULL(CONCAT(CAST(order_items.amount as decimal(64,3)), ' ', products.units), ''),
                     '</a>'))"),
-            array('dt' => 4, 'db' => "IF(order_items.status_id > ".HOLD.", 
+					array('dt' => 4, 'db' => "IF(order_items.status_id > ".HOLD.", 
             CONCAT(CAST(order_items.number_of_packs as decimal(64,3)), ' ', IFNULL(products.packing_type, '')),
             CONCAT('<a href=\"javascript:;\" class=\"x-editable x-number_of_packs\" data-pk=\"',
                 order_items.item_id,
@@ -78,92 +83,131 @@ class ModelOrder extends Model
                 '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Number of Packs\">',
                     IFNULL(CONCAT(CAST(order_items.number_of_packs as decimal(64,3)), ' ', products.packing_type), ''),
                 '</a>'))"),
-            array('dt' => 5, 'db' => "CONCAT(IF(products.units = 'm2' AND products.length NOT LIKE '%-%' 
+					array('dt' => 5, 'db' => "CONCAT(IF(products.units = 'm2' AND products.length NOT LIKE '%-%' 
                                                                         AND products.width NOT LIKE '%-%',
                                         IF(products.width = NULL, 'Width undefined', 
                                         IF(products.length = NULL, 'Length undefined', 
                                             CAST((order_items.amount * 1000 * 1000) / (products.width * products.length) as decimal(64, 2)))
                                             ), 'n/a'), '')"),
-            array('dt' => 6, 'db' => "IFNULL(CAST(order_items.purchase_price as decimal(64, 2)), '')"),
-            array('dt' => 7, 'db' => "IFNULL(CAST(order_items.purchase_price * order_items.amount as decimal(64, 2)), '')"),
-            array('dt' => 8, 'db' => "IFNULL(CAST(order_items.sell_price as decimal(64, 2)), '')"),
-            array('dt' => 9, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-discount_rate\" data-pk=\"',
+					array('dt' => 6, 'db' => "IFNULL(CAST(order_items.purchase_price as decimal(64, 2)), '')"),
+					array('dt' => 7, 'db' => "IFNULL(CAST(order_items.purchase_price * order_items.amount as decimal(64, 2)), '')"),
+					array('dt' => 8, 'db' => "IFNULL(CAST(order_items.sell_price as decimal(64, 2)), '')"),
+					array('dt' => 9, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-discount_rate\" data-pk=\"',
                 order_items.item_id,
                 '\" data-name=\"discount_rate\" data-value=\"',
                 IFNULL(CAST(order_items.discount_rate as decimal(64, 2)), ''),
                 '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Discount Rate, %\">',
                     IFNULL(CONCAT(CAST(order_items.discount_rate as decimal(64, 2)), '%'), ''),
                 '</a>')"),
-            array('dt' => 10, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-sell-price\" data-pk=\"',
+					array('dt' => 10, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-sell-price\" data-pk=\"',
                 order_items.item_id,
                 '\" data-name=\"reduced_price\" data-value=\"',
                 IFNULL(CAST(reduced_price as decimal(64, 2)), ''),
                 '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Reduced Price\">',
                     IFNULL(CAST(reduced_price as decimal(64, 2)), ''),
                 '</a>')"),
-            array('dt' => 11, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-sell-price\" data-pk=\"',
+					array('dt' => 11, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-sell-price\" data-pk=\"',
                 order_items.item_id,
                 '\" data-name=\"sell_value\" data-value=\"',
                 IFNULL(CAST(sell_value as decimal(64, 2)), ''),
                 '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Sell Value\">',
                     IFNULL(CAST(sell_value as decimal(64, 2)), ''),
                 '</a>')"),
-            array('dt' => 12, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-commission_rate\" data-pk=\"',
+					array('dt' => 12, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-commission_rate\" data-pk=\"',
                 order_items.item_id,
                 '\" data-name=\"commission_rate\" data-value=\"',
                 IFNULL(CAST(order_items.commission_rate as decimal(64, 2)), ''),
                 '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Commission Rate\">',
                     IFNULL((CONCAT(CAST(order_items.commission_rate as decimal(64, 2)), '%')), ''),
                 '</a>')"),
-            array('dt' => 13, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-commission_agent_bonus\" data-pk=\"',
+					array('dt' => 13, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-commission_agent_bonus\" data-pk=\"',
                 order_items.item_id,
                 '\" data-name=\"commission_agent_bonus\" data-value=\"',
                 IFNULL(CAST(order_items.commission_agent_bonus as decimal(64, 2)), ''),
                 '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Commission Agent Bonus\">',
                     IFNULL(CAST(order_items.commission_agent_bonus as decimal(64, 2)), ''),
                 '</a>')"),
-            array('dt' => 14, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-manager_bonus_rate\" data-pk=\"',
+					array('dt' => 14, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-manager_bonus_rate\" data-pk=\"',
                 order_items.item_id,
                 '\" data-name=\"manager_bonus_rate\" data-value=\"',
                 IFNULL(CAST(order_items.manager_bonus_rate as decimal(64, 2)), ''),
                 '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Manager Bonus Rate, %\">',
                     IFNULL(CONCAT(CAST(order_items.manager_bonus_rate as decimal(64, 2)), '%'), ''),
                 '</a>')"),
-            array('dt' => 15, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-manager_bonus\" data-pk=\"',
+					array('dt' => 15, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-manager_bonus\" data-pk=\"',
                 order_items.item_id,
                 '\" data-name=\"manager_bonus\" data-value=\"',
                 IFNULL(CAST(order_items.manager_bonus as decimal(64, 2)), ''),
                 '\" data-url=\"/order/change_item_field\" data-original-title=\"Enter Manager Bonus\">',
                     IFNULL(CAST(order_items.manager_bonus as decimal(64, 2)), ''),
                 '</a>')"),
-            array('dt' => 16, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-item_status\" data-pk=\"',
+					array('dt' => 16, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-item_status\" data-pk=\"',
                 order_items.item_id,
                 '\" data-name=\"status_id\" data-value=\"',
                 IFNULL(order_items.status_id, ''),
                 '\" data-url=\"/order/change_item_field\" data-original-title=\"Choose Item Status\">',
                     IFNULL(status.name, ''),
                 '</a>')"),
-        ];
+				];
 
-//        $table = $this->full_products_table . ' join order_items on products.product_id = order_items.product_id';
-
-        $table = 'order_items 
+				$order_id = $opts['order_id'];
+				$table = 'order_items 
                     left join products on order_items.product_id = products.product_id ' .
-                    'left join orders on order_items.manager_order_id = orders.order_id ' .
-                    $this->full_products_table_addition .
-                    ' left join items_status as status on order_items.status_id = status.status_id';
+				         'left join orders on order_items.manager_order_id = orders.order_id ' .
+				         $this->full_products_table_addition .
+				         ' left join items_status as status on order_items.status_id = status.status_id';
 
-        $where = ["order_items.manager_order_id = $order_id", 'order_items.is_deleted = 0'];
+				$where = ["order_items.manager_order_id = $order_id"];
 
-        $roles = new Roles();
+				if ($_SESSION['perm'] < ADMIN_PERM) {
+					$this->unLinkStrings($columns, [14, 15, 16]);
+				}
 
-        if ($_SESSION['perm'] < ADMIN_PERM) {
-            $this->unLinkStrings($columns, [14, 15, 16]);
-        }
+				$tableName = 'table_order_items';
+				$ssp = array_merge($ssp, $this->getColumns($columns, $this->page,
+					$tableName));
+				$ssp = array_merge($ssp, $this->getColumns($this->order_columns_names, $this->page,
+					$tableName, true));
+				$ssp['db_table'] = $table;
+				$ssp['table_name'] = $tableName;
+				$ssp['primary'] = 'order_items.item_id';
+				$ssp['where'] = $where;
+				break;
 
-        $columns = $roles->returnModelColumns($columns, 'order');
+			case 'delivery_notes':
+				require_once 'model_delivery_notes.php';
+				$deliveryNote = new ModelDelivery_notes();
+				$ssp = $deliveryNote->getSSPData('order', $opts);
+				break;
+			case 'orders_payments':
+				require_once 'model_accountant.php';
+				$model = new ModelAccountant();
+				$model->page = $this->page;
+				$model->tableName = $type;
+				$opts['type'] = PAYMENT_CATEGORY_CLIENT;
+				$ssp = $model->getSSPData($type, $opts);
+				break;
 
-        return $this->sspComplex($table, "order_items.item_id", $columns, $input, null, $where);
+			case 'modal_catalogue':
+				require_once 'model_catalogue.php';
+				$model = new ModelCatalogue();
+				$model->tableName = $type;
+				$ssp = $model->getSSPData();
+				$ssp['page'] = $this->page;
+				break;
+		}
+
+		return $ssp;
+	}
+
+    function getDTOrderItems($order_id, $input)
+    {
+
+    	$ssp = $this->getSSPData('general', ['order_id' => $order_id]);
+
+	    return $this->sspComplex($ssp['db_table'], $ssp['primary'], $ssp['columns'], $input, null, $ssp['where']);
+
+
     }
 
     var $order_columns_names = [
@@ -973,29 +1017,33 @@ class ModelOrder extends Model
         return $docs;
     }
 
-    function getSSPData($type = 'general')
+    public function getSelects($ssp)
     {
-        $ssp = ['page' => $this->page];
+	    $sspJson = $this->getSspComplexJson($ssp['db_table'], $ssp['primary'],
+		    $ssp['original_columns'], null, null, $ssp['where']);
+	    $rowValues = json_decode($sspJson, true)['data'];
+	    $columnsNames = $ssp['original_columns_names'];
 
-        switch ($type) {
-            case 'modal_catalogue':
-                require_once 'model_catalogue.php';
-                $model = new ModelCatalogue();
-                $model->tableName = $type;
-                $ssp = $model->getSSPData();
-                $ssp['page'] = $this->page;
-                break;
-        }
+	    $ignoreArray = [];
 
-        return $ssp;
+	    if (!empty($rowValues)) {
+		    $selects = Helper::getSelectsFromValues($rowValues, $columnsNames, $ignoreArray);
+		    return ['selectSearch' => $selects, 'filterSearchValues' => $rowValues];
+	    }
+	    return [];
     }
 
     public function getTableData($type = 'general', $opts = [])
     {
-        $data = $this->getSSPData($type);
+        $data = $this->getSSPData($type, $opts);
 
         switch ($type) {
-            case 'modal_catalogue':
+	        case 'orders_payments':
+	        case 'general':
+	        case 'delivery_notes':
+				$selects = $this->getSelects($data);
+		        break;
+	        case 'modal_catalogue':
                 $cache = new Cache();
                 $selects = $cache->getOrSet($type, function() use($data) {
                     $model = new ModelCatalogue();
@@ -1005,14 +1053,6 @@ class ModelOrder extends Model
         }
 
         return array_merge($data, $selects);
-    }
-
-
-    function getDeliveryNotesColumns()
-    {
-        require_once 'model_delivery_notes.php';
-        $deliveryNote = new ModelDelivery_notes();
-        return $deliveryNote->delivery_notes_columns_names;
     }
 
 }
