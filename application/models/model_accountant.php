@@ -101,7 +101,6 @@ class ModelAccountant extends Model
         $where = ['payments.is_deleted = 0'];
 
         switch ($type) {
-            case 'general':
 	        case 'orders_payments':
 	        	$columns = $this->ordersColumns;
 		        if ($_SESSION['perm'] <= SALES_MANAGER_PERM) {
@@ -115,7 +114,8 @@ class ModelAccountant extends Model
                 $ssp['where'] = "payments.order_id = ".$opts['order_id']." AND category = '".$opts['type'].
                                 "' AND payments.is_deleted = 0";
 				return $ssp;
-            case 'contractor':
+	        case 'general':
+	        case 'contractor':
                 $columns = $this->payments_columns;
                 $ssp = array_merge($ssp, $this->getColumns($this->payments_column_names, $this->page,
                     $this->tableName, true));
