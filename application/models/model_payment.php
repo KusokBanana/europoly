@@ -57,6 +57,7 @@ class ModelPayment extends Model
             $fieldName = 'final_name';
             $type = '';
         }
+        $fieldName = ($type === PAYMENT_CATEGORY_COMMISSION_AGENT) ? 'final_name' : $fieldName;
         $where = $type ? "`type` = '$type' AND " : '';
         $where .= "`is_deleted` = 0";
         return $this->getAssoc("SELECT client_id as id, `$fieldName` as name FROM clients WHERE $where");
@@ -86,7 +87,7 @@ class ModelPayment extends Model
     {
         $ordersTable = ($by == 'supplier_id') ? 'suppliers_orders' : 'orders';
         $dateField = ($by == 'supplier_id') ? 'supplier_date_of_order' : 'start_date';
-        $idField = ($by == 'supplier_id') ? 'order_id' : 'visible_order_id';
+        $idField = ($by == 'supplier_id') ? 'order_id' : 'IFNULL(visible_order_id, order_id)';
         $return = $this->getAssoc("SELECT DISTINCT $ordersTable.order_id as id, 
                   CONCAT($idField, ', ', $dateField) as name 
                   FROM $ordersTable

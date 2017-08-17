@@ -298,10 +298,44 @@
                                 <div class="caption">
                                     <i class="fa fa-cogs"></i> Payments </div>
                                 <div class="actions">
+                                    <script>
+                                        $(document).ready(function() {
+                                            var newPayment = function(e) {
+                                                e.preventDefault();
+
+                                                var paymentType = $(this).attr('data-type');
+                                                var contractor_id, category;
+                                                if (paymentType === 'client') {
+                                                    contractor_id = '<?= $this->client["client_id"] ?>';
+                                                    category = '<?= PAYMENT_CATEGORY_CLIENT ?>';
+                                                } else {
+                                                    contractor_id = '<?= $this->order["commission_agent_id"] ?>';
+                                                    category = '<?= PAYMENT_CATEGORY_COMMISSION_AGENT ?>';
+                                                }
+
+                                                var mess = false;
+                                                if (!parseInt(contractor_id)) {
+                                                    mess = (paymentType === 'client') ? 'Client' : 'Commission Agent';
+                                                }
+
+                                                if (mess) {
+                                                    $('#notificationModal').modal().find('.modal-body')
+                                                        .text('Please fill in ' + mess);
+                                                    return false;
+                                                }
+
+                                                $('#paymentFormCategory').val(category);
+                                                $('#paymentContractorId').val(contractor_id);
+                                                $('#payment-form').submit()
+
+                                            };
+
+                                            $('.new-payment-btn').on('click', newPayment);
+                                        })
+                                    </script>
                                     <form action="payment?id=new" method="POST" id="payment-form">
-                                        <input type="hidden" name="Similar[category]" value="Client">
-                                        <input type="hidden" name="Similar[contractor_id]"
-                                               value="<?= $this->client['client_id'] ?>">
+                                        <input type="hidden" name="Similar[category]" id="paymentFormCategory">
+                                        <input type="hidden" name="Similar[contractor_id]" id="paymentContractorId">
                                         <input type="hidden" name="Similar[order_id]"
                                                value="<?= $this->order['order_id'] ?>">
                                         <?php if ($this->order['legal_entity_id'] &&
@@ -316,9 +350,12 @@
                                         <?php endif; ?>
                                     </form>
                                     <?php if ($this->user->role_id != ROLE_SALES_MANAGER): ?>
-                                        <a href="javascript:void;" onclick="$('#payment-form').submit()"
-                                           class="btn btn-default btn-sm">
-                                            <i class="fa fa-plus"></i> Add new </a>
+                                        <a href="#" data-type="client"
+                                           class="btn btn-default btn-sm new-payment-btn">
+                                            <i class="fa fa-plus"></i> Add new Client Payment</a>
+                                        <a href="#" data-type="commission"
+                                           class="btn btn-default btn-sm new-payment-btn">
+                                            <i class="fa fa-plus"></i> Add new Commission Payment</a>
                                     <?php endif; ?>
                                 </div>
                             </div>
