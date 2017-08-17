@@ -56,13 +56,13 @@
                     </div>
                 </div>
                 <div class="portlet-body">
-                    <div class="row">
+                    <div class="clearfix">
                         <?php
                         foreach ($this->photos as $photo) {
                             echo <<<END
-                            <div id="photo_{$photo['photo_id']}" class="col-md-6">
+                            <div id="photo_{$photo['photo_id']}">
                                 <a href="{$photo['path']}" class="fancybox-button" data-rel="fancybox-button" style="position:relative">
-                                    <img class="img-responsive" src="{$photo['path']}" alt="" style="float: left; padding:10px;">
+                                    <img class="img-responsive" src="{$photo['path']}" alt="" style="float: left; padding:10px; max-height: 300px">
 END;
                             if ($this->access['ch']) {
                                 echo "<span class='glyphicon glyphicon-remove-circle' style='position:absolute;top:15px;right:15px;font-size:20px' onclick='showDeleteModal(event, {$photo['photo_id']})'></span>";

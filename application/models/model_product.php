@@ -101,7 +101,7 @@ class ModelProduct extends Model
 
     public function getPhotos($product_id)
     {
-        return $this->getAssoc("SELECT photos.photo_id AS 'photo_id', CONCAT('/images/', photos.name, '.jpg') AS 'path' 
+        return $this->getAssoc("SELECT photos.photo_id AS 'photo_id', CONCAT('/images/', photos.name) AS 'path' 
                 FROM photos JOIN products ON photos.product_id = products.product_id
                 WHERE photos.product_id = $product_id");
     }

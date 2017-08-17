@@ -354,6 +354,7 @@ $hidden_by_default = json_encode($hidden);
             }
             $('.dataTables_scrollHead').css('overflow', '').css('position', '');
 
+
 //            $table.parent().on('scroll', function() {
 //                table.columns.adjust();
 //                console.log('scroll')
@@ -380,6 +381,7 @@ $hidden_by_default = json_encode($hidden);
 
 //            console.log('visible', $table.hasClass('visible_now'), isTabSuccess && isModalSuccess, $table);
 //            if (isTabSuccess && isModalSuccess) {
+            addTopScroll();
             reOrderColumns();
             topScrollResize();
             table.columns.adjust();
@@ -393,6 +395,16 @@ $hidden_by_default = json_encode($hidden);
                     });
                 topScrollResize();
             }
+
+            var $editables = $table.find('td .x-editable');
+            if ($editables.length) {
+                $editables.on('shown', function(e, editable) {
+                        var popover = editable.input.$input.closest('.popover');
+                        console.log(popover);
+                        popover.closest('.table-scrollable').parent().append(popover);
+                });
+            }
+
 //            resize();
 //            }
 
@@ -466,6 +478,41 @@ $hidden_by_default = json_encode($hidden);
         table.on( 'search', function () {
             console.log('search')
         });
+
+        function addTopScroll()
+        {
+
+            if ($table.attr('data-top-scroll'))
+                return false;
+
+            var tableWrapper = $table.closest('.table-scrollable');
+
+            if (!tableWrapper.length)
+                return false;
+
+            var topScrollCode = '<div class="top-scroll"><div class="fake"></div></div>';
+            tableWrapper.before(topScrollCode);
+
+            var topScroll = tableWrapper.prev('.top-scroll');
+            var fake = topScroll.find('.fake');
+
+            var tableScrollBody = tableWrapper.find('.dataTables_scrollBody');
+
+            topScroll.width(tableScrollBody.width());
+            fake.width($table.width());
+
+            topScroll.on('scroll', function(e){
+                tableScrollBody.scrollLeft($(this).scrollLeft());
+            });
+            tableScrollBody.on('scroll', function(e){
+                topScroll.scrollLeft($(this).scrollLeft());
+
+            });
+            $table.attr('data-top-scroll', true);
+            $(window).on('resize', topScrollResize);
+            $("#menu-toggler").on('menu.resizeTopScroll', function() {console.log('hey')});
+
+        }
 
         function resize(div) {
 
@@ -558,23 +605,6 @@ $hidden_by_default = json_encode($hidden);
         $table.on('order.dt', function (e) {
             var order = table.order();
             saveColumnSort(order[0]);
-            console.log('order dt');
-
-//            for (var i=0; i<columnsWidth.length; i++) {
-//                if (columnsWidth[i] !== undefined) {
-//                    var wrappers = $table.find('.td-wrapper[data-header-id="'+i+'"]');
-//                    if (wrappers.length) {
-//                        wrappers.css('width', columnsWidth[i]);
-//                        wrappers.parent().css('width', columnsWidth[i]);
-//                        $table.find('th[data-header-id="'+i+'"]').css('width', columnsWidth[i]);
-//                    }
-//                    var header = headerTable.find('th[data-header-id="'+i+'"]');
-//                    if (header.length) {
-//                        header.css('width', columnsWidth[i]);
-//                    }
-//                }
-//            }
-
         });
 
         // Link on entire cell, not on Anchor element
@@ -671,13 +701,13 @@ $hidden_by_default = json_encode($hidden);
                 select.on('click', replaceSelectsByEditable);
             }
 
-            var topScroll = $('.top-scroll');
-            if (topScroll.length) {
-                var fake = topScroll.find('.fake');
-                var tableWrapper = topScroll.next('div');
-                topScroll.width(tableWrapper.width());
-                fake.width(tableWrapper.find('table').width());
-            }
+//            var topScroll = $('.top-scroll');
+//            if (topScroll.length) {
+//                var fake = topScroll.find('.fake');
+//                var tableWrapper = topScroll.next('div');
+//                topScroll.width(tableWrapper.width());
+//                fake.width(tableWrapper.find('table').width());
+//            }
 
 //            resize1();
             table.draw();

@@ -443,7 +443,6 @@ require_once 'modals/shipment_to_customer_modal_amount.php';
             });
             $('.x-amount, .x-number_of_packs').editable({
                 type: "number",
-                mode: 'inline',
                 min: 0,
                 step: 0.001,
                 inputclass: 'form-control input-medium',
@@ -455,7 +454,6 @@ require_once 'modals/shipment_to_customer_modal_amount.php';
             $('.x-manager_bonus_rate, .x-manager_bonus').editable({
                 type: "number",
                 min: 0,
-                mode: 'inline',
                 step: 0.01,
                 inputclass: 'form-control input-small',
                 success: function () {
@@ -465,7 +463,6 @@ require_once 'modals/shipment_to_customer_modal_amount.php';
 
             $('.x-sell-price, .x-commission_agent_bonus').editable({
                 type: "number",
-                mode: 'inline',
                 min: 0,
                 step: 0.01,
                 inputclass: 'form-control input-medium',
@@ -497,7 +494,6 @@ require_once 'modals/shipment_to_customer_modal_amount.php';
 
             $('.x-commission_rate').editable({
                 type: "number",
-                mode: 'inline',
                 min: 0,
                 <?php if ($_SESSION["perm"] < ADMIN_PERM): ?>
                 max: <?= MANAGER_MAX_COMMISSION_RATE_INPUT ?>,
@@ -510,7 +506,6 @@ require_once 'modals/shipment_to_customer_modal_amount.php';
             });
             $('.x-discount_rate').editable({
                 type: "number",
-                mode: 'inline',
                 min: 0,
                 <?php if ($_SESSION["perm"] < ADMIN_PERM): ?>
                 max: <?= MANAGER_MAX_DISCOUNT_RATE_INPUT ?>,
@@ -522,17 +517,12 @@ require_once 'modals/shipment_to_customer_modal_amount.php';
                 }
             });
             $('.x-item_status').editable({
-                mode: 'inline',
                 type: "select",
                 inputclass: 'form-control input-medium',
                 source: item_statuses,
                 success: function () {
                     location.reload();
                 }
-            });
-
-            $('.x-editable.editable').on('shown', function(e, editable) {
-                $(editable.container.$tip).closest('.td-wrapper').css('width', '100%');
             });
 
             $table_order_items.find('tbody').on('click', 'tr td:first-child', function (e) {

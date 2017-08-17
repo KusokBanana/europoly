@@ -210,9 +210,6 @@
                         success: function () {
                             location.reload();
                         }
-                    }).on('shown', function(e, editable) {
-                        var popover = editable.input.$input.closest('.popover');
-                        popover.closest('.table-scrollable').parent().append(popover);
                     });
                 } else {
                     var text = $input.text();
@@ -245,9 +242,6 @@
                 success: function () {
                     location.reload();
                 }
-            }).on('shown', function(e, editable) {
-                var popover = editable.input.$input.closest('.popover');
-                popover.closest('.table-scrollable').parent().append(popover);
             });
         });
 
