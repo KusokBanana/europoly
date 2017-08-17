@@ -148,9 +148,14 @@ class ModelTruck extends ModelOrder
         'Production Date'
     ];
 
-    function getDTTrucks($truck_id, $input)
+    function getDTTrucks($truck_id, $input, $printOpt)
     {
 	    $ssp = $this->getSSPData('general', ['truck_id' => $truck_id]);
+
+	    if ($printOpt) {
+		    echo $this->printTable($input, $ssp, $printOpt);
+		    return true;
+	    }
 
 	    $this->sspComplex($ssp['db_table'], $ssp['primary'], $ssp['columns'], $input, null, $ssp['where']);
 

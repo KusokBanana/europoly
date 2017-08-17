@@ -82,15 +82,9 @@ class ControllerAccountant extends Controller
 
     function action_dt_payments()
     {
-        $print = isset($_GET['print']) ? $_GET['print'] : false;
-        if ($print) {
-            $print = [
-                'visible' => isset($_GET['visible']) && $_GET['visible'] ? json_decode($_GET['visible'], true) : [],
-                'selected' => isset($_GET['selected']) && $_GET['selected'] ? json_decode($_GET['selected'], true) : [],
-                'filters' => isset($_GET['filters']) && $_GET['filters'] ? json_decode($_GET['filters'], true) : [],
-            ];
-        }
-
+	    $print = $this->model->getPrintOptions($_POST);
+	    $type = Helper::arrGetVal($_GET, 'type');
+	    $_POST['type'] = $type;
         $this->model->getDTPayments($_POST, $print);
     }
 
@@ -98,7 +92,8 @@ class ControllerAccountant extends Controller
     {
     	$orderId = $_POST['products']['order_id'];
     	$type = $_POST['products']['type'];
-        $this->model->getDTOrderPayments($orderId, $type, $_POST);
+	    $print = $this->model->getPrintOptions($_POST);
+	    $this->model->getDTOrderPayments($orderId, $type, $_POST, $print);
     }
 
     function action_delete()
@@ -129,14 +124,7 @@ class ControllerAccountant extends Controller
     }
     function action_dt_contractor_payments()
     {
-        $print = isset($_GET['print']) ? $_GET['print'] : false;
-        if ($print) {
-            $print = [
-                'visible' => isset($_GET['visible']) && $_GET['visible'] ? json_decode($_GET['visible'], true) : [],
-                'selected' => isset($_GET['selected']) && $_GET['selected'] ? json_decode($_GET['selected'], true) : [],
-                'filters' => isset($_GET['filters']) && $_GET['filters'] ? json_decode($_GET['filters'], true) : [],
-            ];
-        }
+	    $print = $this->model->getPrintOptions($_GET);
 
         $this->model->getDTPayments($_GET, $print);
 

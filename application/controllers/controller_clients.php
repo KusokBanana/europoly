@@ -28,14 +28,7 @@ class ControllerClients extends Controller
 
     function action_dt_all_clients()
     {
-        $print = isset($_GET['print']) ? $_GET['print'] : false;
-        if ($print) {
-            $print = [
-                'visible' => isset($_GET['visible']) && $_GET['visible'] ? json_decode($_GET['visible'], true) : [],
-                'selected' => isset($_GET['selected']) && $_GET['selected'] ? json_decode($_GET['selected'], true) : [],
-                'filters' => isset($_GET['filters']) && $_GET['filters'] ? json_decode($_GET['filters'], true) : [],
-            ];
-        }
+	    $print = $this->model->getPrintOptions($_POST);
 
         $this->model->getDTAllClients($_POST, $print);
     }

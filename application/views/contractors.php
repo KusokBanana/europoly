@@ -72,14 +72,12 @@
                                     <div class="tab-pane active" id="tab_1">
                                         <div class="portlet-body">
                                             <?php
-
                                             $commonData = [
-                                                'click_url' => "client?id=",
                                                 'method' => "POST",
                                             ];
                                             $table_data = array_merge($this->clientsTable, $commonData,
                                                 [
-                                                    'click_url' => "contractor?type=Client&id=",
+                                                    'click_url' => "contractor?type=".PAYMENT_CATEGORY_CLIENT."&id=",
                                                     'buttons' => [
                                                         '<a class="btn sbold green" 
                                                         href="client?id=new">
@@ -87,11 +85,10 @@
                                                     </a>'
                                                     ],
                                                     'ajax' => [
-                                                        'url' => "/contractors/dt_clients"
+                                                        'url' => "/contractors/dt_contractors?type=".PAYMENT_CATEGORY_CLIENT
                                                     ]
                                                 ]
                                             );
-
                                             include 'application/views/templates/table.php'
                                             ?>
                                         </div>
@@ -99,20 +96,17 @@
                                     <div class="tab-pane" id="tab_2">
                                         <div class="portlet-body">
                                             <?php
-                                            $table_data = [
-                                                'buttons' => [
-                                '<button class="btn sbold green" data-toggle="modal" 
+                                            $buttons = ['<button class="btn sbold green" data-toggle="modal" 
                                 data-type="Supplier" data-href-add="suppliers"
-                                data-target="#modal_newContractor">Add Supplier <i class="fa fa-plus"></i></button>'
-                                                ],
-                                                'table_id' => "table_suppliers",
-                                                'ajax' => [
-                                                    'url' => "/contractors/dt_suppliers"
-                                                ],
-                                                'column_names' => $this->column_names,
-                                                'hidden_by_default' => "[]",
-                                                'click_url' => "javascript:;"
-                                            ];
+                                data-target="#modal_newContractor">Add Supplier <i class="fa fa-plus"></i></button>'];
+                                            $table_data = array_merge($this->suppliersTable, $commonData,
+	                                            [
+		                                            'buttons' => $buttons,
+		                                            'ajax' => [
+			                                            'url' => "/contractors/dt_contractors?type=".PAYMENT_CATEGORY_SUPPLIER
+		                                            ]
+	                                            ]
+                                            );
                                             include 'application/views/templates/table.php'
                                             ?>
                                         </div>
@@ -120,20 +114,17 @@
                                     <div class="tab-pane" id="tab_3">
                                         <div class="portlet-body">
                                             <?php
-                                            $table_data = [
-                                                'buttons' => [
-                                '<button class="btn sbold green" data-toggle="modal" 
+                                            $buttons = ['<button class="btn sbold green" data-toggle="modal" 
                                 data-target="#modal_newContractor" data-href-add="customs"
-                                data-type="Custom">Add Custom <i class="fa fa-plus"></i></button>'
-                                                ],
-                                                'table_id' => "table_customs",
-                                                'ajax' => [
-                                                    'url' => "/contractors/dt_customs"
-                                                ],
-                                                'column_names' => $this->column_names,
-                                                'hidden_by_default' => "[]",
-                                                'click_url' => "javascript:;"
-                                            ];
+                                data-type="Custom">Add Custom <i class="fa fa-plus"></i></button>'];
+                                            $table_data = array_merge($this->customsTable, $commonData,
+	                                            [
+		                                            'buttons' => $buttons,
+		                                            'ajax' => [
+			                                            'url' => "/contractors/dt_contractors?type=".PAYMENT_CATEGORY_CUSTOMS
+		                                            ]
+	                                            ]
+                                            );
                                             include 'application/views/templates/table.php'
                                             ?>
                                         </div>
@@ -141,22 +132,19 @@
                                     <div class="tab-pane" id="tab_4">
                                         <div class="portlet-body">
                                             <?php
-                                            $table_data = [
-                                                'buttons' => [
-                        '<button class="btn sbold green" data-toggle="modal" 
+                                            $buttons = ['<button class="btn sbold green" data-toggle="modal" 
                         data-target="#modal_newContractor" data-href-add="transportation_companies"
                         data-type="Transportations Company">
                             Add Transportations Company <i class="fa fa-plus"></i>
-                        </button>'
-                                                ],
-                                                'table_id' => "table_transportation_companies",
-                                                'ajax' => [
-                                                    'url' => "/contractors/dt_transportation"
-                                                ],
-                                                'column_names' => $this->column_names,
-                                                'hidden_by_default' => "[]",
-                                                'click_url' => "javascript:;"
-                                            ];
+                        </button>'];
+                                            $table_data = array_merge($this->transportTable, $commonData,
+	                                            [
+		                                            'buttons' => $buttons,
+		                                            'ajax' => [
+			                                            'url' => "/contractors/dt_contractors?type=".PAYMENT_CATEGORY_DELIVERY
+		                                            ]
+	                                            ]
+                                            );
                                             include 'application/views/templates/table.php'
                                             ?>
                                         </div>
@@ -164,20 +152,17 @@
                                     <div class="tab-pane" id="tab_5">
                                         <div class="portlet-body">
                                             <?php
-                                            $table_data = [
-                                                'buttons' => [
-                                '<button class="btn sbold green" data-toggle="modal" 
+                                            $buttons = ['<button class="btn sbold green" data-toggle="modal" 
                                 data-target="#modal_newContractor" data-href-add="other"
-                                data-type="Other">Add Other <i class="fa fa-plus"></i></button>'
-                                                ],
-                                                'table_id' => "table_other",
-                                                'ajax' => [
-                                                    'url' => "/contractors/dt_other"
-                                                ],
-                                                'column_names' => $this->column_names,
-                                                'hidden_by_default' => "[]",
-                                                'click_url' => "javascript:;"
-                                            ];
+                                data-type="Other">Add Other <i class="fa fa-plus"></i></button>'];
+                                            $table_data = array_merge($this->otherTable, $commonData,
+	                                            [
+		                                            'buttons' => $buttons,
+		                                            'ajax' => [
+			                                            'url' => "/contractors/dt_contractors?type=".PAYMENT_CATEGORY_OTHER
+		                                            ]
+	                                            ]
+                                            );
                                             include 'application/views/templates/table.php'
                                             ?>
                                         </div>

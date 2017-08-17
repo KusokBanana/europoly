@@ -117,25 +117,29 @@ class ModelAccountant extends Model
 	        case 'general':
 	        case 'contractor':
                 $columns = $this->payments_columns;
+		        if ($_SESSION['user']->role_id <= ROLE_SALES_MANAGER) {
+			        $this->unLinkStrings($columns, [5, 6]);
+		        }
                 $ssp = array_merge($ssp, $this->getColumns($this->payments_column_names, $this->page,
                     $this->tableName, true));
-                break;
+		        $ssp['table_name'] = $this->tableName;
+		        $ssp = array_merge($ssp, $this->getColumns($columns, $this->page, $this->tableName));
+	            break;
             case 'monthly':
                 $where[] = 'payments.is_monthly = 1';
-                $columns = $this->getMonthlyPaymentsCols('columns');
-                $ssp['columns_names'] = $this->getMonthlyPaymentsCols('name');
-                $ssp['original_columns_names'] = $this->getMonthlyPaymentsCols('name', true);
+	            $columns = $this->getMonthlyPaymentsCols('columns');
+	            if ($_SESSION['user']->role_id <= ROLE_SALES_MANAGER) {
+		            $this->unLinkStrings($columns, [5, 6]);
+	            }
+	            $names = $this->getMonthlyPaymentsCols('name');
+	            $ssp['table_name'] = $this->tableName . '_monthly';
+	            $ssp = array_merge($ssp, $this->getColumns($columns, $this->page, $ssp['table_name']));
+	            $ssp = array_merge($ssp, $this->getColumns($names, $this->page, $ssp['table_name'], true));
+	            break;
         }
 
-        $ssp = array_merge($ssp, $this->getColumns($columns, $this->page, $this->tableName));
         $ssp['db_table'] = $this->payments_table;
-        $ssp['table_name'] = $this->tableName;
         $ssp['primary'] = 'payments.payment_id';
-
-        if ($_SESSION['user']->role_id <= ROLE_SALES_MANAGER) {
-            $this->unLinkStrings($columns, [5, 6]);
-        }
-
         $ssp['where'] = $where;
 
         return $ssp;
@@ -154,7 +158,6 @@ class ModelAccountant extends Model
         }
 
         if ($printOpt) {
-            $printOpt['where'] = $ssp['where'];
             echo $this->printTable($input, $ssp, $printOpt);
             return true;
         }
@@ -213,10 +216,15 @@ class ModelAccountant extends Model
 		'Status',
 	];
 
-    function getDTOrderPayments($order_id, $type, $input)
+    function getDTOrderPayments($order_id, $type, $input, $printOpt)
     {
 
     	$ssp = $this->getSSPData('orders_payments', ['order_id' => $order_id, 'type' => $type]);
+
+	    if ($printOpt) {
+		    echo $this->printTable($input, $ssp, $printOpt);
+		    return true;
+	    }
 
         return $this->sspComplex($ssp['db_table'], $ssp['primary'], $ssp['columns'],
             $input, null, $ssp['where']);
@@ -235,8 +243,6 @@ class ModelAccountant extends Model
                 });
                 break;
             case 'monthly':
-                $selects = $this->getSelects($data);
-                break;
             case 'contractor':
                 $selects = $this->getSelects($data);
                 break;
@@ -278,12 +284,7 @@ class ModelAccountant extends Model
             case 'name':
                 array_splice($this->payments_column_names, 18, 0, 'Pay Day');
                 array_splice($this->payments_column_names, 18, 0, 'Monthly Status');
-                if (!$isOriginal) {
-                    return $this->getColumns($this->payments_column_names,
-                        'accountant', $this->tableName . 'monthly', true);
-                }
-                $roles = new Roles();
-                return $roles->returnModelNames($this->payments_column_names, 'accountant');
+                return $this->payments_column_names;
             case 'columns':
                 $actions = $this->payments_columns[19];
                 $this->payments_columns[19] = array('dt' => 19, 'db' => "payments.monthly_pay_day");

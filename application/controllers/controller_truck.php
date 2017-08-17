@@ -106,7 +106,8 @@ class ControllerTruck extends Controller
 
     function action_dt_order_items()
     {
-        $this->model->getDTTrucks($_POST['products']['truck_id'], $_POST);
+	    $print = $this->model->getPrintOptions($_POST);
+	    $this->model->getDTTrucks($_POST['products']['truck_id'], $_POST, $print);
     }
 
     function action_change_status()

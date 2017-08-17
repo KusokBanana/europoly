@@ -187,7 +187,6 @@ class ModelShipment extends ModelManagers_orders
         $ssp = $this->getSSPData($type);
 
         if ($printOpt) {
-            $printOpt['where'] = $ssp['where'];
             echo $this->printTable($input, $ssp, $printOpt);
             return true;
         }

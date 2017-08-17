@@ -11,7 +11,8 @@ class ModelDelivery_notes extends Model
     }
 
 
-    var $tableNames = ['table_delivery_notes', 'table_delivery_notes_reduced'];
+    var $tableNames = ['table_delivery_notes', 'table_delivery_notes_reduced', 'table_order_items_delivery_notes',
+	    'table_order_items_modal_delivery_notes'];
     public $whereCondition = [];
     public $page;
 
@@ -159,6 +160,31 @@ class ModelDelivery_notes extends Model
         $ssp = ['page' => $this->page];
 
         switch ($type) {
+            case 'modal': // TODO not correct data loading into modal window in single DN page
+	            unset($this->columns[16]);
+	            unset($this->delivery_note_items_names[16]);
+	            $ssp['table_name'] = $this->tableNames[3];
+	        case 'single':
+	            $where = ['order_items.is_deleted = 0'];
+	            $ids = Helper::arrGetVal($opts, 'ids');
+	            $note_id = Helper::arrGetVal($opts, 'note_id');
+	            $ssp['table_name'] = !isset($ssp['table_name']) ? $this->tableNames[2] : $ssp['table_name'];
+	            if ($ids) {
+		            $ssp['db_table'] = $this->getTable(false);
+		            $where[] = "order_items.item_id IN ($ids)";
+		            $ssp['primary'] = 'order_items.item_id';
+	            } else {
+		            $ssp['db_table'] = $this->getTable();
+		            $where[] = "delivery_note_items.note_id = $note_id";
+		            $ssp['primary'] = "delivery_note_items.id";
+	            }
+	            $ssp = array_merge($ssp, $this->getColumns($this->columns, $this->page,
+		            $ssp['table_name']));
+	            $ssp = array_merge($ssp, $this->getColumns($this->delivery_note_items_names, $this->page,
+		            $ssp['table_name'], true));
+	            $ssp['where'] = $where;
+
+            	break;
             case 'order':
 	            $where = ['order_items.is_deleted = 0', 'orders.order_id = ' . $opts['order_id']];
 
@@ -206,7 +232,6 @@ class ModelDelivery_notes extends Model
         $ssp = $this->getSSPData($type);
 
         if ($printOpt) {
-            $printOpt['where'] = $ssp['where'];
             echo $this->printTable($input, $ssp, $printOpt);
             return true;
         }
@@ -239,33 +264,29 @@ class ModelDelivery_notes extends Model
 
     }
 
-    function getDTOrderItems($note_id, $input, $ids = null)
+    function getDTOrderItems($input, $opts, $printOpt)
     {
+    	$type = $opts['type'];
+		$ssp = $this->getSSPData($type, $opts);
 
-        $where = ['order_items.is_deleted = 0'];
+	    if ($printOpt) {
+		    echo $this->printTable($input, $ssp, $printOpt);
+		    return true;
+	    }
 
-        if ($ids) {
-            $table = $this->getTable(false);
-            $where[] = "order_items.item_id IN ($ids)";
-            $primary = 'order_items.item_id';
-            unset($this->columns[16]);
-        } else {
-            $table = $this->getTable();
-            $where[] = "delivery_note_items.note_id = $note_id";
-            $primary = "delivery_note_items.id";
-        }
-
-        $roles = new Roles();
-
-        $columns = $roles->returnModelColumns($this->columns, 'order');
-
-        return $this->sspComplex($table, $primary, $columns, $input, null, $where);
+	    $this->sspComplex($ssp['db_table'], $ssp['primary'],
+		    $ssp['columns'], $input, null, $ssp['where']);
     }
 
-    function getDTForOrder($order_id, $input)
+    function getDTForOrder($order_id, $input, $printOpt)
     {
 
     	$ssp = $this->getSSPData('order', ['order_id' => $order_id]);
+
+	    if ($printOpt) {
+		    echo $this->printTable($input, $ssp, $printOpt);
+		    return true;
+	    }
 
         $this->sspComplex($ssp['db_table'], $ssp['primary'],
             $ssp['columns'], $input, null, $ssp['where']);
@@ -349,9 +370,9 @@ class ModelDelivery_notes extends Model
         return [];
     }
 
-    public function getTableData($type = 'general')
+    public function getTableData($type = 'general', $opts = [])
     {
-        $data = $this->getSSPData($type);
+        $data = $this->getSSPData($type, $opts);
 
         switch ($type) {
             case 'general':
@@ -360,7 +381,9 @@ class ModelDelivery_notes extends Model
                     return $this->getSelects($data);
                 });
                 break;
-            case 'reduced':
+	        case 'single':
+	        case 'modal':
+	        case 'reduced':
                 $selects = $this->getSelects($data, true);
                 break;
         }

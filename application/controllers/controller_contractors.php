@@ -18,45 +18,22 @@ class ControllerContractors extends Controller
         $this->view->title = "Contractors";
         $this->view->column_names = $this->model->column_names;
 
-        $this->view->clientsTable = $this->model->getTableData('clients');
+        $this->view->clientsTable = $this->model->getTableData(PAYMENT_CATEGORY_CLIENT);
+        $this->view->suppliersTable = $this->model->getTableData(PAYMENT_CATEGORY_SUPPLIER);
+        $this->view->customsTable = $this->model->getTableData(PAYMENT_CATEGORY_CUSTOMS);
+        $this->view->transportTable = $this->model->getTableData(PAYMENT_CATEGORY_DELIVERY);
+        $this->view->otherTable = $this->model->getTableData(PAYMENT_CATEGORY_OTHER);
 
         $this->view->managers = $this->model->getSalesManagersIdName();
         $this->view->commission_agents = $this->model->getCommissionAgentsIdName();
         $this->view->build('templates/template.php', 'contractors.php');
     }
 
-    function action_dt_clients()
+    function action_dt_contractors()
     {
-        $print = isset($_GET['print']) ? $_GET['print'] : false;
-        if ($print) {
-            $print = [
-                'visible' => isset($_GET['visible']) && $_GET['visible'] ? json_decode($_GET['visible'], true) : [],
-                'selected' => isset($_GET['selected']) && $_GET['selected'] ? json_decode($_GET['selected'], true) : [],
-                'filters' => isset($_GET['filters']) && $_GET['filters'] ? json_decode($_GET['filters'], true) : [],
-            ];
-        }
-
-        $this->model->getDTClients($_POST, $print);
-    }
-
-    function action_dt_suppliers()
-    {
-        $this->model->getDTSuppliers($_GET);
-    }
-
-    function action_dt_customs()
-    {
-        $this->model->getDTCustoms($_GET);
-    }
-
-    function action_dt_transportation()
-    {
-        $this->model->getDTTransportation($_GET);
-    }
-
-    function action_dt_other()
-    {
-        $this->model->getDTOther($_GET);
+	    $type = Helper::arrGetVal($_GET, 'type');
+	    $print = $this->model->getPrintOptions($_POST);
+        $this->model->getDTContractors($_POST, $type, $print);
     }
 
     function action_add()

@@ -56,14 +56,7 @@ class ControllerBrand extends Controller
             $data = $_POST["products"];
             $brand_id = intval($data['brand_id']);
 
-            $print = isset($_POST['print']) ? $_POST['print'] : false;
-            if ($print) {
-                $print = [
-                    'visible' => isset($_POST['visible']) && $_POST['visible'] ? json_decode($_POST['visible'], true) : [],
-                    'selected' => isset($_POST['selected']) && $_POST['selected'] ? json_decode($_POST['selected'], true) : [],
-                    'filters' => isset($_POST['filters']) && $_POST['filters'] ? json_decode($_POST['filters'], true) : [],
-                ];
-            }
+	        $print = $this->model->getPrintOptions($_POST);
 
             $this->model->getDTProductsForBrand($brand_id, $_POST, $print);
         } else {

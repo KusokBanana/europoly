@@ -72,7 +72,9 @@ class ControllerOrder extends Controller
 
     function action_dt_order_items()
     {
-        $this->model->getDTOrderItems($_GET['order_id'], $_GET);
+	    $print = $this->model->getPrintOptions($_POST);
+
+        $this->model->getDTOrderItems($_GET['order_id'], $_POST, $print);
     }
 
     function action_send_to_logist()

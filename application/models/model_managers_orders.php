@@ -161,11 +161,6 @@ class ModelManagers_orders extends Model
 
         $ssp = ['page' => $this->page];
 
-//        $orders = $this->getAssoc("SELECT * FROM order_items WHERE is_deleted = 0");
-//        foreach ($orders as $order) {
-//        	$this->updateItemsStatus($order['item_id'], $order);
-//        }
-
         switch ($type) {
             case 'general':
 
@@ -215,7 +210,6 @@ class ModelManagers_orders extends Model
         $ssp = $this->getSSPData($type);
 
         if ($printOpt) {
-            $printOpt['where'] = $ssp['where'];
             echo $this->printTable($input, $ssp, $printOpt);
             return true;
         }

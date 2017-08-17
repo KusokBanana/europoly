@@ -200,10 +200,15 @@ class ModelOrder extends Model
 		return $ssp;
 	}
 
-    function getDTOrderItems($order_id, $input)
+    function getDTOrderItems($order_id, $input, $printOpt)
     {
 
     	$ssp = $this->getSSPData('general', ['order_id' => $order_id]);
+
+	    if ($printOpt) {
+		    echo $this->printTable($input, $ssp, $printOpt);
+		    return true;
+	    }
 
 	    return $this->sspComplex($ssp['db_table'], $ssp['primary'], $ssp['columns'], $input, null, $ssp['where']);
 

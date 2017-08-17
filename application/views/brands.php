@@ -36,6 +36,7 @@
                     $commonData = [
                         'click_url' => "/brand?id=",
                         'buttons' => $buttons,
+                        'method' => 'POST',
                         'ajax' => [
                             'url' => "/brands/dt"
                         ]

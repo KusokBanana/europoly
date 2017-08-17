@@ -58,7 +58,7 @@
 
                                     $table_data = array_merge($this->ordersTable, [
                                         'ajax' => [
-                                            'url' => "/delivery_notes/dt_reduced"
+                                            'url' => "/delivery_notes/dt?type=reduced"
                                         ]
                                     ], $commonData);
 

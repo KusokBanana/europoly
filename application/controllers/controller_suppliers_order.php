@@ -40,7 +40,8 @@ class ControllerSuppliers_order extends Controller
 
     function action_dt_order_items()
     {
-        $this->model->getDTOrderItems($_POST['products']['order_id'], $_POST);
+	    $print = $this->model->getPrintOptions($_POST);
+	    $this->model->getDTOrderItems($_POST['products']['order_id'], $_POST, $print);
     }
 
     function action_change_status()

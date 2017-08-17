@@ -18,7 +18,7 @@
                         'table_id' => "table_order_items_new_modal",
 //                        'table_id' => "table_order_item_product",
                         'ajax' => [
-                            'url' => "/delivery_notes/get_dt_note?table=table_catalogue&ids=".$this->items
+                            'url' => "/delivery_notes/get_dt_note?isGet=true&table=table_catalogue&ids=".$this->items
                         ],
                         'column_names' => $this->column_names,
                         'originalColumns' => $this->originalColumns_modal,

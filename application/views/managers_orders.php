@@ -66,7 +66,7 @@
 
                                     $table_data = array_merge($this->ordersTable, [
                                         'ajax' => [
-                                            'url' => "/managers_orders/dt_managers_orders_reduced"
+                                            'url' => "/managers_orders/dt_managers_orders?type=reduced"
                                         ]
                                     ], $commonData);
                                     include 'application/views/templates/table.php'

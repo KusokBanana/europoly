@@ -104,15 +104,15 @@ class ModelContractor extends ModelContractors
             'page' => 'contractor',
             'table_name' => $this->tableNames[1],
             'primary' => $this->contractor_goods_primary,
+            'where' => $this->contractor_goods_where,
         ];
 
         if ($printOpt) {
-            $printOpt['where'] = $this->contractor_goods_where;
             echo $this->printTable($input, $ssp, $printOpt);
             return true;
         }
 
-        $this->sspComplex($ssp['db_table'], $ssp['primary'], $ssp['columns'], $input, null, $this->contractor_goods_where);
+        $this->sspComplex($ssp['db_table'], $ssp['primary'], $ssp['columns'], $input, null, $ssp['where']);
     }
 
     public function getContractorServices($input, $printOpt)
@@ -129,10 +129,10 @@ class ModelContractor extends ModelContractors
             'page' => 'contractor',
             'table_name' => $this->tableNames[2],
             'primary' => $this->contractor_services_primary,
+            'where' => $this->contractor_services_where,
         ];
 
         if ($printOpt) {
-            $printOpt['where'] = $this->contractor_services_where;
             echo $this->printTable($input, $ssp, $printOpt);
             return true;
         }
@@ -141,7 +141,7 @@ class ModelContractor extends ModelContractors
 
         if ($contractor_type !== PAYMENT_CATEGORY_OTHER && $contractor_type !== PAYMENT_CATEGORY_SUPPLIER) {
             $dynamicData = $this->getSspComplexJson($ssp['db_table'], $ssp['primary'], $ssp['columns'],
-                $input, null, $this->contractor_services_where);
+                $input, null, $ssp['where']);
         }
 
         echo $this->mergeWithStaticServices($contractor_type, $contractor_id, $dynamicData);

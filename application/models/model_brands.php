@@ -51,10 +51,16 @@ class ModelBrands extends Model
         return $ssp;
     }
 
-    function getDTBrands($input)
+    function getDTBrands($input, $printOpt)
     {
 
         $ssp = $this->getSSPData();
+
+	    if ($printOpt) {
+		    echo $this->printTable($input, $ssp, $printOpt);
+		    return true;
+	    }
+
         $this->sspComplex($ssp['db_table'], $ssp['primary'],
             $ssp['columns'], $input, $ssp['where']);
     }

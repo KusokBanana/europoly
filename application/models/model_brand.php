@@ -34,7 +34,6 @@ class ModelBrand extends ModelCatalogue
         $ssp['where'][] = "brands.brand_id = " . $brand_id;
 
         if ($printOpt) {
-            $printOpt['where'] = $ssp['where'];
             echo $this->printTable($input, $ssp, $printOpt);
             return true;
         }

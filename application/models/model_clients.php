@@ -131,7 +131,6 @@ class ModelClients extends Model
         $ssp = $this->getSSPData();
 
         if ($printOpt) {
-            $printOpt['where'] = $ssp['where'];
             echo $this->printTable($input, $ssp, $printOpt);
             return true;
         }

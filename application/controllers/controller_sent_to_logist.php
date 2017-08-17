@@ -27,14 +27,7 @@ class ControllerSent_to_logist extends Controller
 
     function action_dt_managers_orders()
     {
-        $print = isset($_GET['print']) ? $_GET['print'] : false;
-        if ($print) {
-            $print = [
-                'visible' => isset($_GET['visible']) && $_GET['visible'] ? json_decode($_GET['visible'], true) : [],
-                'selected' => isset($_GET['selected']) && $_GET['selected'] ? json_decode($_GET['selected'], true) : [],
-                'filters' => isset($_GET['filters']) && $_GET['filters'] ? json_decode($_GET['filters'], true) : [],
-            ];
-        }
+	    $print = $this->model->getPrintOptions($_GET);
         $ids = isset($_GET['ids']) ? $_GET['ids'] : false;
         $this->model->getDTManagersOrders($_GET, $print, $ids);
     }

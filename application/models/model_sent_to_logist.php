@@ -31,7 +31,6 @@ class ModelSent_to_logist extends ModelManagers_orders
         $ssp['where'] = $where;
 
         if ($printOpt) {
-            $printOpt['where'] = $ssp['where'];
             echo $this->printTable($input, $ssp, $printOpt);
             return true;
         }

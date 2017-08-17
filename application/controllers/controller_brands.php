@@ -26,7 +26,9 @@ class ControllerBrands extends Controller
 
     function action_dt()
     {
-        $this->model->getDTBrands($_GET);
+	    $print = $this->model->getPrintOptions($_POST);
+
+        $this->model->getDTBrands($_POST, $print);
     }
 
     function action_add()

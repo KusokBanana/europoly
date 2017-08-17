@@ -129,8 +129,8 @@ abstract class Model extends mysqli
         $list = [];
         if ($result = $this->query($query)) {
             while ($row = $result->fetch_assoc()) {
-//                if (isset($row['is_deleted']) && $row['is_deleted'])
-//                    continue;
+                if (isset($row['is_deleted']) && $row['is_deleted'])
+                    continue;
                 array_push($list, $row);
             }
         }
@@ -754,6 +754,19 @@ abstract class Model extends mysqli
 
     }
 
+    public function getPrintOptions($data)
+    {
+	    $print = isset($data['print']) ? $data['print'] : false;
+	    if ($print) {
+		    $print = [
+			    'visible' => isset($data['visible']) && $data['visible'] ? json_decode($data['visible'], true) : [],
+			    'selected' => isset($data['selected']) && $data['selected'] ? json_decode($data['selected'], true) : [],
+			    'filters' => isset($data['filters']) && $data['filters'] ? json_decode($data['filters'], true) : [],
+		    ];
+	    }
+	    return $print;
+    }
+
     /**
      * @param $input
      * @param array $ssp[] Array containing the necessary params.
@@ -777,13 +790,12 @@ abstract class Model extends mysqli
     protected function printTable($input, $ssp, $options)
     {
 
-        $names = $this->getColumns($ssp['columns_names'], $ssp['page'], $ssp['table_name'], true);
         $selected = $options['selected'];
 
         if (empty($selected)) {
 
-            $columns = $this->getColumns($ssp['columns'], $ssp['page'], $ssp['table_name']);
-            $where = $options['where'];
+            $columns = $ssp['columns'];
+            $where = $ssp['where'];
             if (!is_array($where)) {
                 $where = [$where];
             }
@@ -810,7 +822,7 @@ abstract class Model extends mysqli
         require_once dirname(__FILE__) . '/../classes/Excel.php';
         $excel = new Excel();
 
-        $data = array_merge([$names], $values);
+        $data = array_merge([$ssp['columns_names']], $values);
         return $excel->printTable($data, $options['visible'], $ssp['page']);
 
 

@@ -5,7 +5,7 @@
 	$ajax = $table_data['ajax'];
 	$column_names = isset($table_data['column_names']) ? $table_data['column_names'] : $table_data['columns_names'];
 	$hidden_by_default = isset($table_data['hidden_by_default']) ? $table_data['hidden_by_default'] : '';
-	$click_url = isset($table_data['click_url']) ? $table_data['click_url'] : '#';
+	$click_url = isset($table_data['click_url']) ? $table_data['click_url'] : 'javascript:;';
 	$originalColumns = isset($table_data['original_columns_names']) ? $table_data['original_columns_names'] : [];
 	$mustHidden = 0;
 	$method = isset($table_data['method']) ? $table_data['method'] : 'GET';
@@ -1052,7 +1052,7 @@ $hidden_by_default = json_encode($hidden);
             var filters = JSON.stringify(getTableFilters());
             visible = JSON.stringify(visible);
 
-            if (ajax.url == undefined) {
+            if (ajax.url === undefined) {
                 $.ajax({
                     url: ajax,
                     type: '<?= $method; ?>',

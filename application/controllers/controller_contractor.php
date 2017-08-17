@@ -121,28 +121,14 @@ class ControllerContractor extends Controller
 
     function action_dt_contractor_goods()
     {
-        $print = isset($_GET['print']) ? $_GET['print'] : false;
-        if ($print) {
-            $print = [
-                'visible' => isset($_GET['visible']) && $_GET['visible'] ? json_decode($_GET['visible'], true) : [],
-                'selected' => isset($_GET['selected']) && $_GET['selected'] ? json_decode($_GET['selected'], true) : [],
-                'filters' => isset($_GET['filters']) && $_GET['filters'] ? json_decode($_GET['filters'], true) : [],
-            ];
-        }
+	    $print = $this->model->getPrintOptions($_POST);
 
         $this->model->getContractorGoodsMovement($_POST, $print);
     }
 
     function action_dt_contractor_services()
     {
-        $print = isset($_GET['print']) ? $_GET['print'] : false;
-        if ($print) {
-            $print = [
-                'visible' => isset($_GET['visible']) && $_GET['visible'] ? json_decode($_GET['visible'], true) : [],
-                'selected' => isset($_GET['selected']) && $_GET['selected'] ? json_decode($_GET['selected'], true) : [],
-                'filters' => isset($_GET['filters']) && $_GET['filters'] ? json_decode($_GET['filters'], true) : [],
-            ];
-        }
+	    $print = $this->model->getPrintOptions($_POST);
 
         echo $this->model->getContractorServices($_POST, $print);
     }

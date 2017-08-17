@@ -37,21 +37,11 @@ class ControllerManagers_orders extends Controller
     function action_dt_managers_orders()
     {
 
-        $print = isset($_GET['print']) ? $_GET['print'] : false;
-        if ($print) {
-            $print = [
-                'visible' => isset($_GET['visible']) && $_GET['visible'] ? json_decode($_GET['visible'], true) : [],
-                'selected' => isset($_GET['selected']) && $_GET['selected'] ? json_decode($_GET['selected'], true) : [],
-                'filters' => isset($_GET['filters']) && $_GET['filters'] ? json_decode($_GET['filters'], true) : [],
-            ];
-        }
+        $isReduced = (isset($_GET['type']) && $_GET['type'] === 'reduced') ? true : false;
+        $print = $this->model->getPrintOptions($_POST);
 
-        $this->model->getDTManagersOrders($_POST, $print);
-    }
+        $this->model->getDTManagersOrders($_POST, $print, $isReduced);
 
-    function action_dt_managers_orders_reduced()
-    {
-        $this->model->getDTManagersOrders($_POST, false, true);
     }
 
     function action_dt_managers_orders_to_suppliers()

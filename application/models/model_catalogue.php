@@ -39,8 +39,7 @@ class ModelCatalogue extends Model
         $ssp = $this->getSSPData();
 
         if ($printOpt) {
-            $printOpt['where'] = $ssp['where'];
-            echo $this->printTable($input, $ssp, $printOpt); // TODO refactor this - merge printOpt and ssp
+            echo $this->printTable($input, $ssp, $printOpt);
             return true;
         }
 

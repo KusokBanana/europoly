@@ -27,23 +27,11 @@ class ControllerDelivery_notes extends Controller
 
     function action_dt()
     {
-        $print = isset($_GET['print']) ? $_GET['print'] : false;
-        if ($print) {
-            $print = [
-                'visible' => isset($_GET['visible']) && $_GET['visible'] ? json_decode($_GET['visible'], true) : [],
-                'selected' => isset($_GET['selected']) && $_GET['selected'] ? json_decode($_GET['selected'], true) : [],
-                'filters' => isset($_GET['filters']) && $_GET['filters'] ? json_decode($_GET['filters'], true) : [],
-            ];
-        }
+	    $isReduced = (isset($_GET['type']) && $_GET['type'] === 'reduced') ? true : false;
+	    $print = $this->model->getPrintOptions($_POST);
 
-        $this->model->getDt($_POST, $print);
+        $this->model->getDt($_POST, $print, $isReduced);
     }
-
-    function action_dt_reduced()
-    {
-        $this->model->getDt($_POST, false, true);
-    }
-
 
     function action_view()
     {
@@ -66,11 +54,6 @@ class ControllerDelivery_notes extends Controller
         $this->view->client = $this->model->getClient($order['client_id']);
         $this->view->commission_agent = $this->model->getClient($order["commission_agent_id"]);
         $this->view->sales_manager = $this->model->getUser($order["sales_manager_id"]);
-        $roles = new Roles();
-        $this->view->column_names = $roles->returnModelNames($this->model->delivery_note_items_names, $this->page);
-        $roles = new Roles();
-        $this->view->originalColumns_modal = $roles->returnModelNames($this->model->delivery_note_items_names, 'order');
-
         $this->view->title = "Delivery Note №" . $note['id'];
         $roles = new Roles();
         $this->view->access = $roles->getPageAccessAbilities($this->page);
@@ -78,7 +61,10 @@ class ControllerDelivery_notes extends Controller
         $orderItems = $this->model->getProducts($order['order_id'], $note['id']);
         $this->view->items = $orderItems;
 
-        if ($this->view->access['p']) {
+	    $this->view->itemsTable = $this->model->getTableData('single', ['note_id' => $note['id']]);
+	    $this->view->deliveryNotesModalTable = $this->model->getTableData('modal', ['ids' => $orderItems]);
+
+	    if ($this->view->access['p']) {
             $this->view->documents = $this->model->getDocuments($_GET['id']);
         }
 
@@ -87,9 +73,12 @@ class ControllerDelivery_notes extends Controller
 
     function action_get_dt_note()
     {
-        $note_id = isset($_GET['note_id']) ? $_GET['note_id'] : false;
-        $ids = isset($_GET['ids']) ? $_GET['ids'] : false;
-        $this->model->getDTOrderItems($note_id, $_GET, $ids);
+	    $arr = isset($_GET['isGet']) ? $_GET : $_POST;
+	    $note_id = Helper::arrGetVal($arr, 'note_id');
+	    $ids = Helper::arrGetVal($arr, 'ids');
+	    $type = Helper::arrGetVal($arr, 'type', 'single');
+	    $print = $this->model->getPrintOptions($_POST);
+	    $this->model->getDTOrderItems($_POST, ['ids' => $ids, 'note_id' => $note_id, 'type' => $type], $print);
     }
 
     function action_add_order_item()
@@ -135,7 +124,8 @@ class ControllerDelivery_notes extends Controller
     function action_dt_for_order()
     {
         $order_id = isset($_POST['products']['order_id']) ? $_POST['products']['order_id'] : false;
-        $this->model->getDTForOrder($order_id, $_POST);
+	    $print = $this->model->getPrintOptions($_POST);
+	    $this->model->getDTForOrder($order_id, $_POST, $print);
     }
 
 

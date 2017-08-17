@@ -49,9 +49,11 @@ class ModelContractors extends ModelClients
 
         $ssp = ['page' => $this->page];
         $tableName = 'table_'.$type;
+	    $ssp['where'] = [];
+	    $ssp['table_name'] = $tableName;
 
         switch ($type) {
-            case 'clients':
+            case PAYMENT_CATEGORY_CLIENT:
                 $columns = $this->client_columns;
                 $columns[1]['db'] = "CONCAT('<a href=\"/contractor?id=', clients.client_id, 
             '&type=', '".PAYMENT_CATEGORY_CLIENT."', '\">', clients.final_name, '</a>')";
@@ -68,33 +70,58 @@ class ModelContractors extends ModelClients
                 );
                 $this->unLinkStrings($columns, [17]);
 
-                $ssp['where'] = ['clients.is_deleted = 0'];
                 $ssp = array_merge($ssp, $this->getColumns($columns, $this->page,
                     $tableName));
                 $ssp = array_merge($ssp, $this->getColumns($this->client_column_names, $this->page,
                     $tableName, true));
                 $ssp['db_table'] = $this->client_table;
-                $ssp['table_name'] = $tableName;
                 $ssp['primary'] = 'clients.client_id';
-                break;
+	            break;
+	        case PAYMENT_CATEGORY_SUPPLIER:
+		        $ssp['db_table'] = 'suppliers';
+		        $ssp['primary'] = 'suppliers.supplier_id';
+		        $ssp = array_merge($ssp, $this->getColumns($this->suppliers_columns, $this->page,
+			        $tableName));
+		        $ssp = array_merge($ssp, $this->getColumns($this->column_names, $this->page,
+			        $tableName, true));
+		        break;
+	        case PAYMENT_CATEGORY_CUSTOMS:
+		        $ssp['db_table'] = 'customs';
+		        $ssp['primary'] = 'customs.custom_id';
+		        $ssp = array_merge($ssp, $this->getColumns($this->customs_columns, $this->page,
+			        $tableName));
+		        $ssp = array_merge($ssp, $this->getColumns($this->column_names, $this->page,
+			        $tableName, true));
+		        break;
+	        case PAYMENT_CATEGORY_DELIVERY:
+		        $ssp['db_table'] = 'transportation_companies as transport';
+		        $ssp['primary'] = 'transport.transportation_company_id';
+		        $ssp = array_merge($ssp, $this->getColumns($this->transportation_columns, $this->page,
+			        $tableName));
+		        $ssp = array_merge($ssp, $this->getColumns($this->column_names, $this->page,
+			        $tableName, true));
+		        break;
+	        case PAYMENT_CATEGORY_OTHER:
+		        $ssp['db_table'] = 'other';
+		        $ssp['primary'] = 'other.other_id';
+		        $ssp = array_merge($ssp, $this->getColumns($this->other_columns, $this->page,
+			        $tableName));
+		        $ssp = array_merge($ssp, $this->getColumns($this->column_names, $this->page,
+			        $tableName, true));
+		        break;
         }
-
-        $ssp['where'] = $this->whereCondition;
 
         return $ssp;
 
     }
 
-    public function getDTClients($input, $printOpt)
+    public function getDTContractors($input, $type, $printOpt)
     {
-        $ssp = $this->getSSPData('clients');
+        $ssp = $this->getSSPData($type);
 
         if ($printOpt) {
-
-            $printOpt['where'] = $ssp['where'];
             echo $this->printTable($input, $ssp, $printOpt);
             return true;
-
         }
 
         $this->sspComplex($ssp['db_table'], $ssp['primary'], $ssp['columns'], $input, null,
@@ -105,7 +132,6 @@ class ModelContractors extends ModelClients
     public function getTableData($type = 'general', $opts = [])
     {
         $data = $this->getSSPData($type);
-
         $selects = $this->getSelects($data);
 
         return array_merge($data, $selects);
@@ -132,11 +158,6 @@ class ModelContractors extends ModelClients
         'Delete'
     ];
 
-    function getDTSuppliers($input)
-    {
-        $this->sspComplex('suppliers', "suppliers.supplier_id", $this->suppliers_columns, $input, null, 'suppliers.is_deleted != 1');
-    }
-
     var $customs_columns = [
         array('dt' => 0, 'db' => "customs.custom_id"),
         array('dt' => 1, 'db' => "CONCAT('<a href=\"/contractor?id=', customs.custom_id, 
@@ -150,11 +171,6 @@ class ModelContractors extends ModelClients
                                    </a>'),
                 '</div>')")
     ];
-
-    function getDTCustoms($input)
-    {
-        $this->sspComplex('customs', "customs.custom_id", $this->customs_columns, $input, null, 'customs.is_deleted != 1');
-    }
 
     var $transportation_columns = [
         array('dt' => 0, 'db' => "transport.transportation_company_id"),
@@ -171,12 +187,6 @@ class ModelContractors extends ModelClients
                 '</div>')")
     ];
 
-    function getDTTransportation($input)
-    {
-        $this->sspComplex('transportation_companies as transport', "transport.transportation_company_id",
-            $this->transportation_columns, $input, null, 'transport.is_deleted != 1');
-    }
-
     var $other_columns = [
         array('dt' => 0, 'db' => "other.other_id"),
         array('dt' => 1, 'db' => "CONCAT('<a href=\"/contractor?id=', other.other_id, 
@@ -190,12 +200,6 @@ class ModelContractors extends ModelClients
                                    </a>'),
                 '</div>')")
     ];
-
-    function getDTOther($input)
-    {
-        $this->sspComplex('other', "other.other_id",
-            $this->other_columns, $input, null, 'other.is_deleted != 1');
-    }
 
     function addNewContractor($type, $name)
     {
