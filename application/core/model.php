@@ -20,8 +20,20 @@ abstract class Model extends mysqli
 
     public function connect_db()
     {
-        parent::__construct(SQLADDR, SQLUSER, SQLPWD, SQLDB);
-        $this->query("SET NAMES utf8");
+//	    $isConnected = mysqli::ping();
+//	    if (!$isConnected) {
+		    parent::__construct(SQLADDR, SQLUSER, SQLPWD, SQLDB);
+		    $this->query("SET NAMES utf8");
+//	    }
+
+	    if (get_class($this) !== 'ModelUser' && isset($_SESSION['user_id']) && $_SESSION['user_id']) {
+		    require_once dirname(__FILE__) . '/../models/model_user.php';
+
+		    $user = new ModelUser();
+		    $userObj = $user->initializeUser();
+
+		    $this->user = $userObj;
+	    }
     }
 
     public function insert($query)

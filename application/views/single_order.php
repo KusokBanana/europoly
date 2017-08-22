@@ -507,7 +507,7 @@ require_once 'modals/shipment_to_customer_modal_amount.php';
                     location.reload();
                 },
                 validate: function (value) {
-                    <?php if ($_SESSION['perm'] < ADMIN_PERM): ?>
+                    <?php if ($this->user->permissions < ADMIN_PERM): ?>
                         var itemId = $(this).attr('data-pk');
                         var name = $(this).attr('data-name');
                         var result = true;

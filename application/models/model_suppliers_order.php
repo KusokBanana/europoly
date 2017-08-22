@@ -315,7 +315,7 @@ class ModelSuppliers_order extends ModelOrder
                 left join users as managers on orders.sales_manager_id = managers.user_id';
 
 	            $columns = $this->suppliers_orders_columns;
-	            if ($_SESSION['perm'] <= ADMIN_PERM) {
+	            if ($this->user->permissions <= ADMIN_PERM) {
 		            $this->unLinkStrings($columns, [5]);
 	            }
 

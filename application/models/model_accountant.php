@@ -12,15 +12,21 @@ class ModelAccountant extends Model
         array('dt' => 3, 'db' => "entities.name"),
         array('dt' => 4, 'db' => "payments.category"),
         array('dt' => 5, 'db' => "CONCAT( 
-            IF(payments.category = 'Client' OR payments.category = 'Comission Agent', 
+            IF(payments.category = '".PAYMENT_CATEGORY_CLIENT."' OR payments.category = '".PAYMENT_CATEGORY_COMMISSION_AGENT."', 
                 CONCAT('<a href=\"/client?id=', payments.contractor_id, '\">', clients.final_name, '</a>'), ''),
-            IF(payments.category = 'Supplier', 
-                CONCAT('<a href=\"/supplier?id=', payments.contractor_id, '\">', suppliers.name, '</a>'), ''),
-            IF(payments.category = 'Customs', 
-                CONCAT('<a href=\"/custom?id=', payments.contractor_id, '\">', customs.name, '</a>'), ''),
-            IF(payments.category = 'Delivery', 
-                CONCAT('<a href=\"/transportation?id=', payments.contractor_id, '\">', transport.name, '</a>'), ''))"),
-        array('dt' => 6, 'db' => "CONCAT('<a href=\"/', IF(payments.category = 'Supplier', 
+            IF(payments.category = '".PAYMENT_CATEGORY_SUPPLIER."', 
+                CONCAT('<a href=\"/contractor?type=', '".PAYMENT_CATEGORY_SUPPLIER."', '&id=', payments.contractor_id, '\">', 
+                suppliers.name, '</a>'), ''), 
+            IF(payments.category = '".PAYMENT_CATEGORY_CUSTOMS."', 
+                CONCAT('<a href=\"/contractor?type=', '".PAYMENT_CATEGORY_CUSTOMS."', '&id=', payments.contractor_id, '\">', 
+                customs.name, '</a>'), ''),
+            IF(payments.category = '".PAYMENT_CATEGORY_OTHER."', 
+                CONCAT('<a href=\"/contractor?type=', '".PAYMENT_CATEGORY_OTHER."', '&id=', payments.contractor_id, '\">', 
+                other.name, '</a>'), ''),
+            IF(payments.category = '".PAYMENT_CATEGORY_DELIVERY."', 
+                CONCAT('<a href=\"/contractor?type=', '".PAYMENT_CATEGORY_DELIVERY."', '&id=', payments.contractor_id, '\">', 
+                transport.name, '</a>'), ''))"),
+        array('dt' => 6, 'db' => "CONCAT('<a href=\"/', IF(payments.category = '".PAYMENT_CATEGORY_SUPPLIER."', 
             'suppliers_order?id=', 'order?id='), payments.order_id, '\"\">', IFNULL(orders.visible_order_id, orders.order_id), 
             '</a>')"),
         array('dt' => 7, 'db' => "transfers.name"),
@@ -79,6 +85,7 @@ class ModelAccountant extends Model
                             left join clients on payments.contractor_id = clients.client_id
                             left join suppliers on payments.contractor_id = suppliers.supplier_id
                             left join customs on payments.contractor_id = customs.custom_id
+                            left join other on payments.contractor_id = other.other_id
                             left join transportation_companies as transport on 
                                 payments.contractor_id = transport.transportation_company_id
                             left join orders ON (payments.order_id = orders.order_id AND payments.category = 'Client')
@@ -103,7 +110,7 @@ class ModelAccountant extends Model
         switch ($type) {
 	        case 'orders_payments':
 	        	$columns = $this->ordersColumns;
-		        if ($_SESSION['perm'] <= SALES_MANAGER_PERM) {
+		        if ($this->user->permissions <= SALES_MANAGER_PERM) {
 			        $this->unLinkStrings($columns, [1, 5]);
 		        }
 		        $ssp = array_merge($ssp, $this->getColumns($columns, $this->page, $type));
@@ -117,7 +124,7 @@ class ModelAccountant extends Model
 	        case 'general':
 	        case 'contractor':
                 $columns = $this->payments_columns;
-		        if ($_SESSION['user']->role_id <= ROLE_SALES_MANAGER) {
+		        if ($this->user->permissions <= SALES_MANAGER_PERM) {
 			        $this->unLinkStrings($columns, [5, 6]);
 		        }
                 $ssp = array_merge($ssp, $this->getColumns($this->payments_column_names, $this->page,
@@ -128,7 +135,7 @@ class ModelAccountant extends Model
             case 'monthly':
                 $where[] = 'payments.is_monthly = 1';
 	            $columns = $this->getMonthlyPaymentsCols('columns');
-	            if ($_SESSION['user']->role_id <= ROLE_SALES_MANAGER) {
+	            if ($this->user->permissions <= SALES_MANAGER_PERM) {
 		            $this->unLinkStrings($columns, [5, 6]);
 	            }
 	            $names = $this->getMonthlyPaymentsCols('name');

@@ -117,16 +117,10 @@ abstract class Controller
 
     public function afterConstruct()
     {
-        if (isset($_SESSION['user_id']) && $_SESSION['user_id']) {
-            require_once dirname(__FILE__) . '/../models/model_user.php';
-
-            $user = new ModelUser();
-            $userObj = $user->initializeUser();
-
-            $this->model->user = $userObj;
-            $this->view->user = $userObj;
-            $this->user = $userObj;
-        }
+	    if ($this->model) {
+	    	$this->user = $this->model->user;
+		    $this->view->user = $this->model->user;
+	    }
     }
 
     public function notFound()

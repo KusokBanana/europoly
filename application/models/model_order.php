@@ -159,7 +159,7 @@ class ModelOrder extends Model
 
 				$where = ["order_items.manager_order_id = $order_id"];
 
-				if ($_SESSION['perm'] < ADMIN_PERM) {
+				if ($this->user->permissions < ADMIN_PERM) {
 					$this->unLinkStrings($columns, [14, 15, 16]);
 				}
 
