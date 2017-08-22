@@ -118,8 +118,9 @@ class ModelAccountant extends Model
 		        $ssp['db_table'] = $this->payments_table;
                 $ssp['primary'] = 'payments.payment_id';
                 $ssp['table_name'] = $type;
-                $ssp['where'] = "payments.order_id = ".$opts['order_id']." AND category = '".$opts['type'].
-                                "' AND payments.is_deleted = 0";
+                $categories = implode("','", explode(',', $opts['type']));
+                $ssp['where'] = "payments.order_id = ".$opts['order_id']." AND category IN ('".$categories.
+                                "') AND payments.is_deleted = 0";
 				return $ssp;
 	        case 'general':
 	        case 'contractor':

@@ -421,14 +421,16 @@ abstract class Model extends mysqli
         if (!$orderId)
             return false;
 
-        $category = $payment['category'];
+        $orderCategories = [PAYMENT_CATEGORY_COMMISSION_AGENT, PAYMENT_CATEGORY_CLIENT];
+        $isCategoryMO = in_array($payment['category'], $orderCategories);
+        $category = $isCategoryMO ? join("','", $orderCategories) : $payment['category'];
         $order = $this->getFirst("SELECT total_price FROM orders WHERE order_id = $orderId");
 	    $totalSum = $this->getOrderDownPayment($category, $orderId);
         $rate = $totalSum / $order['total_price'] * 100;
-        if ($category == 'Client' || $category == CLIENT_TYPE_COMISSION_AGENT) {
+        if ($isCategoryMO) {
             $this->update("UPDATE orders SET total_downpayment = $totalSum, downpayment_rate = $rate 
                                   WHERE order_id = $orderId");
-        } else if ($category == 'Supplier') {
+        } else if ($category == PAYMENT_CATEGORY_SUPPLIER) {
             $this->update("UPDATE suppliers_orders SET total_downpayment = $totalSum  
                             WHERE order_id = $orderId");
             // TODO add here downpayment_rate too
@@ -439,12 +441,11 @@ abstract class Model extends mysqli
     {
 
 	    $allPaymentsForOrder = $this->getAssoc("SELECT * FROM payments 
-          WHERE (order_id = $order_id AND category = '$category' AND is_deleted = 0)");
+          WHERE (order_id = $order_id AND category IN ('$category'))");
 	    $totalSum = 0;
 	    if (!empty($allPaymentsForOrder)) {
 		    foreach ( $allPaymentsForOrder as $onePaymentForOrder ) {
-//                $totalSum += $this->turnToEuro($onePaymentForOrder['currency'], $onePaymentForOrder['sum']);
-			    if ( $onePaymentForOrder['status'] == 'Executed' && $onePaymentForOrder['category'] == 'Client' ) {
+			    if ( $onePaymentForOrder['status'] == 'Executed') {
 				    $sumInEur = $onePaymentForOrder['sum_in_eur'];
 				    $sumInEur = ( $onePaymentForOrder['direction'] == 'Income' ) ? $sumInEur : - $sumInEur;
 				    $totalSum += $sumInEur;

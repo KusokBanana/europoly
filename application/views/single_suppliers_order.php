@@ -120,15 +120,40 @@
                         <div class="caption">
                             <i class="fa fa-cogs"></i> Payments </div>
                         <div class="actions">
+                            <script>
+                                $(document).ready(function() {
+                                    var newPayment = function(e) {
+                                        e.preventDefault();
+
+                                        var contractor_id = '<?= $this->order['supplier_id'] ?>';
+
+                                        if (!parseInt(contractor_id)) {
+                                            $('#notificationModal').modal().find('.modal-body')
+                                                .text('Please fill in Supplier');
+                                            return false;
+                                        }
+
+                                        $('#payment-form').submit()
+
+                                    };
+
+                                    $('.new-payment-btn').on('click', newPayment);
+                                })
+                            </script>
                             <form action="payment?id=new" method="POST" id="payment-form">
-                                <input type="hidden" name="Order[category]" value="Supplier">
-                                <input type="hidden" name="Order[contractor_id]"
+                                <input type="hidden" name="Similar[category]" value="<?= PAYMENT_CATEGORY_SUPPLIER ?>">
+                                <input type="hidden" name="Similar[contractor_id]"
                                        value="<?= $this->order['supplier_id'] ?>">
-                                <input type="hidden" name="Order[order_id]"
+                                <input type="hidden" name="Similar[order_id]"
                                        value="<?= $this->order['order_id'] ?>">
+                                <input type="hidden" name="Similar[sum_in_eur]"
+                                       value="<?= round(
+		                                   round($this->order['total_price'], 2) -
+		                                   round($this->order['total_downpayment'], 2),
+		                                   2); ?>">
                             </form>
-                            <a href="javascript:void;" onclick="$('#payment-form').submit()"
-                               class="btn btn-default btn-sm">
+                            <a href="#"
+                               class="btn btn-default btn-sm new-payment-btn">
                                 <i class="fa fa-plus"></i> Add new </a>
                         </div>
                     </div>

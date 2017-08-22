@@ -102,7 +102,7 @@ class ControllerPayment extends Controller
 //        if ($paymentId && $payment_id == 'new') {
         if ($result) {
 //            header("Location: " . '/accountant' . ($type == 'monthly' ? "/$type" : ''));
-	        header("Location: " . '/payment?id=' . $payment_id);
+	        header("Location: " . '/payment?id=' . $result);
         }
         else {
             header("Location: " . $_SERVER['HTTP_REFERER']);

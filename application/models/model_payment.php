@@ -184,7 +184,6 @@ class ModelPayment extends Model
 
     public function savePayment($form, $paymentId)
     {
-        $result = false;
         if (isset($form['new_contractor']) && $form['new_contractor']) {
             $form['contractor_id'] = $this->addNewContractorByCategory($form['category'], $form['new_contractor']);
             unset($form['new_contractor']);
@@ -204,9 +203,8 @@ class ModelPayment extends Model
             }
             $values = join(', ', $valuesArray);
             $fieldsString = join(', ', $fieldsArray);
-            $id = $this->insert("INSERT INTO payments ($fieldsString) VALUES ($values)");
-            $this->updateOrderPayment($id);
-            return $id;
+	        $paymentId = $this->insert("INSERT INTO payments ($fieldsString) VALUES ($values)");
+	        $result = $paymentId ? true : false;
         } else {
             $setArray = [];
             foreach ($form as $name => $value) {
@@ -226,7 +224,7 @@ class ModelPayment extends Model
                           SET $set WHERE payment_id = $paymentId");
         }
         $this->updateOrderPayment($paymentId);
-        return $result;
+        return ($result) ? $paymentId : $result;
     }
 
     public function turnToEuro($currency, $money)
@@ -415,7 +413,7 @@ class ModelPayment extends Model
 
             $date = $date ? date('Y-m-d', strtotime($date)) : date('Y-m-d');
             $cur = $currency . '_value';
-            $value = $this->getFirst("SELECT `$currency` FROM official_currency WHERE date = $date");
+            $value = $this->getFirst("SELECT `$cur` FROM official_currency WHERE date = $date");
 
             if (!$value) {
                 $value = $this->getCurDataForDate($date);

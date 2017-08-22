@@ -369,7 +369,7 @@
                                         'url' => '/accountant/dt_order_payments',
                                         'data' => [
 	                                        'order_id' => $this->order["order_id"],
-	                                        'type' => PAYMENT_CATEGORY_CLIENT,
+	                                        'type' => (PAYMENT_CATEGORY_COMMISSION_AGENT. ', ' . PAYMENT_CATEGORY_CLIENT ),
                                         ]
                                     ]
 	                            ];

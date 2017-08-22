@@ -184,7 +184,7 @@ class ModelOrder extends Model
 				$model = new ModelAccountant();
 				$model->page = $this->page;
 				$model->tableName = $type;
-				$opts['type'] = PAYMENT_CATEGORY_CLIENT;
+				$opts['type'] = PAYMENT_CATEGORY_COMMISSION_AGENT. ', ' . PAYMENT_CATEGORY_CLIENT;
 				$ssp = $model->getSSPData($type, $opts);
 				break;
 

@@ -374,10 +374,26 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                 </div>
                             </div>
                             <div class="form-group">
+                                <?php
+                                $link = '';
+                                if (isset($this->payment['category']) &&
+                                    isset($this->payment['order_id']) && $this->payment['order_id']) {
+
+	                                if ($this->payment['category'] === PAYMENT_CATEGORY_SUPPLIER) {
+		                                $link = '/suppliers_order?id=';
+	                                } elseif (in_array($this->payment['category'],
+		                                [PAYMENT_CATEGORY_CLIENT, PAYMENT_CATEGORY_COMMISSION_AGENT])) {
+		                                $link = '/order?id=';
+	                                }
+
+	                                $link = ($link) ? '<a href="'. $link . $this->payment['order_id'] .'">'.
+                                                '<i class="glyphicon glyphicon-link"></i></a>' : '';
+
+                                }
+
+                                ?>
                                 <label class="col-md-3 control-label" for="order_id">
-                                    Order <?= isset($this->payment['order_id']) ?
-                                        "<a href=\"/order?id=" . $this->payment['order_id'] . " \">
-                                                <i class=\"glyphicon glyphicon-link\"></i></a>" : ''; ?>
+                                    Order <?= $link ?>
                                 </label>
                                 <div class="col-md-9">
                                     <select name="order_id" id="order_id" class="form-control">
@@ -434,7 +450,7 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                 <div class="col-md-1">
                                     <input type="text" id="currency_rate" name="currency_rate" required
                                            value="<?= isset($this->payment['currency_rate']) ?
-                                               number_format(1/$this->payment['currency_rate'], 4, '.', ' ') : '' ?>"
+                                               number_format($this->payment['currency_rate'], 4, '.', ' ') : '' ?>"
                                            class="form-control">
                                 </div>
                             </div>
@@ -454,6 +470,7 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                         <?php $currencies = ['USD', 'EUR', 'РУБ', 'GBP', 'SEK', 'AED'] ?>
                                         <?php foreach ($currencies as $currency): ?>
                                             <option value="<?= $currency ?>"
+                                                <?= $currency == 'AED' ? ' disabled ' : '' ?>
                                                 <?= (isset($this->payment['currency']) &&
                                                     $this->payment['currency'] == $currency)
                                                     ? ' selected ' : ''?>>
@@ -632,9 +649,14 @@ $isPostOrder = isset($this->post_order) ? $this->post_order : false;
                                                     }
 //                                                    if (isFirst) {
 //                                                        value = ($('#currency_rate').val() / $('#course').val() - 1) * 100;
-                                                        value = (exchangeCommissionValue / 100 + 1) * value;
 //                                                        $('#exchange_commission').val(value.format(2))
-                                                        currencyRateInput.val(value.format(2));
+                                                    if (isFirst && !currencyRateValue) {
+                                                        value = (exchangeCommissionValue / 100 + 1) * value;
+                                                        currencyRateInput.val(value.format(4));
+                                                    } else if(isFirst && currencyRateValue && !exchangeCommissionValue) {
+                                                        value = (currencyRateValue / value - 1) * 100;
+                                                        exchangeCommissionInput.val(value.format(2))
+                                                    }
 //                                                    } else if (currencyRateValue === 0) {
 //                                                        var val = 0;
 //                                                        $('#exchange_commission').val(val.format(2));
