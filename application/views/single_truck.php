@@ -327,6 +327,9 @@
             success: function () {
                 location.reload();
             }
+        }).on('shown', function(e, editable) {
+            var popover = editable.input.$input.closest('.popover');
+            popover.closest('body').append(popover);
         });
         $('#editable-delivery_date').editable({
             type: "date",
@@ -334,7 +337,10 @@
             success: function () {
                 location.reload();
             }
-        });
+        }).on('shown', function(e, editable) {
+            var popover = editable.input.$input.closest('.popover');
+            popover.closest('body').append(popover);
+        })
 
     });
 </script>

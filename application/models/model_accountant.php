@@ -582,26 +582,26 @@ class ModelAccountant extends Model
         if ($text) {
             $text = iconv("windows-1251", "utf-8", $text);
 
-            $date = '';
-            preg_match_all('|СекцияРасчСчет(.+)КонецРасчСчет|isU', $text, $checkingAcc);
-            if ($checkingAcc && isset($checkingAcc[1]) && !empty($checkingAcc[1])) {
-                foreach ($checkingAcc[1] as $oneCheckingAcc) {
-                    $oneCheckingAcc = explode("\n", $oneCheckingAcc);
-
-                    if (!empty($oneCheckingAcc)) {
-                        foreach ($oneCheckingAcc as $item) {
-                            $tempArr = explode('=', $item);
-                            $name = Helper::arrGetVal($tempArr, 0);
-                            $value = Helper::arrGetVal($tempArr, 1);
-                            if ($name == 'ДатаНачала') {
-                                $date = (string) date('Y-m-d', strtotime($value));
-                            }
-
-                        }
-                    }
-                }
-
-            }
+//            $date = '';
+//            preg_match_all('|СекцияРасчСчет(.+)КонецРасчСчет|isU', $text, $checkingAcc);
+//            if ($checkingAcc && isset($checkingAcc[1]) && !empty($checkingAcc[1])) {
+//                foreach ($checkingAcc[1] as $oneCheckingAcc) {
+//                    $oneCheckingAcc = explode("\n", $oneCheckingAcc);
+//
+//                    if (!empty($oneCheckingAcc)) {
+//                        foreach ($oneCheckingAcc as $item) {
+//                            $tempArr = explode('=', $item);
+//                            $name = Helper::arrGetVal($tempArr, 0);
+//                            $value = Helper::arrGetVal($tempArr, 1);
+//                            if ($name == 'ДатаНачала') {
+//                                $date = (string) date('Y-m-d', strtotime($value));
+//                            }
+//
+//                        }
+//                    }
+//                }
+//
+//            }
 
             preg_match_all('|СекцияДокумент(.+)КонецДокумента|isU', $text, $arr);
             if ($arr && isset($arr[1]) && !empty($arr[1])) {
@@ -649,13 +649,15 @@ class ModelAccountant extends Model
                                 case 'Плательщик':
                                     $sender['name'] = Helper::safeVar($value);
                                     break;
+                                case 'Дата':
+	                                $data['date'] = (string) date('Y-m-d', strtotime($value));
+                                    break;
                             }
                         }
 
                         if (!empty($data)) {
 
-//                            $data['date'] = (string) date('Y-m-d');
-                            $data['date'] = $date;
+//                            $data['date'] = $date;
                             $data['responsible_person_id'] = $this->user->user_id;
                             $data['status'] = 'Not Executed';
                             $data['category'] = PAYMENT_CATEGORY_OTHER;
@@ -675,7 +677,7 @@ class ModelAccountant extends Model
 	                                break;
                             }
 
-                            if (!empty($contractor)) {
+                            if (!empty($contractor) && isset($contractor['inn'])) {
 	                            $data['payment_entity'] = $contractor['name'];
 	                            $existingContractor = $this->getFirst("SELECT * FROM other WHERE inn = ${contractor['inn']}");
                                 if ($existingContractor) {

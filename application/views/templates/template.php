@@ -141,6 +141,7 @@
         }
         .es-editable-wrapper > ul.es-list {
             z-index: 9999999;
+            width: auto !important;
         }
 
         .dataTables_scrollHead table th {

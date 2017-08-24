@@ -369,7 +369,7 @@ class ModelTruck extends ModelOrder
         $this->update("UPDATE order_items SET warehouse_id = $warehouse_id, total_price = $totalPrice,
  	      buy_and_taxes = $buyAndExpenses, warehouse_arrival_date = NOW(), status_id = ".ON_STOCK." WHERE item_id = $itemId");
 
-        $this->updateItemsStatus($itemId, $truckItem['truck_id']);
+        $this->updateItemsStatus($truckItem['truck_id'], $itemId);
 
         if (!$isLogged)
             $this->addLog(LOG_DELIVERY_TO_WAREHOUSE, ['items' => [$itemId]]);

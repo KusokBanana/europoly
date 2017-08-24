@@ -240,7 +240,7 @@ class ModelSuppliers_order extends ModelOrder
         if ($result) {
             $result = $this->update("UPDATE order_items SET status_id = ".DRAFT." WHERE (manager_order_id = ${item['manager_order_id']} AND
           product_id = ${item['product_id']} AND status_id > ".DRAFT.")");
-            $this->updateItemsStatus($order_item_id, $item['item_id']);
+            $this->updateItemsStatus($item['item_id'], $order_item_id);
             return $result;
         }
     }

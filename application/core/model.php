@@ -668,8 +668,8 @@ abstract class Model extends mysqli
             $warehouse = $this->getFirst("SELECT * FROM warehouses WHERE warehouse_id = $warehouseId");
 
             $units = ($unitsRus && $unitsRus['units']) ? $unitsRus['units'] : $product['units'];
-            $reducedPrice = $orderModel->getItemPriceData($orderItem['item_id'], 'reduced_price', $orderItem, true);
-	        $sum = $orderModel->getItemPriceData($orderItem['item_id'], 'sell_value', $orderItem, true);
+            $reducedPrice = $orderModel->getItemPriceData($orderItem['item_id'], 'reduced_price', $orderItem);
+	        $sum = $orderModel->getItemPriceData($orderItem['item_id'], 'sell_value', $orderItem);
             $amount_in_pack = is_null($product['amount_in_pack']) ? 0 : floatval($product['amount_in_pack']);
             $weight = (is_null($product['weight']) || !$amount_in_pack || is_null($orderItem['number_of_packs'])) ? 0 :
                 $product['weight'] * $amount_in_pack * $orderItem['number_of_packs'];
@@ -985,7 +985,8 @@ abstract class Model extends mysqli
         if (!empty($items)) {
             foreach ($items as $item) {
                 $product = $this->getFirst("SELECT weight FROM products WHERE product_id = ${item['product_id']}");
-                $weight += $product['weight'] !== null ? $product['weight'] : 0;
+                $weight += ($product['weight'] !== null && $item['amount']) ?
+	                floatval($product['weight']) * floatval($item['amount']) : 0;
                 $packsNumber += $item['number_of_packs'];
                 $amount += $item['amount'];
                 $totalPrice += floatval($item['sell_price']) * floatval($item['amount']);
