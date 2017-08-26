@@ -55,7 +55,8 @@ class Roles {
     private $sentToLogistModelColumns = [11, 12, 13, 14, 27];
     private $warehouseModelColumns = [9, 10, 11, 12, 13, 14, 15, 20, 21, 22, 23, 36];
     private $productModelColumns = ['suppliers_discount', 'margin', 'purchase_price_currency', 'purchase_price'];
-    private $orderModelColumns = [5, 6];
+    private $orderModelColumns = [5, 6, 17, 18];
+    private $managersOrdersModelColumns = [36, 37];
 
     private function tableAccess()
     {

@@ -254,7 +254,7 @@
                                             <label class="control-label">Russian F I.O.</label>
                                             <input id="input_visual_name" name="visual_name" type="text"
                                                    placeholder="Иванов И. И." class="form-control"
-                                                   value="<?= $this->manager['visual_name'] ?>" />
+                                                   value="<?= $this->support['visual_name'] ?>" />
                                         </div>
                                         <div class="form-group">
                                             <label class="control-label">Date of Birth</label>

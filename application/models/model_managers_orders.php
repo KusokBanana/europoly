@@ -55,6 +55,10 @@ class ModelManagers_orders extends Model
         array('dt' => 33, 'db' => "IFNULL(CONCAT(order_items.reserve_since_date, ' - ',order_items.reserve_till_date), '')"),
         array('dt' => 34, 'db' => "CONCAT(order_items.truck_id, ', ', trucks.dispatch_date, '-', trucks.delivery_date)"),
         array('dt' => 35, 'db' => "orders.comment"),
+	    array('dt' => 36, 'db' => "IFNULL(CAST(CAST(order_items.purchase_price as decimal(64,2)) * 
+					products.margin as decimal(64, 2)), '')"),
+	    array('dt' => 37, 'db' => "IFNULL(CAST(CAST(order_items.purchase_price as decimal(64,2)) * 
+					products.margin * order_items.amount as decimal(64, 2)), '')"),
     ];
 
     var $managers_orders_column_names = [
@@ -94,6 +98,8 @@ class ModelManagers_orders extends Model
         'Reserve Period',
         'Truck',
         'Comments',
+	    'Expected Cost',
+	    'Expected Cost Value',
     ];
 
     var $managers_orders_reduced_columns = [

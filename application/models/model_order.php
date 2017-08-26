@@ -148,6 +148,10 @@ class ModelOrder extends Model
                 '\" data-url=\"/order/change_item_field\" data-original-title=\"Choose Item Status\">',
                     IFNULL(status.name, ''),
                 '</a>')"),
+					array('dt' => 17, 'db' => "IFNULL(CAST(CAST(order_items.purchase_price as decimal(64,2)) * 
+					products.margin as decimal(64, 2)), '')"),
+					array('dt' => 18, 'db' => "IFNULL(CAST(CAST(order_items.purchase_price as decimal(64,2)) * 
+					products.margin * order_items.amount as decimal(64, 2)), '')"),
 				];
 
 				$order_id = $opts['order_id'];
@@ -233,6 +237,8 @@ class ModelOrder extends Model
         'Manager Bonus Rate (%)',
         'Manager Bonus',
         'Status',
+        'Expected Cost',
+        'Expected Cost Value',
     ];
 
 //    function cancelOrder($order_id, $cancel_reason)
