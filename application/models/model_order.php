@@ -89,8 +89,8 @@ class ModelOrder extends Model
                                         IF(products.length = NULL, 'Length undefined', 
                                             CAST((order_items.amount * 1000 * 1000) / (products.width * products.length) as decimal(64, 2)))
                                             ), 'n/a'), '')"),
-					array('dt' => 6, 'db' => "IFNULL(CAST(order_items.purchase_price as decimal(64, 2)), '')"),
-					array('dt' => 7, 'db' => "IFNULL(CAST(order_items.purchase_price * order_items.amount as decimal(64, 2)), '')"),
+					array('dt' => 6, 'db' => "IFNULL(CAST(order_items.purchase_price * IF(products.suppliers_discount > 0, products.suppliers_discount, 1) as decimal(64, 2)), '')"),
+					array('dt' => 7, 'db' => "IFNULL(CAST(order_items.purchase_price * IF(products.suppliers_discount > 0, products.suppliers_discount, 1) * order_items.amount as decimal(64, 2)), '')"),
 					array('dt' => 8, 'db' => "IFNULL(CAST(order_items.sell_price as decimal(64, 2)), '')"),
 					array('dt' => 9, 'db' => "CONCAT('<a href=\"javascript:;\" class=\"x-editable x-discount_rate\" data-pk=\"',
                 order_items.item_id,
@@ -148,9 +148,9 @@ class ModelOrder extends Model
                 '\" data-url=\"/order/change_item_field\" data-original-title=\"Choose Item Status\">',
                     IFNULL(status.name, ''),
                 '</a>')"),
-					array('dt' => 17, 'db' => "IFNULL(CAST(CAST(order_items.purchase_price as decimal(64,2)) * 
+					array('dt' => 17, 'db' => "IFNULL(CAST(CAST(order_items.purchase_price * IF(products.suppliers_discount > 0, products.suppliers_discount, 1) as decimal(64,2)) * 
 					products.margin as decimal(64, 2)), '')"),
-					array('dt' => 18, 'db' => "IFNULL(CAST(CAST(order_items.purchase_price as decimal(64,2)) * 
+					array('dt' => 18, 'db' => "IFNULL(CAST(CAST(order_items.purchase_price * IF(products.suppliers_discount > 0, products.suppliers_discount, 1) as decimal(64,2)) * 
 					products.margin * order_items.amount as decimal(64, 2)), '')"),
 				];
 
