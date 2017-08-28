@@ -55,16 +55,16 @@ class ModelWarehouse extends ModelManagers_orders
             CONCAT('<a href=\"javascript:;\" class=\"x-editable x-purchase_price\" data-pk=\"',
                 products_warehouses.item_id,
                 '\" data-name=\"purchase_price\" data-value=\"',
-                IFNULL(CAST(products_warehouses.purchase_price * IF(products.suppliers_discount > 0, products.suppliers_discount, 1) as decimal(64, 2)), ''),
+                IFNULL(products_warehouses.purchase_price, ''),
                 '\" data-url=\"/warehouse/change_item_field\" data-original-title=\"Enter Purchase Price\">',
-                    IFNULL(CAST(products_warehouses.purchase_price * IF(products.suppliers_discount > 0, products.suppliers_discount, 1) as decimal(64, 2)), ''),
-                '</a>'), CAST(products_warehouses.purchase_price * IF(products.suppliers_discount > 0, products.suppliers_discount, 1) as decimal(64, 2)))"),
+                    IFNULL(CAST(products_warehouses.purchase_price as decimal(64, 2)), ''),
+                '</a>'), CAST(products_warehouses.purchase_price as decimal(64, 2)))"),
         array('dt' => 10, 'db' => 'products_warehouses.buy_and_taxes'),
         array('dt' => 11, 'db' => 'CAST(products_warehouses.sell_price as decimal(64, 2))'),
         array('dt' => 12, 'db' => 'CAST(products_warehouses.dealer_price as decimal(64, 2))'),
         array('dt' => 13, 'db' => 'CAST(products_warehouses.total_price as decimal(64, 2))'),
-        array('dt' => 14, 'db' => 'CAST((products_warehouses.purchase_price * IF(products.suppliers_discount > 0, products.suppliers_discount, 1) * products_warehouses.amount + products_warehouses.import_vat + products_warehouses.import_brokers_price + products_warehouses.import_tax + products_warehouses.delivery_price) as decimal(64, 2))'),
-        array('dt' => 15, 'db' => 'CAST((products_warehouses.purchase_price * IF(products.suppliers_discount > 0, products.suppliers_discount, 1) * products_warehouses.amount + 
+        array('dt' => 14, 'db' => 'CAST((products_warehouses.purchase_price * products_warehouses.amount + products_warehouses.import_vat + products_warehouses.import_brokers_price + products_warehouses.import_tax + products_warehouses.delivery_price) as decimal(64, 2))'),
+        array('dt' => 15, 'db' => 'CAST((products_warehouses.purchase_price * products_warehouses.amount + 
         products_warehouses.import_vat + products_warehouses.import_brokers_price + products_warehouses.import_tax +
          products_warehouses.delivery_price) / products_warehouses.amount as decimal(64, 2))'),
         array('dt' => 16, 'db' => "CONCAT('<a href=\"/order?id=', products_warehouses.manager_order_id, '\">', 
@@ -74,8 +74,8 @@ class ModelWarehouse extends ModelManagers_orders
             orders.sales_manager_id, '\"><i class=\"glyphicon glyphicon-link\"></i></a>')"),
         array('dt' => 18, 'db' => "orders.start_date"),
         array('dt' => 19, 'db' => "status.name"),
-        array('dt' => 20, 'db' => "CAST(products_warehouses.purchase_price * IF(products.suppliers_discount > 0, products.suppliers_discount, 1) as decimal(64, 2))"),
-        array('dt' => 21, 'db' => "CAST((products_warehouses.purchase_price * IF(products.suppliers_discount > 0, products.suppliers_discount, 1) * products_warehouses.number_of_packs) as decimal(64, 2))"),
+        array('dt' => 20, 'db' => "CAST(products_warehouses.purchase_price as decimal(64, 2))"),
+        array('dt' => 21, 'db' => "CAST((products_warehouses.purchase_price * products_warehouses.number_of_packs) as decimal(64, 2))"),
         array('dt' => 22, 'db' => "CAST(products_warehouses.sell_price as decimal(64, 2))"),
         array('dt' => 23, 'db' => "CAST((products_warehouses.sell_price * products_warehouses.number_of_packs) as decimal(64, 2))"),
         array('dt' => 24, 'db' => "CAST(orders.total_downpayment as decimal(64, 2))"),
@@ -676,7 +676,7 @@ class ModelWarehouse extends ModelManagers_orders
                     IFNULL(CONCAT(products.thickness, 'x', products.width, 'x', products.length), ''),
                 '</a>')"),
             array('dt' => 2, 'db' => "CONCAT('<span class=\"assemble-source-price\">', 
-                CAST((IFNULL(products_warehouses.purchase_price, 0) * IF(products.suppliers_discount > 0, products.suppliers_discount, 1) + IFNULL(products_warehouses.import_VAT, 0) + 
+                CAST((IFNULL(products_warehouses.purchase_price, 0) + IFNULL(products_warehouses.import_VAT, 0) + 
                 IFNULL(products_warehouses.import_brokers_price, 0) + IFNULL(products_warehouses.import_tax, 0) + 
                 IFNULL(products_warehouses.delivery_price, 0)) as decimal(64, 2)),
                 '</span>', ' ', products.purchase_price_currency)"),
@@ -686,7 +686,7 @@ class ModelWarehouse extends ModelManagers_orders
                 products_warehouses.amount, '</a>',
                 ' ', products.packing_type)"),
             array('dt' => 4, 'db' => "CONCAT('<span class=\"assemble-source-price-total\">', 
-                CAST(((IFNULL(products_warehouses.purchase_price, 0) * IF(products.suppliers_discount > 0, products.suppliers_discount, 1) + IFNULL(products_warehouses.import_VAT, 0) + 
+                CAST(((IFNULL(products_warehouses.purchase_price, 0) + IFNULL(products_warehouses.import_VAT, 0) + 
                 IFNULL(products_warehouses.import_brokers_price, 0) + IFNULL(products_warehouses.import_tax, 0) + 
                 IFNULL(products_warehouses.delivery_price, 0)) * products_warehouses.amount) as decimal(64, 2)), 
                 '</span>', ' ', products.purchase_price_currency)"),

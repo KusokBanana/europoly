@@ -28,8 +28,8 @@ class ModelManagers_orders extends Model
         array('dt' => 8, 'db' => "products.units"),
         array('dt' => 9, 'db' => "CAST(order_items.number_of_packs as decimal(64, 3))"),
         array('dt' => 10, 'db' => "CAST(products.weight * order_items.amount as decimal(64, 3))"),
-        array('dt' => 11, 'db' => "CAST(order_items.purchase_price * IF(products.suppliers_discount > 0, products.suppliers_discount, 1) as decimal(64, 2))"),
-        array('dt' => 12, 'db' => "CAST(order_items.purchase_price * IF(products.suppliers_discount > 0, products.suppliers_discount, 1) * order_items.amount as decimal(64, 2))"),
+        array('dt' => 11, 'db' => "CAST(order_items.purchase_price as decimal(64, 2))"),
+        array('dt' => 12, 'db' => "CAST(order_items.purchase_price * order_items.amount as decimal(64, 2))"),
         array('dt' => 13, 'db' => "CAST(order_items.sell_price as decimal(64, 2))"),
         array('dt' => 14, 'db' => "CAST(order_items.sell_price * order_items.amount as decimal(64, 2))"),
         array('dt' => 15, 'db' => "CAST(orders.total_downpayment as decimal(64, 2))"),
@@ -55,9 +55,9 @@ class ModelManagers_orders extends Model
         array('dt' => 33, 'db' => "IFNULL(CONCAT(order_items.reserve_since_date, ' - ',order_items.reserve_till_date), '')"),
         array('dt' => 34, 'db' => "CONCAT(order_items.truck_id, ', ', trucks.dispatch_date, '-', trucks.delivery_date)"),
         array('dt' => 35, 'db' => "orders.comment"),
-	    array('dt' => 36, 'db' => "IFNULL(CAST(CAST(order_items.purchase_price * IF(products.suppliers_discount > 0, products.suppliers_discount, 1) as decimal(64,2)) * 
+	    array('dt' => 36, 'db' => "IFNULL(CAST(CAST(order_items.purchase_price as decimal(64,2)) * 
 					products.margin as decimal(64, 2)), '')"),
-	    array('dt' => 37, 'db' => "IFNULL(CAST(CAST(order_items.purchase_price * IF(products.suppliers_discount > 0, products.suppliers_discount, 1) as decimal(64,2)) * 
+	    array('dt' => 37, 'db' => "IFNULL(CAST(CAST(order_items.purchase_price as decimal(64,2)) * 
 					products.margin * order_items.amount as decimal(64, 2)), '')"),
     ];
 

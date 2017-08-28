@@ -91,8 +91,8 @@ class ModelDelivery_notes extends Model
                                         IF(products.length = NULL, 'Length undefined', 
                                             CAST((order_items.amount * 1000 * 1000) / (products.width * products.length) 
                                             as decimal(64, 2)))), 'n/a'), '')"),
-        array('dt' => 5, 'db' => "IFNULL(CAST(order_items.purchase_price * IF(products.suppliers_discount > 0, products.suppliers_discount, 1) as decimal(64, 2)), '')"),
-        array('dt' => 6, 'db' => "IFNULL(CAST(order_items.purchase_price * IF(products.suppliers_discount > 0, products.suppliers_discount, 1) * order_items.amount as decimal(64, 2)), '')"),
+        array('dt' => 5, 'db' => "IFNULL(CAST(order_items.purchase_price as decimal(64, 2)), '')"),
+        array('dt' => 6, 'db' => "IFNULL(CAST(order_items.purchase_price * order_items.amount as decimal(64, 2)), '')"),
         array('dt' => 7, 'db' => "IFNULL(CAST(order_items.sell_price as decimal(64, 2)), '')"),
         array('dt' => 8, 'db' => "CONCAT(CAST(order_items.discount_rate as decimal(64, 3)), '%')"),
         array('dt' => 9, 'db' => "CAST(order_items.sell_price * (100 - order_items.discount_rate)/100 as decimal(64, 2))"),
@@ -127,8 +127,8 @@ class ModelDelivery_notes extends Model
                                         IF(products.length = NULL, 'Length undefined', 
                                             CAST((order_items.amount * 1000 * 1000) / (products.width * products.length) 
                                             as decimal(64, 2)))), 'n/a'), '')"),
-        array('dt' => 5, 'db' => "IFNULL(CAST(order_items.purchase_price * IF(products.suppliers_discount > 0, products.suppliers_discount, 1) as decimal(64, 2)), '')"),
-        array('dt' => 6, 'db' => "IFNULL(CAST(order_items.purchase_price * IF(products.suppliers_discount > 0, products.suppliers_discount, 1) * order_items.amount as decimal(64, 2)), '')"),
+        array('dt' => 5, 'db' => "IFNULL(CAST(order_items.purchase_price as decimal(64, 2)), '')"),
+        array('dt' => 6, 'db' => "IFNULL(CAST(order_items.purchase_price * order_items.amount as decimal(64, 2)), '')"),
         array('dt' => 7, 'db' => "IFNULL(CAST(order_items.sell_price as decimal(64, 2)), '')"),
         array('dt' => 8, 'db' => "CONCAT(CAST(order_items.discount_rate as decimal(64, 3)), '%')"),
         array('dt' => 9, 'db' => "CAST(order_items.sell_price * (100 - order_items.discount_rate)/100 as decimal(64, 2))"),
