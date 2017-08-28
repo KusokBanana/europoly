@@ -1,6 +1,6 @@
 <?php
-include_once("mysql_config.php");
-include_once ('config.php');
+require_once ("mysql_config.php");
+require_once ('config.php');
 require_once dirname(__FILE__) . '/../classes/Logger.php';
 
 abstract class Model extends mysqli
@@ -1001,6 +1001,21 @@ abstract class Model extends mysqli
             'purchase_value' => $purchaseValue,
         ];
 
+    }
+
+    public function getDiscountedPurchasePrice($price, $discount)
+    {
+	    $discount = floatval($discount);
+	    if ($discount > 0) {
+
+	    	if ($discount > 1) {
+	    		$discount = $discount / 100;
+		    }
+
+		    $price = round($discount * floatval($price), 2);
+	    }
+
+	    return $price;
     }
 
 }

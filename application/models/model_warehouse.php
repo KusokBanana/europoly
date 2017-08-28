@@ -309,6 +309,9 @@ class ModelWarehouse extends ModelManagers_orders
             $purchase_price = isset($product['purchase_price']) && $product['purchase_price'] ? $product['purchase_price'] : 0;
             $numberOfPacks = isset($product['number_of_packs']) && $product['number_of_packs'] ? $product['number_of_packs'] : 0;
 
+            $dbProduct = $this->getFirst("SELECT suppliers_discount FROM products WHERE product_id = $product_id");
+            $purchase_price = $this->getDiscountedPurchasePrice($purchase_price, $dbProduct['suppliers_discount']);
+
             $items[] = $this->insert("INSERT INTO `order_items` (`product_id`, `warehouse_id`, `amount`, `purchase_price`,
               `status_id`, `number_of_packs`) VALUES ($product_id, $warehouse_id, $amount, $purchase_price, ".ON_STOCK.", $numberOfPacks)");
         }
@@ -722,6 +725,7 @@ class ModelWarehouse extends ModelManagers_orders
                     unset($item['item_id']);
                     $item['status_id'] = ISSUED;
                     $item['amount'] = $enteredAmount;
+                    $item['purchase_price'] = $this->getDiscountedPurchasePrice($item['purchase_price'], $item['suppliers_discount']);
                     $valuesArray = [];
                     $fieldsArray = [];
                     foreach ($item as $field => $value) {
@@ -750,7 +754,7 @@ class ModelWarehouse extends ModelManagers_orders
             $amount = $assembleProduct[$pk];
 
             $product = $this->getFirst("SELECT * FROM products WHERE product_id = $pk");
-            $productPrice = $product['purchase_price'] != null ? $product['purchase_price'] : 0;
+	        $productPrice = $this->getDiscountedPurchasePrice($product['purchase_price'], $product['suppliers_discount']);
 
             $assembleItem = $this->insert("INSERT INTO order_items (`product_id`, `amount`, `warehouse_id`, `status_id`,
               `purchase_price`, sell_price) 

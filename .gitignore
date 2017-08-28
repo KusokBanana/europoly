@@ -63,3 +63,5 @@ assets/tablesorter-master/
 dump_db/csv data/.ipynb_checkpoints/.ipynb_checkpoints/
 dump_db/dumps/catalogue/
 npm-debug.log
+/logs/
+/docs/
