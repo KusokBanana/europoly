@@ -280,6 +280,8 @@
 <script src="/assets/global/plugins/moment.min.js" type="text/javascript"></script>
 <script src="/assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
 <script src="/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/datatables/plugins/colResize/dataTables.colResize.js" type="text/javascript"></script>
+
 
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN THEME GLOBAL SCRIPTS -->

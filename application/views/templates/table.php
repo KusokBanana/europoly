@@ -164,6 +164,7 @@ unset($notHidden[0]);
 $hidden_by_default = json_encode($hidden);
 
 ?>
+
 <script>
     // TODO remove it and change into warehouse
 	<?php if ($globalTable): ?>
@@ -199,6 +200,7 @@ $hidden_by_default = json_encode($hidden);
 		?>
         // DataTable
         var table = $table.DataTable({
+            dom:'lfrJtip',
             processing: true,
             serverSide: serverSide,
             ajax: ajax,
@@ -248,7 +250,15 @@ $hidden_by_default = json_encode($hidden);
 //                            columnsWidth[columnId] = width = 'width: ' + width;
 //                        }
                         var width = 'width: 75px';
-                        return '<div class="td-wrapper" style="'+width+'" data-header-id="'+columnId+'">' + data + '</div>';
+                        var qwe;
+                        if (data==null) {
+                            qwe = data;
+                        } else
+                        {
+                            qwe = data.replace(/<(?:.|[\r\n])*?>/g, "");
+                        }
+                       // console.log(qwe);
+                        return '<div data-toggle="tooltip" data-placement="right" title="'+qwe+'" class="td-wrapper" style="'+width+'" data-header-id="'+columnId+'">' + data + '</div>';
                     }
                 }
             ],
@@ -273,7 +283,7 @@ $hidden_by_default = json_encode($hidden);
         var tableId = $table.attr('id');
 
         $table.on('draw.dt', function () {
-
+            $('[data-toggle="tooltip"]').tooltip();
         });
 
         $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
