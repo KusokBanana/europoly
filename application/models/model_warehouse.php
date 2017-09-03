@@ -309,9 +309,6 @@ class ModelWarehouse extends ModelManagers_orders
             $purchase_price = isset($product['purchase_price']) && $product['purchase_price'] ? $product['purchase_price'] : 0;
             $numberOfPacks = isset($product['number_of_packs']) && $product['number_of_packs'] ? $product['number_of_packs'] : 0;
 
-            $dbProduct = $this->getFirst("SELECT suppliers_discount FROM products WHERE product_id = $product_id");
-            $purchase_price = $this->getDiscountedPurchasePrice($purchase_price, $dbProduct['suppliers_discount']);
-
             $items[] = $this->insert("INSERT INTO `order_items` (`product_id`, `warehouse_id`, `amount`, `purchase_price`,
               `status_id`, `number_of_packs`) VALUES ($product_id, $warehouse_id, $amount, $purchase_price, ".ON_STOCK.", $numberOfPacks)");
         }

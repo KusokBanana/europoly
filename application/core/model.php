@@ -697,7 +697,7 @@ abstract class Model extends mysqli
 
             $values['total_packs_number'] += $orderItem['number_of_packs'];
             $values['amount'] += $orderItem['amount'];
-            $values['total_weight'] += $weight ? $weight : 0;
+            $values['total_weight'] += $weight ? round($weight, 3) : 0;
             $values['sum'] += $sum;
             $values['opt_sum'] += $sum * 0.7;
             $values['total']++;
