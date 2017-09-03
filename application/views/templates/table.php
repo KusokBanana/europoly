@@ -725,6 +725,7 @@ $hidden_by_default = json_encode($hidden);
 
 //            resize1();
             table.draw();
+            $("th").width(75);
             saveHiddenColumnsInCookie();
         });
 
