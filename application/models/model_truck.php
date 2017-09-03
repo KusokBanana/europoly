@@ -333,6 +333,10 @@ class ModelTruck extends ModelOrder
             $products = $array['products'];
             $values = $array['values'];
 
+            $truck = $this->getFirst("SELECT delivery_date FROM trucks WHERE id = $truckId");
+            $values['log_date'] = $truck['delivery_date'];
+            $values['truck_id'] = $values['log_id'] = $truckId;
+
             require dirname(__FILE__) . "/../../assets/PHPWord_CloneRow-master/PHPWord.php";
             $phpWord =  new PHPWord();
             $docFile = dirname(__FILE__) . "/../../docs/templates/$fileName.docx";

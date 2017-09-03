@@ -684,7 +684,6 @@ abstract class Model extends mysqli
             $products['opt_sum'][] = round(floatval($reducedPrice) * 0.7, 2);
             $products['pack_type'][] = $product['packing_type'];
             $products['weight'][] = $weight;
-//            $products['weight'][] = $product['weight'];
             $products['amount'][] = round($orderItem['amount'], 3);
             $products['packs_number'][] = round($orderItem['number_of_packs'], 3);
             $products['production_date'][] = $orderItem['production_date'];
@@ -704,10 +703,10 @@ abstract class Model extends mysqli
 
             if ($multi_lang_name) {
                 $names = $this->getProductName($productId, $product, true);
-                $products['name'][] = $names['rus'];
-                $products['en_name'][] = $names['en'];
+                $products['name'][] = htmlspecialchars($names['rus']);
+                $products['en_name'][] = htmlspecialchars($names['en']);
             } else {
-                $products['name'][] = $this->getProductName($productId, $product);
+                $products['name'][] = htmlspecialchars($this->getProductName($productId, $product));
             }
         }
 
