@@ -302,6 +302,10 @@ $hidden_by_default = json_encode($hidden);
 //                $table.removeClass('visible_now');
 //            }
             table.draw();
+            //$(".content").width(30)
+
+            $("th").width(75);
+            //console.log("123");
 
         });
 
@@ -310,6 +314,7 @@ $hidden_by_default = json_encode($hidden);
         })*/.on('shown.bs.modal', function(e) {
             if ($table.closest($(this))) {
                 table.draw();
+                $("th").width(75);
 //                table.columns.adjust();
 
 //                var tabInModal = $(this).find('.tab-pane.active');
