@@ -39,7 +39,7 @@ class ModelSuppliers_orders extends ModelManagers_orders
         array('dt' => 21, 'db' => "orders.expected_date_of_issue"),
         array('dt' => 22, 'db' => "products.units"),
         array('dt' => 23, 'db' => "CAST(suppliers_orders_items.sell_price as decimal(64, 2))"),
-        array('dt' => 24, 'db' => "CAST(suppliers_orders_items.sell_price * suppliers_orders_items.amount as decimal(64, 2))"),
+        array('dt' => 24, 'db' => "IFNULL(CAST(suppliers_orders_items.sell_value as decimal(64, 2)), '')"),
         array('dt' => 25, 'db' => "CONCAT('<a href=\"/truck?id=', suppliers_orders_items.truck_id, '\">',
             suppliers_orders_items.truck_id, '</a>')"),
         array('dt' => 26, 'db' => "CONCAT('<a href=\"\client?id=', orders.client_id, '\">', client.final_name, '</a>')"),
@@ -54,6 +54,18 @@ class ModelSuppliers_orders extends ModelManagers_orders
         array('dt' => 34, 'db' => "suppliers_orders_items.production_date"),
         array('dt' => 35, 'db' => "IFNULL(CONCAT(suppliers_orders_items.reserve_since_date, ' - ',
             suppliers_orders_items.reserve_till_date), '')"),
+        array('dt' => 36, 'db' => "IFNULL(CAST(CAST(suppliers_orders_items.purchase_price as decimal(64,2)) * 
+					products.margin as decimal(64, 2)), '')"),
+        array('dt' => 37, 'db' => "IFNULL(CAST(CAST(suppliers_orders_items.purchase_price as decimal(64,2)) * 
+					products.margin * suppliers_orders_items.amount as decimal(64, 2)), '')"),
+        array('dt' => 38, 'db' => "CAST((CAST(suppliers_orders_items.sell_value as decimal(64, 2)) - 
+	                (CAST(CAST(suppliers_orders_items.purchase_price as decimal(64,2)) * 
+					products.margin * suppliers_orders_items.amount as decimal(64, 2))) - 
+					CAST(suppliers_orders_items.commission_agent_bonus as decimal(64, 2)) - 
+					CAST(suppliers_orders_items.manager_bonus as decimal(64, 2))) as decimal(64, 2))"),
+        array('dt' => 39, 'db' => "CAST(suppliers_orders_items.sell_price as decimal(64, 2)) - 
+                                    CAST(CAST(suppliers_orders_items.purchase_price as decimal(64,2)) * 
+					                products.margin as decimal(64, 2))"),
 
     ];
 
@@ -74,7 +86,7 @@ class ModelSuppliers_orders extends ModelManagers_orders
         'Number of Packs',
         'Total weight',
         'Purchase Price / Unit',
-        'Total Purchase Price',
+        'Purchase Value',
         'Sell Price / Unit',
         'Total Sell Price',
         'Downpayment',
@@ -91,9 +103,13 @@ class ModelSuppliers_orders extends ModelManagers_orders
         'Manager Bonus Rate',
         'Manager Bonus',
         'Commission Rate',
-        'Commission Agent Bonus',
+        'Commission Value',
         'Production Date',
         'Reserve Period',
+        'Expected Cost',
+        'Expected Cost Value',
+        'Expected profit',
+        'Expected margin/Unit',
     ];
 
     var $suppliers_orders_columns_reduce = [

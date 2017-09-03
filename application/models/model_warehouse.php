@@ -77,7 +77,7 @@ class ModelWarehouse extends ModelManagers_orders
         array('dt' => 20, 'db' => "CAST(products_warehouses.purchase_price as decimal(64, 2))"),
         array('dt' => 21, 'db' => "CAST((products_warehouses.purchase_price * products_warehouses.number_of_packs) as decimal(64, 2))"),
         array('dt' => 22, 'db' => "CAST(products_warehouses.sell_price as decimal(64, 2))"),
-        array('dt' => 23, 'db' => "CAST((products_warehouses.sell_price * products_warehouses.number_of_packs) as decimal(64, 2))"),
+        array('dt' => 23, 'db' => "IFNULL(CAST(products_warehouses.sell_value as decimal(64, 2)), '')"),
         array('dt' => 24, 'db' => "CAST(orders.total_downpayment as decimal(64, 2))"),
         array('dt' => 25, 'db' => "CAST(orders.downpayment_rate as decimal(64, 2))"),
         array('dt' => 26, 'db' => "orders.expected_date_of_issue"),
@@ -101,6 +101,17 @@ class ModelWarehouse extends ModelManagers_orders
         array('dt' => 42, 'db' => "IFNULL(CONCAT(products_warehouses.reserve_since_date, 
             ' - ',products_warehouses.reserve_till_date), '')"),
         array('dt' => 43, 'db' => "IF(products_warehouses.manager_order_id IS NULL, 'Available', 'Reserved')"),
+        array('dt' => 44, 'db' => "IFNULL(CAST(CAST(products_warehouses.purchase_price as decimal(64,2)) * 
+					products.margin as decimal(64, 2)), '')"),
+        array('dt' => 45, 'db' => "IFNULL(CAST(CAST(products_warehouses.purchase_price as decimal(64,2)) * 
+					products.margin * products_warehouses.amount as decimal(64, 2)), '')"),
+        array('dt' => 46, 'db' => "CAST((CAST(products_warehouses.sell_value as decimal(64, 2)) - 
+	                (CAST(CAST(products_warehouses.purchase_price as decimal(64,2)) * 
+					products.margin * products_warehouses.amount as decimal(64, 2))) - 
+					CAST(products_warehouses.commission_agent_bonus as decimal(64, 2)) - 
+					CAST(products_warehouses.manager_bonus as decimal(64, 2))) as decimal(64, 2))"),
+        array('dt' => 47, 'db' => "CAST(products_warehouses.sell_price as decimal(64, 2)) - CAST(CAST(products_warehouses.purchase_price as decimal(64,2)) * 
+					products.margin as decimal(64, 2))"),
     );
 
     var $product_warehouses_column_names = [
@@ -125,9 +136,9 @@ class ModelWarehouse extends ModelManagers_orders
         'Date of Order (Client)',
         'Status',
         'Purchase Price / Unit',
-        'Total Purchase Price',
+        'Purchase Value',
         'Sell Price / Unit',
-        'Total Sell Price',
+        'Sell Value',
         'Downpayment',
         'Downpayment rate',
         'Client\'s expected date of issue',
@@ -144,10 +155,14 @@ class ModelWarehouse extends ModelManagers_orders
         'Manager Bonus Rate',
         'Manager Bonus',
         'Commission Rate',
-        'Commission Agent Bonus',
+        'Commission Value',
         'Production Date',
         'Reserve Period',
         'Type',
+        'Expected Cost',
+        'Expected Cost Value',
+        'Expected profit',
+        'Expected margin/Unit',
     ];
 
     var $where = 'products_warehouses.manager_order_id IS NULL';

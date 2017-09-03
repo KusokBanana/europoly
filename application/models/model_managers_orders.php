@@ -64,8 +64,8 @@ class ModelManagers_orders extends Model
 					products.margin * order_items.amount as decimal(64, 2))) - 
 					CAST(order_items.commission_agent_bonus as decimal(64, 2)) - 
 					CAST(order_items.manager_bonus as decimal(64, 2))) as decimal(64, 2))"),
-        array('dt' => 39, 'db' => "CAST(order_items.sell_price as decimal(64, 2)) - IFNULL(CAST(CAST(order_items.purchase_price as decimal(64,2)) * 
-					products.margin as decimal(64, 2)), '')"),
+        array('dt' => 39, 'db' => "CAST(order_items.sell_price as decimal(64, 2)) - CAST(CAST(order_items.purchase_price as decimal(64,2)) * 
+					products.margin as decimal(64, 2))"),
     ];
 
     var $managers_orders_column_names = [

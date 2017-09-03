@@ -28,36 +28,45 @@ class ModelShipment extends ModelManagers_orders
         array('dt' => 15, 'db' => "CAST(products.weight * trucks_items.amount as decimal(64, 3))"),
         array('dt' => 16, 'db' => "CAST(trucks_items.purchase_price as decimal(64, 2))"),
         array('dt' => 17, 'db' => "CAST(trucks_items.purchase_price * trucks_items.amount as decimal(64, 2))"),
-        array('dt' => 18, 'db' => "'unknown'"),
-        array('dt' => 19, 'db' => "CAST(trucks_items.total_price as decimal(64, 2))"),
-        array('dt' => 20, 'db' => "CONCAT(orders.downpayment_rate, ' %')"),
-        array('dt' => 21, 'db' => "orders.downpayment_rate"),
-        array('dt' => 22, 'db' => "orders.expected_date_of_issue"),
+        array('dt' => 18, 'db' => "CONCAT(orders.downpayment_rate, ' %')"),
+        array('dt' => 19, 'db' => "orders.downpayment_rate"),
+        array('dt' => 20, 'db' => "orders.expected_date_of_issue"),
 
-        array('dt' => 23, 'db' => "CONCAT('<a href=\"/order?id=',
+        array('dt' => 21, 'db' => "CONCAT('<a href=\"/order?id=',
                 trucks_items.manager_order_id,
                 '\">', trucks_items.manager_order_id,
                  IF(trucks_items.reserve_since_date IS NULL, '', (CONCAT(' (reserved ', 
                  trucks_items.reserve_since_date, ')'))), '</a>')"),
-        array('dt' => 24, 'db' => "products.units"),
-        array('dt' => 25, 'db' => "CAST(trucks_items.sell_price as decimal(64, 2))"),
-        array('dt' => 26, 'db' => "CAST(trucks_items.sell_price * trucks_items.amount as decimal(64, 2))"),
-        array('dt' => 27, 'db' => "CONCAT('<a href=\"\client?id=', orders.client_id, '\">', client.final_name, '</a>')"),
-        array('dt' => 28, 'db' => "CONCAT('<a href=\"\client?id=', orders.commission_agent_id, '\">', 
+        array('dt' => 22, 'db' => "products.units"),
+        array('dt' => 23, 'db' => "CAST(trucks_items.sell_price as decimal(64, 2))"),
+        array('dt' => 14, 'db' => "IFNULL(CAST(trucks_items.sell_value as decimal(64, 2)), '')"),
+        array('dt' => 25, 'db' => "CONCAT('<a href=\"\client?id=', orders.client_id, '\">', client.final_name, '</a>')"),
+        array('dt' => 26, 'db' => "CONCAT('<a href=\"\client?id=', orders.commission_agent_id, '\">', 
             commission.final_name, '</a>')"),
-        array('dt' => 29, 'db' => "trucks_items.discount_rate"),
-        array('dt' => 30, 'db' => "trucks_items.reduced_price"),
-        array('dt' => 31, 'db' => "trucks_items.manager_bonus_rate"),
-        array('dt' => 32, 'db' => "trucks_items.manager_bonus"),
-        array('dt' => 33, 'db' => "trucks_items.commission_rate"),
-        array('dt' => 34, 'db' => "trucks_items.commission_agent_bonus"),
-        array('dt' => 35, 'db' => "trucks_items.production_date"),
-        array('dt' => 36, 'db' => "transport.name"),
-        array('dt' => 37, 'db' => "customs.name"),
-        array('dt' => 38, 'db' => "trucks.shipment_price"),
-        array('dt' => 39, 'db' => "trucks_items.import_tax"),
-        array('dt' => 40, 'db' => "IFNULL(CONCAT(trucks_items.reserve_since_date, ' - ',
+        array('dt' => 27, 'db' => "trucks_items.discount_rate"),
+        array('dt' => 28, 'db' => "trucks_items.reduced_price"),
+        array('dt' => 29, 'db' => "trucks_items.manager_bonus_rate"),
+        array('dt' => 30, 'db' => "trucks_items.manager_bonus"),
+        array('dt' => 31, 'db' => "trucks_items.commission_rate"),
+        array('dt' => 32, 'db' => "trucks_items.commission_agent_bonus"),
+        array('dt' => 33, 'db' => "trucks_items.production_date"),
+        array('dt' => 34, 'db' => "transport.name"),
+        array('dt' => 35, 'db' => "customs.name"),
+        array('dt' => 36, 'db' => "trucks.shipment_price"),
+        array('dt' => 37, 'db' => "trucks_items.import_tax"),
+        array('dt' => 38, 'db' => "IFNULL(CONCAT(trucks_items.reserve_since_date, ' - ',
             trucks_items.reserve_till_date), '')"),
+        array('dt' => 39, 'db' => "IFNULL(CAST(CAST(trucks_items.purchase_price as decimal(64,2)) * 
+					products.margin as decimal(64, 2)), '')"),
+        array('dt' => 40, 'db' => "IFNULL(CAST(CAST(trucks_items.purchase_price as decimal(64,2)) * 
+					products.margin * trucks_items.amount as decimal(64, 2)), '')"),
+        array('dt' => 41, 'db' => "CAST((CAST(trucks_items.sell_value as decimal(64, 2)) - 
+	                (CAST(CAST(trucks_items.purchase_price as decimal(64,2)) * 
+					products.margin * trucks_items.amount as decimal(64, 2))) - 
+					CAST(trucks_items.commission_agent_bonus as decimal(64, 2)) - 
+					CAST(trucks_items.manager_bonus as decimal(64, 2))) as decimal(64, 2))"),
+        array('dt' => 42, 'db' => "CAST(trucks_items.sell_price as decimal(64, 2)) - CAST(CAST(trucks_items.purchase_price as decimal(64,2)) * 
+					products.margin as decimal(64, 2))"),
 
     ];
 
@@ -79,9 +88,7 @@ class ModelShipment extends ModelManagers_orders
         'Number of Packs',
         'Total weight',
         'Purchase Price / Unit',
-        'Total Purchase Price',
-        'Sell Price / Unit',
-        'Total Sell Price',
+        'Purchase Value',
         'Downpayment',
         'Downpayment rate',
         'Client\'s expected date of issue',
@@ -103,6 +110,10 @@ class ModelShipment extends ModelManagers_orders
         'Delivery Price',
         'Customs Price',
         'Reserve Period',
+        'Expected Cost',
+        'Expected Cost Value',
+        'Expected profit',
+        'Expected margin/Unit',
     ];
 
     var $suppliers_orders_table = 'order_items as trucks_items
@@ -142,7 +153,7 @@ class ModelShipment extends ModelManagers_orders
                         " client.sales_manager_id = ". $this->user->user_id .
                         " OR client.operational_manager_id = " . $this->user->user_id .
                         ' OR trucks_items.reserve_since_date IS NOT NULL OR orders.sales_manager_id IS NULL)';
-                    $this->unLinkStrings($this->suppliers_orders_columns, [1, 7, 27, 28]);
+                    $this->unLinkStrings($this->suppliers_orders_columns, [1, 7, 25, 26]);
                 }
                 $this->filterWhere[] = 'trucks_items.status_id >= ' . ON_THE_WAY;
                 $ssp = array_merge($ssp, $this->getColumns($this->suppliers_orders_columns, $this->page,
