@@ -16,7 +16,7 @@ class ModelSuppliers_order extends ModelOrder
             CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to delete from reserve the item?\"  
             href=\"/suppliers_order/delete_from_reserve?order_item_id=', suppliers_orders_items.item_id, '\"
             class=\"table-confirm-btn\" data-placement=\"right\" data-popout=\"true\" data-singleton=\"true\">
-                <span class=\'glyphicon glyphicon-remove\' title=\'Delete from reserve\'></span>
+                <span class=\'glyphicon glyphicon-repeat\' title=\'Delete from reserve\'></span>
             </a>'), ''),
         '</div>')"),
         array('dt' => 2, 'db' => "CONCAT('<a href=\"/product?id=',

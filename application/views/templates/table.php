@@ -50,7 +50,7 @@
     </div>
 
     <div class="btn-group pull-right">
-        <button type="button" class="btn blue dropdown-toggle" data-toggle="dropdown">Columns <i class="fa fa-angle-down"></i></button>
+        <button type="button" class="btn blue dropdown-toggle <?= $table_id ?>_columns-toggle-btn" data-toggle="dropdown">Columns <i class="fa fa-angle-down"></i></button>
         <div id="<?= $table_id ?>_columns_choose" class="dropdown-menu hold-on-click dropdown-checkboxes order-columns-block"
              style="left: 0" role="menu">
 			<?php
@@ -282,6 +282,16 @@ $hidden_by_default = json_encode($hidden);
 
         var tableId = $table.attr('id');
 
+        $(document).on('click', '.'+tableId+'_columns-toggle-btn', function () {
+            var height = $('#' + tableId + '_wrapper').css('height');
+            console.log('h', height);
+            $('#' + tableId + '_columns_choose').css({
+                'max-height': (parseInt(height) < 600 ? height : 600),
+                'height': 'auto'
+            });
+        })
+
+
         $table.on('draw.dt', function () {
             $('[data-toggle="tooltip"]').tooltip();
         });
@@ -413,9 +423,10 @@ $hidden_by_default = json_encode($hidden);
 
             var $editables = $table.find('td .x-editable');
             if ($editables.length) {
+                console.log($editables)
                 $editables.on('shown', function(e, editable) {
                         var popover = editable.input.$input.closest('.popover');
-                        popover.closest('.table-scrollable').parent().append(popover);
+                        popover.closest('.portlet').parent().append(popover);
                 });
             }
 

@@ -23,13 +23,13 @@ class ModelOrder extends Model
                     CONCAT('<a data-toggle=\"confirmation\" data-title=\"Are you sure to hold the item?\" 
                                href=\"/order/hold?order_item_id=', order_items.item_id, '\" 
                                class=\"table-confirm-btn\" data-placement=\"right\" data-popout=\"true\" data-singleton=\"true\">
-                                <span class=\'glyphicon glyphicon-star\' title=\'Hold Item\'></span>
+                                <span class=\'glyphicon glyphicon-minus-sign\' title=\'Hold Item\'></span>
                             </a>'), 
                     ''),
                     IF(order_items.status_id = ".DRAFT." OR order_items.status_id = ".HOLD.", 
                         CONCAT('<a href=\"/order/reserve?order_item_id=', order_items.item_id, '&action=get_info',
                                 '\" class=\"reserve-product-btn\" data-id=\"', order_items.item_id, '\">
-                                    <span class=\'glyphicon glyphicon-heart\' title=\'Reserve Item\'></span>
+                                    <span class=\'glyphicon glyphicon-magnet\' title=\'Reserve Item\'></span>
                                 </a>',
                                 '<a data-toggle=\"confirmation\" data-title=\"Are you sure to delete the item?\" 
                                     href=\"/order/delete_order_item?order_id=', order_items.manager_order_id, 
@@ -44,12 +44,12 @@ class ModelOrder extends Model
                                    href=\"/order/issue?order_item_id=', order_items.item_id, '\" 
                                    class=\"table-confirm-btn\" data-placement=\"right\" data-popout=\"true\" 
                                    data-singleton=\"true\">
-                                    <span class=\'fa fa-share\' title=\'Issue\'></span>
+                                    <span class=\'glyphicon glyphicon-log-out\' title=\'Issue\'></span>
                                 </a>'),
                         ''),
                     IF(order_items.status_id = ".ISSUED.",
                         CONCAT('<a class=\"return-item-btn\" data-item_id=\"', order_items.item_id, '\">
-                                    <span class=\'glyphicon glyphicon-repeat\' title=\'Return\'></span>
+                                    <span class=\'glyphicon glyphicon-ban-circle\' title=\'Return\'></span>
                                 </a>'),
                         ''),
                     IF(order_items.status_id >= ".SENT_TO_LOSIGT." AND " . intval(($this->user->role_id == ROLE_ADMIN)) .",
@@ -57,7 +57,7 @@ class ModelOrder extends Model
                                    href=\"/order/hold?order_item_id=', order_items.item_id, '\" 
                                    class=\"table-confirm-btn\" data-placement=\"right\" data-popout=\"true\" 
                                    data-singleton=\"true\">
-                                    <span class=\'glyphicon glyphicon-pencil\' title=\'Return to Manager\'></span>
+                                    <span class=\'glyphicon glyphicon-repeat\' title=\'Return to Manager\'></span>
                                 </a>'),
                         ''),
                 '</div>')"),
@@ -161,7 +161,7 @@ class ModelOrder extends Model
 				         $this->full_products_table_addition .
 				         ' left join items_status as status on order_items.status_id = status.status_id';
 
-				$where = ["order_items.manager_order_id = $order_id"];
+				$where = ["order_items.manager_order_id = $order_id", 'order_items.is_deleted = 0'];
 
 				if ($this->user->permissions < ADMIN_PERM) {
 					$this->unLinkStrings($columns, [14, 15, 16]);
