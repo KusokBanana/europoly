@@ -30,6 +30,9 @@
 		$recordsCount = 50;
 	}
 
+    if (isset($this) && $this->user->columns_resize) {
+        $width_columns = json_decode($this->user->columns_resize, true);
+    }
 	?>
     <div id="<?= $table_id ?>_left_buttons" class="btn-group">
 		<?php
@@ -107,8 +110,12 @@
 					}
 					$input .= '</select>';
 				}
-				echo '<th data-header-id="'.$column_id.'" data-db-col-name="'.$column_name.'" style="width: 75px;">' .
-				     '<div class="td-wrapper" style="width: 75px;" data-header-id="' . $column_id . '">' .
+                $width = "width: 75px;";
+                if (isset($width_columns[$table_id.'_wrapper'][$column_id])) {
+                    $width = "width: ".$width_columns[$table_id . '_wrapper'][$column_id];
+                    }
+				echo '<th data-header-id="'.$column_id.'" data-db-col-name="'.$column_name.'" style="'.$width.'">' .
+				     '<div class="td-wrapper" style="width: '. $width .'" data-header-id="' . $column_id . '">' .
 				     /*'<i class="icon-equalizer filter-popover" style="margin-right: 8px; color: rgb(153, 153, 153);" '.
 					 'onclick="event.stopPropagation()" data-toggle="popover" data-original-title="" title=""></i>'.*/
 				     $column_name  .
@@ -187,6 +194,7 @@ $hidden_by_default = json_encode($hidden);
         var $select = <?= $select; ?>;
         var recordsCount = "<?= $recordsCount; ?>";
         var serverSide = <?= $serverSide ? 'true' : 'false'; ?>;
+        var columnsWidthTT = getWidthColumns('<?= $table_id ?>');
         var columnsWidth = [];
 		<?php
 		if (isset($ajax['data']) && $ajax['data'] != "") {
@@ -198,6 +206,7 @@ $hidden_by_default = json_encode($hidden);
 			echo "var ajax = '" . $ajax['url'] . "';";
 		}
 		?>
+        var tableId = $table.attr('id');
         // DataTable
         var table = $table.DataTable({
             dom:'lfrJtip',
@@ -249,7 +258,32 @@ $hidden_by_default = json_encode($hidden);
 //                            width = '50px';
 //                            columnsWidth[columnId] = width = 'width: ' + width;
 //                        }
+                        /*for(var key in returnValue) {
+                         //console.log(key);
+                         //console.log(tableId);
+                         if (key==tableId+'_wrapper') {
+                         //console.log(key);
+                         //console.log(returnValue[key]);
+                         for(var val in returnValue[key]) {
+                         console.log(key);
+                         console.log(val);
+                         console.log(returnValue[key][val]);
+                         $("#"+key+" div.td-wrapper[data-header-id="+ val +"]").width(returnValue[key][val]);
+                         $("#"+tableId+" div.td-wrapper[data-header-id="+ val +"]").width(returnValue[key][val]);
+                         }
+                         }
+                         }
+
+                         */
                         var width = 'width: 75px';
+                        for (var key in columnsWidthTT[tableId+'_wrapper'])
+                        {
+                            if (columnId==key) {
+                                width = 'width: '+ columnsWidthTT[tableId+'_wrapper'][key];
+                                break;
+                            }
+                        }
+
                         var qwe;
                         if (data==null) {
                             qwe = data;
@@ -280,8 +314,6 @@ $hidden_by_default = json_encode($hidden);
 		<?= $globalTable ?> = table;
 		<?php endif; ?>
 
-        var tableId = $table.attr('id');
-
         $table.on('draw.dt', function () {
             $('[data-toggle="tooltip"]').tooltip();
         });
@@ -304,17 +336,19 @@ $hidden_by_default = json_encode($hidden);
             table.draw();
             //$(".content").width(30)
 
-            $("th").width(75);
+
+           // $("th").width(75);
             //console.log("123");
 
         });
+
 
         $('.modal')/*.on('shown.bs.modal', function(e) {
             topScrollResize()
         })*/.on('shown.bs.modal', function(e) {
             if ($table.closest($(this))) {
                 table.draw();
-                $("th").width(75);
+                //$("th").width(75);
 //                table.columns.adjust();
 
 //                var tabInModal = $(this).find('.tab-pane.active');
@@ -346,6 +380,8 @@ $hidden_by_default = json_encode($hidden);
         });
 
         var headerTable = $('#' + tableId + '_wrapper .dataTables_scrollHead');
+
+
 
         table.on('draw', function() {
             var tableWrapper = $table.closest('.dataTables_scroll');
@@ -461,6 +497,25 @@ $hidden_by_default = json_encode($hidden);
             $table.find('tr, td').on('hover', function() {
                 $(this).popover('show')
             })
+
+            console.log( tableId);
+            var width = 'width: 75px';
+            //$("#"+tableId+" div.td-wrapper").width(width);
+           /* $("#"+tableId+"_wrapper th").width(75);
+            $("#"+tableId+" th").width(75);
+            for (var key in columnsWidthTT[tableId+'_wrapper'])
+            {
+                //dataTable
+                $(".dataTable th[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
+                $(".dataTable th[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
+                $("#"+tableId+" th[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
+                $("#"+tableId+" _wrapper th[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
+                $("#"+tableId+" div.td-wrapper[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
+
+            }*/
+            //$("#"+key+" div.td-wrapper[data-header-id="+ val +"]").width(returnValue[key][val]);
+            //$("#"+tableId+" div.td-wrapper[data-header-id="+ val +"]").width(returnValue[key][val]);
+            //console.log("#"+tableId+" div.td-wrapper[data-header-id="+ val +"]");
 
         });
 
@@ -725,7 +780,7 @@ $hidden_by_default = json_encode($hidden);
 
 //            resize1();
             table.draw();
-            $("th").width(75);
+            //$("th").width(75);
             saveHiddenColumnsInCookie();
         });
 
@@ -789,9 +844,54 @@ $hidden_by_default = json_encode($hidden);
                     }
                 }
             });
+            //console.log(returnValue);
             return returnValue;
         }
 
+        function getWidthColumns(tableId) {
+            var cols = {
+                     tableId
+                },
+                returnValue = false;
+            cols = JSON.stringify(cols);
+            var ajax = $.ajax({
+                url: '/login/width_columns',
+                type: "POST",
+                async: false,
+                data: {
+                    'tableId': cols
+                },
+                success: function(response) {
+                    var buf2 = response;
+
+                    buf2 = buf2.replace(cols,'');
+
+                    returnValue = JSON.parse(buf2);
+                    /*for(var key in returnValue) {
+                        //console.log(key);
+                        //console.log(tableId);
+                        if (key==tableId+'_wrapper') {
+                            //console.log(key);
+                            //console.log(returnValue[key]);
+                            for(var val in returnValue[key]) {
+                                console.log(key);
+                                console.log(val);
+                                console.log(returnValue[key][val]);
+                                $("#"+key+" div.td-wrapper[data-header-id="+ val +"]").width(returnValue[key][val]);
+                                $("#"+tableId+" div.td-wrapper[data-header-id="+ val +"]").width(returnValue[key][val]);
+                            }
+                        }
+                    }
+
+                    */
+                },
+                error: function (data) {
+                    console.log('error');
+                }
+            });
+            console.log(returnValue);
+            return returnValue;
+        }
         //    If category tabs exist on page
         var filterTabsBlock = $('.filter-tabs');
         var hiddenTabFilters = <?= json_encode($hiddenTabFilters); ?>;

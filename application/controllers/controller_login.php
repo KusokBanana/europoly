@@ -86,4 +86,21 @@ class ControllerLogin extends Controller
         }
     }
 
+    function action_save_resize_columns()
+    {
+        if (isset($_POST["column_id"])) {
+            $column_width = array(
+                'id'=>$_POST["column_id"],
+                'value'=>$_POST["column_width"]
+            );
+            $tableId = $_POST['tableId'];
+            $this->model->saveResizeColumns($column_width, $tableId);
+        }
+    }
+
+    function action_width_columns()
+    {
+        echo $this->model->getResizeColumns();
+        echo $_POST["tableId"];
+    }
 }
