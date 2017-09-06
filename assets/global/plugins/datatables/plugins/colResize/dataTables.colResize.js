@@ -688,7 +688,8 @@
             this.overrideClickHander(col, $th);
             this.$(document).one('mouseup.ColResize', function (event) {
                 _this.onMouseUp(event, col);
-                $("table.dataTable.not-single div.td-wrapper[data-header-id="+ col.idx +"]").width(col.sWidth);
+
+
                 //console.log(col);
             });
 
@@ -716,6 +717,7 @@
                 if (!columns[i].bVisible)
                     continue;
                 columns[i].sWidth = this.$(columns[i].nTh).css('width');
+
             }
 
             //Update the internal storage of the table's width (in case we changed it because the user resized some column and scrollX was enabled
@@ -724,6 +726,7 @@
             //Save the state
             this.dt.settings.oInstance.oApi._fnSaveState(this.dt.settings);
             this.dom.origState = false;
+
         };
 
         ColResize.prototype.onMouseUp = function (e, col) {
@@ -732,6 +735,23 @@
                 return;
             this.dom.resize = false;
             this.afterResizing();
+            console.log(this.dt.settings.nTableWrapper.id+" div.td-wrapper[data-header-id="+ col.idx +"]");
+            $("#"+this.dt.settings.nTableWrapper.id+" div.td-wrapper[data-header-id="+ col.idx +"]").width(col.sWidth);
+            var array_col_size = [];
+            array_col_size[col.idx] = col.sWidth;
+            //console.log(array_col_size);
+            $.ajax({
+                url: '/login/save_resize_columns',
+                type: 'POST',
+                data: {
+                    column_id: col.idx,
+                    column_width: col.sWidth,
+                    tableId: this.dt.settings.nTableWrapper.id
+                },
+                success: function(data) {
+                    console.log(data);
+                }
+            })
         };
 
         ColResize.prototype.canResizeColumn = function (col, newWidth) {

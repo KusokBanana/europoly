@@ -50,6 +50,32 @@ class ModelLogin extends Model
 
     }
 
+    function saveResizeColumns($columns_widths, $tableId)
+    {
+        $userId = $this->user->user_id;
+        $saveResizeColumns = $this->getFirst("SELECT columns_resize FROM users WHERE user_id = $userId");
+        if ($saveResizeColumns) {
+            $savedResizeColumnsJson = json_decode($saveResizeColumns['columns_resize'],true);
+            if ($savedResizeColumnsJson) {
+                $saveResizeColumns = $savedResizeColumnsJson;
+                $saveResizeColumns[$tableId][$columns_widths['id']] = $columns_widths['value'];
+            } else {
+                $saveResizeColumns = [];
+                $saveResizeColumns[$tableId][$columns_widths['id']] = $columns_widths['value'];
+            }
+            $savedResizeColumnsJson = json_encode($saveResizeColumns);
+            return $this->update("UPDATE users SET columns_resize = '$savedResizeColumnsJson' WHERE user_id = $userId");
+        }
+    }
 
+    function getResizeColumns()
+    {
+        $userId = $this->user->user_id;
+        //$saveResizeColumns = $this->getFirst("SELECT columns_resize FROM users WHERE user_id = $userId");
+        $getResizeColumns=$this->getFirst("SELECT columns_resize FROM users WHERE user_id = $userId");
+        return $getResizeColumns['columns_resize'];
+        //update("UPDATE users SET columns_resize = '$saveResizeColumns' WHERE user_id = $userId");
+       
+    }
 
 }
