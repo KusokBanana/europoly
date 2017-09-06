@@ -414,6 +414,19 @@ $hidden_by_default = json_encode($hidden);
                 tableConfirmBtn.confirmation({
                     rootSelector: '.table-confirm-btn'
                 });
+                // Show out of table
+                document.addEventListener("DOMNodeInserted", function(e) {
+                    var target = $(e.target);
+                    if (target && target.length && target.hasClass('popover') && !target.hasClass('replaced') &&
+                        target.hasClass('confirmation')) {
+                        var wrapper = target.closest('.dataTables_wrapper');
+                        if (wrapper.length) {
+                            target.addClass('replaced');
+                            wrapper.append(target);
+                            target.removeClass('replaced');
+                        }
+                    }
+                }, false);
             }
             $('.dataTables_scrollHead').css('overflow', '').css('position', '');
 
