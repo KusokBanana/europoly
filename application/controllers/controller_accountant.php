@@ -19,30 +19,32 @@ class ControllerAccountant extends Controller
         ini_set('display_errors', TRUE);
         ini_set('display_startup_errors', TRUE);
         define('EOL',(PHP_SAPI == 'cli') ? PHP_EOL : '<br />');
-        date_default_timezone_set('Europe/London');
+        date_default_timezone_set('E//urope/London');
 //        set_time_limit(-1);
 //	    ini_set('memory_limit', '-1');
 	    ini_set('max_execution_time', '9000');
-//        $parser = [];
-//        require dirname(__FILE__) . "/../../assets/phpExcel/Examples/parser.php";
+//        $parser = []; // Здесь появятся данные, после того как подключишь файл ниже [1]!
+//        require dirname(__FILE__) . "/../../assets/phpExcel/Examples/parser.php"; // Когда раскомментируешь - запустится заполнение массива $parser [1]!
 
-//        $file = dirname(__FILE__) . "/../../dump_db/dumps/catalogue/total_dump_14_08.txt";
+//        $file = dirname(__FILE__) . "/../../dump_db/dumps/catalogue/total_dump_14_08.txt"; // сюда нужно записать результат из экселя и потом отсюда взять [1|2]!
 
-//        $fd = fopen($file, 'r') or die("не удалось прочитать файл");
-//        $fd = fopen($file, 'w') or die("не удалось создать файл");
-//	    echo count($parser);
-//	    print_r($parser);
-//	    $str = json_encode($parser);
-//	    $parser = fread($fd, filesize($file));
-//        fwrite($fd, $str);
-//        fclose($fd);
-//	    die();
-//	    $parser = json_decode($parser, true);
-//        echo '<br><br>Job Is Done';
-//        die();
+//        $fd = fopen($file, 'r') or die("не удалось прочитать файл"); // раскомментируй при втором запуске для чтении [2]!
+//        $fd = fopen($file, 'w') or die("не удалось создать файл"); // раскомментируй при первом запуске для записи [1]!
+//	    echo count($parser); // просто отладка при парсинге [1]
+//	    print_r($parser); // тоже отладка при парсинге [1]
+//	    $str = json_encode($parser); // при парсинге из экселя в json [1]!
+//	    $parser = fread($fd, filesize($file)); // при втором запуске читаем данные, которые записали ранее [2]!
+//        fwrite($fd, $str); // при парсинге из экселя запишем в файл результат [1]!
+//        fclose($fd); // всегда закрываем потом [1|2]!
+//	    die(); // можно убить при первом запуске чтоб наверняка [1]
+//	    $parser = json_decode($parser, true); // декодируем данные [2]!
+//        $this->model->initCatalogueParser($parser, false); // и закидываем сюда данные чтобы впарсить в базу [2]!
+
+
+
+
 //        require dirname(__FILE__) . "/../../assets/phpExcel/Examples/expenses_parser.php";
 
-//        $this->model->initCatalogueParser($parser, false);
 
 //        $this->model->initParser($parser);
 
