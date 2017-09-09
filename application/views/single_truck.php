@@ -128,22 +128,26 @@
                 </div>
             </div>
         </div>
-        <div class="row" >
-	        <?php
-	        $commonData = [
-		        'click_url' => "javascript:;",
-		        'method' => "POST",
-		        'serverSide' => false,
-		        'ajax' => [
-			        'url' => '/truck/dt_order_items',
-			        'data' => [
-				        'truck_id' => $this->order["id"],
-			        ]
-		        ]
-	        ];
-	        $table_data = array_merge($this->itemsTable, $commonData);
-	        include 'application/views/templates/table.php'
-	        ?>
+        <div class="col-md-12 col-sm-12">
+            <div class="portlet">
+                <div class="portlet-body">
+                    <?php
+                    $commonData = [
+                        'click_url' => "javascript:;",
+                        'method' => "POST",
+                        'serverSide' => false,
+                        'ajax' => [
+                            'url' => '/truck/dt_order_items',
+                            'data' => [
+                                'truck_id' => $this->order["id"],
+                            ]
+                        ]
+                    ];
+                    $table_data = array_merge($this->itemsTable, $commonData);
+                    include 'application/views/templates/table.php'
+                    ?>
+                </div>
+            </div>
         </div>
     </div>
 

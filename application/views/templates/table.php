@@ -476,7 +476,9 @@ $hidden_by_default = json_encode($hidden);
             if ($editables.length) {
                 $editables.on('shown', function(e, editable) {
                         var popover = editable.input.$input.closest('.popover');
-                        popover.closest('.portlet').parent().append(popover);
+                        var portlet = popover.closest('.portlet');
+                        var wrapperAppendTo = portlet.length ? portlet.parent() : popover.closest('.page-content');
+                        wrapperAppendTo.append(popover);
                 });
             }
 

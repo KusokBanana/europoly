@@ -95,7 +95,7 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row portlet">
 	        <?php
 	        $commonData = [
 		        'click_url' => "javascript:;",
