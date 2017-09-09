@@ -59,6 +59,7 @@ class ControllerOrder extends Controller
             $this->view->clients = $this->model->getClientsOfSalesManager($clientsFor);
             $this->view->commission_agents = $this->model->getCommissionAgentsOfManager($order["sales_manager_id"]);
             $this->view->statusList = $this->model->getStatusList();
+            $this->view->totalCommissionDownpayment = $this->model->getOrderDownPayment(PAYMENT_CATEGORY_COMMISSION_AGENT, $order['order_id']);
             $this->view->build('templates/template.php', 'single_order.php');
         } else {
             $this->getAccess('none', 'v');

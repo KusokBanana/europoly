@@ -244,6 +244,12 @@
                                         <span> <?= round($this->order['total_commission'], 2) . ' &euro;' ?> </span>
                                     </div>
                                 </div>
+                                <div class="row static-info">
+                                    <div class="col-md-5 name">Commission Downpayment: </div>
+                                    <div class="col-md-7 value">
+                                        <span> <?= round($this->totalCommissionDownpayment, 2) . ' &euro;' ?> </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
