@@ -84,7 +84,7 @@
         </div>
     </div>
 </div>
-<table id="<?= $table_id ?>" class="table table-striped table-bordered table-hover table-checkable order-column not-single"
+<table id="<?= $table_id ?>" class="<?= $table_id ?> table table-striped table-bordered table-hover table-checkable order-column not-single"
        data-last-sort="<?= $sort ?>">
     <thead>
     <tr>
@@ -351,7 +351,6 @@ $hidden_by_default = json_encode($hidden);
 
            // $("th").width(75);
             //console.log("123");
-
         });
 
 
@@ -360,6 +359,10 @@ $hidden_by_default = json_encode($hidden);
         })*/.on('shown.bs.modal', function(e) {
             if ($table.closest($(this))) {
                 table.draw();
+
+                //$("#"+key+" div.td-wrapper[data-header-id="+ val +"]").width(returnValue[key][val]);
+                //$("#"+tableId+" div.td-wrapper[data-header-id="+ val +"]").width(returnValue[key][val]);
+                //console.log("#"+tableId+" div.td-wrapper[data-header-id="+ val +"]");
                 //$("th").width(75);
 //                table.columns.adjust();
 
@@ -524,26 +527,52 @@ $hidden_by_default = json_encode($hidden);
             $table.find('tr, td').on('hover', function() {
                 $(this).popover('show')
             })
-
-            console.log( tableId);
-            var width = 'width: 75px';
-            //$("#"+tableId+" div.td-wrapper").width(width);
-           /* $("#"+tableId+"_wrapper th").width(75);
-            $("#"+tableId+" th").width(75);
-            for (var key in columnsWidthTT[tableId+'_wrapper'])
+            columnsWidthTT = getWidthColumns('<?= $table_id ?>');
+            if (tableId=='table_managers_orders' )
             {
-                //dataTable
-                $(".dataTable th[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
-                $(".dataTable th[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
-                $("#"+tableId+" th[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
-                $("#"+tableId+" _wrapper th[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
-                $("#"+tableId+" div.td-wrapper[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
+                //$("."+tableId+"_wrapper th").width(75);
+                //var qwe = $("."+tableId+" th");
+                //qwe.width(25);
+                $("."+tableId+" th").width(75);
+                for (var key in columnsWidthTT[tableId+'_wrapper'])
+                {
+                    //dataTable
+                    //$(".dataTable th[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
+                    //$(".dataTable th[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
+                    $("."+tableId+" th[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
+                    //$("#"+tableId+" _wrapper th[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
+                    //$("#"+tableId+" div.td-wrapper[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
 
-            }*/
-            //$("#"+key+" div.td-wrapper[data-header-id="+ val +"]").width(returnValue[key][val]);
-            //$("#"+tableId+" div.td-wrapper[data-header-id="+ val +"]").width(returnValue[key][val]);
-            //console.log("#"+tableId+" div.td-wrapper[data-header-id="+ val +"]");
+                }
+            }
+            if (tableId=='table_delivery_notes' )
+            {
+                $("."+tableId+" th").width(75);
+                for (var key in columnsWidthTT[tableId+'_wrapper'])
+                {
+                    $("."+tableId+" th[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
+                }
+            }
+            if (tableId=='expects_issue' )
+            {
+                $("."+tableId+" th").width(75);
+                for (var key in columnsWidthTT[tableId+'_wrapper'])
+                {
+                    $("."+tableId+" th[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
+                }
+            }
+            if (-1 < tableId.indexOf('modal_'))
+            //if (tableId=='modal_catalogue' )
+            {
+                $("."+tableId+" th").width(75);
+                for (var key in columnsWidthTT[tableId+'_wrapper'])
+                {
+                    $("."+tableId+" th[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
+                }
+            }
+            $('[data-toggle="tooltip"]').tooltip();
 
+            //expects_issue
         });
 
 //        $('#' + tableId + '_wrapper').on('click', 'th', function () {
@@ -572,7 +601,50 @@ $hidden_by_default = json_encode($hidden);
             console.log('search dt')
         });
         table.on( 'search', function () {
-            console.log('search')
+            console.log('search');
+            columnsWidthTT = getWidthColumns('<?= $table_id ?>');
+            if (tableId=='table_managers_orders' )
+            {
+                //$("."+tableId+"_wrapper th").width(75);
+                //var qwe = $("."+tableId+" th");
+                //qwe.width(25);
+                $("."+tableId+" th").width(75);
+                for (var key in columnsWidthTT[tableId+'_wrapper'])
+                {
+                    //dataTable
+                    //$(".dataTable th[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
+                    //$(".dataTable th[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
+                    $("."+tableId+" th[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
+                    //$("#"+tableId+" _wrapper th[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
+                    //$("#"+tableId+" div.td-wrapper[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
+
+                }
+            }
+            if (tableId=='table_delivery_notes' )
+            {
+                $("."+tableId+" th").width(75);
+                for (var key in columnsWidthTT[tableId+'_wrapper'])
+                {
+                    $("."+tableId+" th[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
+                }
+            }
+            if (tableId=='expects_issue' )
+            {
+                $("."+tableId+" th").width(75);
+                for (var key in columnsWidthTT[tableId+'_wrapper'])
+                {
+                    $("."+tableId+" th[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
+                }
+            }
+            if (-1 < tableId.indexOf('modal_'))
+            //if (tableId=='modal_catalogue' )
+            {
+                $("."+tableId+" th").width(75);
+                for (var key in columnsWidthTT[tableId+'_wrapper'])
+                {
+                    $("."+tableId+" th[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
+                }
+            }
         });
 
         function addTopScroll()
@@ -916,7 +988,7 @@ $hidden_by_default = json_encode($hidden);
                     console.log('error');
                 }
             });
-            console.log(returnValue);
+            //console.log(returnValue);
             return returnValue;
         }
         //    If category tabs exist on page

@@ -115,3 +115,293 @@ UPDATE `suppliers_orders`
 UPDATE users SET records_show = '{"table_managers_orders":50,"table_warehouses_products":100,"table_supplier_order_item_product":10,"table_managers_orders_reduced":100}' WHERE user_id = 1
 18.07.2017 16:40:04 SUCCESS table: users user_id: 1 record_id: 1
 UPDATE users SET columns_order = '{"table_warehouse":["16","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42"],"table_managers_orders":["34","17","3","7","6","5","1","2","24","25","4","22","20","32","23","33","8","9","11","12","13","14","15","16","18","19","21","26","27","28","29","30","31","10","35"],"table_catalogue":["5","1","3","8","9","2","11","12","20","15","4","6","7","10","13","21","14","16","17","22","25","26","27","28","24","23","19","18","29","30","31","32","33","34","35","36","37","38","39"],"table_product_warehouse_modal":["3","4","6","5","1","7","8","2","9","10","11","12","13","20","21","14","15","16","17","18","19","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39"],"table_managers_orders_reduced":["1","2","10","9","3","4","5","6","7","8"],"sent_to_logist":["2","1","34","3","24","5","17","15","16","18","21","4","7","8","9","10","11","12","13","14","27","26","31","6","19","20","22","33","32","23","25","28","29","30"],"modal_catalogue":["1","2","11","3","4","5","6","7","8","9","10","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39"]}' WHERE user_id = 1
+30.08.2017 07:36:20 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET records_show = '{"table_catalogue":10}' WHERE user_id = 27
+30.08.2017 07:37:13 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET records_show = '{"table_catalogue":25}' WHERE user_id = 27
+30.08.2017 07:43:20 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET records_show = '{"table_catalogue":10}' WHERE user_id = 27
+03.09.2017 06:00:03 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_order = '{"table_supplier_order_item_product":["1","7","2","3","4","5","6","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39"],"table_catalogue":["3","1","8","7","2","4","5","6","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39"],"table_warehouse":["1",null,"3","5","4","6","2","10","7","8","9","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42"],"table_warehouses_products":["1","3","5","4","6","2","10","7","8","9","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42"],"table_warehouses_products_reserved":["1",null,"3","5","4","6","2","10","7","8","9","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42"],"table_warehouses_products_issue":["1","4","3","5","6","2","10","7","8","9","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42"],"new_supplier_order_table":["","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""],"sent_to_logist":[null,"1","6","2","3","4","5","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34"],"table_managers_orders":["3","1","2","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37"]}' WHERE user_id = 27
+03.09.2017 06:00:03 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_order = '{"table_supplier_order_item_product":["1","7","2","3","4","5","6","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39"],"table_catalogue":["3","1","8","7","2","4","5","6","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39"],"table_warehouse":["1",null,"3","5","4","6","2","10","7","8","9","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42"],"table_warehouses_products":["1","3","5","4","6","2","10","7","8","9","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42"],"table_warehouses_products_reserved":["1",null,"3","5","4","6","2","10","7","8","9","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42"],"table_warehouses_products_issue":["1","4","3","5","6","2","10","7","8","9","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42"],"new_supplier_order_table":["","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""],"sent_to_logist":[null,"1","6","2","3","4","5","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34"],"table_managers_orders":["3","1","2","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37"]}' WHERE user_id = 27
+04.09.2017 08:53:42 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET records_show = '{"table_catalogue":25,"table_clients":10}' WHERE user_id = 27
+04.09.2017 09:58:36 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":null}' WHERE user_id = 27
+04.09.2017 09:58:36 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":null,"table_managers_orders_wrapper":null}' WHERE user_id = 27
+04.09.2017 09:59:30 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":null,"table_managers_orders_wrapper":null}' WHERE user_id = 27
+04.09.2017 09:59:31 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":null,"table_managers_orders_wrapper":null}' WHERE user_id = 27
+04.09.2017 10:02:27 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":null,"table_managers_orders_wrapper":null}' WHERE user_id = 27
+04.09.2017 10:02:27 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":null,"table_managers_orders_wrapper":null}' WHERE user_id = 27
+04.09.2017 10:02:46 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":null,"table_managers_orders_wrapper":null}' WHERE user_id = 27
+04.09.2017 10:03:50 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":null,"table_managers_orders_wrapper":null}' WHERE user_id = 27
+04.09.2017 10:03:50 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":null,"table_managers_orders_wrapper":null}' WHERE user_id = 27
+05.09.2017 06:28:17 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":null,"table_managers_orders_wrapper":null}' WHERE user_id = 27
+05.09.2017 06:53:19 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":null}' WHERE user_id = 27
+05.09.2017 06:56:00 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":null}' WHERE user_id = 27
+05.09.2017 06:56:04 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":null}' WHERE user_id = 27
+05.09.2017 06:56:40 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":5}' WHERE user_id = 27
+05.09.2017 06:56:41 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":5}' WHERE user_id = 27
+05.09.2017 07:04:12 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":null}' WHERE user_id = 27
+05.09.2017 07:04:12 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":null}' WHERE user_id = 27
+05.09.2017 07:04:16 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":null}' WHERE user_id = 27
+05.09.2017 07:06:02 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":null}' WHERE user_id = 27
+05.09.2017 07:06:26 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":null}' WHERE user_id = 27
+05.09.2017 07:07:28 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":"a:2:{i:0;s:0:\"\";i:1;s:5:\"205px\";}"}' WHERE user_id = 27
+05.09.2017 07:07:51 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":"a:3:{i:0;s:0:\"\";i:1;s:0:\"\";i:2;s:5:\"189px\";}"}' WHERE user_id = 27
+05.09.2017 07:09:07 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_wrapper":"a:2:{i:0;s:0:\"\";i:1;s:5:\"169px\";}"}' WHERE user_id = 27
+05.09.2017 07:09:14 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_wrapper":"a:2:{i:0;s:0:\"\";i:1;s:5:\"137px\";}"}' WHERE user_id = 27
+05.09.2017 07:09:15 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_wrapper":"a:2:{i:0;s:0:\"\";i:1;s:5:\"184px\";}"}' WHERE user_id = 27
+05.09.2017 07:09:23 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_wrapper":"a:5:{i:0;s:0:\"\";i:1;s:0:\"\";i:2;s:0:\"\";i:3;s:0:\"\";i:4;s:5:\"135px\";}"}' WHERE user_id = 27
+05.09.2017 07:09:27 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_wrapper":"a:2:{i:0;s:0:\"\";i:1;s:5:\"131px\";}"}' WHERE user_id = 27
+05.09.2017 07:09:51 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_wrapper":"a:2:{i:0;s:0:\"\";i:1;s:5:\"116px\";}"}' WHERE user_id = 27
+05.09.2017 07:09:54 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_wrapper":"a:2:{i:0;s:0:\"\";i:1;s:4:\"95px\";}"}' WHERE user_id = 27
+05.09.2017 07:10:23 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":"a:2:{i:0;s:0:\"\";i:1;s:5:\"145px\";}"}' WHERE user_id = 27
+05.09.2017 07:10:35 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":"a:3:{i:0;s:0:\"\";i:1;s:0:\"\";i:2;s:5:\"148px\";}"}' WHERE user_id = 27
+05.09.2017 07:11:07 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":"a:2:{i:0;s:0:\"\";i:1;s:5:\"143px\";}"}' WHERE user_id = 27
+05.09.2017 07:11:11 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_wrapper":"a:2:{i:0;s:0:\"\";i:1;s:5:\"103px\";}"}' WHERE user_id = 27
+05.09.2017 07:11:37 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_wrapper":"a:2:{i:0;s:0:\"\";i:1;s:5:\"215px\";}"}' WHERE user_id = 27
+05.09.2017 07:11:46 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":"a:3:{i:0;s:0:\"\";i:1;s:0:\"\";i:2;s:5:\"265px\";}"}' WHERE user_id = 27
+05.09.2017 07:12:51 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '' WHERE user_id = 27
+05.09.2017 07:14:05 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = 'a:1:{s:37:"table_managers_orders_reduced_wrapper";b:0;}' WHERE user_id = 27
+05.09.2017 07:14:49 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = 'a:1:{s:37:"table_managers_orders_reduced_wrapper";s:33:"a:2:{i:0;s:0:"";i:1;s:5:"106px";}";}' WHERE user_id = 27
+05.09.2017 07:15:07 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = 'a:2:{s:37:"table_managers_orders_reduced_wrapper";s:33:"a:2:{i:0;s:0:"";i:1;s:5:"106px";}";s:29:"table_managers_orders_wrapper";s:44:"a:3:{i:0;s:0:"";i:1;s:0:"";i:2;s:5:"116px";}";}' WHERE user_id = 27
+05.09.2017 07:15:37 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = 'a:2:{s:37:"table_managers_orders_reduced_wrapper";s:33:"a:2:{i:0;s:0:"";i:1;s:5:"106px";}";s:29:"table_managers_orders_wrapper";s:110:"a:9:{i:0;s:0:"";i:1;s:0:"";i:2;s:0:"";i:3;s:0:"";i:4;s:0:"";i:5;s:0:"";i:6;s:0:"";i:7;s:0:"";i:8;s:5:"250px";}";}' WHERE user_id = 27
+05.09.2017 08:09:18 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = 'a:2:{s:37:"table_managers_orders_reduced_wrapper";s:33:"a:2:{i:0;s:0:"";i:1;s:5:"116px";}";s:29:"table_managers_orders_wrapper";s:110:"a:9:{i:0;s:0:"";i:1;s:0:"";i:2;s:0:"";i:3;s:0:"";i:4;s:0:"";i:5;s:0:"";i:6;s:0:"";i:7;s:0:"";i:8;s:5:"250px";}";}' WHERE user_id = 27
+05.09.2017 08:24:46 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":"a:2:{i:0;s:0:\"\";i:1;s:4:\"98px\";}"}' WHERE user_id = 27
+05.09.2017 08:26:29 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":"[\"\",\"121px\"]"}' WHERE user_id = 27
+05.09.2017 08:26:43 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":"[\"\",\"103px\"]"}' WHERE user_id = 27
+05.09.2017 08:27:04 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":"[\"\",\"\",\"\",\"\",\"\",\"\",\"113px\"]"}' WHERE user_id = 27
+05.09.2017 08:42:19 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":null}' WHERE user_id = 27
+05.09.2017 08:49:48 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":null}' WHERE user_id = 27
+05.09.2017 08:52:57 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":null}' WHERE user_id = 27
+05.09.2017 08:53:25 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"100px"}}' WHERE user_id = 27
+05.09.2017 08:54:59 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"105px"}}' WHERE user_id = 27
+05.09.2017 08:59:23 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"97px"}}' WHERE user_id = 27
+05.09.2017 09:05:35 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":null}}' WHERE user_id = 27
+05.09.2017 09:09:25 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"116px"}}' WHERE user_id = 27
+05.09.2017 09:16:09 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"116px"}}' WHERE user_id = 27
+05.09.2017 17:08:27 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"135px"}}' WHERE user_id = 27
+05.09.2017 17:10:39 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"377px"}}' WHERE user_id = 27
+05.09.2017 17:13:15 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"195px"}}' WHERE user_id = 27
+05.09.2017 17:13:18 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"195px","2":"226px"}}' WHERE user_id = 27
+05.09.2017 17:13:34 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"195px","2":"226px","8":"167px"}}' WHERE user_id = 27
+05.09.2017 17:13:45 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"195px","2":"226px","8":"167px"},"table_order_items_wrapper":{"4":"65px"}}' WHERE user_id = 27
+05.09.2017 17:13:47 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"195px","2":"226px","8":"167px"},"table_order_items_wrapper":{"4":"156px"}}' WHERE user_id = 27
+05.09.2017 17:19:12 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"195px","2":"226px","8":"167px","7":"162px"},"table_order_items_wrapper":{"4":"156px"}}' WHERE user_id = 27
+05.09.2017 17:28:58 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"176px","2":"226px","8":"167px","7":"162px"},"table_order_items_wrapper":{"4":"156px"}}' WHERE user_id = 27
+05.09.2017 17:29:14 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"112px"}}' WHERE user_id = 27
+05.09.2017 17:29:26 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"112px","8":"99px"}}' WHERE user_id = 27
+05.09.2017 17:56:21 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"167px","8":"99px"}}' WHERE user_id = 27
+05.09.2017 17:57:14 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"238px","8":"99px"}}' WHERE user_id = 27
+05.09.2017 17:59:26 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"217px","8":"99px"}}' WHERE user_id = 27
+05.09.2017 17:59:31 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"336px","8":"99px"}}' WHERE user_id = 27
+05.09.2017 18:00:40 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"358px","8":"99px"}}' WHERE user_id = 27
+05.09.2017 18:01:17 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"358px","8":"99px","3":"186px"}}' WHERE user_id = 27
+05.09.2017 18:02:39 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"246px","8":"99px","3":"186px"}}' WHERE user_id = 27
+05.09.2017 18:05:28 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"243px","8":"99px","3":"186px"}}' WHERE user_id = 27
+05.09.2017 18:05:45 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"293px","8":"99px","3":"186px"}}' WHERE user_id = 27
+05.09.2017 18:11:28 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"195px","8":"99px","3":"186px"}}' WHERE user_id = 27
+05.09.2017 18:11:35 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"169px","8":"99px","3":"186px"}}' WHERE user_id = 27
+05.09.2017 18:11:37 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"70px","8":"99px","3":"186px"}}' WHERE user_id = 27
+05.09.2017 18:11:38 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"132px","8":"99px","3":"186px"}}' WHERE user_id = 27
+05.09.2017 18:13:56 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"196px","8":"99px","3":"186px"}}' WHERE user_id = 27
+05.09.2017 18:15:12 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"234px","8":"99px","3":"186px"}}' WHERE user_id = 27
+05.09.2017 18:15:15 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"240px","8":"99px","3":"186px"}}' WHERE user_id = 27
+05.09.2017 18:51:11 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"240px","8":"99px","3":"186px"},"table_managers_orders_wrapper":["1022px"]}' WHERE user_id = 27
+05.09.2017 18:53:11 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"240px","8":"99px","3":"186px","2":"214px"},"table_managers_orders_wrapper":["1022px"]}' WHERE user_id = 27
+05.09.2017 18:53:19 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"1":"240px","8":"156px","3":"186px","2":"214px"},"table_managers_orders_wrapper":["1022px"]}' WHERE user_id = 27
+05.09.2017 19:11:38 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px"}}' WHERE user_id = 27
+05.09.2017 19:11:56 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px"}}' WHERE user_id = 27
+05.09.2017 19:15:59 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px"},"table_managers_orders_wrapper":["441px"]}' WHERE user_id = 27
+05.09.2017 19:16:33 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px"},"table_managers_orders_wrapper":["441px","86px"]}' WHERE user_id = 27
+05.09.2017 19:20:16 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px"},"table_managers_orders_wrapper":{"0":"441px","1":"86px","4":"202px"}}' WHERE user_id = 27
+05.09.2017 19:20:24 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px"},"table_managers_orders_wrapper":{"0":"441px","1":"86px","4":"207px"}}' WHERE user_id = 27
+05.09.2017 19:21:07 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px"},"table_managers_orders_wrapper":{"0":"441px","1":"208px","4":"207px"}}' WHERE user_id = 27
+05.09.2017 19:22:36 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px"},"table_managers_orders_wrapper":{"0":"441px","1":"208px","4":"46px"}}' WHERE user_id = 27
+05.09.2017 19:22:49 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px"},"table_managers_orders_wrapper":{"0":"441px","1":"106px","4":"46px"}}' WHERE user_id = 27
+05.09.2017 19:22:51 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px"},"table_managers_orders_wrapper":{"0":"441px","1":"106px","4":"88px"}}' WHERE user_id = 27
+05.09.2017 19:24:07 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px"},"table_managers_orders_wrapper":{"0":"441px","1":"106px","4":"88px"}}' WHERE user_id = 27
+05.09.2017 19:24:19 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px"},"table_managers_orders_wrapper":{"0":"441px","1":"75px","4":"88px"}}' WHERE user_id = 27
+05.09.2017 19:24:20 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px"},"table_managers_orders_wrapper":{"0":"441px","1":"193px","4":"88px"}}' WHERE user_id = 27
+05.09.2017 19:29:14 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px"}}' WHERE user_id = 27
+05.09.2017 19:31:23 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px"}}' WHERE user_id = 27
+05.09.2017 19:31:32 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px"},"table_clients_wrapper":{"1":"325px"}}' WHERE user_id = 27
+05.09.2017 19:31:35 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px"},"table_clients_wrapper":{"1":"325px","6":"20px"}}' WHERE user_id = 27
+06.09.2017 02:26:18 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px"},"table_clients_wrapper":{"1":"325px","6":"20px"},"table_order_items_wrapper":{"5":"130px"}}' WHERE user_id = 27
+06.09.2017 02:26:20 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px"},"table_clients_wrapper":{"1":"325px","6":"20px"},"table_order_items_wrapper":{"5":"130px","4":"156px"}}' WHERE user_id = 27
+06.09.2017 02:26:22 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px"},"table_clients_wrapper":{"1":"325px","6":"20px"},"table_order_items_wrapper":{"5":"130px","4":"156px","8":"53px"}}' WHERE user_id = 27
+06.09.2017 02:26:27 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px"},"table_clients_wrapper":{"1":"325px","6":"20px"},"table_order_items_wrapper":{"5":"130px","4":"156px","8":"53px"},"orders_payments_wrapper":{"2":"154px"}}' WHERE user_id = 27
+06.09.2017 02:26:29 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px"},"table_clients_wrapper":{"1":"325px","6":"20px"},"table_order_items_wrapper":{"5":"130px","4":"156px","8":"53px"},"orders_payments_wrapper":{"2":"154px"},"table_delivery_notes_wrapper":{"2":"26px"}}' WHERE user_id = 27
+06.09.2017 02:27:33 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px"},"table_clients_wrapper":{"1":"325px","6":"20px"},"table_order_items_wrapper":{"5":"130px","4":"156px","8":"53px"},"orders_payments_wrapper":{"2":"154px"},"table_delivery_notes_wrapper":{"2":"281px"}}' WHERE user_id = 27
+06.09.2017 02:28:19 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px"},"table_clients_wrapper":{"1":"325px","6":"20px"},"table_order_items_wrapper":{"5":"310px","4":"156px","8":"53px"},"orders_payments_wrapper":{"2":"154px"},"table_delivery_notes_wrapper":{"2":"281px"}}' WHERE user_id = 27
+06.09.2017 02:28:22 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px"},"table_clients_wrapper":{"1":"325px","6":"20px"},"table_order_items_wrapper":{"5":"310px","4":"156px","8":"53px","2":"244px"},"orders_payments_wrapper":{"2":"154px"},"table_delivery_notes_wrapper":{"2":"281px"}}' WHERE user_id = 27
+06.09.2017 02:28:41 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px"},"table_clients_wrapper":{"1":"325px","6":"20px","4":"13px"},"table_order_items_wrapper":{"5":"310px","4":"156px","8":"53px","2":"244px"},"orders_payments_wrapper":{"2":"154px"},"table_delivery_notes_wrapper":{"2":"281px"}}' WHERE user_id = 27
+06.09.2017 12:05:40 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px","0":"94px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px"},"table_clients_wrapper":{"1":"325px","6":"20px","4":"13px"},"table_order_items_wrapper":{"5":"310px","4":"156px","8":"53px","2":"244px"},"orders_payments_wrapper":{"2":"154px"},"table_delivery_notes_wrapper":{"2":"281px"}}' WHERE user_id = 27
+06.09.2017 12:07:28 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px","0":"94px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px","2":"252px"},"table_clients_wrapper":{"1":"325px","6":"20px","4":"13px"},"table_order_items_wrapper":{"5":"310px","4":"156px","8":"53px","2":"244px"},"orders_payments_wrapper":{"2":"154px"},"table_delivery_notes_wrapper":{"2":"281px"}}' WHERE user_id = 27
+06.09.2017 12:08:54 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px","0":"94px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px","2":"252px"},"table_clients_wrapper":{"1":"325px","6":"20px","4":"13px"},"table_order_items_wrapper":{"5":"310px","4":"156px","8":"53px","2":"244px"},"orders_payments_wrapper":{"2":"154px"},"table_delivery_notes_wrapper":{"2":"281px"},"modal_catalogue_wrapper":{"1":"147px"}}' WHERE user_id = 27
+06.09.2017 12:17:57 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px","0":"94px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px","2":"252px","11":"140px"},"table_clients_wrapper":{"1":"325px","6":"20px","4":"13px"},"table_order_items_wrapper":{"5":"310px","4":"156px","8":"53px","2":"244px"},"orders_payments_wrapper":{"2":"154px"},"table_delivery_notes_wrapper":{"2":"281px"},"modal_catalogue_wrapper":{"1":"147px"}}' WHERE user_id = 27
+07.09.2017 03:40:55 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px","0":"94px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px","2":"151px","11":"140px"},"table_clients_wrapper":{"1":"325px","6":"20px","4":"13px"},"table_order_items_wrapper":{"5":"310px","4":"156px","8":"53px","2":"244px"},"orders_payments_wrapper":{"2":"154px"},"table_delivery_notes_wrapper":{"2":"281px"},"modal_catalogue_wrapper":{"1":"147px"}}' WHERE user_id = 27
+07.09.2017 03:40:58 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px","0":"94px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px","2":"151px","11":"140px","9":"191px"},"table_clients_wrapper":{"1":"325px","6":"20px","4":"13px"},"table_order_items_wrapper":{"5":"310px","4":"156px","8":"53px","2":"244px"},"orders_payments_wrapper":{"2":"154px"},"table_delivery_notes_wrapper":{"2":"281px"},"modal_catalogue_wrapper":{"1":"147px"}}' WHERE user_id = 27
+07.09.2017 03:41:06 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px","0":"94px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px","2":"83px","11":"140px","9":"191px"},"table_clients_wrapper":{"1":"325px","6":"20px","4":"13px"},"table_order_items_wrapper":{"5":"310px","4":"156px","8":"53px","2":"244px"},"orders_payments_wrapper":{"2":"154px"},"table_delivery_notes_wrapper":{"2":"281px"},"modal_catalogue_wrapper":{"1":"147px"}}' WHERE user_id = 27
+07.09.2017 03:44:13 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px","0":"94px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px","2":"83px","11":"140px","9":"191px"},"table_clients_wrapper":{"1":"325px","6":"20px","4":"13px"},"table_order_items_wrapper":{"5":"310px","4":"156px","8":"53px","2":"244px"},"orders_payments_wrapper":{"2":"154px"},"table_delivery_notes_wrapper":{"2":"281px"},"modal_catalogue_wrapper":{"1":"147px"},"table_delivery_notes_reduced_wrapper":{"2":"181px"}}' WHERE user_id = 27
+07.09.2017 03:44:43 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px","0":"94px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px","2":"83px","11":"140px","9":"191px"},"table_clients_wrapper":{"1":"325px","6":"20px","4":"13px"},"table_order_items_wrapper":{"5":"310px","4":"156px","8":"53px","2":"244px"},"orders_payments_wrapper":{"2":"154px"},"table_delivery_notes_wrapper":{"2":"281px"},"modal_catalogue_wrapper":{"1":"147px"},"table_delivery_notes_reduced_wrapper":{"2":"111px"}}' WHERE user_id = 27
+07.09.2017 03:44:46 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px","0":"94px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px","2":"83px","11":"140px","9":"191px"},"table_clients_wrapper":{"1":"325px","6":"20px","4":"13px"},"table_order_items_wrapper":{"5":"310px","4":"156px","8":"53px","2":"244px"},"orders_payments_wrapper":{"2":"154px"},"table_delivery_notes_wrapper":{"2":"281px"},"modal_catalogue_wrapper":{"1":"147px"},"table_delivery_notes_reduced_wrapper":{"2":"111px","3":"638px"}}' WHERE user_id = 27
+07.09.2017 03:44:51 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px","0":"94px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px","2":"83px","11":"140px","9":"191px"},"table_clients_wrapper":{"1":"325px","6":"20px","4":"13px"},"table_order_items_wrapper":{"5":"310px","4":"156px","8":"53px","2":"244px"},"orders_payments_wrapper":{"2":"154px"},"table_delivery_notes_wrapper":{"2":"281px"},"modal_catalogue_wrapper":{"1":"147px"},"table_delivery_notes_reduced_wrapper":{"2":"566px","3":"638px"}}' WHERE user_id = 27
+07.09.2017 03:46:27 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px","0":"94px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px","2":"83px","11":"140px","9":"191px"},"table_clients_wrapper":{"1":"325px","6":"20px","4":"13px"},"table_order_items_wrapper":{"5":"310px","4":"156px","8":"53px","2":"244px"},"orders_payments_wrapper":{"2":"154px"},"table_delivery_notes_wrapper":{"2":"281px","3":"312px"},"modal_catalogue_wrapper":{"1":"147px"},"table_delivery_notes_reduced_wrapper":{"2":"566px","3":"638px"}}' WHERE user_id = 27
+07.09.2017 03:46:31 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px","0":"94px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px","2":"83px","11":"140px","9":"191px"},"table_clients_wrapper":{"1":"325px","6":"20px","4":"13px"},"table_order_items_wrapper":{"5":"310px","4":"156px","8":"53px","2":"244px"},"orders_payments_wrapper":{"2":"154px"},"table_delivery_notes_wrapper":{"2":"281px","3":"320px"},"modal_catalogue_wrapper":{"1":"147px"},"table_delivery_notes_reduced_wrapper":{"2":"566px","3":"638px"}}' WHERE user_id = 27
+07.09.2017 03:46:39 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px","0":"94px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px","2":"83px","11":"140px","9":"191px"},"table_clients_wrapper":{"1":"325px","6":"20px","4":"13px"},"table_order_items_wrapper":{"5":"310px","4":"156px","8":"53px","2":"244px"},"orders_payments_wrapper":{"2":"154px"},"table_delivery_notes_wrapper":{"2":"281px","3":"320px"},"modal_catalogue_wrapper":{"1":"147px"},"table_delivery_notes_reduced_wrapper":{"2":"566px","3":"638px","0":"91px"}}' WHERE user_id = 27
+07.09.2017 03:46:55 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px","0":"94px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px","2":"83px","11":"140px","9":"191px"},"table_clients_wrapper":{"1":"325px","6":"20px","4":"13px"},"table_order_items_wrapper":{"5":"310px","4":"156px","8":"53px","2":"244px"},"orders_payments_wrapper":{"2":"154px"},"table_delivery_notes_wrapper":{"2":"281px","3":"320px"},"modal_catalogue_wrapper":{"1":"147px"},"table_delivery_notes_reduced_wrapper":{"2":"177px","3":"638px","0":"91px"}}' WHERE user_id = 27
+07.09.2017 03:46:58 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px","0":"94px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px","2":"83px","11":"140px","9":"191px"},"table_clients_wrapper":{"1":"325px","6":"20px","4":"13px"},"table_order_items_wrapper":{"5":"310px","4":"156px","8":"53px","2":"244px"},"orders_payments_wrapper":{"2":"154px"},"table_delivery_notes_wrapper":{"2":"281px","3":"320px"},"modal_catalogue_wrapper":{"1":"147px"},"table_delivery_notes_reduced_wrapper":{"2":"177px","3":"641px","0":"91px"}}' WHERE user_id = 27
+07.09.2017 03:49:39 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px","0":"94px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px","2":"83px","11":"140px","9":"191px"},"table_clients_wrapper":{"1":"325px","6":"20px","4":"13px"},"table_order_items_wrapper":{"5":"310px","4":"156px","8":"53px","2":"244px"},"orders_payments_wrapper":{"2":"154px"},"table_delivery_notes_wrapper":{"2":"281px","3":"320px"},"modal_catalogue_wrapper":{"1":"147px"},"table_delivery_notes_reduced_wrapper":{"2":"177px","3":"641px","0":"91px"},"warehouse_products_wrapper":{"1":"222px"}}' WHERE user_id = 27
+07.09.2017 03:49:42 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px","0":"94px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px","2":"83px","11":"140px","9":"191px"},"table_clients_wrapper":{"1":"325px","6":"20px","4":"13px"},"table_order_items_wrapper":{"5":"310px","4":"156px","8":"53px","2":"244px"},"orders_payments_wrapper":{"2":"154px"},"table_delivery_notes_wrapper":{"2":"281px","3":"320px"},"modal_catalogue_wrapper":{"1":"147px"},"table_delivery_notes_reduced_wrapper":{"2":"177px","3":"641px","0":"91px"},"warehouse_products_wrapper":{"1":"222px","6":"128px"}}' WHERE user_id = 27
+07.09.2017 04:02:22 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px","0":"94px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px","2":"83px","11":"140px","9":"191px"},"table_clients_wrapper":{"1":"325px","6":"20px","4":"13px"},"table_order_items_wrapper":{"5":"310px","4":"156px","8":"53px","2":"244px"},"orders_payments_wrapper":{"2":"154px"},"table_delivery_notes_wrapper":{"2":"281px","3":"320px"},"modal_catalogue_wrapper":{"1":"147px"},"table_delivery_notes_reduced_wrapper":{"2":"177px","3":"641px","0":"91px"},"warehouse_products_wrapper":{"1":"222px","6":"128px","4":"354px"}}' WHERE user_id = 27
+07.09.2017 04:27:25 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px","0":"94px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px","2":"465px","11":"140px","9":"191px"},"table_clients_wrapper":{"1":"325px","6":"20px","4":"13px"},"table_order_items_wrapper":{"5":"310px","4":"156px","8":"53px","2":"244px"},"orders_payments_wrapper":{"2":"154px"},"table_delivery_notes_wrapper":{"2":"281px","3":"320px"},"modal_catalogue_wrapper":{"1":"147px"},"table_delivery_notes_reduced_wrapper":{"2":"177px","3":"641px","0":"91px"},"warehouse_products_wrapper":{"1":"222px","6":"128px","4":"354px"}}' WHERE user_id = 27
+07.09.2017 04:29:31 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px","0":"94px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px","2":"465px","11":"140px","9":"191px"},"table_clients_wrapper":{"1":"325px","6":"20px","4":"13px"},"table_order_items_wrapper":{"5":"310px","4":"156px","8":"53px","2":"244px"},"orders_payments_wrapper":{"2":"154px"},"table_delivery_notes_wrapper":{"2":"281px","3":"320px"},"modal_catalogue_wrapper":{"1":"147px"},"table_delivery_notes_reduced_wrapper":{"2":"177px","3":"641px","0":"91px"},"warehouse_products_wrapper":{"1":"222px","6":"128px","4":"354px"},"table_catalogue_wrapper":{"2":"203px"}}' WHERE user_id = 27
+07.09.2017 04:40:21 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px","0":"94px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px","2":"465px","11":"140px","9":"191px"},"table_clients_wrapper":{"1":"325px","6":"20px","4":"13px"},"table_order_items_wrapper":{"5":"310px","4":"156px","8":"53px","2":"244px"},"orders_payments_wrapper":{"2":"154px"},"table_delivery_notes_wrapper":{"2":"281px","3":"320px"},"modal_catalogue_wrapper":{"1":"147px","3":"175px"},"table_delivery_notes_reduced_wrapper":{"2":"177px","3":"641px","0":"91px"},"warehouse_products_wrapper":{"1":"222px","6":"128px","4":"354px"},"table_catalogue_wrapper":{"2":"203px"}}' WHERE user_id = 27
+07.09.2017 04:40:30 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px","0":"94px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px","2":"465px","11":"140px","9":"191px"},"table_clients_wrapper":{"1":"325px","6":"20px","4":"13px"},"table_order_items_wrapper":{"5":"310px","4":"156px","8":"53px","2":"244px"},"orders_payments_wrapper":{"2":"154px"},"table_delivery_notes_wrapper":{"2":"281px","3":"320px"},"modal_catalogue_wrapper":{"1":"147px","3":"293px"},"table_delivery_notes_reduced_wrapper":{"2":"177px","3":"641px","0":"91px"},"warehouse_products_wrapper":{"1":"222px","6":"128px","4":"354px"},"table_catalogue_wrapper":{"2":"203px"}}' WHERE user_id = 27
+07.09.2017 04:42:39 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px","0":"94px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px","2":"465px","11":"140px","9":"191px"},"table_clients_wrapper":{"1":"325px","6":"20px","4":"13px"},"table_order_items_wrapper":{"5":"310px","4":"156px","8":"53px","2":"244px"},"orders_payments_wrapper":{"2":"154px"},"table_delivery_notes_wrapper":{"2":"281px","3":"320px"},"modal_catalogue_wrapper":{"1":"147px","3":"293px","6":"242px"},"table_delivery_notes_reduced_wrapper":{"2":"177px","3":"641px","0":"91px"},"warehouse_products_wrapper":{"1":"222px","6":"128px","4":"354px"},"table_catalogue_wrapper":{"2":"203px"}}' WHERE user_id = 27
+07.09.2017 04:46:36 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px","0":"94px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px","2":"465px","11":"140px","9":"191px"},"table_clients_wrapper":{"1":"325px","6":"20px","4":"13px"},"table_order_items_wrapper":{"5":"310px","4":"156px","8":"53px","2":"244px","3":"145px"},"orders_payments_wrapper":{"2":"154px"},"table_delivery_notes_wrapper":{"2":"281px","3":"320px"},"modal_catalogue_wrapper":{"1":"147px","3":"293px","6":"242px"},"table_delivery_notes_reduced_wrapper":{"2":"177px","3":"641px","0":"91px"},"warehouse_products_wrapper":{"1":"222px","6":"128px","4":"354px"},"table_catalogue_wrapper":{"2":"203px"}}' WHERE user_id = 27
+07.09.2017 04:47:35 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"162px","7":"204px","2":"165px","1":"233px","0":"94px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px","2":"465px","11":"140px","9":"191px"},"table_clients_wrapper":{"1":"325px","6":"20px","4":"13px"},"table_order_items_wrapper":{"5":"310px","4":"156px","8":"53px","2":"244px","3":"145px"},"orders_payments_wrapper":{"2":"154px"},"table_delivery_notes_wrapper":{"2":"281px","3":"320px"},"modal_catalogue_wrapper":{"1":"147px","3":"193px","6":"242px"},"table_delivery_notes_reduced_wrapper":{"2":"177px","3":"641px","0":"91px"},"warehouse_products_wrapper":{"1":"222px","6":"128px","4":"354px"},"table_catalogue_wrapper":{"2":"203px"}}' WHERE user_id = 27
+07.09.2017 04:49:29 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"110px","7":"204px","2":"165px","1":"233px","0":"94px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px","2":"465px","11":"140px","9":"191px"},"table_clients_wrapper":{"1":"325px","6":"20px","4":"13px"},"table_order_items_wrapper":{"5":"310px","4":"156px","8":"53px","2":"244px","3":"145px"},"orders_payments_wrapper":{"2":"154px"},"table_delivery_notes_wrapper":{"2":"281px","3":"320px"},"modal_catalogue_wrapper":{"1":"147px","3":"193px","6":"242px"},"table_delivery_notes_reduced_wrapper":{"2":"177px","3":"641px","0":"91px"},"warehouse_products_wrapper":{"1":"222px","6":"128px","4":"354px"},"table_catalogue_wrapper":{"2":"203px"}}' WHERE user_id = 27
+07.09.2017 04:49:55 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"110px","7":"204px","2":"165px","1":"233px","0":"94px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px","2":"317px","11":"140px","9":"191px"},"table_clients_wrapper":{"1":"325px","6":"20px","4":"13px"},"table_order_items_wrapper":{"5":"310px","4":"156px","8":"53px","2":"244px","3":"145px"},"orders_payments_wrapper":{"2":"154px"},"table_delivery_notes_wrapper":{"2":"281px","3":"320px"},"modal_catalogue_wrapper":{"1":"147px","3":"193px","6":"242px"},"table_delivery_notes_reduced_wrapper":{"2":"177px","3":"641px","0":"91px"},"warehouse_products_wrapper":{"1":"222px","6":"128px","4":"354px"},"table_catalogue_wrapper":{"2":"203px"}}' WHERE user_id = 27
+07.09.2017 04:53:01 SUCCESS table: users user_id: 27 record_id: 27
+UPDATE users SET columns_resize = '{"table_managers_orders_reduced_wrapper":{"4":"110px","7":"204px","2":"165px","1":"233px","0":"94px"},"table_managers_orders_wrapper":{"0":"441px","1":"63px","4":"88px","2":"317px","11":"140px","9":"191px"},"table_clients_wrapper":{"1":"325px","6":"20px","4":"13px"},"table_order_items_wrapper":{"5":"310px","4":"156px","8":"53px","2":"244px","3":"145px"},"orders_payments_wrapper":{"2":"154px"},"table_delivery_notes_wrapper":{"2":"281px","3":"320px"},"modal_catalogue_wrapper":{"1":"147px","3":"193px","6":"127px"},"table_delivery_notes_reduced_wrapper":{"2":"177px","3":"641px","0":"91px"},"warehouse_products_wrapper":{"1":"222px","6":"128px","4":"354px"},"table_catalogue_wrapper":{"2":"203px"}}' WHERE user_id = 27
