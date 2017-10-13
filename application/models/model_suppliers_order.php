@@ -66,10 +66,14 @@ class ModelSuppliers_order extends ModelOrder
         array('dt' => 11, 'db' => "orders.expected_date_of_issue"),
         array('dt' => 12, 'db' => "CONCAT('<a href=\"/sales_manager?id=', orders.sales_manager_id, '\">', 
             managers.first_name, ' ', managers.last_name, '</a>')"),
+        // array('dt' => 13, 'db' => "CONCAT('<a href=\"/order?id=',
+        //         suppliers_orders_items.manager_order_id,
+        //         '\">', suppliers_orders_items.manager_order_id,
+        //          IF(suppliers_orders_items.reserve_since_date IS NULL, '', (CONCAT(' (reserved ', suppliers_orders_items.reserve_since_date, ')'))), '</a>')"),
         array('dt' => 13, 'db' => "CONCAT('<a href=\"/order?id=',
-                suppliers_orders_items.manager_order_id,
-                '\">', suppliers_orders_items.manager_order_id,
-                 IF(suppliers_orders_items.reserve_since_date IS NULL, '', (CONCAT(' (reserved ', suppliers_orders_items.reserve_since_date, ')'))), '</a>')"),
+        suppliers_orders_items.manager_order_id,
+        '\">', orders.visible_order_id,
+         IF(suppliers_orders_items.reserve_since_date IS NULL, '', (CONCAT(' (reserved ', suppliers_orders_items.reserve_since_date, ')'))), '</a>')"),
         array('dt' => 14, 'db' => "clients.final_name"),
     ];
 
