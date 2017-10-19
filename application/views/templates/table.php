@@ -189,6 +189,7 @@ $hidden_by_default = json_encode($hidden);
 
         var widthTds = <?= '[' . implode(',', $notHidden) . ']'; ?>;
         var $filterSearchValues = <?= json_encode($filterSearchValues); ?>;
+        
         var $clickUrl = "<?= $click_url == 'javascript:;' ? false : $click_url; ?>";
         var $sort = <?= json_encode(explode('-', $sort)); ?>;
         var $select = <?= $select; ?>;
@@ -561,6 +562,22 @@ $hidden_by_default = json_encode($hidden);
                     $("."+tableId+" th[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
                 }
             }
+            if (tableId=='table_suppliers_orders')
+            {
+                $("."+tableId+" th").width(75);
+                for (var key in columnsWidthTT[tableId+'_wrapper'])
+                {
+                    $("."+tableId+" th[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
+                }
+            }
+            if (tableId=='new_supplier_order_table')
+            {
+                $("."+tableId+" th").width(75);
+                for (var key in columnsWidthTT[tableId+'_wrapper'])
+                {
+                    $("."+tableId+" th[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
+                }
+            }
             if (-1 < tableId.indexOf('modal_'))
             //if (tableId=='modal_catalogue' )
             {
@@ -818,25 +835,47 @@ $hidden_by_default = json_encode($hidden);
         function tableSearch(tableVariable) {
             tableVariable.columns().every(function () {
                 var that = this;
+//                $(this.header()).on('keyup change', 'input', {column: that}, keyUpChangeHandler);
                 $(this.header()).on('keyup change', 'input', {column: that}, keyUpChangeHandler);
             });
 
             function keyUpChangeHandler(event) {
-                if (event.data.column.search() !== $(this).val()) {
-                    event.data.column.search($(this).val()).draw();
-                    table.draw();
+				
+				if(event.keyCode != 38 && event.keyCode != 40) { // arrow up and arrow down prevent
+					
+					var ul = $('#' + $(this).attr('data-filter'));
+					var li_current_filter = $("#" + $(this).attr('data-filter') + '_current_filter');
+					var current_filter = $(this).val(); 
 
-                    var th = $(this).closest('th');
-                    if ($(this).val() && !th.hasClass('success')) {
-                        th.addClass('success')
-                    } else if (!$(this).val()) {
-                        th.removeClass('success')
-                    }
+					// only one item selected by default - current input value
+					$('.es-visible.filtered-li.selected').removeClass('selected');
+					
+					// remove previous select value
+					li_current_filter.remove();
+					
+					// add current filter value to selected filters list
+					ul.prepend('<li value="' + current_filter + '" id="' + $(this).attr('data-filter') + '_current_filter" onclick="event.stopPropagation()" class="es-visible filtered-li selected">' + current_filter + '</li>');				
+					
 
-                    if (!$(this).val()) {
-                        filterSelectsValues($(this))
-                    }
-                }
+					if (event.data.column.search() !== $(this).val()) {
+						if(event.keyCode == 13){
+							event.data.column.search($(this).val()).draw();
+							table.draw();
+
+							var th = $(this).closest('th');
+							if ($(this).val() && !th.hasClass('success')) {
+								th.addClass('success')
+							} else if (!$(this).val()) {
+								th.removeClass('success')
+							}
+						}
+						
+						if (!$(this).val()) {
+							filterSelectsValues($(this))
+						}
+					}
+					
+				}
             }
         }
 
@@ -1060,6 +1099,8 @@ $hidden_by_default = json_encode($hidden);
                 var select = parent.find('.es-input');
                 select.on('show.editable-select', function(e) {
                     var filterId = $(this).attr('data-filter');
+					$("#" + filterId + '_current_filter').remove();
+					$("#" + filterId).prepend('<li value="" id="' + filterId + '_current_filter" onclick="event.stopPropagation()" class="es-visible filtered-li"></li>');
                     var offset = $(this).offset();
                     var top = offset.top + parseFloat($(this).css('height'));
                     if ($(this).closest('.modal').length) {
@@ -1096,6 +1137,7 @@ $hidden_by_default = json_encode($hidden);
 
         // to filter values in selects
         function filterSelectsValues(select) {
+        
             if (!select.hasClass('column-filter-select'))
                 return false;
             var values = [];
