@@ -578,6 +578,46 @@ $hidden_by_default = json_encode($hidden);
                     $("."+tableId+" th[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
                 }
             }
+            if (tableId=='table_trucks')
+            {
+                $("."+tableId+" th").width(75);
+                for (var key in columnsWidthTT[tableId+'_wrapper'])
+                {
+                    $("."+tableId+" th[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
+                }
+            }
+            if (tableId=='table_Supplier')
+            {
+                $("."+tableId+" th").width(75);
+                for (var key in columnsWidthTT[tableId+'_wrapper'])
+                {
+                    $("."+tableId+" th[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
+                }
+            }
+            if (tableId=='table_Customs')
+            {
+                $("."+tableId+" th").width(75);
+                for (var key in columnsWidthTT[tableId+'_wrapper'])
+                {
+                    $("."+tableId+" th[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
+                }
+            }
+            if (tableId=='table_Delivery')
+            {
+                $("."+tableId+" th").width(75);
+                for (var key in columnsWidthTT[tableId+'_wrapper'])
+                {
+                    $("."+tableId+" th[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
+                }
+            }
+            if (tableId=='table_Other')
+            {
+                $("."+tableId+" th").width(75);
+                for (var key in columnsWidthTT[tableId+'_wrapper'])
+                {
+                    $("."+tableId+" th[data-header-id="+ key +"]").width(columnsWidthTT[tableId+'_wrapper'][key]);
+                }
+            }
             if (-1 < tableId.indexOf('modal_'))
             //if (tableId=='modal_catalogue' )
             {
